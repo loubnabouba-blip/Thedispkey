@@ -23,6 +23,24 @@ main section>h1::before{content:"";display:block;width:40px;height:4px;margin-bo
 #nav a.on .ic{color:var(--pg-ink)}
 #nav a.on::after{background:var(--pg);box-shadow:0 0 10px var(--pg)}
 :root[data-theme=light] .card,:root[data-theme=light] details.acc,:root[data-theme=light] .meal,:root[data-theme=light] .rcard{border-color:var(--line)}
+
+/* ---------- Profiel: rustig en compact ---------- */
+.pf{padding:var(--s3)}
+.pfhead{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s2);margin-bottom:var(--s1)}
+.pfhead small{display:block;font:700 12px/1.3 var(--fb);letter-spacing:.14em;text-transform:uppercase;color:var(--pg-ink)}
+.pf h2{margin:6px 0 0;font:800 clamp(22px,6vw,28px)/1.15 var(--fd);color:var(--head);letter-spacing:-.02em}
+.pf h3{margin:0 0 var(--s1)}
+.pfrows{display:grid;margin:0 0 var(--s1)}
+.pfrow{appearance:none;display:grid;grid-template-columns:96px minmax(0,1fr) 16px;align-items:center;gap:var(--s1);width:100%;min-height:56px;padding:12px 0;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer;transition:var(--t)}
+.pfrow:first-child{border-top:0}
+.pfrow span{font-size:13px;color:var(--ink2)}
+.pfrow b{font-weight:600;font-size:15px;overflow-wrap:anywhere}
+.pfrow i{font-style:normal;font-size:22px;color:var(--ink2)}
+.pfrow:hover b{color:var(--pg-ink)}
+.stack{display:grid;gap:var(--s2);margin-top:var(--s2)}
+.stack .btn{width:100%}
+details.acc details.acc{background:var(--surface2);box-shadow:none}
+.pf .why{margin:var(--s1) 0 0}.pf .why summary{padding-block:8px}
 </style></head><body>
 <title>The Discipline Key</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -1699,7 +1717,7 @@ function vHome() {
 const scale = (cur, [lo, hi]) => `<option value="">–</option>` + [1, 2, 3, 4, 5].map(i => `<option value="${i}" ${cur === i ? 'selected' : ''}>${i}${i === 1 ? ' (' + lo + ')' : i === 5 ? ' (' + hi + ')' : ''}</option>`).join('');
 function coachCard(c) {
   if (!c) return '';
-  if (c.kind === 'macro') return `<div class="card coach"><span class="eyebrow">Coachvoorstel</span><h3>${esc(c.title)}</h3><p>${esc(c.why)}</p><div class="diff"><span>Nu <b>${c.old} kcal</b></span><span>→</span><span>Voorstel <b>${c.nw} kcal</b></span></div><p class="sub">Eiwit en vet blijven gelijk; koolhydraten passen mee. Je beslist zelf.</p><div class="btns"><button class="btn sm" data-a="coachAccept" data-d="${c.delta}">Accepteren</button><button class="btn ghost sm" data-a="go" data-r="mijn-plan">Zelf aanpassen</button><button class="btn ghost sm" data-a="coachReject">Afwijzen</button></div></div>`;
+  if (c.kind === 'macro') return `<div class="card coach"><span class="eyebrow">Coachvoorstel</span><h3>${esc(c.title)}</h3><p>${esc(c.why)}</p><div class="diff"><span>Nu <b>${c.old} kcal</b></span><span>→</span><span>Voorstel <b>${c.nw} kcal</b></span></div><p class="sub">Eiwit en vet blijven gelijk; koolhydraten passen mee. Je beslist zelf.</p><div class="btns"><button class="btn sm" data-a="coachAccept" data-d="${c.delta}">Accepteren</button><button class="btn ghost sm" data-a="pfTo" data-r="voeding" data-k="foodTab" data-t="macro">Zelf aanpassen</button><button class="btn ghost sm" data-a="coachReject">Afwijzen</button></div></div>`;
   if (c.kind === 'recover') return `<div class="card coach"><span class="eyebrow">Coachvoorstel</span><h3>${esc(c.title)}</h3><p>${esc(c.why)}</p><p><b>Voorstel:</b> ${esc(c.change)}</p><div class="btns"><button class="btn sm" data-a="lightWeek">Plan herstelweek</button><button class="btn ghost sm" data-a="coachReject">Nu niet</button></div></div>`;
   return `<div class="card coach quiet"><span class="eyebrow">Coach</span><h3>${esc(c.title)}</h3><p>${esc(c.why)}</p><button class="btn ghost sm" data-a="coachReject">Begrepen</button></div>`;
 }
@@ -1883,17 +1901,14 @@ function macroCalcUI() {
    <div class="btns"><button class="btn sm" data-a="macroCalcSave">Deze doelen opslaan</button></div>`}
   <small>Gangbare richtlijn voor actieve mensen: 1,4 tot 2,0 g eiwit per kg (${SRC.issn}). Een tekort van 10 tot 20% is voor de meeste mensen houdbaar.</small>`;
 }
-function vPlan() {
+function planParts() {
   const p = S.profile, t = targets(), w = planWeek(), te = timeEstimate(p), tot = planTotal(), pl = S.planLength || { mode: 'auto' };
   const as = [...(t && t.assumptions || []), ...S.plan.assumptions];
   const firstK = (S.plan.sessions.find(x => x.type === 'kracht') || {}).key, cur = blockOf(w || 1, firstK), per = S.period || 'lineair';
   const endDate = tot && S.planStart ? addDays(S.planStart, tot * 7 + (S.weekShift || 0) * 7 + (S.pauseWeeks || 0) * 7 - 1) : null;
-  const goalBody = `<p class="big">${GOALS[p.goal]}</p><button class="btn ghost sm" data-a="editProfile">Profiel en doel aanpassen</button>
-   ${te ? `<p>${esc(te.text)}</p>` : '<p class="sub">Geen tijdsinschatting. Vul bij je profiel een streefgewicht in als je er een wilt.</p>'}
-   ${why('Hoe komt deze inschatting tot stand?', '<p>De schatting gaat uit van een gemiddelde wekelijkse verandering van een deel van je lichaamsgewicht (afvallen 0,25–0,75%, aankomen 0,1–0,35%). Echte vooruitgang schommelt en hangt af van opvolging, slaap, stress en je beginpunt. De inschatting is een scenario, geen belofte.</p>')}`;
   const lenBody = `<p>${tot ? `Je plan loopt <b>${tot} weken</b>${endDate ? ' tot ongeveer ' + fmtDate(endDate, { day: 'numeric', month: 'long', year: 'numeric' }) : ''}.` : 'Je plan heeft <b>geen vaste einddatum</b>.'} ${pl.mode === 'auto' ? (tot ? 'De app berekende dit uit je streefgewicht.' : 'Zonder streefgewicht kan de app geen duur berekenen.') : ''}</p>
-   <form data-submit="planlen" class="grid2 tight"><label class="f">Hoe lang loopt je plan?<select name="mode"><option value="auto" ${pl.mode === 'auto' ? 'selected' : ''}>Laat de app berekenen</option><option value="manual" ${pl.mode === 'manual' ? 'selected' : ''}>Zelf instellen</option><option value="datum" ${pl.mode === 'datum' ? 'selected' : ''}>Tot mijn mijlpaaldatum</option><option value="open" ${pl.mode === 'open' ? 'selected' : ''}>Doorlopend, geen einde</option></select></label>
-   <label class="f">Aantal weken (bij zelf instellen)<input name="weeks" type="number" min="1" max="104" inputmode="numeric" value="${pl.weeks || ''}"></label><button class="btn sm span2">Opslaan</button></form>
+   <form data-submit="planlen" class="stack"><label class="f">Hoe lang loopt je plan?<select name="mode"><option value="auto" ${pl.mode === 'auto' ? 'selected' : ''}>Laat de app berekenen</option><option value="manual" ${pl.mode === 'manual' ? 'selected' : ''}>Zelf instellen</option><option value="datum" ${pl.mode === 'datum' ? 'selected' : ''}>Tot mijn mijlpaaldatum</option><option value="open" ${pl.mode === 'open' ? 'selected' : ''}>Doorlopend, geen einde</option></select></label>
+   <label class="f">Aantal weken (bij zelf instellen)<input name="weeks" type="number" min="1" max="104" inputmode="numeric" value="${pl.weeks || ''}"></label><button class="btn sm">Opslaan</button></form>
    ${acc('Planning verschuiven', '', `<div class="btns"><button class="btn ghost sm" data-a="repeatWeek">Herhaal deze week</button><button class="btn ghost sm" data-a="pauseWeek">Pauzeer een week</button></div><form data-submit="startdate" class="inline"><label class="f">Startdatum<input name="d" type="date" value="${S.planStart || ''}"></label><button class="btn ghost sm">Verschuif</button></form>`)}`;
   const perBody = `<p class="sub">Periodisering is het bewust variëren van belasting en volume, zodat je kunt opbouwen en herstellen. Kies een model; je kunt het altijd wisselen.</p>
    ${Object.entries(PERIODS).map(([k, v]) => `<button class="opt ${per === k ? 'cur' : ''}" data-a="setPeriod" data-m="${k}"><b>${v.name}</b><small>${v.desc}</small></button>`).join('')}
@@ -1914,14 +1929,26 @@ function vPlan() {
   const macroBody = macro + macroCalcUI() + `<h4>Alles zelf invullen</h4><form data-submit="macros" class="grid4"><label class="f">kcal<input name="kcal" type="number" inputmode="numeric" value="${cu.kcal}"></label><label class="f">Eiwit (g)<input name="p" type="number" inputmode="numeric" value="${cu.p}"></label><label class="f">Koolh. (g)<input name="c" type="number" inputmode="numeric" value="${cu.c}"></label><label class="f">Vet (g)<input name="f" type="number" inputmode="numeric" value="${cu.f}"></label><div class="span4 btns"><button class="btn sm">Eigen doelen opslaan</button>${S.macroOverride && calcMacros(p).kcal ? '<button type="button" class="btn ghost sm" data-a="macroReset">Terug naar voorstel</button>' : ''}</div></form>
    ${sumMacro != null && Math.abs(sumMacro - cu.kcal) > cu.kcal * .1 ? `<div class="note warn">Je macro’s komen samen op ongeveer ${sumMacro} kcal, niet op ${cu.kcal} kcal. Controleer of de getallen bij elkaar passen.</div>` : ''}`;
   const dietName = (DIETS.find(x => x[0] === (p.diet || 'omni')) || [0, ''])[1];
+  return { p, t, w, te, tot, as, per, cur, endDate, lenBody, perBody, progBody, macroBody, dietName };
+}
+const pfRow = (label, value, attrs) => `<button class="pfrow" ${attrs}><span>${label}</span><b>${value}</b><i aria-hidden="true">›</i></button>`;
+A.pfTo = d => { if (d.k) ui[d.k] = d.t; go(d.r); };
+function vPlan() {
+  const x = planParts(), p = x.p, t = x.t, tot = x.tot, prog = PROGRAMS[p.program || 'auto'];
+  const planTxt = tot ? tot + ' weken' + (x.endDate ? ', t/m ' + fmtDate(x.endDate, { day: 'numeric', month: 'short', year: 'numeric' }) : '') : 'Doorlopend';
+  const macroTxt = t && !t.missing ? t.kcal + ' kcal · ' + t.p + ' g eiwit' : 'Nog niet ingesteld';
   return `<section><p class="eyebrow">${esc(weekLine())}</p><h1>Profiel</h1>
-  ${acc('Doel en duur', `${GOALS[p.goal]} · ${tot ? tot + ' weken' : 'doorlopend'}`, goalBody + '<h4>Duur van je plan</h4>' + lenBody, true)}
-  ${acc('Periodisering', `${PERIODS[per].name.split(' (')[0]} · nu: ${(per === 'golvend' && !cur.deload) ? 'golvend' : cur.label.toLowerCase()}`, perBody)}
-  ${acc('Trainingsprogramma', `${PROGRAMS[p.program || 'auto'].name} · ${S.plan.schedule.length} dagen`, progBody)}
-  ${acc('Macrodoelen', t && !t.missing ? `${t.kcal} kcal · ${t.p} g eiwit` : 'Nog niet ingesteld', macroBody)}
-  ${acc('Eetpatroon', dietName, `<p class="sub">Wijzig je eetpatroon en allergenen bij Voeding, tab Recepten.</p><button class="btn ghost sm" data-a="foodPrefs">Naar eetpatroon</button>`)}
+  <div class="card pf"><div class="pfhead"><div><small>Jouw doel</small><h2>${GOALS[p.goal]}</h2></div><button class="btn ghost sm" data-a="editProfile">Aanpassen</button></div>
+   ${x.te ? `<p class="sub">${esc(x.te.text)}</p>` : '<p class="sub">Geen tijdsinschatting. Vul bij je profiel een streefgewicht in als je er een wilt.</p>'}
+   ${why('Hoe komt deze inschatting tot stand?', '<p>De schatting gaat uit van een gemiddelde wekelijkse verandering van een deel van je lichaamsgewicht (afvallen 0,25–0,75%, aankomen 0,1–0,35%). Echte vooruitgang schommelt en hangt af van opvolging, slaap, stress en je beginpunt. De inschatting is een scenario, geen belofte.</p>')}</div>
+  <div class="card pf"><h3>Jouw plan</h3><div class="pfrows">
+   ${pfRow('Training', esc(prog.name) + ' · ' + S.plan.schedule.length + ' dagen', 'data-a="pfTo" data-r="training" data-k="trainTab" data-t="schema"')}
+   ${pfRow('Voeding', macroTxt, 'data-a="pfTo" data-r="voeding" data-k="foodTab" data-t="macro"')}
+   ${pfRow('Eetpatroon', esc(x.dietName), 'data-a="foodPrefs"')}</div>
+   <small>Programma, periodisering en macrodoelen pas je aan op de pagina waar ze gebruikt worden.</small></div>
+  ${acc('Duur en planning', planTxt, x.lenBody)}
   ${acc('Receptfoto’s', RP.hasKey() ? RP.count() + ' van ' + RECIPES.length : 'Uit', rpSettings())}
-  ${as.length ? acc('Aannames', as.length + '', `<ul class="plain">${as.map(a => `<li>${esc(a)}</li>`).join('')}</ul><small>Vul je profiel aan om aannames te vervangen door je eigen gegevens.</small>`) : ''}
+  ${x.as.length ? acc('Aannames', x.as.length + '', `<ul class="plain">${x.as.map(a => `<li>${esc(a)}</li>`).join('')}</ul><small>Vul je profiel aan om aannames te vervangen door je eigen gegevens.</small>`) : ''}
   <p class="sub">Weerstandstraining op minstens 2 dagen per week en 150–300 minuten matige activiteit passen bij de WHO-richtlijn voor volwassenen (${SRC.who}). Bij pijn stop je de oefening of pas je hem aan; bij aanhoudende klachten zoek je professionele hulp.</p></section>`;
 }
 A.foodPrefs = () => { ui.foodTab = 'recepten'; go('voeding'); };
@@ -2019,8 +2046,8 @@ A.shortToggle = d => { S.short[d.key] = !S.short[d.key]; save(); render(); };
 C.short = el => { S.short[el.dataset.key] = el.checked; save(); render(); };
 function tSchema() {
   const p = S.profile, prog = PROGRAMS[p.program || 'auto'], per = PERIODS[S.period || 'lineair'];
-  const dayOfKey = Object.fromEntries(S.plan.schedule.map(s => [s.key, DAYS_LONG[s.wd]]));
-  return `<div class="card"><div class="row"><div><b>${prog.name}</b><small>${prog.desc}</small></div></div><p class="sub">Periodisering: ${per.name}. ${esc(weekLine())}</p><button class="btn ghost sm" data-a="go" data-r="mijn-plan">Programma of periodisering wijzigen</button></div>
+  const dayOfKey = Object.fromEntries(S.plan.schedule.map(s => [s.key, DAYS_LONG[s.wd]])), xp = planParts();
+  return `<div class="card"><div class="row"><div><b>${prog.name}</b><small>${prog.desc}</small></div></div><p class="sub">Periodisering: ${per.name}. ${esc(weekLine())}</p></div>${acc('Programma en trainingsdagen', esc(prog.name) + ' · ' + S.plan.schedule.length + ' dagen', xp.progBody)}${acc('Periodisering', esc(per.name.split(' (')[0]), xp.perBody)}
   ${S.plan.sessions.map(s => `<div class="card"><div class="row"><div><b>${esc(s.name)}</b><small>${dayOfKey[s.key] || ''} · ${sessionMeta(s, s.key)}</small></div></div>${s.type === 'kracht' ? exList(s.key) : s.type === 'segments' ? `<p class="sub">${esc(s.info)}</p><ul class="plain exl">${s.segs.map(x => `<li><span>${esc(x)}</span></li>`).join('')}</ul>` : '<p class="sub">Duurtraining of intervallen op een zelfgekozen vorm.</p>'}</div>`).join('')}${S.cardioWeek.length ? `<div class="card"><h3>Vaste cardio</h3><ul class="plain lst">${S.cardioWeek.map(c => `<li><span><b>${DAYS_LONG[c.wd]}</b> · ${esc(c.name)}</span><button class="link" data-a="weeklyDel" data-id="${c.id}">Verwijder</button></li>`).join('')}</ul><small>Voeg cardio toe via Week, kies een dag en zet herhalen aan.</small></div>` : ''}${p.program === 'hyrox' ? '<h3 class="sect">Hyrox</h3>' + tHyrox() : ''}`;
 }
 function tHyrox() {
@@ -2251,8 +2278,9 @@ const dietTag = r => { const f = recFlags(r); return !f.animal ? 'Vegan' : (!f.m
 const NL = { ontbijt: 'Ontbijt', lunch: 'Lunch', diner: 'Diner', tussendoor: 'Tussendoortje', alle: 'Alles' };
 function vFood() {
   const t = ui.foodTab;
-  return `<section><p class="eyebrow">Plannen en registreren</p><h1>Voeding</h1>${tabs(t, [['dag', 'Dag'], ['week', 'Week'], ['prep', 'Mealprep'], ['recepten', 'Recepten'], ['eigen', 'Eigen']], 'foodTab')}${t === 'dag' ? fDay() : t === 'week' ? calReview() + fWeek() : t === 'prep' ? fPrep() : t === 'recepten' ? fRecipes() : fCustom()}</section>`;
+  return `<section><p class="eyebrow">Plannen en registreren</p><h1>Voeding</h1>${tabs(t, [['dag', 'Dag'], ['week', 'Week'], ['macro', 'Macro’s'], ['prep', 'Mealprep'], ['recepten', 'Recepten'], ['eigen', 'Eigen']], 'foodTab')}${t === 'dag' ? fDay() : t === 'week' ? calReview() + fWeek() : t === 'macro' ? fMacro() : t === 'prep' ? fPrep() : t === 'recepten' ? fRecipes() : fCustom()}</section>`;
 }
+function fMacro() { const x = planParts(); return `<div class="card"><h3>Macrodoelen</h3>${x.macroBody}</div><div class="card slim"><div class="row"><div><b>Eetpatroon</b><small>${esc(x.dietName)}</small></div><button class="btn ghost sm" data-a="foodPrefs">Wijzig</button></div></div>`; }
 function calReview() {
   const p = S.profile, t = targets(); if (!p || !t || t.missing || (S.comp && S.comp.active)) return '';
   const cp = coachProposal(), rec = cp && cp.kind === 'macro' ? cp.delta : 0, base = t.kcal;
@@ -2269,7 +2297,7 @@ function targetBlock(planned, eaten, t) {
 function fDay() {
   const date = ui.foodDate, d = dayOf(date), t = targets(date), slots = mySlots(), planned = sumNut(d.items), eaten = sumNut(d.items.filter(i => i.eaten));
   const nav = `<div class="datenav"><button data-a="fDate" data-n="-1" aria-label="Vorige dag">‹</button><div><b>${fmtDate(date, { weekday: 'long', day: 'numeric', month: 'long' })}</b>${date === today() ? '<small>Vandaag</small>' : '<button class="link" data-a="fToday">Naar vandaag</button>'}</div><button data-a="fDate" data-n="1" aria-label="Volgende dag">›</button></div>`;
-  if (!t || t.missing) return nav + `<div class="note warn">Zonder gewicht, lengte en leeftijd kan de app geen dagdoel berekenen. Vul je profiel aan of stel eigen doelen in bij Profiel. Je kunt wel recepten bekijken en maaltijden loggen.</div>` + slotsHtml(d, slots);
+  if (!t || t.missing) return nav + `<div class="note warn">Zonder gewicht, lengte en leeftijd kan de app geen dagdoel berekenen. Vul je profiel aan of stel eigen doelen in bij Voeding, tab Macro’s. Je kunt wel recepten bekijken en maaltijden loggen.</div>` + slotsHtml(d, slots);
   const checks = dayCheck(date);
   return nav + targetBlock(planned, eaten, t) +
     checks.map(c => `<div class="note warn"><b>Let op.</b> ${esc(c.msg)}<ul class="plain">${c.hints.map(h => `<li>${esc(h)}</li>`).join('')}</ul></div>`).join('') +
@@ -2307,9 +2335,9 @@ A.fClear = () => { S.food[ui.foodDate] = { items: [], saved: false }; save(); re
 A.fSave = () => { const date = ui.foodDate, ch = dayCheck(date);
   if (!ch.length) { dayOf(date).saved = true; save(); render(); toast('Dag opgeslagen.'); return; }
   modal(`<h3>Voor je opslaat</h3>${ch.map(c => `<div class="note warn">${esc(c.msg)}<ul class="plain">${c.hints.map(h => `<li>${esc(h)}</li>`).join('')}</ul></div>`).join('')}
-   <div class="btns col"><button class="btn" data-a="fRescaleClose">Porties automatisch bijstellen</button><button class="btn ghost" data-a="fGoPlan">Doelen aanpassen bij Profiel</button><button class="btn ghost" data-a="fSaveAnyway">Toch opslaan</button><button class="btn ghost" data-a="close">Terug naar de planner</button></div>`); };
+   <div class="btns col"><button class="btn" data-a="fRescaleClose">Porties automatisch bijstellen</button><button class="btn ghost" data-a="fGoPlan">Doelen aanpassen</button><button class="btn ghost" data-a="fSaveAnyway">Toch opslaan</button><button class="btn ghost" data-a="close">Terug naar de planner</button></div>`); };
 A.fRescaleClose = () => { rescaleDay(ui.foodDate); save(); closeModal(); render(); };
-A.fGoPlan = () => { closeModal(); go('mijn-plan'); };
+A.fGoPlan = () => { closeModal(); ui.foodTab = 'macro'; go('voeding'); };
 A.fSaveAnyway = () => { dayOf(ui.foodDate).saved = true; save(); closeModal(); render(); toast('Dag opgeslagen met het verschil erbij.'); };
 A.delMeal = d => { const f = findItem(d.id); if (f) { f.d.items = f.d.items.filter(i => i.id !== d.id); f.d.saved = false; save(); render(); } };
 A.moveMealAsk = d => { const f = findItem(d.id), slots = mySlots();
