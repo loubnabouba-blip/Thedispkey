@@ -38,6 +38,7 @@ main section>h1::before{content:"";display:block;width:40px;height:4px;margin-bo
 .pfrow i{font-style:normal;font-size:22px;color:var(--ink2)}
 .pfrow:hover b{color:var(--pg-ink)}
 .stack{display:grid;gap:var(--s2);margin-top:var(--s2)}
+.grid2 .btn[data-a=cmpReset]{align-self:end;min-width:0}
 .stack .btn{width:100%}
 details.acc details.acc{background:var(--surface2);box-shadow:none}
 .pf .why{margin:var(--s1) 0 var(--s2)}.pf>.btn+small{display:block;margin-top:var(--s1)}.pf .why summary{padding-block:8px}
@@ -1704,7 +1705,7 @@ function vHome() {
   const wk = Array.from({ length: 7 }, (_, i) => addDays(addDays(d, -wdOf(d)), i));
   const strip = `<div class="weekstrip">${wk.map(x => { const ss = sessionsOn(x), dn = ss.length && ss.every(s => isDone(s.from, s.key)); return `<button class="day ${x === d ? 'today' : ''}" data-a="gotoTrainDate" data-date="${x}" aria-label="${fmtDate(x)}${ss.length ? ', training' + (dn ? ' gedaan' : '') : ''}"><span>${DAYS[wdOf(x)]}</span><i class="${ss.length ? (dn ? 'done' : 'plan') : ''}"></i></button>`; }).join('')}</div>`;
   const ms = S.milestone.enabled && S.milestone.date ? diffDays(d, S.milestone.date) : null, na = nextAction(sess, fd);
-  const hero = `<div class="hero"><span class="eyebrow">${fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' })}</span><h1>${greet}${p.name ? ', ' + esc(p.name) : ''}</h1><p>${esc(weekLine())}</p>
+  const hero = `<div class="hero"><span class="eyebrow">${fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' })}</span><h1>${p.name ? `<span style="white-space:nowrap">${greet},</span> ${esc(p.name)}` : greet}</h1><p>${esc(weekLine())}</p>
    ${ms != null && ms >= 0 ? `<a class="goalchip" href="#mijn-doel"><b>${ms}</b> dagen tot ${esc(S.milestone.name)}</a>` : ''}
    ${na ? `<button class="btn big" data-a="${na.a}" ${na.data}>${esc(na.label)}</button>` : '<p class="heroOk">Alles voor vandaag staat op schema.</p>'}</div>`;
   const train = !sess.length ? `<p class="tile-main">Rustdag</p><p class="sub">Een wandeling of lichte beweging helpt je herstel.</p>` :
@@ -3395,7 +3396,7 @@ function photoCompare(ph) {
   const days = Math.abs(diffDays(A_.date, B_.date));
   let stage = '', ctl = '';
   if (c.mode === 'overlay') { stage = `<div class="cmp-stage" id="cmp"><img src="${A_.data}" alt="Eerste foto"><img class="cmp-b" src="${B_.data}" alt="Tweede foto, doorzichtig erover" style="opacity:${c.op / 100};transform:translate(${c.dx}%,${c.dy}%) scale(${c.sc / 100})"></div>`;
-    ctl = `<label class="f">Doorzichtigheid bovenste foto<input type="range" data-r="op" min="0" max="100" value="${c.op}"></label><div class="grid2 tight"><label class="f">Schaal<input type="range" data-r="sc" min="70" max="130" value="${c.sc}"></label><label class="f">Horizontaal verschuiven<input type="range" data-r="dx" min="-30" max="30" value="${c.dx}"></label><label class="f">Verticaal verschuiven<input type="range" data-r="dy" min="-30" max="30" value="${c.dy}"></label><button class="btn ghost sm" data-a="cmpReset">Uitlijning terugzetten</button></div><small>Leg de foto’s op elkaar en schuif of schaal de bovenste, zodat hoofd en voeten op één lijn liggen.</small>`; }
+    ctl = `<label class="f">Doorzichtigheid bovenste foto<input type="range" data-r="op" min="0" max="100" value="${c.op}"></label><div class="grid2 tight"><label class="f">Schaal<input type="range" data-r="sc" min="70" max="130" value="${c.sc}"></label><label class="f">Horizontaal verschuiven<input type="range" data-r="dx" min="-30" max="30" value="${c.dx}"></label><label class="f">Verticaal verschuiven<input type="range" data-r="dy" min="-30" max="30" value="${c.dy}"></label><button class="btn ghost sm" data-a="cmpReset">Reset</button></div><small>Leg de foto’s op elkaar en schuif of schaal de bovenste, zodat hoofd en voeten op één lijn liggen.</small>`; }
   else if (c.mode === 'wipe') { stage = `<div class="cmp-stage" id="cmp"><img src="${A_.data}" alt="Eerste foto"><img class="cmp-b" src="${B_.data}" alt="Tweede foto" style="clip-path:inset(0 ${100 - c.wipe}% 0 0)"><i class="cmp-line" style="left:${c.wipe}%"></i></div>`;
     ctl = `<label class="f">Schuif de scheidslijn<input type="range" data-r="wipe" min="0" max="100" value="${c.wipe}"></label>`; }
   else stage = `<div class="cmp-side"><figure><img src="${A_.data}" alt="Eerste foto"><figcaption>${fmtDate(A_.date)}</figcaption></figure><figure><img src="${B_.data}" alt="Tweede foto"><figcaption>${fmtDate(B_.date)}</figcaption></figure></div>`;
