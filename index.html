@@ -42,6 +42,13 @@ main section>h1::before{content:"";display:block;width:40px;height:4px;margin-bo
 .stack .btn{width:100%}
 details.acc details.acc{background:var(--surface2);box-shadow:none}
 .pf .why{margin:var(--s1) 0 var(--s2)}.pf>.btn+small{display:block;margin-top:var(--s1)}.pf .why summary{padding-block:8px}
+.ringrow{flex-wrap:wrap;gap:var(--s2) var(--s3)}
+.ringrow>div:not(.ring){flex:1 1 140px;min-width:0}
+.ringrow .sub{overflow-wrap:break-word;word-break:normal}
+.pf .stack{gap:var(--s1)}
+.pf .stack .f{margin:0}
+.pf .stack .btn{width:auto;justify-self:start}
+.pf .btn{white-space:normal;max-width:100%}
 </style></head><body>
 <title>The Discipline Key</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -1587,7 +1594,7 @@ function routeFrom(h) {
   return ROUTES.some(r => r[0] === h) ? h : 'home';
 }
 function go(r) { if (location.hash.slice(1) === r) { render(); } else location.hash = r; }
-window.addEventListener('hashchange', () => { route = routeFrom(location.hash.slice(1)); ui.workout = (route === 'training' && ui.workout) ? ui.workout : null; render(); window.scrollTo(0, 0); });
+window.addEventListener('hashchange', () => { try { closeModal(); } catch (e) {} route = routeFrom(location.hash.slice(1)); ui.workout = (route === 'training' && ui.workout) ? ui.workout : null; render(); window.scrollTo(0, 0); });
 
 /* --- onboarding --- */
 const DIETS = [['omni', 'Alles eten'], ['nopork', 'Geen varkensvlees'], ['halal', 'Halal'], ['pesc', 'Pescotarisch (geen vlees, wel vis)'], ['veg', 'Vegetarisch'], ['vegan', 'Veganistisch']];
@@ -1950,7 +1957,7 @@ function vPlan() {
   const macroTxt = t && !t.missing ? t.kcal + ' kcal · ' + t.p + ' g eiwit' : 'Nog niet ingesteld';
   return `<section><p class="eyebrow">${esc(weekLine())}</p><h1>Profiel</h1>
   <div class="card pf"><h3>Jij</h3><form data-submit="pname" class="stack"><label class="f">Naam<input name="name" maxlength="40" autocomplete="given-name" placeholder="Hoe mag de app je noemen?" value="${esc(p.name || '')}"></label><button class="btn sm">Naam opslaan</button></form>
-   <p class="sub">${[p.age ? p.age + ' jaar' : '', p.height ? p.height + ' cm' : '', p.weight ? String(p.weight).replace('.', ',') + ' kg' : ''].filter(Boolean).join(' · ') || 'Nog geen gegevens ingevuld.'}</p><button class="btn ghost sm" data-a="editProfile" data-s="1">Leeftijd, lengte of gewicht aanpassen</button></div>
+   <p class="sub">${[p.age ? p.age + ' jaar' : '', p.height ? p.height + ' cm' : '', p.weight ? String(p.weight).replace('.', ',') + ' kg' : ''].filter(Boolean).join(' · ') || 'Nog geen gegevens ingevuld.'}</p><button class="btn ghost sm" data-a="editProfile" data-s="1">Gegevens aanpassen</button></div>
   <div class="card pf"><div class="pfhead"><div><small>Jouw doel</small><h2>${GOALS[p.goal]}</h2></div></div>
    ${x.te ? `<p class="sub">${esc(x.te.text)}</p>` : '<p class="sub">Geen tijdsinschatting. Vul bij je profiel een streefgewicht in als je er een wilt.</p>'}
    ${why('Hoe komt deze inschatting tot stand?', '<p>De schatting gaat uit van een gemiddelde wekelijkse verandering van een deel van je lichaamsgewicht (afvallen 0,25–0,75%, aankomen 0,1–0,35%). Echte vooruitgang schommelt en hangt af van opvolging, slaap, stress en je beginpunt. De inschatting is een scenario, geen belofte.</p>')}<button class="btn ghost sm" data-a="editProfile" data-s="2">Doel aanpassen</button><small>Opent direct de stap met je doel. Je kunt altijd annuleren.</small></div>
@@ -2275,16 +2282,17 @@ A.wkFinish = () => {
   if (lg.type === 'kracht' && lg.items.length) afterFinish(lg);
 };
 A.swapAsk = d => {
+  if (!S.draft || !ui.workout) { closeModal(); return; }
   const idx = +d.idx, cur = S.draft.items[idx].ex, pat = EX[cur].pattern, eq = new Set(S.profile.equipment || []);
   const cand = EXERCISES.filter(e => e.pattern === pat && e.id !== cur && !S.avoid.includes(e.id) && e.eq.some(q => q === 'bw' || eq.has(q)));
   modal(`<h3>Vervang ${esc(EX[cur].name)}</h3><p class="sub">Alternatieven voor dezelfde beweging (${PATTERN_LABELS[pat]}) met jouw materiaal.</p>${cand.length ? cand.map(e => `<button class="opt" data-a="swapDo" data-idx="${idx}" data-id="${e.id}"><b>${esc(e.name)}</b><small>${esc(e.cue)}</small></button>`).join('') : '<p>Geen alternatief gevonden met jouw materiaal.</p>'}<div class="btns end"><button class="btn ghost" data-a="close">Sluiten</button></div>`);
 };
-A.swapDo = d => { const key = ui.workout.key, idx = +d.idx; S.swaps[key + ':' + idx] = d.id; S.draft.items[idx] = { ex: d.id, sets: Array.from({ length: rx(d.id, key).sets }, () => ({ w: '', r: '' })), rpe: '' }; save(); closeModal(); render(); toast('Oefening vervangen voor dit schema.'); };
-A.painAsk = d => { const idx = +d.idx, ex = EX[S.draft.items[idx].ex];
+A.swapDo = d => { if (!S.draft || !ui.workout) { closeModal(); return; } const key = ui.workout.key, idx = +d.idx; S.swaps[key + ':' + idx] = d.id; S.draft.items[idx] = { ex: d.id, sets: Array.from({ length: rx(d.id, key).sets }, () => ({ w: '', r: '' })), rpe: '' }; save(); closeModal(); render(); toast('Oefening vervangen voor dit schema.'); };
+A.painAsk = d => { if (!S.draft || !ui.workout) return; const idx = +d.idx, ex = EX[S.draft.items[idx].ex];
   modal(`<h3>Pijn of niet prettig?</h3><p>Stop met <b>${esc(ex.name)}</b> als het pijn doet. Pijn is een signaal om te stoppen of de oefening aan te passen, bijvoorbeeld met minder gewicht, minder bereik of een andere oefening. De app beoordeelt geen letsel. Houdt de klacht aan, zoek dan professionele hulp, bijvoorbeeld bij een huisarts of fysiotherapeut.</p>
   <button class="opt" data-a="swapAsk" data-idx="${idx}"><b>Kies een alternatief</b><small>Vervang door een andere oefening voor dezelfde beweging.</small></button>
   <button class="opt" data-a="avoidDo" data-idx="${idx}"><b>Niet meer voorstellen</b><small>${esc(ex.name)} verdwijnt uit je schema; het schema wordt opnieuw opgebouwd.</small></button><div class="btns end"><button class="btn ghost" data-a="close">Sluiten</button></div>`); };
-A.avoidDo = d => { const id = S.draft.items[+d.idx].ex; if (!S.avoid.includes(id)) S.avoid.push(id); S.plan = buildPlan(S.profile); S.swaps = {}; S.draft = null; closeModal(); draftEnsure(); save(); render(); toast('Oefening wordt niet meer voorgesteld. Het schema is aangepast.'); };
+A.avoidDo = d => { if (!S.draft || !ui.workout) { closeModal(); return; } const id = S.draft.items[+d.idx].ex; if (!S.avoid.includes(id)) S.avoid.push(id); S.plan = buildPlan(S.profile); S.swaps = {}; S.draft = null; closeModal(); draftEnsure(); save(); render(); toast('Oefening wordt niet meer voorgesteld. Het schema is aangepast.'); };
 
 /* --- voeding --- */
 const dietTag = r => { const f = recFlags(r); return !f.animal ? 'Vegan' : (!f.meat && !f.fish) ? 'Vegetarisch' : !f.meat ? 'Met vis' : ''; };
@@ -3314,7 +3322,7 @@ function weekStats(n) {
 const MEAS = [['waist', 'Taille'], ['chest', 'Borst'], ['hips', 'Heupen'], ['arm', 'Bovenarm'], ['thigh', 'Bovenbeen']];
 ui.cmp = { a: null, b: null, mode: 'overlay', op: 50, sc: 100, dx: 0, dy: 0, wipe: 50 }; ui.progTab = 'overzicht';
 function vProgress() {
-  const t = ui.progTab;
+  const t = ['overzicht', 'lichaam', 'fotos', 'data'].includes(ui.progTab) ? ui.progTab : 'overzicht';
   return `<section><p class="eyebrow">Trends, geen oordeel</p><h1>Voortgang</h1>${tabs(t, [['overzicht', 'Overzicht'], ['lichaam', 'Lichaam'], ['fotos', 'Foto’s'], ['data', 'Gegevens']], 'progTab')}${({ overzicht: pOverview, lichaam: pBody, fotos: pPhotos, data: pData })[t]()}</section>`;
 }
 A.progTab = d => { ui.progTab = d.t; render(); };
