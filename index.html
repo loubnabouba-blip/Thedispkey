@@ -1716,7 +1716,7 @@ const StepSensor = (() => {
   const motionOK = () => { try { return isIOS() && typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function'; } catch (e) { return false; } };
   /* Piekdetectie: volgt de zwaartekracht (traag gemiddelde), filtert de rest en telt een stap bij elke opgaande doorgang van de drempel, minstens 300 ms na de vorige. */
   function makeDetector(thr) {
-    const TH = thr || 1.2; let g = null, f = 0, prev = 0, last = -1e9;
+    const TH = thr || 0.85; let g = null, f = 0, prev = 0, last = -1e9;
     return { push(x, y, z, t) {
       const m = Math.sqrt(x * x + y * y + z * z); if (!isFinite(m)) return 0;
       if (g === null) { g = m; return 0; }
