@@ -671,6 +671,8 @@ body:has(#app.wk) #totop{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 .dialog,.modal{width:min(580px,100%);max-height:90dvh;overflow:auto;padding:var(--s4) max(var(--s3),env(safe-area-inset-right,0px)) var(--s4) max(var(--s3),env(safe-area-inset-left,0px));
   border:1px solid var(--line2);border-radius:var(--r) var(--r) 0 0;background:var(--surface);color:var(--ink);outline:0;animation:sheet .4s var(--ease)}
 .dialog.wide{width:min(700px,100%)}
+.mback{position:sticky;top:calc(var(--s4)*-1);z-index:8;margin:calc(var(--s4)*-1) calc(var(--s3)*-1) var(--s2);padding:var(--s2) var(--s3);background:var(--surface);border-bottom:1px solid var(--line2)}
+.mback .btn{min-height:48px}
 @media (min-width:900px){.overlay{align-items:center}.dialog,.modal{border-radius:var(--r);max-height:86dvh}}
 #toast{position:fixed;left:50%;bottom:calc(104px + env(safe-area-inset-bottom,0px));z-index:80;max-width:min(92vw,440px);padding:var(--s2) var(--s3);transform:translate(-50%,16px);opacity:0;pointer-events:none;
   border-radius:var(--r);border:1px solid var(--line2);background:var(--glass);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);color:var(--ink);font-size:14px;font-weight:600;text-align:center;box-shadow:0 24px 48px -16px rgba(0,0,0,.5);transition:var(--t)}
@@ -977,9 +979,10 @@ const RX = Object.fromEntries(RECIPES.map(r => [r.id, r]));
    Werkt alleen waar de pagina externe afbeeldingen en verbindingen mag laden (de losse app). In een Artifact blokkeert het platform dat.
    De Access Key en de gevonden foto's staan alleen in deze browser (niet in je export). Zonder sleutel of foto blijft de illustratie staan. */
 const RP = (() => {
-  const KK = 'dk-unsplash-key', KC = 'dk-unsplash-cache', UTM = 'utm_source=discipline_key&utm_medium=referral';
+  const KK = 'dk-unsplash-key', KC = 'dk-unsplash-cache-v2', UTM = 'utm_source=discipline_key&utm_medium=referral';
   const rd = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } };
   const wr = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
+  try { localStorage.removeItem('dk-unsplash-cache'); } catch (e) {}
   let key = rd(KK, ''), cache = rd(KC, {}), running = false, msg = '', retryT = null, rfT = null;
   /* Engelse zoektermen per ingrediënt; leeg = telt niet mee in de zoekopdracht */
   const EN = { kwark: 'yogurt', skyr: 'yogurt', gryog: 'greek yogurt', cottage: 'cottage cheese', feta: 'feta', ei: 'eggs', eiwit: 'eggs', havermout: 'oats', brood: 'toast', wrap: 'wrap',
@@ -990,11 +993,14 @@ const RP = (() => {
     olie: '', passata: 'tomato', sojasaus: '' };
   const MAIN = new Set(['kip', 'kipbeleg', 'kalkoen', 'kalkoenbeleg', 'rund', 'biefstuk', 'tonijn', 'zalm', 'zalmgerookt', 'kabeljauw', 'gamba', 'tofu', 'tempeh', 'edamame', 'ei', 'eiwit', 'kwark', 'skyr', 'gryog', 'cottage', 'havermout', 'kikker', 'bonen', 'linzen']);
   const CATW = { ontbijt: 'breakfast', lunch: 'lunch', diner: 'dinner', tussendoor: 'snack' };
+  const DISH = {o1: 'overnight oats berries', o2: 'scrambled eggs spinach toast', o3: 'yogurt bowl banana peanut butter', o4: 'mushroom omelette', o5: 'oatmeal porridge apple', o6: 'egg chicken sandwich', o7: 'greek yogurt raspberries almonds', o8: 'tofu scramble peppers', o9: 'banana pancakes', o10: 'egg wrap smoked salmon', l1: 'chicken quinoa salad', l2: 'tuna wrap', l3: 'chicken vegetable soup rice', l4: 'salmon sweet potato broccoli', l5: 'chickpea feta salad egg', l6: 'turkey cottage cheese sandwich', l7: 'shrimp rice salad', l8: 'quinoa bowl tempeh', l9: 'tuna pasta tomato', l10: 'chicken avocado sandwich', d1: 'chicken rice broccoli', d2: 'beef black bean chili rice', d3: 'salmon potatoes green beans', d4: 'cod couscous zucchini', d5: 'tofu vegetable stir fry rice', d6: 'steak strips sweet potato spinach', d7: 'turkey pasta tomato sauce', d8: 'lentil chicken curry', d9: 'shrimp quinoa bell pepper', d10: 'tempeh curry cauliflower rice', t1: 'yogurt blueberries walnuts', t2: 'yogurt strawberries oats', t3: 'tuna toast cucumber', t4: 'cottage cheese tomato cucumber', t5: 'egg salad sandwich', t6: 'turkey rolls vegetable dip', t7: 'mini pancakes berries', t8: 'edamame tomato', t9: 'vegetable sticks dip', t10: 'banana spinach smoothie', o11: 'overnight oats berries', o12: 'tofu wrap peppers spinach', l11: 'vegetarian wrap vegetables', l12: 'lentil tofu salad', d11: 'vegetable stir fry rice', d12: 'vegetarian chili beans', t11: 'yogurt berries walnuts', t12: 'tofu cubes cucumber', n1: 'chili con carne rice', n2: 'chicken curry rice', n3: 'spaghetti bolognese', n4: 'chicken burrito bowl', n5: 'salmon sweet potato broccoli', n6: 'chicken pad thai', n7: 'shakshuka feta', n8: 'chicken shawarma wrap', n9: 'stuffed bell peppers', n10: 'turkey burger sweet potato fries', n11: 'lentil dal rice', n12: 'tofu vegetable curry', n13: 'protein pancakes banana', n14: 'smoothie bowl', n15: 'cod quinoa vegetables', n16: 'chicken teriyaki bowl', n17: 'shrimp noodles vegetables', n18: 'chickpea spinach curry', n19: 'tuna pasta zucchini', n20: 'greek chicken bowl', n21: 'tempeh stir fry noodles', n22: 'cottage cheese apple walnuts', n23: 'banana oat protein shake'};
   function queries(r) {
     const seen = new Set(), terms = [];
-    [...r.ings].map(([id, g]) => [id, g * (MAIN.has(id) ? 3 : 1)]).sort((a, b) => b[1] - a[1]).forEach(([id]) => { const t = EN[id]; if (t && !seen.has(t) && terms.length < 3) { seen.add(t); terms.push(t); } });
-    const cw = CATW[r.cat] || 'meal';
-    return [terms.join(' ') + ' ' + cw, (terms[0] || 'healthy') + ' ' + cw + ' food', 'healthy ' + cw + ' food'];
+    [...r.ings].map(([id, g]) => [id, g * (MAIN.has(id) ? 3 : 1)]).sort((a, b) => b[1] - a[1]).forEach(([id]) => { const t = EN[id]; if (t && !seen.has(t) && terms.length < 2) { seen.add(t); terms.push(t); } });
+    const cw = CATW[r.cat] || 'meal', out = [];
+    if (DISH[r.id]) out.push(DISH[r.id] + ' food');
+    if (terms.length) out.push(terms.join(' ') + ' ' + cw + ' dish');
+    return out;
   }
   async function find(r) {
     const qs = queries(r);
@@ -1005,7 +1011,7 @@ const RP = (() => {
       if (!res.ok) continue;
       const p = ((await res.json()).results || [])[0]; if (!p) continue;
       const raw = p.urls.raw;
-      return { url: raw + (raw.includes('?') ? '&' : '?') + 'auto=format&fit=crop&w=600&q=80', name: p.user.name, link: p.user.links.html + '?' + UTM, dl: p.links && p.links.download_location, generic: i === 2 };
+      return { url: raw + (raw.includes('?') ? '&' : '?') + 'auto=format&fit=crop&w=600&q=80', name: p.user.name, link: p.user.links.html + '?' + UTM, dl: p.links && p.links.download_location, generic: i > 0 };
     }
     return null;
   }
@@ -2315,7 +2321,7 @@ A.pickDo = d => addItem({ id: uid(), type: 'r', ref: d.id, f: +d.f || 1, eaten: 
 A.pickCustom = d => addItem({ id: uid(), type: 'c', ref: d.id, f: 1, eaten: false });
 function recipeModal(id, f = 1, itemId) {
   const r = RX[id], n = recBase(r), fl = recFlags(r), photo = S.recipePhotos[id];
-  modal(`<div class="rec-art">${recArtFull(r, (photo ? 'Eigen foto van ' : 'Voorbeeldfoto van ') + r.name)}</div>${rpCredit(id)}
+  modal(`<div class="mback"><button class="btn ghost sm" data-a="close" aria-label="Terug naar recepten">‹ Terug</button></div><div class="rec-art">${recArtFull(r, (photo ? 'Eigen foto van ' : 'Voorbeeldfoto van ') + r.name)}</div>${rpCredit(id)}
   <p class="eyebrow">${NL[r.cat]} · ${r.min} minuten${dietTag(r) ? ' · ' + dietTag(r) : ''}${POPULAR.includes(r.id) ? ' · Klassieker' : ''}</p><h2>${esc(r.name)}</h2><button class="btn ghost xs" data-a="recFavM" data-id="${id}" data-f="${f}" data-item="${itemId || ''}">${isFav(id) ? '♥ In favorieten' : '♡ Favoriet'}</button><p>${esc(r.desc)}</p>
   <div class="stats"><div><b>${kc(n.kcal * f)}</b><span>kcal</span></div><div><b>${n0(n.p * f)}</b><span>g eiwit</span></div><div><b>${n0(n.c * f)}</b><span>g koolh.</span></div><div><b>${n0(n.f * f)}</b><span>g vet</span></div><div><b>${n0(n.fib * f)}</b><span>g vezels</span></div></div>
   <div class="btns"><div class="step"><button data-a="recPortion" data-id="${id}" data-f="${f}" data-d="-0.25" data-item="${itemId || ''}" aria-label="Kleinere portie">−</button><span>portie ×${n1(f).replace(',0', '')}</span><button data-a="recPortion" data-id="${id}" data-f="${f}" data-d="0.25" data-item="${itemId || ''}" aria-label="Grotere portie">+</button></div></div>
