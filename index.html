@@ -1642,7 +1642,7 @@ function renderOnboarding() {
   const last = st === 6;
   $('#main').innerHTML = `<div class="ob-wrap"><div class="ob-head"><span class="eyebrow">${ui.obEdit ? 'Profiel aanpassen' : 'Stap ' + (st + 1) + ' van ' + OB_STEPS.length}</span><h2>${OB_STEPS[st]}</h2><div class="steps" aria-hidden="true">${OB_STEPS.map((_, i) => `<i class="${i <= st ? 'on' : ''}"></i>`).join('')}</div></div>
     <div class="ob-body">${body}</div>
-    <div class="ob-foot">${st > 0 ? '<button class="btn ghost" data-a="obBack">Terug</button>' : (ui.obEdit ? '<button class="btn ghost" data-a="obCancel">Annuleren</button>' : '<span></span>')}
+    <div class="ob-foot">${ui.obEdit && st <= (ui.obStart == null ? 1 : ui.obStart) ? '<button class="btn ghost" data-a="obCancel">Annuleren</button>' : st > 0 ? '<button class="btn ghost" data-a="obBack">Terug</button>' : '<span></span>'}
     <button class="btn" data-a="${last ? 'obFinish' : 'obNext'}">${last ? (ui.obEdit ? 'Plan opnieuw opbouwen' : 'Plan opslaan') : (st === 0 ? 'Beginnen' : 'Volgende')}</button></div></div>`;
 }
 function obRead() {
@@ -1670,7 +1670,7 @@ A.obFinish = () => {
   if (S.food) Object.values(S.food).forEach(x => x.saved = x.saved);
   const wasEdit = ui.obEdit; ui.ob = null; ui.obEdit = false; save(); const dest = wasEdit ? 'mijn-plan' : 'home'; if (location.hash.slice(1) !== dest) location.hash = dest; route = dest; render(); window.scrollTo(0, 0); toast(wasEdit ? 'Profiel bijgewerkt.' : 'Je plan is opgeslagen.');
 };
-A.editProfile = () => { ui.ob = { ...newDraft(), ...S.profile, days: [...(S.profile.days || [])], equipment: [...(S.profile.equipment || [])], allergens: [...(S.profile.allergens || [])], startDate: S.planStart || today(), milestoneOn: S.milestone.enabled, milestoneDate: S.milestone.date || '' }; ui.obStep = 1; ui.obEdit = true; render(); window.scrollTo(0, 0); };
+A.editProfile = d => { const st = d && d.s != null ? +d.s : 1; ui.ob = { ...newDraft(), ...S.profile, days: [...(S.profile.days || [])], equipment: [...(S.profile.equipment || [])], allergens: [...(S.profile.allergens || [])], startDate: S.planStart || today(), milestoneOn: S.milestone.enabled, milestoneDate: S.milestone.date || '' }; ui.obStep = st; ui.obStart = st; ui.obEdit = true; render(); window.scrollTo(0, 0); };
 
 /* --- home --- */
 const acc = (title, summary, body, open) => `<details class="acc" ${open ? 'open' : ''}><summary><span>${title}</span><em>${summary || ''}</em></summary><div class="accbody">${body}</div></details>`;
@@ -1949,10 +1949,10 @@ function vPlan() {
   const macroTxt = t && !t.missing ? t.kcal + ' kcal · ' + t.p + ' g eiwit' : 'Nog niet ingesteld';
   return `<section><p class="eyebrow">${esc(weekLine())}</p><h1>Profiel</h1>
   <div class="card pf"><h3>Jij</h3><form data-submit="pname" class="stack"><label class="f">Naam<input name="name" maxlength="40" autocomplete="given-name" placeholder="Hoe mag de app je noemen?" value="${esc(p.name || '')}"></label><button class="btn sm">Naam opslaan</button></form>
-   <p class="sub">${[p.age ? p.age + ' jaar' : '', p.height ? p.height + ' cm' : '', p.weight ? String(p.weight).replace('.', ',') + ' kg' : ''].filter(Boolean).join(' · ') || 'Nog geen gegevens ingevuld.'}</p></div>
+   <p class="sub">${[p.age ? p.age + ' jaar' : '', p.height ? p.height + ' cm' : '', p.weight ? String(p.weight).replace('.', ',') + ' kg' : ''].filter(Boolean).join(' · ') || 'Nog geen gegevens ingevuld.'}</p><button class="btn ghost sm" data-a="editProfile" data-s="1">Leeftijd, lengte of gewicht aanpassen</button></div>
   <div class="card pf"><div class="pfhead"><div><small>Jouw doel</small><h2>${GOALS[p.goal]}</h2></div></div>
    ${x.te ? `<p class="sub">${esc(x.te.text)}</p>` : '<p class="sub">Geen tijdsinschatting. Vul bij je profiel een streefgewicht in als je er een wilt.</p>'}
-   ${why('Hoe komt deze inschatting tot stand?', '<p>De schatting gaat uit van een gemiddelde wekelijkse verandering van een deel van je lichaamsgewicht (afvallen 0,25–0,75%, aankomen 0,1–0,35%). Echte vooruitgang schommelt en hangt af van opvolging, slaap, stress en je beginpunt. De inschatting is een scenario, geen belofte.</p>')}<button class="btn ghost sm" data-a="editProfile">Gegevens en doel aanpassen</button><small>Opent je gegevens in stappen. Je kunt altijd annuleren.</small></div>
+   ${why('Hoe komt deze inschatting tot stand?', '<p>De schatting gaat uit van een gemiddelde wekelijkse verandering van een deel van je lichaamsgewicht (afvallen 0,25–0,75%, aankomen 0,1–0,35%). Echte vooruitgang schommelt en hangt af van opvolging, slaap, stress en je beginpunt. De inschatting is een scenario, geen belofte.</p>')}<button class="btn ghost sm" data-a="editProfile" data-s="2">Doel aanpassen</button><small>Opent direct de stap met je doel. Je kunt altijd annuleren.</small></div>
   <div class="card pf"><h3>Jouw plan</h3><div class="pfrows">
    ${pfRow('Training', esc(prog.name) + ' · ' + S.plan.schedule.length + ' dagen', 'data-a="pfTo" data-r="training" data-k="trainTab" data-t="schema"')}
    ${pfRow('Voeding', macroTxt, 'data-a="pfTo" data-r="voeding" data-k="foodTab" data-t="macro"')}
