@@ -1088,6 +1088,15 @@ const RP = (() => {
   }
   return {
     get, count, status, run, hasKey: () => !!key,
+    async athletes(n) {
+      if (!key) return null; const H = { Authorization: 'Client-ID ' + key, 'Accept-Version': 'v1' };
+      const res = await fetch('https://api.unsplash.com/search/photos?' + new URLSearchParams({ query: 'fit athlete physique gym', per_page: '20', orientation: 'portrait', content_filter: 'high' }), { headers: H });
+      if (!res.ok) throw new Error('unsplash ' + res.status);
+      const list = ((await res.json()).results || []).sort(() => Math.random() - .5).slice(0, n); if (list.length < n) return null; const out = [];
+      for (const p of list) { const raw = p.urls.raw, r = await fetch(raw + (raw.includes('?') ? '&' : '?') + 'auto=format&fit=crop&w=600&q=80'); if (!r.ok) throw new Error('img'); out.push({ blob: await r.blob(), name: p.user.name, link: p.user.links.html + '?' + UTM });
+        if (p.links && p.links.download_location) { try { fetch(p.links.download_location, { headers: H }).catch(() => {}); } catch (e) {} } }
+      return out;
+    },
     setKey(k) { key = (k || '').trim(); wr(KK, key); if (!key) { cache = {}; wr(KC, cache); } msg = ''; if (key) run(); },
     clear() { cache = {}; wr(KC, cache); msg = 'Foto’s gewist.'; if (key) run(); },
     start() { if (key) setTimeout(run, 1500); }
@@ -3347,24 +3356,36 @@ function demoPhoto(o) {
   x.fillStyle = 'rgba(0,0,0,.45)'; x.font = '600 13px sans-serif'; x.fillText('Testfoto (voorbeeld)', 10, 468);
   return c.toDataURL('image/jpeg', .85);
 }
-A.demoPhotos = () => {
+A.demoPhotos = async () => {
+  if (RP.hasKey()) {
+    toast('Voorbeeldfoto’s ophalen…');
+    try {
+      const ph = await RP.athletes(2);
+      if (ph) {
+        const d = await Promise.all(ph.map(x => readImage(x.blob, 480)));
+        S.photos.push({ id: uid(), date: addDays(today(), -84), angle: 'voor', data: d[0], demo: true, credit: { name: ph[0].name, link: ph[0].link } }, { id: uid(), date: today(), angle: 'voor', data: d[1], demo: true, credit: { name: ph[1].name, link: ph[1].link } });
+        ui.cmp.a = ui.cmp.b = null; save(); render(); toast('Twee voorbeeldfoto’s van atleten toegevoegd.'); return;
+      }
+    } catch (e) { /* val terug op getekende voorbeelden */ }
+    toast('Geen atletenfoto’s kunnen ophalen. Er zijn getekende voorbeelden gebruikt.');
+  } else toast('Getekende voorbeelden. Voor echte atletenfoto’s: zet een Unsplash-sleutel bij Profiel, Receptfoto’s.');
   const r = (a, b) => a + Math.random() * (b - a), skin = ['#C68E6B', '#E0AC8B', '#8D5A3B', '#F1C9A5'][Math.floor(Math.random() * 4)], hair = ['#2b211b', '#5a3b22', '#1a1a1a'][Math.floor(Math.random() * 3)], sh0 = r(0, 6);
   const common = { skin, hair, short: '#2f3640' };
   const before = demoPhoto({ ...common, sh: 118 + sh0, wa: 116 + r(0, 8), hi: 120, arm: 17, shift: r(-5, 5), def: false });
   const after = demoPhoto({ ...common, sh: 140 + sh0, wa: 94 + r(0, 6), hi: 114, arm: 21, shift: r(-5, 5), def: true });
   S.photos.push({ id: uid(), date: addDays(today(), -84), angle: 'voor', data: before, demo: true }, { id: uid(), date: today(), angle: 'voor', data: after, demo: true });
-  ui.cmp.a = ui.cmp.b = null; save(); render(); toast('Twee testfoto’s toegevoegd, 12 weken uit elkaar.');
+  ui.cmp.a = ui.cmp.b = null; save(); render();
 };
 A.demoDel = () => { S.photos = S.photos.filter(p => !p.demo); ui.cmp.a = ui.cmp.b = null; save(); render(); };
 function pPhotos() {
   const ph = [...S.photos].sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id)), hasDemo = ph.some(p => p.demo);
   return `<div class="card"><h3>Vergelijk je foto’s</h3>${photoCompare(ph)}</div>
   ${acc('Foto toevoegen', ph.length + ' foto’s', `<p class="sub">Foto’s blijven op dit apparaat en worden nergens gedeeld. Je kunt ze altijd verwijderen. Maak foto’s steeds op dezelfde plek, met hetzelfde licht en dezelfde afstand.</p><form data-submit="photo" class="grid3"><label class="f">Zicht<select name="angle"><option value="voor">Voorkant</option><option value="zij">Zijkant</option><option value="achter">Achterkant</option></select></label><label class="f">Datum<input name="date" type="date" value="${today()}" max="${today()}"></label><label class="f">Foto<input name="file" type="file" accept="image/*" required></label><button class="btn sm span3">Foto opslaan</button></form>
-   <div class="btns">${hasDemo ? '<button class="btn ghost sm" data-a="demoDel">Testfoto’s verwijderen</button>' : '<button class="btn ghost sm" data-a="demoPhotos">Testfoto’s toevoegen</button>'}</div><small>Testfoto’s zijn getekende voorbeelden om de vergelijking uit te proberen.</small>`, !ph.length)}
-  ${ph.length ? `<div class="pgrid">${[...ph].reverse().map(p => `<figure><img src="${p.data}" alt="Voortgangsfoto ${p.angle}kant van ${fmtDate(p.date)}"><figcaption>${fmtDate(p.date)} · ${p.angle}${p.demo ? ' · test' : ''}<button class="link" data-a="delPhoto" data-id="${p.id}">Verwijder</button></figcaption></figure>`).join('')}</div>` : ''}`;
+   <div class="btns">${hasDemo ? '<button class="btn ghost sm" data-a="demoDel">Voorbeeldfoto’s verwijderen</button>' : '<button class="btn ghost sm" data-a="demoPhotos">Voorbeeldfoto’s toevoegen</button>'}</div><small>Voorbeeldfoto’s zijn alleen om de vergelijking uit te proberen. Met een Unsplash-sleutel (Profiel, Receptfoto’s) zijn het foto’s van twee verschillende atleten, anders getekende figuren.</small>`, !ph.length)}
+  ${ph.length ? `<div class="pgrid">${[...ph].reverse().map(p => `<figure><img src="${p.data}" alt="Voortgangsfoto ${p.angle}kant van ${fmtDate(p.date)}"><figcaption>${fmtDate(p.date)} · ${p.angle}${p.demo ? ' · voorbeeld' : ''}${p.credit ? ` · <a href="${esc(p.credit.link)}" target="_blank" rel="noopener">${esc(p.credit.name)}</a> op Unsplash` : ''}<button class="link" data-a="delPhoto" data-id="${p.id}">Verwijder</button></figcaption></figure>`).join('')}</div>` : ''}`;
 }
 function photoCompare(ph) {
-  if (ph.length < 2) return `<p class="sub">Voeg minstens twee foto’s toe om je transformatie te vergelijken. Wil je het eerst proberen? Open hieronder “Foto toevoegen” en kies testfoto’s.</p>${ph.length === 0 ? '<button class="btn sm" data-a="demoPhotos">Testfoto’s toevoegen</button>' : ''}`;
+  if (ph.length < 2) return `<p class="sub">Voeg minstens twee foto’s toe om je transformatie te vergelijken. Wil je het eerst proberen? Open hieronder “Foto toevoegen” en kies voorbeeldfoto’s.</p>${ph.length === 0 ? '<button class="btn sm" data-a="demoPhotos">Voorbeeldfoto’s toevoegen</button>' : ''}`;
   const c = ui.cmp; if (!ph.some(p => p.id === c.a)) c.a = ph[0].id; if (!ph.some(p => p.id === c.b)) c.b = ph[ph.length - 1].id;
   const A_ = ph.find(p => p.id === c.a), B_ = ph.find(p => p.id === c.b), opts = v => ph.map(p => `<option value="${p.id}" ${p.id === v ? 'selected' : ''}>${fmtDate(p.date, { day: 'numeric', month: 'short', year: 'numeric' })} · ${p.angle}</option>`).join('');
   const days = Math.abs(diffDays(A_.date, B_.date));
@@ -3375,7 +3396,7 @@ function photoCompare(ph) {
     ctl = `<label class="f">Schuif de scheidslijn<input type="range" data-r="wipe" min="0" max="100" value="${c.wipe}"></label>`; }
   else stage = `<div class="cmp-side"><figure><img src="${A_.data}" alt="Eerste foto"><figcaption>${fmtDate(A_.date)}</figcaption></figure><figure><img src="${B_.data}" alt="Tweede foto"><figcaption>${fmtDate(B_.date)}</figcaption></figure></div>`;
   return `<div class="grid2 tight"><label class="f">Eerste foto<select data-c="cmpSel" data-w="a">${opts(c.a)}</select></label><label class="f">Tweede foto<select data-c="cmpSel" data-w="b">${opts(c.b)}</select></label></div>
-  <div class="seg">${[['overlay', 'Overlay'], ['wipe', 'Scheidslijn'], ['side', 'Naast elkaar']].map(([k, l]) => `<button class="${c.mode === k ? 'on' : ''}" data-a="cmpMode" data-m="${k}">${l}</button>`).join('')}</div>${stage}${ctl}<p class="sub">Tussen beide foto’s zit ${days} dag${days === 1 ? '' : 'en'}${days >= 14 ? ' (ongeveer ' + Math.round(days / 7) + ' weken)' : ''}. Licht, houding en afstand beïnvloeden wat je ziet.</p>`;
+  <div class="seg">${[['overlay', 'Overlay'], ['wipe', 'Scheidslijn'], ['side', 'Naast elkaar']].map(([k, l]) => `<button class="${c.mode === k ? 'on' : ''}" data-a="cmpMode" data-m="${k}">${l}</button>`).join('')}</div>${stage}${ctl}<p class="sub">Tussen beide foto’s zit ${days} dag${days === 1 ? '' : 'en'}${days >= 14 ? ' (ongeveer ' + Math.round(days / 7) + ' weken)' : ''}. Licht, houding en afstand beïnvloeden wat je ziet.</p>${ph.some(p => p.demo && p.credit) ? '<p class="sub">Voorbeeld: twee verschillende personen, geen echte voortgang. Foto’s via Unsplash.</p>' : ''}`;
 }
 C.cmpSel = el => { ui.cmp[el.dataset.w] = el.value; render(); };
 A.cmpMode = d => { ui.cmp.mode = d.m; render(); };
