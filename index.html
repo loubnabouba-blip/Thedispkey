@@ -40,7 +40,7 @@ main section>h1::before{content:"";display:block;width:40px;height:4px;margin-bo
 .stack{display:grid;gap:var(--s2);margin-top:var(--s2)}
 .stack .btn{width:100%}
 details.acc details.acc{background:var(--surface2);box-shadow:none}
-.pf .why{margin:var(--s1) 0 0}.pf .why summary{padding-block:8px}
+.pf .why{margin:var(--s1) 0 var(--s2)}.pf>.btn+small{display:block;margin-top:var(--s1)}.pf .why summary{padding-block:8px}
 </style></head><body>
 <title>The Discipline Key</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -1573,7 +1573,7 @@ const accKey = d => route + ':' + ((d.querySelector(':scope>summary span') || {}
 document.addEventListener('toggle', e => { const d = e.target; if (d && d.matches && d.matches('details.acc')) ui.open[accKey(d)] = d.open; }, true);
 function render() {
   const main = $('#main');
-  if (!S.profile) { $('#app').classList.add('ob'); renderOnboarding(); return; }
+  if (!S.profile || ui.ob) { $('#app').classList.add('ob'); renderOnboarding(); return; }
   $('#app').classList.remove('ob'); $('#app').classList.toggle('wk', !!ui.workout); nav();
   const V = { home: vHome, 'mijn-plan': vPlan, training: vTraining, voeding: vFood, voortgang: vProgress, disciplines: vDisc, 'mijn-doel': vMilestone };
   const entering = route !== ui._lr; ui._lr = route; main.classList.toggle('enter', entering); document.documentElement.dataset.route = route;
@@ -1668,7 +1668,7 @@ A.obFinish = () => {
   if (old && old.goal !== d.goal) S.macroOverride = null;
   S.milestone.enabled = !!d.milestoneOn; if (d.milestoneDate) S.milestone.date = d.milestoneDate;
   if (S.food) Object.values(S.food).forEach(x => x.saved = x.saved);
-  ui.ob = null; ui.obEdit = false; save(); location.hash = 'home'; route = 'home'; render(); toast('Je plan is opgeslagen.');
+  const wasEdit = ui.obEdit; ui.ob = null; ui.obEdit = false; save(); const dest = wasEdit ? 'mijn-plan' : 'home'; if (location.hash.slice(1) !== dest) location.hash = dest; route = dest; render(); window.scrollTo(0, 0); toast(wasEdit ? 'Profiel bijgewerkt.' : 'Je plan is opgeslagen.');
 };
 A.editProfile = () => { ui.ob = { ...newDraft(), ...S.profile, days: [...(S.profile.days || [])], equipment: [...(S.profile.equipment || [])], allergens: [...(S.profile.allergens || [])], startDate: S.planStart || today(), milestoneOn: S.milestone.enabled, milestoneDate: S.milestone.date || '' }; ui.obStep = 1; ui.obEdit = true; render(); window.scrollTo(0, 0); };
 
@@ -1941,15 +1941,18 @@ function planParts() {
   return { p, t, w, te, tot, as, per, cur, endDate, lenBody, perBody, progBody, macroBody, dietName };
 }
 const pfRow = (label, value, attrs) => `<button class="pfrow" ${attrs}><span>${label}</span><b>${value}</b><i aria-hidden="true">›</i></button>`;
+F.pname = (f, fd) => { S.profile.name = String(fd.get('name') || '').trim().slice(0, 40); save(); render(); toast(S.profile.name ? 'Naam opgeslagen.' : 'Naam verwijderd.'); };
 A.pfTo = d => { if (d.k) ui[d.k] = d.t; go(d.r); };
 function vPlan() {
   const x = planParts(), p = x.p, t = x.t, tot = x.tot, prog = PROGRAMS[p.program || 'auto'];
   const planTxt = tot ? tot + ' weken' + (x.endDate ? ', t/m ' + fmtDate(x.endDate, { day: 'numeric', month: 'short', year: 'numeric' }) : '') : 'Doorlopend';
   const macroTxt = t && !t.missing ? t.kcal + ' kcal · ' + t.p + ' g eiwit' : 'Nog niet ingesteld';
   return `<section><p class="eyebrow">${esc(weekLine())}</p><h1>Profiel</h1>
-  <div class="card pf"><div class="pfhead"><div><small>Jouw doel</small><h2>${GOALS[p.goal]}</h2></div><button class="btn ghost sm" data-a="editProfile">Aanpassen</button></div>
+  <div class="card pf"><h3>Jij</h3><form data-submit="pname" class="stack"><label class="f">Naam<input name="name" maxlength="40" autocomplete="given-name" placeholder="Hoe mag de app je noemen?" value="${esc(p.name || '')}"></label><button class="btn sm">Naam opslaan</button></form>
+   <p class="sub">${[p.age ? p.age + ' jaar' : '', p.height ? p.height + ' cm' : '', p.weight ? String(p.weight).replace('.', ',') + ' kg' : ''].filter(Boolean).join(' · ') || 'Nog geen gegevens ingevuld.'}</p></div>
+  <div class="card pf"><div class="pfhead"><div><small>Jouw doel</small><h2>${GOALS[p.goal]}</h2></div></div>
    ${x.te ? `<p class="sub">${esc(x.te.text)}</p>` : '<p class="sub">Geen tijdsinschatting. Vul bij je profiel een streefgewicht in als je er een wilt.</p>'}
-   ${why('Hoe komt deze inschatting tot stand?', '<p>De schatting gaat uit van een gemiddelde wekelijkse verandering van een deel van je lichaamsgewicht (afvallen 0,25–0,75%, aankomen 0,1–0,35%). Echte vooruitgang schommelt en hangt af van opvolging, slaap, stress en je beginpunt. De inschatting is een scenario, geen belofte.</p>')}</div>
+   ${why('Hoe komt deze inschatting tot stand?', '<p>De schatting gaat uit van een gemiddelde wekelijkse verandering van een deel van je lichaamsgewicht (afvallen 0,25–0,75%, aankomen 0,1–0,35%). Echte vooruitgang schommelt en hangt af van opvolging, slaap, stress en je beginpunt. De inschatting is een scenario, geen belofte.</p>')}<button class="btn ghost sm" data-a="editProfile">Gegevens en doel aanpassen</button><small>Opent je gegevens in stappen. Je kunt altijd annuleren.</small></div>
   <div class="card pf"><h3>Jouw plan</h3><div class="pfrows">
    ${pfRow('Training', esc(prog.name) + ' · ' + S.plan.schedule.length + ' dagen', 'data-a="pfTo" data-r="training" data-k="trainTab" data-t="schema"')}
    ${pfRow('Voeding', macroTxt, 'data-a="pfTo" data-r="voeding" data-k="foodTab" data-t="macro"')}
