@@ -1,4 +1,29 @@
-<!doctype html><html><head><meta charset=utf8><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Discipline Key"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#0B0F19"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Discipline Key"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#0B0F19"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+/* ---------- Kleuraccenten per pagina + levendiger light ---------- */
+:root{--pg:#C9F24D;--pg2:#8B7CFF;--pgm:70%;--pg-ink:color-mix(in srgb,var(--pg) var(--pgm),var(--ink));--pg-soft:color-mix(in srgb,var(--pg) 13%,transparent);
+  --fx:radial-gradient(80% 46% at 50% -8%,var(--glow),transparent 70%),radial-gradient(60% 36% at 100% 2%,color-mix(in srgb,var(--pg) 9%,transparent),transparent 70%)}
+:root[data-route=home]{--pg:#C9F24D}
+:root[data-route=training]{--pg:#FF7A59}
+:root[data-route=voeding]{--pg:#FFB020}
+:root[data-route=disciplines]{--pg:#9A8CFF}
+:root[data-route=voortgang]{--pg:#2DD4BF}
+:root[data-route=mijn-plan]{--pg:#5BA8FF}
+:root[data-theme=light]{--pgm:40%;--pg-soft:color-mix(in srgb,var(--pg) 22%,transparent);--fx:radial-gradient(70% 42% at 0% -6%,color-mix(in srgb,var(--pg) 30%,transparent),transparent 70%),radial-gradient(60% 40% at 100% 0%,rgba(110,130,255,.2),transparent 70%),radial-gradient(60% 30% at 50% 100%,color-mix(in srgb,var(--pg) 12%,transparent),transparent 70%)}
+@media (prefers-color-scheme:light){:root:not([data-theme]){--pgm:40%;--pg-soft:color-mix(in srgb,var(--pg) 22%,transparent);--fx:radial-gradient(70% 42% at 0% -6%,color-mix(in srgb,var(--pg) 30%,transparent),transparent 70%),radial-gradient(60% 40% at 100% 0%,rgba(110,130,255,.2),transparent 70%),radial-gradient(60% 30% at 50% 100%,color-mix(in srgb,var(--pg) 12%,transparent),transparent 70%)}}
+.eyebrow,.tile h3{color:var(--pg-ink)}
+main section>h1::before{content:"";display:block;width:40px;height:4px;margin-bottom:14px;border-radius:99px;background:linear-gradient(90deg,var(--pg),var(--pg2))}
+.tile,.card.hero{background:radial-gradient(120% 90% at 0% 0%,var(--pg-soft),transparent 58%),var(--card-bg);border-color:color-mix(in srgb,var(--pg) 20%,var(--line))}
+.stats b,.tile-main{color:var(--pg-ink)}
+.rbar{stroke:var(--pg)}
+.meter i{background:linear-gradient(90deg,var(--pg),color-mix(in srgb,var(--pg) 55%,var(--pg2)))}
+.meter i.over{background:var(--warn)}
+.spark polyline{stroke:var(--pg)}.spark circle{fill:var(--pg)}
+.chip input:checked+span,.chip.on,.chip.btnchip.on{border-color:var(--pg);background:var(--pg-soft)}
+.btn:not(.ghost):not(.danger){background:var(--pg);box-shadow:0 10px 30px -12px color-mix(in srgb,var(--pg) 65%,transparent)}
+#nav a.on .ic{color:var(--pg-ink)}
+#nav a.on::after{background:var(--pg);box-shadow:0 0 10px var(--pg)}
+:root[data-theme=light] .card,:root[data-theme=light] details.acc,:root[data-theme=light] .meal,:root[data-theme=light] .rcard{border-color:var(--line)}
+</style></head><body>
 <title>The Discipline Key</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,14 +69,14 @@
 }
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #F6F7F8;
+  --bg: #F1F5FC;
   --surface: #FFFFFF;
-  --surface2: #EEF0F3;
+  --surface2: #E8EEF9;
   --ink: #0E1218;
   --ink2: rgba(14,18,24,.6);
-  --line: rgba(14,18,24,.08);
-  --line2: rgba(14,18,24,.16);
-  --glass: rgba(246,247,248,.7);
+  --line: rgba(32,52,110,.10);
+  --line2: rgba(32,52,110,.2);
+  --glass: rgba(241,245,252,.74);
   --glow: rgba(110,130,255,.09);
   --accent: #C4EE3C;
   --accent-ink: #3F5700;
@@ -61,17 +86,17 @@
   --warn: #8A5200;
   --warnbg: rgba(237,180,94,.2);
   --bad: #B3261E;
-  --shadow: 0 1px 2px rgba(14,18,24,.04), 0 24px 48px -30px rgba(14,18,24,.22);
+  --shadow: 0 1px 2px rgba(40,60,120,.06), 0 24px 48px -28px rgba(40,60,140,.30);
   --card-bg: var(--surface);
 }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme]) {
     color-scheme: light;
-    --bg: #F6F7F8; --surface: #FFFFFF; --surface2: #EEF0F3; --ink: #0E1218; --ink2: rgba(14,18,24,.6);
-    --line: rgba(14,18,24,.08); --line2: rgba(14,18,24,.16); --glass: rgba(246,247,248,.7); --glow: rgba(110,130,255,.09);
+    --bg: #F1F5FC; --surface: #FFFFFF; --surface2: #E8EEF9; --ink: #0E1218; --ink2: rgba(14,18,24,.6);
+    --line: rgba(32,52,110,.10); --line2: rgba(32,52,110,.2); --glass: rgba(241,245,252,.74); --glow: rgba(110,130,255,.09);
     --accent: #C4EE3C; --accent-ink: #3F5700; --acc-strong: #7FA100; --on-accent: #12170A;
     --ok: #17794A; --warn: #8A5200; --warnbg: rgba(237,180,94,.2); --bad: #B3261E;
-    --shadow: 0 1px 2px rgba(14,18,24,.04), 0 24px 48px -30px rgba(14,18,24,.22);
+    --shadow: 0 1px 2px rgba(40,60,120,.06), 0 24px 48px -28px rgba(40,60,140,.30);
     --card-bg: var(--surface);
   }
 }
@@ -93,7 +118,7 @@
 html{min-height:100%;background:var(--bg);scroll-padding-top:104px;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
 body{min-height:100%;margin:0;padding:0;background:var(--bg);color:var(--ink);font:400 16px/1.65 var(--fb);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 body.noscroll{overflow:hidden}
-body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(80% 46% at 50% -8%,var(--glow),transparent 70%)}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:var(--fx)}
 body::after{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--glass);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);pointer-events:none}
 img,svg,video{max-width:100%}
 a{color:var(--ink);text-decoration-color:var(--line2);text-underline-offset:4px;transition:var(--t)}
@@ -813,53 +838,53 @@ const CATS = {ontbijt:'Ontbijt',lunch:'Lunch',diner:'Diner',tussendoor:'Tussendo
 const X = (id,name,pattern,eq,type,cue,extra={}) => ({id,name,pattern,eq,type,cue,...extra});
 const EXERCISES = [
  X('goblet','Goblet squat','squat',['dumbbells'],'comp','Dumbbell tegen de borst, knieën over de tenen, borst omhoog.',{inc:2}),
- X('legpress','Beenpers','squat',['machines'],'comp','Voeten schouderbreed, rug plat tegen de steun.',{inc:5}),
+ X('legpress','Leg press (machine)','squat',['machines'],'comp','Voeten schouderbreed, rug plat tegen de steun.',{inc:5}),
  X('backsquat','Barbell squat','squat',['barbell'],'comp','Stang laag op de rug, buik aanspannen, diep zakken zolang de rug neutraal blijft.',{inc:2.5}),
- X('squatbw','Squat met lichaamsgewicht','squat',['bw'],'comp','Rustig zakken en krachtig opstaan.',{inc:0}),
- X('rdldb','Roemeense deadlift met dumbbells','hinge',['dumbbells'],'comp','Heupen naar achteren, rug neutraal, dumbbells dicht bij de benen.',{inc:2}),
- X('rdlbb','Roemeense deadlift met barbell','hinge',['barbell'],'comp','Heupen naar achteren, stang langs de benen.',{inc:2.5}),
- X('hipthrust','Hip thrust met barbell','hinge',['barbell'],'comp','Schouderbladen op bank, heupen strekken en billen knijpen.',{inc:5}),
+ X('squatbw','Bodyweight squat','squat',['bw'],'comp','Rustig zakken en krachtig opstaan.',{inc:0}),
+ X('rdldb','Romanian deadlift (dumbbells)','hinge',['dumbbells'],'comp','Heupen naar achteren, rug neutraal, dumbbells dicht bij de benen.',{inc:2}),
+ X('rdlbb','Romanian deadlift (barbell)','hinge',['barbell'],'comp','Heupen naar achteren, stang langs de benen.',{inc:2.5}),
+ X('hipthrust','Barbell hip thrust','hinge',['barbell'],'comp','Schouderbladen op bank, heupen strekken en billen knijpen.',{inc:5}),
  X('bridge','Glute bridge','hinge',['bw'],'iso','Voeten dicht bij billen, heupen strekken en kort vasthouden.',{inc:0}),
- X('split','Bulgaarse split squat','lunge',['bw','dumbbells'],'comp','Achterste voet op een bank, voorste knie boven de voet.',{inc:2}),
+ X('split','Bulgarian split squat','lunge',['bw','dumbbells'],'comp','Achterste voet op een bank, voorste knie boven de voet.',{inc:2}),
  X('stepup','Step-up','lunge',['bw','dumbbells'],'comp','Hele voet op de verhoging, rustig terug naar beneden.',{inc:2}),
- X('lungedb','Lunge met dumbbells','lunge',['dumbbells'],'comp','Grote stap, romp rechtop.',{inc:2}),
+ X('lungedb','Dumbbell lunge','lunge',['dumbbells'],'comp','Grote stap, romp rechtop.',{inc:2}),
  X('legcurl','Leg curl (machine)','hamcurl',['machines'],'iso','Rustig buigen, langzaam terug.',{inc:2.5}),
- X('slrdl','Eenbenige Roemeense deadlift','hamcurl',['bw','dumbbells'],'iso','Houd je evenwicht, heup naar achteren schuiven.',{inc:2}),
- X('benchdb','Dumbbell bankdrukken','pushH',['dumbbells'],'comp','Schouderbladen samen, ellebogen onder 45–60 graden.',{inc:2}),
+ X('slrdl','Single-leg Romanian deadlift','hamcurl',['bw','dumbbells'],'iso','Houd je evenwicht, heup naar achteren schuiven.',{inc:2}),
+ X('benchdb','Dumbbell bench press','pushH',['dumbbells'],'comp','Schouderbladen samen, ellebogen onder 45–60 graden.',{inc:2}),
  X('chestpress','Chest press (machine)','pushH',['machines'],'comp','Rug tegen de steun, duwen zonder schouders op te trekken.',{inc:2.5}),
- X('benchbb','Bankdrukken met barbell','pushH',['barbell'],'comp','Voeten stevig, stang gecontroleerd laten zakken.',{inc:2.5}),
+ X('benchbb','Barbell bench press','pushH',['barbell'],'comp','Voeten stevig, stang gecontroleerd laten zakken.',{inc:2.5}),
  X('pushup','Push-up','pushH',['bw'],'comp','Lichaam in één lijn, borst bijna tot de grond. Verhoogd op een bank is makkelijker.',{inc:0}),
- X('bandpress','Chest press met band','pushH',['bands'],'comp','Band achter de rug, vooruit duwen.',{inc:0}),
- X('ohpdb','Schouderpers met dumbbells','pushV',['dumbbells'],'comp','Buik aanspannen, recht omhoog duwen.',{inc:2}),
- X('shoulderpress','Schouderpers (machine)','pushV',['machines'],'comp','Rug tegen de steun, volledig strekken.',{inc:2.5}),
- X('ohpbb','Schouderpers met barbell','pushV',['barbell'],'comp','Billen en buik aanspannen, stang langs het gezicht.',{inc:2.5}),
+ X('bandpress','Banded chest press','pushH',['bands'],'comp','Band achter de rug, vooruit duwen.',{inc:0}),
+ X('ohpdb','Dumbbell shoulder press','pushV',['dumbbells'],'comp','Buik aanspannen, recht omhoog duwen.',{inc:2}),
+ X('shoulderpress','Shoulder press (machine)','pushV',['machines'],'comp','Rug tegen de steun, volledig strekken.',{inc:2.5}),
+ X('ohpbb','Barbell overhead press','pushV',['barbell'],'comp','Billen en buik aanspannen, stang langs het gezicht.',{inc:2.5}),
  X('pike','Pike push-up','pushV',['bw'],'comp','Heupen hoog, kruin richting de grond bewegen.',{inc:0}),
- X('bandohp','Schouderpers met band','pushV',['bands'],'comp','Sta op de band en duw omhoog.',{inc:0}),
+ X('bandohp','Banded shoulder press','pushV',['bands'],'comp','Sta op de band en duw omhoog.',{inc:0}),
  X('pulldown','Lat pulldown','pullV',['machines'],'comp','Borst omhoog, ellebogen naar de heupen trekken.',{inc:2.5}),
- X('pullup','Optrekken','pullV',['pullupbar'],'comp','Schouders weg van de oren, kin boven de stang. Gebruik een band als hulp.',{inc:0}),
- X('bandpulldown','Pulldown met band','pullV',['bands'],'comp','Band hoog bevestigen en naar de borst trekken.',{inc:0}),
- X('rowdb','Eenarmige roei met dumbbell','pullH',['dumbbells'],'comp','Rug vlak, elleboog naar de heup.',{inc:2}),
- X('cablerow','Zittend roeien (kabel)','pullH',['machines'],'comp','Rechtop zitten, schouderbladen samenknijpen.',{inc:2.5}),
- X('rowbb','Roeien met barbell','pullH',['barbell'],'comp','Romp 45 graden gebogen, stang naar de navel.',{inc:2.5}),
- X('bandrow','Roeien met band','pullH',['bands'],'comp','Band vastmaken op borsthoogte en naar je toe trekken.',{inc:0}),
- X('lateraldb','Zijwaarts heffen met dumbbells','lat',['dumbbells'],'iso','Licht buigen in de ellebogen, tot schouderhoogte heffen.',{inc:1}),
- X('lateralcable','Zijwaarts heffen (kabel)','lat',['machines'],'iso','Rustig en zonder zwaaien.',{inc:1.25}),
- X('lateralband','Zijwaarts heffen met band','lat',['bands'],'iso','Sta op de band en heft zijwaarts.',{inc:0}),
+ X('pullup','Pull-up','pullV',['pullupbar'],'comp','Schouders weg van de oren, kin boven de stang. Gebruik een band als hulp.',{inc:0}),
+ X('bandpulldown','Banded pulldown','pullV',['bands'],'comp','Band hoog bevestigen en naar de borst trekken.',{inc:0}),
+ X('rowdb','One-arm dumbbell row','pullH',['dumbbells'],'comp','Rug vlak, elleboog naar de heup.',{inc:2}),
+ X('cablerow','Seated cable row','pullH',['machines'],'comp','Rechtop zitten, schouderbladen samenknijpen.',{inc:2.5}),
+ X('rowbb','Barbell row','pullH',['barbell'],'comp','Romp 45 graden gebogen, stang naar de navel.',{inc:2.5}),
+ X('bandrow','Banded row','pullH',['bands'],'comp','Band vastmaken op borsthoogte en naar je toe trekken.',{inc:0}),
+ X('lateraldb','Dumbbell lateral raise','lat',['dumbbells'],'iso','Licht buigen in de ellebogen, tot schouderhoogte heffen.',{inc:1}),
+ X('lateralcable','Cable lateral raise','lat',['machines'],'iso','Rustig en zonder zwaaien.',{inc:1.25}),
+ X('lateralband','Banded lateral raise','lat',['bands'],'iso','Sta op de band en heft zijwaarts.',{inc:0}),
  X('pushdown','Triceps pushdown','tri',['machines'],'iso','Ellebogen langs het lichaam.',{inc:2.5}),
- X('triext','Triceps-extensie met dumbbell','tri',['dumbbells'],'iso','Ellebogen naar voren gericht, boven het hoofd strekken.',{inc:1}),
- X('dips','Bank dips','tri',['bw'],'iso','Ellebogen naar achteren, schouders laag.',{inc:0}),
- X('curldb','Biceps curl met dumbbells','bi',['dumbbells'],'iso','Ellebogen stil, rustig laten zakken.',{inc:1}),
- X('cablecurl','Biceps curl (kabel)','bi',['machines'],'iso','Constante spanning, geen zwaaien.',{inc:2.5}),
- X('bandcurl','Biceps curl met band','bi',['bands'],'iso','Sta op de band en buig.',{inc:0}),
+ X('triext','Dumbbell triceps extension','tri',['dumbbells'],'iso','Ellebogen naar voren gericht, boven het hoofd strekken.',{inc:1}),
+ X('dips','Bench dips','tri',['bw'],'iso','Ellebogen naar achteren, schouders laag.',{inc:0}),
+ X('curldb','Dumbbell biceps curl','bi',['dumbbells'],'iso','Ellebogen stil, rustig laten zakken.',{inc:1}),
+ X('cablecurl','Cable biceps curl','bi',['machines'],'iso','Constante spanning, geen zwaaien.',{inc:2.5}),
+ X('bandcurl','Banded biceps curl','bi',['bands'],'iso','Sta op de band en buig.',{inc:0}),
  X('plank','Plank','core',['bw'],'time','Lichaam in een rechte lijn, buik en billen aangespannen.',{inc:0}),
  X('deadbug','Dead bug','core',['bw'],'iso','Onderrug tegen de grond, arm en tegenovergesteld been langzaam strekken.',{inc:0}),
- X('hangknee','Hangend knieën optrekken','core',['pullupbar'],'iso','Zonder te zwaaien, knieën naar de borst.',{inc:0}),
- X('cablecrunch','Kabel crunch','core',['machines'],'iso','Rug rond, naar beneden crunchen.',{inc:2.5}),
- X('calfbw','Kuitheffen','calf',['bw'],'iso','Volledig omhoog, kort vasthouden, langzaam zakken.',{inc:0}),
- X('calfdb','Kuitheffen met dumbbells','calf',['dumbbells'],'iso','Volledig omhoog en langzaam zakken.',{inc:2}),
- X('calfmachine','Kuitheffen (machine)','calf',['machines'],'iso','Volledig bereik en langzaam zakken.',{inc:5}),
+ X('hangknee','Hanging knee raise','core',['pullupbar'],'iso','Zonder te zwaaien, knieën naar de borst.',{inc:0}),
+ X('cablecrunch','Cable crunch','core',['machines'],'iso','Rug rond, naar beneden crunchen.',{inc:2.5}),
+ X('calfbw','Calf raise','calf',['bw'],'iso','Volledig omhoog, kort vasthouden, langzaam zakken.',{inc:0}),
+ X('calfdb','Dumbbell calf raise','calf',['dumbbells'],'iso','Volledig omhoog en langzaam zakken.',{inc:2}),
+ X('calfmachine','Calf raise (machine)','calf',['machines'],'iso','Volledig bereik en langzaam zakken.',{inc:5}),
  X('facepull','Face pull','rear',['machines','bands'],'iso','Naar het gezicht trekken, ellebogen hoog.',{inc:1.25}),
- X('reversefly','Omgekeerde fly met dumbbells','rear',['dumbbells'],'iso','Romp voorover, armen zijwaarts heffen.',{inc:1})
+ X('reversefly','Dumbbell reverse fly','rear',['dumbbells'],'iso','Romp voorover, armen zijwaarts heffen.',{inc:1})
 ];
 const EQ_LABELS = {dumbbells:'Dumbbells',barbell:'Barbell en rek',machines:'Machines / kabels',bands:'Weerstandsbanden',pullupbar:'Optrekstang'};
 const PATTERN_LABELS = {squat:'Squat',hinge:'Heupstrekking',lunge:'Eenbenig',hamcurl:'Hamstrings',pushH:'Horizontaal duwen',pushV:'Verticaal duwen',pullV:'Verticaal trekken',pullH:'Horizontaal trekken',lat:'Schouders',tri:'Triceps',bi:'Biceps',core:'Core',calf:'Kuiten',rear:'Achterkant schouder'};
@@ -892,14 +917,14 @@ EXERCISES.push(
  X('sledpush','Sled push','sled',['sled'],'dist','Laag blijven, rug vlak, korte krachtige stappen.',{inc:10}),
  X('sledpull','Sled pull','sled',['sled'],'dist','Handen over elkaar trekken, rustig achteruit lopen.',{inc:10}),
  X('bearcrawl','Bear crawl','sled',['bw'],'dist','Knieën net boven de grond, rug vlak, tegenovergestelde hand en voet.',{inc:0}),
- X('farmers','Farmers carry','carry',['dumbbells','kettlebell'],'dist','Schouders laag, rechtop lopen, stevige greep.',{inc:2}),
- X('walklunge','Wandelende lunges','lunge',['bw','dumbbells'],'dist','Lange stap, romp rechtop, knie niet op de grond.',{inc:2}),
+ X('farmers','Farmer\'s carry','carry',['dumbbells','kettlebell'],'dist','Schouders laag, rechtop lopen, stevige greep.',{inc:2}),
+ X('walklunge','Walking lunges','lunge',['bw','dumbbells'],'dist','Lange stap, romp rechtop, knie niet op de grond.',{inc:2}),
  X('wallball','Wall ball','throw',['wallball'],'iso','Diep squatten en explosief naar het doel gooien.',{inc:0}),
  X('thruster','Dumbbell thruster','throw',['dumbbells'],'comp','Squat en in één beweging omhoog duwen.',{inc:2}),
  X('squatjump','Squat jumps','throw',['bw'],'iso','Zacht landen en direct weer afzetten.',{inc:0}),
  X('burpeebj','Burpee broad jump','burpee',['bw'],'iso','Borst naar de grond en daarna ver naar voren springen.',{inc:0}),
- X('skierg','SkiErg intervallen','erg',['cardiomachines'],'dist','Heupen en armen samen, lange trekbeweging.',{inc:0}),
- X('rower','Roeier intervallen','erg',['cardiomachines'],'dist','Eerst benen, dan romp, dan armen; in omgekeerde volgorde terug.',{inc:0})
+ X('skierg','SkiErg intervals','erg',['cardiomachines'],'dist','Heupen en armen samen, lange trekbeweging.',{inc:0}),
+ X('rower','Rowing intervals','erg',['cardiomachines'],'dist','Eerst benen, dan romp, dan armen; in omgekeerde volgorde terug.',{inc:0})
 );
 {
   const sl = { pushA: ['pushH','pushV','lat','tri','pushH','tri'], pullA: ['pullV','pullH','rear','bi','pullH','bi'], legsA: ['squat','hinge','lunge','hamcurl','calf','core'] };
@@ -1524,7 +1549,7 @@ function render() {
   if (!S.profile) { $('#app').classList.add('ob'); renderOnboarding(); return; }
   $('#app').classList.remove('ob'); $('#app').classList.toggle('wk', !!ui.workout); nav();
   const V = { home: vHome, 'mijn-plan': vPlan, training: vTraining, voeding: vFood, voortgang: vProgress, disciplines: vDisc, 'mijn-doel': vMilestone };
-  const entering = route !== ui._lr; ui._lr = route; main.classList.toggle('enter', entering);
+  const entering = route !== ui._lr; ui._lr = route; main.classList.toggle('enter', entering); document.documentElement.dataset.route = route;
   main.innerHTML = (V[route] || vHome)();
   $$('details.acc', main).forEach(d => { const k = accKey(d); if (k in ui.open) d.open = ui.open[k]; });
   if (route === 'voortgang') afterProgress && afterProgress();
@@ -2850,7 +2875,7 @@ function weekReview() {
   return acc('Weekreview', `${ls.length} training${ls.length > 1 ? 'en' : ''} vorige week`, `<p>Vorige week deed je <b>${ls.length}</b> krachttraining${ls.length > 1 ? 'en' : ''} met <b>${sets}</b> sets.${prs.length ? ' Nieuwe records: ' + [...new Set(prs)].map(esc).join(', ') + '.' : ''}</p>${adj.length ? `<p>Aanpassingen voor deze week: ${adj.map(([g, v]) => `${g} ${v > 0 ? '+' : '−'}${Math.abs(v)}`).join(', ')}.</p>` : '<p class="sub">Je volume blijft gelijk. Geef na je training feedback om het bij te laten stellen.</p>'}<button class="btn ghost sm" data-a="trainTab" data-t="volume">Bekijk volume</button>`);
 }
 /* ===== DISCIPLINES: hoofdstukken naast bodybuilding ===== */
-EXERCISES.push(X('deadlift', 'Deadlift met barbell', 'hinge', ['barbell'], 'comp', 'Stang boven het midden van je voet, rug neutraal. Duw de vloer weg en kom met heupen en schouders tegelijk omhoog.', { inc: 5 }));
+EXERCISES.push(X('deadlift', 'Barbell deadlift', 'hinge', ['barbell'], 'comp', 'Stang boven het midden van je voet, rug neutraal. Duw de vloer weg en kom met heupen en schouders tegelijk omhoog.', { inc: 5 }));
 EX.deadlift = EXERCISES[EXERCISES.length - 1];
 const D = () => (S.disc = S.disc || {});
 const DISC = {
@@ -2891,7 +2916,7 @@ function runWeek(dc, w) {
 }
 
 /* --- powerlifting --- */
-const PLX = { sq: 'backsquat', bp: 'benchbb', dl: 'deadlift' }, PLN = { sq: 'Squat', bp: 'Bankdrukken', dl: 'Deadlift' };
+const PLX = { sq: 'backsquat', bp: 'benchbb', dl: 'deadlift' }, PLN = { sq: 'Squat', bp: 'Bench press', dl: 'Deadlift' };
 const plOrm = (dc, L) => +(dc.orm && dc.orm[L]) || ((bestSets()[PLX[L]] || {}).best) || 0;
 function plWeek(dc, w) {
   const W = dc.weeks, N = dc.days.length, nH = Math.max(2, Math.round(W * .4)), nS = Math.max(2, Math.round(W * .35)), nP = Math.max(1, W - 2 - nH - nS);
@@ -3161,7 +3186,7 @@ function dHx(dc) {
   ${acc('Zo bouw je naar de wedstrijd', '', '<p>Basis: loopbasis en techniek van de stations. Opbouw en piek: meer circuits en simulaties. De laatste twee weken worden korter, zodat je fris aan de start staat.</p><p>Wedstrijdgewichten en afstanden verschillen per divisie en kunnen veranderen. Controleer de actuele regels bij de organisatie.</p>')}
   <button class="btn ghost" data-a="fxGen">Genereer een functional workout</button>`;
 }
-const FX_MOVES = [['Goblet squats', 12], ['Dumbbell thrusters', 10], ['Burpees', 8], ['Wall balls', 15], ['Kettlebell swings', 15], ['Push-ups', 10], ['Roeien (m)', 200], ['Wandelende lunges', 20], ['Sit-ups', 15], ['Dumbbell snatches', 10], ['Step-ups', 12], ['Farmers carry (m)', 40]];
+const FX_MOVES = [['Goblet squats', 12], ['Dumbbell thrusters', 10], ['Burpees', 8], ['Wall balls', 15], ['Kettlebell swings', 15], ['Push-ups', 10], ['Rowing (m)', 200], ['Walking lunges', 20], ['Sit-ups', 15], ['Dumbbell snatches', 10], ['Step-ups', 12], ['Farmers carry (m)', 40]];
 A.fxGen = () => {
   const pick = (n) => FX_MOVES.slice().sort(() => Math.random() - .5).slice(0, n), fm = Math.floor(Math.random() * 3), mv = pick(3 + Math.floor(Math.random() * 2));
   const fmt = [['AMRAP ' + (12 + 3 * Math.floor(Math.random() * 3)) + ' minuten', 'Zoveel rondes als je kunt, in een tempo dat je kunt volhouden.'], ['EMOM 16 minuten', 'Elke minuut één oefening uit de lijst, in volgorde. Rust over in de rest van de minuut.'], ['Op tijd: ' + (3 + Math.floor(Math.random() * 3)) + ' rondes', 'Zo snel mogelijk met goede techniek.']][fm];
