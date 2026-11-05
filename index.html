@@ -51,20 +51,33 @@ details.acc details.acc{background:var(--surface2);box-shadow:none}
 .pf .btn{white-space:normal;max-width:100%}
 
 /* ---------- Fotovergelijking: schuifknoppen bij de foto, slepen met je vinger ---------- */
-.cmp-stage{touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;width:min(100%,calc(46vh*.75));max-width:420px}
+.cmp-stage{touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;width:min(100%,calc(38vh*.75));max-width:420px}
 .cmp-stage:active{cursor:grabbing}
 .cmp-stage img{pointer-events:none;-webkit-user-drag:none}
 .cmp-dock{position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px);z-index:6;margin:0 calc(var(--s3)*-1);padding:var(--s1) var(--s3) var(--s1);background:var(--glass);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);border-radius:0 0 var(--r) var(--r)}
 .cmp-dock .cmp-stage{margin:0 auto var(--s1)}
-.cmp-ctl{display:grid;grid-template-columns:1fr 1fr;gap:4px var(--s2)}
+.cmp-ctl{display:grid;grid-template-columns:1fr 1fr;gap:0 var(--s2)}
 .cmp-ctl.one{grid-template-columns:1fr}
 .cmp-ctl .f{margin:0;font-size:12px;gap:0}
-.cmp-ctl input[type=range]{min-height:36px;margin:0}
+.cmp-ctl input[type=range]{min-height:34px;margin:0}
 .cmp-act{display:flex;align-items:center;justify-content:space-between;gap:var(--s2)}
 .cmp-act small{flex:1;min-width:0;font-size:12px;line-height:1.3;color:var(--ink2)}
 .cmp-act .btn{flex:none}
 @media (max-height:700px){.cmp-dock{position:static}}
 .cmp-ctl label.f>input{margin-top:0}
+.cmp-who{display:grid;grid-template-columns:1fr 1fr;gap:var(--s1);margin:0 0 var(--s1)}
+.cmp-who button{min-height:40px;border-radius:var(--r);border:1.5px solid var(--line);background:transparent;color:var(--ink2);font:inherit;font-size:13px;font-weight:600}
+.cmp-who button.on{border-color:var(--pg);color:var(--pg-ink);background:var(--pg-soft)}
+.cmp-act{margin-top:2px;display:grid;grid-template-columns:1fr 1fr;gap:var(--s2)}
+.cmp-act .btn{min-height:40px}
+.cmp-side{gap:var(--s1)}
+.cmp-sidehead{display:grid;grid-template-columns:1fr 1fr;gap:var(--s1);margin-bottom:var(--s1)}
+.cmp-stage.sel{outline:3px solid var(--pg);outline-offset:-3px}
+.cmp-layer{position:absolute;inset:0}
+.cmp-knob{position:absolute;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:15px;font-weight:800;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.cmp-tag{position:absolute;left:6px;top:6px;padding:2px 8px;border-radius:99px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;font-weight:700;pointer-events:none}
+.pgrid figcaption{display:grid;gap:0}
+.pgrid figcaption .link{justify-self:start;min-height:44px;padding:0}
 </style></head><body>
 <title>The Discipline Key</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -668,14 +681,12 @@ em.up{font-size:12px;font-style:normal;color:var(--ok)}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:var(--s2);margin-top:var(--s2)}
 .pgrid figure{margin:0}
 .pgrid img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:var(--r)}
-.pgrid figcaption{display:flex;justify-content:space-between;gap:4px;margin-top:6px;font-size:12px;color:var(--ink2)}
+.pgrid figcaption{display:grid;gap:0;margin-top:6px;font-size:12px;color:var(--ink2)}
 .cmp-stage{position:relative;max-width:420px;aspect-ratio:3/4;margin:var(--s2) auto;overflow:hidden;border-radius:var(--r);background:#14171c}
-.cmp-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.cmp-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transform-origin:50% 50%}
 .cmp-line{position:absolute;top:0;bottom:0;width:3px;background:var(--ink);transform:translateX(-1.5px)}
-.cmp-side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s2);margin:var(--s2) 0}
-.cmp-side figure{margin:0}
-.cmp-side img{width:100%;aspect-ratio:3/4;object-fit:contain;border-radius:var(--r);background:#14171c}
-.cmp-side figcaption{text-align:center;font-size:13px;color:var(--ink2)}
+.cmp-side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s1);margin:0 0 var(--s1)}
+.cmp-side .cmp-stage{width:100%;margin:0}
 
 /* ---------- 11. Onboarding ---------- */
 .ob-wrap{padding:var(--s3) 0 var(--s5)}
@@ -3336,7 +3347,7 @@ function weekStats(n) {
   return out;
 }
 const MEAS = [['waist', 'Taille'], ['chest', 'Borst'], ['hips', 'Heupen'], ['arm', 'Bovenarm'], ['thigh', 'Bovenbeen']];
-ui.cmp = { a: null, b: null, mode: 'overlay', op: 50, sc: 100, dx: 0, dy: 0, wipe: 50 }; ui.progTab = 'overzicht';
+ui.cmp = { a: null, b: null, mode: 'overlay', op: 50, wipe: 50, sel: 'b', pa: { sc: 100, dx: 0, dy: 0, rot: 0 }, pb: { sc: 100, dx: 0, dy: 0, rot: 0 } }; ui.progTab = 'overzicht';
 function vProgress() {
   const t = ['overzicht', 'lichaam', 'fotos', 'data'].includes(ui.progTab) ? ui.progTab : 'overzicht';
   return `<section><p class="eyebrow">Trends, geen oordeel</p><h1>Voortgang</h1>${tabs(t, [['overzicht', 'Overzicht'], ['lichaam', 'Lichaam'], ['fotos', 'Foto’s'], ['data', 'Gegevens']], 'progTab')}${({ overzicht: pOverview, lichaam: pBody, fotos: pPhotos, data: pData })[t]()}</section>`;
@@ -3413,54 +3424,73 @@ function pPhotos() {
    <div class="btns">${hasDemo ? '<button class="btn sm" data-a="demoRefresh">Nieuwe voorbeeldfoto’s ophalen</button><button class="btn ghost sm" data-a="demoDel">Voorbeeldfoto’s verwijderen</button>' : '<button class="btn ghost sm" data-a="demoPhotos">Voorbeeldfoto’s toevoegen</button>'}</div>${RP.hasKey() ? '' : '<div class="note">Er is nog geen Unsplash-sleutel ingesteld, dus je krijgt getekende figuren. Voor echte atletenfoto’s: Profiel, Receptfoto’s, sleutel plakken. Dat werkt alleen in de losse app, niet in het Artifact.</div>'}<small>Voorbeeldfoto’s zijn alleen om de vergelijking uit te proberen. Met een Unsplash-sleutel (Profiel, Receptfoto’s) zijn het foto’s van twee verschillende atleten, anders getekende figuren.</small>`, !ph.length)}
   ${ph.length ? `<div class="pgrid">${[...ph].reverse().map(p => `<figure><img src="${p.data}" alt="Voortgangsfoto ${p.angle}kant van ${fmtDate(p.date)}"><figcaption>${fmtDate(p.date)} · ${p.angle}${p.demo ? ' · voorbeeld' : ''}${p.credit ? ` · <a href="${esc(p.credit.link)}" target="_blank" rel="noopener">${esc(p.credit.name)}</a> op Unsplash` : ''}<button class="link" data-a="delPhoto" data-id="${p.id}">Verwijder</button></figcaption></figure>`).join('')}</div>` : ''}`;
 }
+function cmpTf(p) { return `translate(${p.dx}%,${p.dy}%) rotate(${p.rot}deg) scale(${p.sc / 100})`; }
 function photoCompare(ph) {
   if (ph.length < 2) return `<p class="sub">Voeg minstens twee foto’s toe om je transformatie te vergelijken. Wil je het eerst proberen? Open hieronder “Foto toevoegen” en kies voorbeeldfoto’s.</p>${ph.length === 0 ? '<button class="btn sm" data-a="demoPhotos">Voorbeeldfoto’s toevoegen</button>' : ''}`;
   const c = ui.cmp; if (!ph.some(p => p.id === c.a)) c.a = ph[0].id; if (!ph.some(p => p.id === c.b)) c.b = ph[ph.length - 1].id;
   const A_ = ph.find(p => p.id === c.a), B_ = ph.find(p => p.id === c.b), opts = v => ph.map(p => `<option value="${p.id}" ${p.id === v ? 'selected' : ''}>${fmtDate(p.date, { day: 'numeric', month: 'short', year: 'numeric' })} · ${p.angle}</option>`).join('');
-  const days = Math.abs(diffDays(A_.date, B_.date));
-  let stage = '', ctl = '';
-  if (c.mode === 'overlay') { stage = `<div class="cmp-stage" id="cmp"><img src="${A_.data}" alt="Eerste foto"><img class="cmp-b" src="${B_.data}" alt="Tweede foto, doorzichtig erover" style="opacity:${c.op / 100};transform:translate(${c.dx}%,${c.dy}%) scale(${c.sc / 100})"></div>`;
-    ctl = `<div class="cmp-ctl"><label class="f">Doorzicht<input type="range" data-r="op" min="0" max="100" value="${c.op}"></label><label class="f">Schaal<input type="range" data-r="sc" min="50" max="200" value="${c.sc}"></label><label class="f">Links / rechts<input type="range" data-r="dx" min="-50" max="50" value="${c.dx}"></label><label class="f">Omhoog / omlaag<input type="range" data-r="dy" min="-50" max="50" value="${c.dy}"></label></div><div class="cmp-act"><small>Sleep de bovenste foto met je vinger. Knijp om te vergroten of verkleinen.</small><button class="btn ghost sm" data-a="cmpReset">Reset</button></div>`; }
-  else if (c.mode === 'wipe') { stage = `<div class="cmp-stage" id="cmp"><img src="${A_.data}" alt="Eerste foto"><img class="cmp-b" src="${B_.data}" alt="Tweede foto" style="clip-path:inset(0 ${100 - c.wipe}% 0 0)"><i class="cmp-line" style="left:${c.wipe}%"></i></div>`;
-    ctl = `<div class="cmp-ctl one"><label class="f">Scheidslijn<input type="range" data-r="wipe" min="0" max="100" value="${c.wipe}"></label></div><div class="cmp-act"><small>Sleep over de foto om de scheidslijn te verplaatsen.</small></div>`; }
-  else stage = `<div class="cmp-side"><figure><img src="${A_.data}" alt="Eerste foto"><figcaption>${fmtDate(A_.date)}</figcaption></figure><figure><img src="${B_.data}" alt="Tweede foto"><figcaption>${fmtDate(B_.date)}</figcaption></figure></div>`;
+  const days = Math.abs(diffDays(A_.date, B_.date)), sp = c['p' + c.sel];
+  const lay = (w, ph_, extra = '') => `<div class="cmp-layer" data-p="${w}" ${extra}><img src="${ph_.data}" alt="${w === 'a' ? 'Eerste' : 'Tweede'} foto" style="transform:${cmpTf(c['p' + w])}"></div>`;
+  let stage = '', mid = '', hint = '';
+  if (c.mode === 'overlay') { stage = `<div class="cmp-stage" id="cmp" data-w="">${lay('a', A_)}${lay('b', B_, `style="opacity:${c.op / 100}"`)}</div>`;
+    mid = `<label class="f">Doorzicht<input type="range" data-r="op" min="0" max="100" value="${c.op}"></label>`; hint = 'Sleep de gekozen foto met je vinger. Knijp om te vergroten, draai met twee vingers.'; }
+  else if (c.mode === 'wipe') { stage = `<div class="cmp-stage" id="cmp" data-w="">${lay('a', A_)}${lay('b', B_, `style="clip-path:inset(0 ${100 - c.wipe}% 0 0)"`)}<i class="cmp-line" style="left:${c.wipe}%"></i><i class="cmp-knob" style="left:${c.wipe}%">↔</i></div>`;
+    mid = `<label class="f">Scheidslijn<input type="range" data-r="wipe" min="0" max="100" value="${c.wipe}"></label>`; hint = 'Pak de lijn om hem te verschuiven. Sleep ergens anders om de gekozen foto te verplaatsen.'; }
+  else { stage = `<div class="cmp-side"><div class="cmp-stage ${c.sel === 'a' ? 'sel' : ''}" data-w="a">${lay('a', A_)}<span class="cmp-tag">1 · ${fmtDate(A_.date)}</span></div><div class="cmp-stage ${c.sel === 'b' ? 'sel' : ''}" data-w="b">${lay('b', B_)}<span class="cmp-tag">2 · ${fmtDate(B_.date)}</span></div></div>`;
+    hint = 'Tik op een foto en sleep of knijp om hem te verplaatsen en te vergroten.'; }
+  const who = `<div class="cmp-who" role="group" aria-label="Welke foto verstellen">${[['a', 'Foto 1 verstellen'], ['b', 'Foto 2 verstellen']].map(([k, l]) => `<button class="${c.sel === k ? 'on' : ''}" data-a="cmpPick" data-w="${k}">${l}</button>`).join('')}</div>`;
+  const ctl = `<div class="cmp-ctl"><label class="f">Schaal<input type="range" data-r="sc" min="50" max="200" value="${sp.sc}"></label><label class="f">Draaien<input type="range" data-r="rot" min="-20" max="20" value="${sp.rot}"></label><label class="f">Links / rechts<input type="range" data-r="dx" min="-50" max="50" value="${sp.dx}"></label><label class="f">Omhoog / omlaag<input type="range" data-r="dy" min="-50" max="50" value="${sp.dy}"></label>${mid}</div><div class="cmp-act"><button class="btn ghost sm" data-a="cmpReset" data-all="0">Reset foto</button><button class="btn ghost sm" data-a="cmpReset" data-all="1">Reset alles</button></div>`;
   return `<div class="grid2 tight"><label class="f">Eerste foto<select data-c="cmpSel" data-w="a">${opts(c.a)}</select></label><label class="f">Tweede foto<select data-c="cmpSel" data-w="b">${opts(c.b)}</select></label></div>
-  <div class="seg">${[['overlay', 'Overlay'], ['wipe', 'Scheidslijn'], ['side', 'Naast elkaar']].map(([k, l]) => `<button class="${c.mode === k ? 'on' : ''}" data-a="cmpMode" data-m="${k}">${l}</button>`).join('')}</div>${ctl ? `<div class="cmp-dock">${stage}${ctl}</div>` : stage}<p class="sub">Tussen beide foto’s zit ${days} dag${days === 1 ? '' : 'en'}${days >= 14 ? ' (ongeveer ' + Math.round(days / 7) + ' weken)' : ''}. Licht, houding en afstand beïnvloeden wat je ziet.</p>${ph.some(p => p.demo && p.credit) ? '<p class="sub">Voorbeeld: twee verschillende personen, geen echte voortgang. Foto’s via Unsplash.</p>' : ''}`;
+  <div class="seg">${[['overlay', 'Overlay'], ['wipe', 'Scheidslijn'], ['side', 'Naast elkaar']].map(([k, l]) => `<button class="${c.mode === k ? 'on' : ''}" data-a="cmpMode" data-m="${k}">${l}</button>`).join('')}</div><div class="cmp-dock">${stage}${who}${ctl}</div><p class="sub">${hint}</p><p class="sub">Tussen beide foto’s zit ${days} dag${days === 1 ? '' : 'en'}${days >= 14 ? ' (ongeveer ' + Math.round(days / 7) + ' weken)' : ''}. Licht, houding en afstand beïnvloeden wat je ziet.</p>${ph.some(p => p.demo && p.credit) ? '<p class="sub">Voorbeeld: twee verschillende personen, geen echte voortgang. Foto’s via Unsplash.</p>' : ''}`;
 }
-C.cmpSel = el => { ui.cmp[el.dataset.w] = el.value; render(); };
+const cmpZero = () => ({ sc: 100, dx: 0, dy: 0, rot: 0 });
+C.cmpSel = el => { ui.cmp[el.dataset.w] = el.value; ui.cmp['p' + el.dataset.w] = cmpZero(); render(); };
 A.cmpMode = d => { ui.cmp.mode = d.m; render(); };
-A.cmpReset = () => { Object.assign(ui.cmp, { op: 50, sc: 100, dx: 0, dy: 0 }); render(); };
+A.cmpPick = d => { ui.cmp.sel = d.w; render(); };
+A.cmpReset = d => { const c = ui.cmp; if (d && d.all === '1') { c.pa = cmpZero(); c.pb = cmpZero(); c.op = 50; c.wipe = 50; } else c['p' + c.sel] = cmpZero(); render(); };
 function applyCmp() {
-  const c = ui.cmp, st = $('#cmp'); if (!st) return; const b = $('.cmp-b', st); if (!b) return;
-  if (c.mode === 'overlay') { b.style.opacity = c.op / 100; b.style.transform = `translate(${c.dx}%,${c.dy}%) scale(${c.sc / 100})`; }
-  else { b.style.clipPath = `inset(0 ${100 - c.wipe}% 0 0)`; const l = $('.cmp-line', st); if (l) l.style.left = c.wipe + '%'; }
+  const c = ui.cmp;
+  document.querySelectorAll('.cmp-layer').forEach(l => {
+    const w = l.dataset.p, im = l.firstElementChild; if (im) im.style.transform = cmpTf(c['p' + w]);
+    if (w === 'b' && c.mode === 'overlay') l.style.opacity = c.op / 100;
+    if (w === 'b' && c.mode === 'wipe') l.style.clipPath = `inset(0 ${100 - c.wipe}% 0 0)`;
+  });
+  document.querySelectorAll('.cmp-line,.cmp-knob').forEach(l => l.style.left = c.wipe + '%');
 }
-
+function cmpSync() {
+  const c = ui.cmp, p = c['p' + c.sel];
+  document.querySelectorAll('[data-r]').forEach(i => { const k = i.dataset.r; const v = k in p ? p[k] : c[k]; if (v != null && i.type === 'range') i.value = v; });
+  document.querySelectorAll('.cmp-who button').forEach(b => b.classList.toggle('on', b.dataset.w === c.sel));
+  document.querySelectorAll('.cmp-side .cmp-stage').forEach(s => s.classList.toggle('sel', s.dataset.w === c.sel));
+  applyCmp();
+}
 (() => {
   const ptrs = new Map(); let g = null;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const sync = () => { document.querySelectorAll('[data-r]').forEach(i => { if (ui.cmp[i.dataset.r] != null) i.value = ui.cmp[i.dataset.r]; }); applyCmp(); };
+  const snap = (st, c, e) => { const p = c['p' + c.sel]; return { st, r: st.getBoundingClientRect(), dx: p.dx, dy: p.dy, sc: p.sc, rot: p.rot, x0: e.x, y0: e.y, d0: 0, a0: 0, wipe: false }; };
+  const two = () => { const [a, b] = [...ptrs.values()]; return { d: Math.hypot(a.x - b.x, a.y - b.y), a: Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI, mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2 }; };
   document.addEventListener('pointerdown', e => {
-    const st = e.target.closest && e.target.closest('#cmp'); if (!st || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    const st = e.target.closest && e.target.closest('.cmp-stage'); if (!st || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    const c = ui.cmp; if (st.dataset.w && st.dataset.w !== c.sel) { c.sel = st.dataset.w; cmpSync(); }
     try { st.setPointerCapture(e.pointerId); } catch (x) {}
-    ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); const r = st.getBoundingClientRect(), c = ui.cmp;
-    if (c.mode === 'wipe') { c.wipe = clamp(Math.round((e.clientX - r.left) / r.width * 100), 0, 100); sync(); }
-    g = { r, dx: c.dx, dy: c.dy, sc: c.sc, x0: e.clientX, y0: e.clientY, d0: 0 };
-    if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; g.d0 = Math.hypot(a.x - b.x, a.y - b.y); g.sc = c.sc; g.dx = c.dx; g.dy = c.dy; g.x0 = (a.x + b.x) / 2; g.y0 = (a.y + b.y) / 2; }
+    ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (ptrs.size === 1) {
+      g = snap(st, c, { x: e.clientX, y: e.clientY });
+      if (c.mode === 'wipe') { const lx = g.r.left + g.r.width * c.wipe / 100; if (Math.abs(e.clientX - lx) < 26) g.wipe = true; }
+    } else if (g) { const t = two(); g = Object.assign(snap(g.st, c, { x: t.mx, y: t.my }), { d0: t.d, a0: t.a }); }
     e.preventDefault();
   });
   document.addEventListener('pointermove', e => {
-    if (!g || !ptrs.has(e.pointerId)) return; ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); const c = ui.cmp;
-    if (c.mode === 'wipe') { c.wipe = clamp(Math.round((e.clientX - g.r.left) / g.r.width * 100), 0, 100); sync(); return; }
-    if (c.mode !== 'overlay') return;
-    if (ptrs.size >= 2 && g.d0) { const [a, b] = [...ptrs.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y); c.sc = clamp(Math.round(g.sc * d / g.d0), 50, 200); const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2; c.dx = clamp(Math.round(g.dx + (mx - g.x0) / g.r.width * 100), -50, 50); c.dy = clamp(Math.round(g.dy + (my - g.y0) / g.r.height * 100), -50, 50); }
-    else { c.dx = clamp(Math.round(g.dx + (e.clientX - g.x0) / g.r.width * 100), -50, 50); c.dy = clamp(Math.round(g.dy + (e.clientY - g.y0) / g.r.height * 100), -50, 50); }
-    sync();
+    if (!g || !ptrs.has(e.pointerId)) return; ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); const c = ui.cmp, p = c['p' + c.sel];
+    if (g.wipe) { c.wipe = clamp(Math.round((e.clientX - g.r.left) / g.r.width * 100), 0, 100); cmpSync(); return; }
+    if (ptrs.size >= 2 && g.d0) { const t = two(); p.sc = clamp(Math.round(g.sc * t.d / g.d0), 50, 200); p.rot = clamp(Math.round(g.rot + (t.a - g.a0)), -20, 20); p.dx = clamp(Math.round(g.dx + (t.mx - g.x0) / g.r.width * 100), -50, 50); p.dy = clamp(Math.round(g.dy + (t.my - g.y0) / g.r.height * 100), -50, 50); }
+    else { p.dx = clamp(Math.round(g.dx + (e.clientX - g.x0) / g.r.width * 100), -50, 50); p.dy = clamp(Math.round(g.dy + (e.clientY - g.y0) / g.r.height * 100), -50, 50); }
+    cmpSync();
   });
-  const end = e => { if (!ptrs.has(e.pointerId)) return; ptrs.delete(e.pointerId); if (ptrs.size === 0) g = null; else if (ptrs.size === 1) { const c = ui.cmp, [a] = [...ptrs.values()], st = $('#cmp'); if (st) g = { r: st.getBoundingClientRect(), dx: c.dx, dy: c.dy, sc: c.sc, x0: a.x, y0: a.y, d0: 0 }; } };
+  const end = e => { if (!ptrs.has(e.pointerId)) return; ptrs.delete(e.pointerId); if (ptrs.size === 0) g = null; else if (ptrs.size === 1 && g) { const c = ui.cmp, [a] = [...ptrs.values()]; g = snap(g.st, c, a); } };
   document.addEventListener('pointerup', end); document.addEventListener('pointercancel', end);
 })();
-document.addEventListener('input', e => { const t = e.target.closest('[data-r]'); if (t) { ui.cmp[t.dataset.r] = +t.value; applyCmp(); } });
+document.addEventListener('input', e => { const t = e.target.closest('input[data-r]'); if (!t) return; const c = ui.cmp, k = t.dataset.r, p = c['p' + c.sel]; if (k in p) p[k] = +t.value; else if (k in c) c[k] = +t.value; applyCmp(); });
 function pData() {
   return `<div class="card"><h3>Jouw gegevens</h3><p>Alles staat alleen op dit apparaat in deze browser. Wis je de browsergegevens, dan zijn ze weg. Maak daarom af en toe een export.</p>
    <div class="btns"><button class="btn ghost sm" data-a="exportShow">Exporteer als tekst</button><button class="btn ghost sm" data-a="importAsk">Importeer een export</button></div>
