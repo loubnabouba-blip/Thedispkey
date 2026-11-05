@@ -409,6 +409,7 @@ form.inline .f:has(.wstep){flex:1 1 100%}
 .pill.warn{background:var(--warnbg);color:var(--warn)}
 ul.plain{list-style:none;margin:0 0 var(--s2);padding:0}
 ul.plain li{padding:6px 0}
+ol.steps-l code,.card p code{display:inline-block;padding:2px 8px;border-radius:8px;background:var(--pg-soft);font-size:13px;line-height:1.5;word-break:break-all}
 ol.steps-l{margin:0 0 var(--s2);padding-left:22px;list-style:decimal}
 ol.steps-l li{margin-bottom:var(--s1);padding-left:4px}
 ul.lst li,ul.exl.flat li{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);padding:12px 0;border-bottom:1px solid var(--line)}
@@ -3492,7 +3493,10 @@ function cmpSync() {
 })();
 document.addEventListener('input', e => { const t = e.target.closest('input[data-r]'); if (!t) return; const c = ui.cmp, k = t.dataset.r, p = c['p' + c.sel]; if (k in p) p[k] = +t.value; else if (k in c) c[k] = +t.value; applyCmp(); });
 function pData() {
-  return `<div class="card"><h3>Jouw gegevens</h3><p>Alles staat alleen op dit apparaat in deze browser. Wis je de browsergegevens, dan zijn ze weg. Maak daarom af en toe een export.</p>
+  return `<div class="card"><h3>Apple Gezondheid</h3><p>Een web-app kan Gezondheid niet rechtstreeks uitlezen. Met een kleine opdracht in de Opdrachten-app van je iPhone krijg je je stappen, gewicht en slaap er toch in. De opdracht zet de waarden op het klembord, de app neemt ze over.</p>
+   <div class="btns"><button class="btn sm" data-a="healthPaste">Plak uit Gezondheid</button><button class="btn ghost sm" data-a="healthText">Tekst invoeren</button></div>
+   ${acc('Zo maak je de opdracht', '', `<ol class="steps-l"><li>Open de app <b>Opdrachten</b> en tik op <b>+</b>.</li><li>Voeg <b>Zoek gezondheidsvoorbeelden</b> toe: type Stappen, groepeer per Dag, periode Vandaag, bereken Som. Hernoem de uitkomst naar <b>Stappen</b>.</li><li>Doe hetzelfde voor <b>Lichaamsgewicht</b> (nieuwste 1 voorbeeld) en eventueel <b>Slaapanalyse</b>.</li><li>Voeg de actie <b>Tekst</b> toe met precies dit, waarbij je de grijze woorden vervangt door de variabelen:<br><code>stappen=[Stappen]<br>gewicht=[Gewicht]<br>slaap=[Slaapuren]</code></li><li>Voeg <b>Kopieer naar klembord</b> toe en geef de opdracht een naam, bijvoorbeeld “Naar Discipline Key”.</li><li>Start de opdracht, open deze app en tik op <b>Plak uit Gezondheid</b>. Tik op “Plakken” als iOS erom vraagt.</li></ol><p class="sub">Handig: maak in Opdrachten onder Automatisering een dagelijkse start, bijvoorbeeld ’s avonds. Weglaten kan: een regel die ontbreekt wordt overgeslagen. Wil je een andere dag invullen, zet dan <code>datum=2026-11-04</code> boven de regels.</p>`, false)}</div>
+   <div class="card"><h3>Jouw gegevens</h3><p>Alles staat alleen op dit apparaat in deze browser. Wis je de browsergegevens, dan zijn ze weg. Maak daarom af en toe een export.</p>
    <div class="btns"><button class="btn ghost sm" data-a="exportShow">Exporteer als tekst</button><button class="btn ghost sm" data-a="importAsk">Importeer een export</button></div>
    <h4>Verwijderen</h4><div class="btns"><button class="btn ghost sm" data-a="delAsk" data-k="meas">Alle metingen</button><button class="btn ghost sm" data-a="delAsk" data-k="photos">Alle foto’s</button><button class="btn ghost sm" data-a="delAsk" data-k="all">Alles</button></div></div>`;
 }
@@ -3505,6 +3509,36 @@ A.delAsk = d => { const txt = { meas: 'alle gewichten en lichaamsmetingen', phot
   modal(`<h3>Weet je het zeker?</h3><p>Dit verwijdert ${txt} van dit apparaat. Dit kan niet ongedaan worden gemaakt.</p><div class="btns end"><button class="btn ghost" data-a="close">Annuleren</button><button class="btn danger" data-a="delDo" data-k="${d.k}">Ja, verwijder</button></div>`); };
 A.delDo = d => { if (d.k === 'meas') S.body = []; else if (d.k === 'photos') S.photos = []; else { try { localStorage.removeItem(KEY); } catch (e) {} S = defaultState(); ui.ob = null; ui.obStep = 0; location.hash = 'home'; route = 'home'; }
   if (d.k !== 'all') save(); closeModal(); render(); toast(d.k === 'all' ? 'Alles is verwijderd.' : 'Verwijderd.'); };
+
+/* Apple Gezondheid via Opdrachten: tekstregels stappen=, gewicht=, slaap=, datum= */
+function parseHealth(txt) {
+  const recs = []; let cur = null; const fl = v => { const x = parseFloat(String(v).replace(',', '.').replace(/[^\d.\-]/g, '')); return isFinite(x) ? x : null; };
+  String(txt || '').split(/\r?\n/).forEach(line => {
+    const m = line.match(/^\s*(datum|stappen|gewicht|slaap)\s*[=:]\s*(.+?)\s*$/i); if (!m) return; const k = m[1].toLowerCase(), v = m[2];
+    if (k === 'datum') { const d = (v.match(/\d{4}-\d{2}-\d{2}/) || [])[0]; cur = { date: d || today() }; recs.push(cur); return; }
+    if (!cur || cur.done) { cur = { date: today() }; recs.push(cur); } const x = fl(v); if (x == null) return;
+    if (k === 'stappen' && x >= 0 && x <= 100000) cur.steps = Math.round(x);
+    if (k === 'gewicht' && x >= 20 && x <= 400) cur.weight = +x.toFixed(1);
+    if (k === 'slaap' && x >= 0 && x <= 24) cur.sleep = +x.toFixed(1);
+  });
+  return recs.filter(r => r.steps != null || r.weight != null || r.sleep != null);
+}
+function applyHealth(txt) {
+  const recs = parseHealth(txt); if (!recs.length) return 0; const m = StepSensor.meta(); let n = 0;
+  recs.forEach(r => {
+    if (r.steps != null) { S.steps[r.date] = r.steps; if (StepSensor.st.mode === 'auto') m.manual[r.date] = true; n++; }
+    if (r.weight != null) { const e = S.body.find(b => b.date === r.date && b.health); if (e) e.weight = r.weight; else S.body.push({ id: uid(), date: r.date, weight: r.weight, health: true }); n++; }
+    if (r.sleep != null) { const rc = S.recovery[r.date] = S.recovery[r.date] || {}; rc.sleep = r.sleep; n++; }
+  });
+  save(); render(); return n;
+}
+A.healthPaste = async () => {
+  let t = ''; try { t = await navigator.clipboard.readText(); } catch (e) { t = ''; }
+  const n = applyHealth(t);
+  if (n) toast('Gezondheidsgegevens overgenomen (' + n + ').'); else { toast('Geen gegevens op het klembord. Voer de opdracht eerst uit, of plak de tekst zelf.'); A.healthText(); }
+};
+A.healthText = () => modal(`<h3>Gezondheidsgegevens plakken</h3><p class="sub">Plak de tekst van je opdracht, bijvoorbeeld:<br>stappen=8421<br>gewicht=78,4<br>slaap=7,5</p><label class="f">Tekst<textarea id="hl" rows="6" placeholder="stappen=8421"></textarea></label><div class="btns end"><button class="btn" data-a="healthDo">Overnemen</button><button class="btn ghost" data-a="close">Annuleren</button></div>`);
+A.healthDo = () => { const n = applyHealth(($('#hl') || {}).value); if (n) { closeModal(); toast('Gezondheidsgegevens overgenomen (' + n + ').'); } else toast('Ik vond geen stappen, gewicht of slaap in deze tekst.'); };
 A.importAsk = () => modal(`<h3>Importeren</h3><p class="sub">Plak hier de tekst van een eerdere export, of kies het bestand. Dit vervangt alle gegevens op dit apparaat, behalve je foto’s. Foto’s zitten niet in de export.</p><label class="f">Bestand met export<input id="impf" type="file" accept=".txt,.json,text/plain,application/json"></label><label class="f">Of plak de tekst<textarea id="imp" rows="8" placeholder="{ ... }"></textarea></label><div class="btns end"><button class="btn" data-a="importDo">Importeren</button><button class="btn ghost" data-a="close">Annuleren</button></div>`, true);
 document.addEventListener('change', e => { if (e.target.id !== 'impf' || !e.target.files[0]) return; const r = new FileReader(); r.onload = () => { const t = $('#imp'); if (t) t.value = String(r.result || ''); }; r.readAsText(e.target.files[0]); });
 A.importDo = () => { const t = ($('#imp') || {}).value || '';
