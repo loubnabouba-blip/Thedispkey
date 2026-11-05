@@ -49,6 +49,22 @@ details.acc details.acc{background:var(--surface2);box-shadow:none}
 .pf .stack .f{margin:0}
 .pf .stack .btn{width:auto;justify-self:start}
 .pf .btn{white-space:normal;max-width:100%}
+
+/* ---------- Fotovergelijking: schuifknoppen bij de foto, slepen met je vinger ---------- */
+.cmp-stage{touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;width:min(100%,calc(46vh*.75));max-width:420px}
+.cmp-stage:active{cursor:grabbing}
+.cmp-stage img{pointer-events:none;-webkit-user-drag:none}
+.cmp-dock{position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px);z-index:6;margin:0 calc(var(--s3)*-1);padding:var(--s1) var(--s3) var(--s1);background:var(--glass);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);border-radius:0 0 var(--r) var(--r)}
+.cmp-dock .cmp-stage{margin:0 auto var(--s1)}
+.cmp-ctl{display:grid;grid-template-columns:1fr 1fr;gap:4px var(--s2)}
+.cmp-ctl.one{grid-template-columns:1fr}
+.cmp-ctl .f{margin:0;font-size:12px;gap:0}
+.cmp-ctl input[type=range]{min-height:36px;margin:0}
+.cmp-act{display:flex;align-items:center;justify-content:space-between;gap:var(--s2)}
+.cmp-act small{flex:1;min-width:0;font-size:12px;line-height:1.3;color:var(--ink2)}
+.cmp-act .btn{flex:none}
+@media (max-height:700px){.cmp-dock{position:static}}
+.cmp-ctl label.f>input{margin-top:0}
 </style></head><body>
 <title>The Discipline Key</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -3404,12 +3420,12 @@ function photoCompare(ph) {
   const days = Math.abs(diffDays(A_.date, B_.date));
   let stage = '', ctl = '';
   if (c.mode === 'overlay') { stage = `<div class="cmp-stage" id="cmp"><img src="${A_.data}" alt="Eerste foto"><img class="cmp-b" src="${B_.data}" alt="Tweede foto, doorzichtig erover" style="opacity:${c.op / 100};transform:translate(${c.dx}%,${c.dy}%) scale(${c.sc / 100})"></div>`;
-    ctl = `<label class="f">Doorzichtigheid bovenste foto<input type="range" data-r="op" min="0" max="100" value="${c.op}"></label><div class="grid2 tight"><label class="f">Schaal<input type="range" data-r="sc" min="70" max="130" value="${c.sc}"></label><label class="f">Horizontaal verschuiven<input type="range" data-r="dx" min="-30" max="30" value="${c.dx}"></label><label class="f">Verticaal verschuiven<input type="range" data-r="dy" min="-30" max="30" value="${c.dy}"></label><button class="btn ghost sm" data-a="cmpReset">Reset</button></div><small>Leg de foto’s op elkaar en schuif of schaal de bovenste, zodat hoofd en voeten op één lijn liggen.</small>`; }
+    ctl = `<div class="cmp-ctl"><label class="f">Doorzicht<input type="range" data-r="op" min="0" max="100" value="${c.op}"></label><label class="f">Schaal<input type="range" data-r="sc" min="50" max="200" value="${c.sc}"></label><label class="f">Links / rechts<input type="range" data-r="dx" min="-50" max="50" value="${c.dx}"></label><label class="f">Omhoog / omlaag<input type="range" data-r="dy" min="-50" max="50" value="${c.dy}"></label></div><div class="cmp-act"><small>Sleep de bovenste foto met je vinger. Knijp om te vergroten of verkleinen.</small><button class="btn ghost sm" data-a="cmpReset">Reset</button></div>`; }
   else if (c.mode === 'wipe') { stage = `<div class="cmp-stage" id="cmp"><img src="${A_.data}" alt="Eerste foto"><img class="cmp-b" src="${B_.data}" alt="Tweede foto" style="clip-path:inset(0 ${100 - c.wipe}% 0 0)"><i class="cmp-line" style="left:${c.wipe}%"></i></div>`;
-    ctl = `<label class="f">Schuif de scheidslijn<input type="range" data-r="wipe" min="0" max="100" value="${c.wipe}"></label>`; }
+    ctl = `<div class="cmp-ctl one"><label class="f">Scheidslijn<input type="range" data-r="wipe" min="0" max="100" value="${c.wipe}"></label></div><div class="cmp-act"><small>Sleep over de foto om de scheidslijn te verplaatsen.</small></div>`; }
   else stage = `<div class="cmp-side"><figure><img src="${A_.data}" alt="Eerste foto"><figcaption>${fmtDate(A_.date)}</figcaption></figure><figure><img src="${B_.data}" alt="Tweede foto"><figcaption>${fmtDate(B_.date)}</figcaption></figure></div>`;
   return `<div class="grid2 tight"><label class="f">Eerste foto<select data-c="cmpSel" data-w="a">${opts(c.a)}</select></label><label class="f">Tweede foto<select data-c="cmpSel" data-w="b">${opts(c.b)}</select></label></div>
-  <div class="seg">${[['overlay', 'Overlay'], ['wipe', 'Scheidslijn'], ['side', 'Naast elkaar']].map(([k, l]) => `<button class="${c.mode === k ? 'on' : ''}" data-a="cmpMode" data-m="${k}">${l}</button>`).join('')}</div>${stage}${ctl}<p class="sub">Tussen beide foto’s zit ${days} dag${days === 1 ? '' : 'en'}${days >= 14 ? ' (ongeveer ' + Math.round(days / 7) + ' weken)' : ''}. Licht, houding en afstand beïnvloeden wat je ziet.</p>${ph.some(p => p.demo && p.credit) ? '<p class="sub">Voorbeeld: twee verschillende personen, geen echte voortgang. Foto’s via Unsplash.</p>' : ''}`;
+  <div class="seg">${[['overlay', 'Overlay'], ['wipe', 'Scheidslijn'], ['side', 'Naast elkaar']].map(([k, l]) => `<button class="${c.mode === k ? 'on' : ''}" data-a="cmpMode" data-m="${k}">${l}</button>`).join('')}</div>${ctl ? `<div class="cmp-dock">${stage}${ctl}</div>` : stage}<p class="sub">Tussen beide foto’s zit ${days} dag${days === 1 ? '' : 'en'}${days >= 14 ? ' (ongeveer ' + Math.round(days / 7) + ' weken)' : ''}. Licht, houding en afstand beïnvloeden wat je ziet.</p>${ph.some(p => p.demo && p.credit) ? '<p class="sub">Voorbeeld: twee verschillende personen, geen echte voortgang. Foto’s via Unsplash.</p>' : ''}`;
 }
 C.cmpSel = el => { ui.cmp[el.dataset.w] = el.value; render(); };
 A.cmpMode = d => { ui.cmp.mode = d.m; render(); };
@@ -3419,6 +3435,31 @@ function applyCmp() {
   if (c.mode === 'overlay') { b.style.opacity = c.op / 100; b.style.transform = `translate(${c.dx}%,${c.dy}%) scale(${c.sc / 100})`; }
   else { b.style.clipPath = `inset(0 ${100 - c.wipe}% 0 0)`; const l = $('.cmp-line', st); if (l) l.style.left = c.wipe + '%'; }
 }
+
+(() => {
+  const ptrs = new Map(); let g = null;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const sync = () => { document.querySelectorAll('[data-r]').forEach(i => { if (ui.cmp[i.dataset.r] != null) i.value = ui.cmp[i.dataset.r]; }); applyCmp(); };
+  document.addEventListener('pointerdown', e => {
+    const st = e.target.closest && e.target.closest('#cmp'); if (!st || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    try { st.setPointerCapture(e.pointerId); } catch (x) {}
+    ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); const r = st.getBoundingClientRect(), c = ui.cmp;
+    if (c.mode === 'wipe') { c.wipe = clamp(Math.round((e.clientX - r.left) / r.width * 100), 0, 100); sync(); }
+    g = { r, dx: c.dx, dy: c.dy, sc: c.sc, x0: e.clientX, y0: e.clientY, d0: 0 };
+    if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; g.d0 = Math.hypot(a.x - b.x, a.y - b.y); g.sc = c.sc; g.dx = c.dx; g.dy = c.dy; g.x0 = (a.x + b.x) / 2; g.y0 = (a.y + b.y) / 2; }
+    e.preventDefault();
+  });
+  document.addEventListener('pointermove', e => {
+    if (!g || !ptrs.has(e.pointerId)) return; ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); const c = ui.cmp;
+    if (c.mode === 'wipe') { c.wipe = clamp(Math.round((e.clientX - g.r.left) / g.r.width * 100), 0, 100); sync(); return; }
+    if (c.mode !== 'overlay') return;
+    if (ptrs.size >= 2 && g.d0) { const [a, b] = [...ptrs.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y); c.sc = clamp(Math.round(g.sc * d / g.d0), 50, 200); const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2; c.dx = clamp(Math.round(g.dx + (mx - g.x0) / g.r.width * 100), -50, 50); c.dy = clamp(Math.round(g.dy + (my - g.y0) / g.r.height * 100), -50, 50); }
+    else { c.dx = clamp(Math.round(g.dx + (e.clientX - g.x0) / g.r.width * 100), -50, 50); c.dy = clamp(Math.round(g.dy + (e.clientY - g.y0) / g.r.height * 100), -50, 50); }
+    sync();
+  });
+  const end = e => { if (!ptrs.has(e.pointerId)) return; ptrs.delete(e.pointerId); if (ptrs.size === 0) g = null; else if (ptrs.size === 1) { const c = ui.cmp, [a] = [...ptrs.values()], st = $('#cmp'); if (st) g = { r: st.getBoundingClientRect(), dx: c.dx, dy: c.dy, sc: c.sc, x0: a.x, y0: a.y, d0: 0 }; } };
+  document.addEventListener('pointerup', end); document.addEventListener('pointercancel', end);
+})();
 document.addEventListener('input', e => { const t = e.target.closest('[data-r]'); if (t) { ui.cmp[t.dataset.r] = +t.value; applyCmp(); } });
 function pData() {
   return `<div class="card"><h3>Jouw gegevens</h3><p>Alles staat alleen op dit apparaat in deze browser. Wis je de browsergegevens, dan zijn ze weg. Maak daarom af en toe een export.</p>
