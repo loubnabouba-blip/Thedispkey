@@ -1954,7 +1954,7 @@ function rwPillars(d) {
   return {
     train: ls.length > 0, rest: rest && !ls.length, steps: (S.steps[d] || 0) >= sg, stepsV: S.steps[d] || 0, sg,
     protein: tp ? eat.p >= tp * .9 : false, pV: eat.p, tp, kcalOk: tk ? Math.abs(eat.kcal - tk) <= tk * .1 && eat.kcal > 0 : false,
-    check: !!(r.energy || r.sleep || r.recovery)
+    check: !!(r.energy || r.recovery || (r.sleep && !r.hs))
   };
 }
 const rwScore = p => (p.train || p.rest ? 1 : 0) + (p.steps ? 1 : 0) + (p.protein ? 1 : 0) + (p.check ? 1 : 0);
@@ -2224,7 +2224,7 @@ function vHome() {
    <div class="tile"><h3>Training</h3>${train}${strip}</div>
    <div class="tile"><h3>Voeding</h3>${food}</div>
    <div class="tile"><h3>Stappen</h3><div class="ringrow">${ring(st || 0, stepsGoal, 'Stappen t.o.v. richtwaarde')}<div><p class="tile-main">${st != null ? st.toLocaleString('nl-NL') : '–'}<small> / ${stepsGoal.toLocaleString('nl-NL')}</small></p>${stepSrcNote()}</div></div>
-    ${StepSensor.st.mode === 'ready' ? (StepSensor.st.kind === 'motion' ? '<button class="btn ghost sm" data-a="stepLink">Koppel iPhone Stappenteller</button>' : '<button class="btn sm" data-a="stepLink">Koppel stappenteller</button>') : ''}
+    ${StepSensor.st.mode === 'ready' ? (StepSensor.st.kind === 'motion' ? '<button class="btn ghost sm" data-a="stepLink">Koppel iPhone Stappenteller</button>' : `<button class="btn sm" data-a="stepLink">Koppel ${esc(StepSensor.label())}</button>`) : ''}
     <form class="inline" data-submit="steps"><input name="steps" type="number" inputmode="numeric" min="0" max="100000" placeholder="Aantal stappen" aria-label="${StepSensor.st.mode === 'auto' ? 'Stappen handmatig corrigeren' : 'Aantal stappen'}" value="${st != null ? st : ''}"><button class="btn sm">Opslaan</button></form>${StepSensor.st.mode === 'auto' ? '<button class="btn ghost sm" data-a="stepOff">Zet automatisch uit</button>' : ''}</div>
   </div>
   ${rwWeekCard()}
@@ -2268,7 +2268,18 @@ const StepSensor = (() => {
     const h = healthPlugin(); if (!h) return null;
     return {
       isAvailable: async () => { const r = await h.isAvailable(); return r && r.available !== false; },
-      requestPermission: async () => { await h.requestAuthorization({ read: ['steps'] }); return true; },
+      requestPermission: async () => { try { await h.requestAuthorization({ read: ['steps', 'weight', 'sleep'], write: [] }); } catch (e) { await h.requestAuthorization({ read: ['steps'], write: [] }); } return true; },
+      getWeight: async d => {
+        const r = await h.readSamples(Object.assign({ dataType: 'weight', limit: 5, ascending: false }, dayRange(d)));
+        const x = ((r && (r.samples || r.data)) || [])[0]; if (!x) return null; let v = +x.value; if (/lb/i.test(x.unit || '')) v *= 0.4536; else if (/^g$/i.test(x.unit || '')) v /= 1000; return v > 20 && v < 400 ? +v.toFixed(1) : null;
+      },
+      getSleep: async d => {
+        const a = new Date(d + 'T12:00:00'); a.setDate(a.getDate() - 1); const b = new Date(d + 'T12:00:00');
+        const r = await h.readSamples({ dataType: 'sleep', startDate: a.toISOString(), endDate: b.toISOString(), limit: 500, ascending: true });
+        const list = ((r && (r.samples || r.data)) || []).filter(x => !/awake|inbed|in_bed/i.test(String(x.sleepState || x.state || x.value || '')));
+        let ms = 0, last = 0; list.map(x => [+new Date(x.startDate), +new Date(x.endDate)]).filter(x => x[1] > x[0]).sort((p, q) => p[0] - q[0]).forEach(([s0, e0]) => { const st0 = Math.max(s0, last); if (e0 > st0) ms += e0 - st0; last = Math.max(last, e0); });
+        const hrs = ms / 36e5; return hrs >= 1 && hrs <= 16 ? +hrs.toFixed(1) : null;
+      },
       getSteps: async d => {
         const r = await h.queryAggregated(Object.assign({ dataType: 'steps', bucket: 'day', aggregation: 'sum' }, dayRange(d)));
         const list = (r && (r.samples || r.data)) || []; return list.reduce((a, x) => a + (+x.value || 0), 0);
@@ -2350,6 +2361,8 @@ const StepSensor = (() => {
         const d = addDays(t, -i); if (m.manual[d]) continue;
         const v = Math.round(+(await withTimeout(a.getSteps(d)))); if (!isFinite(v) || v < 0) continue;
         ok = true; if (S.steps[d] !== v) { S.steps[d] = v; changed = true; }
+        if (a.getWeight) try { const w = await withTimeout(a.getWeight(d)); if (w) { const own = S.body.find(b => b.date === d && !b.health); const e = S.body.find(b => b.date === d && b.health); if (!own) { if (e) { if (e.weight !== w) { e.weight = w; changed = true; } } else { S.body.push({ id: uid(), date: d, weight: w, health: true }); changed = true; } } } } catch (e) {}
+        if (a.getSleep) try { const hs = await withTimeout(a.getSleep(d)); const rc = S.recovery[d]; if (hs && (!rc || rc.sleep == null || rc.hs)) { const n = S.recovery[d] = rc || {}; if (n.sleep !== hs) { n.sleep = hs; n.hs = true; changed = true; } } } catch (e) {}
       }
       if (ok) { m.last = Date.now(); save(); }
     } catch (e) { /* stil terugvallen: bestaande (handmatige) waarden blijven staan */ }
