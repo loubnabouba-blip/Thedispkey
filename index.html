@@ -992,7 +992,8 @@ main p b,main p strong,.dialog p b,.dialog p strong,.note b,.note strong,ol.step
 
 /* ===== Touch, datumkiezer, scrollbare tabs, tekstafbreking ===== */
 html{touch-action:manipulation}
-[data-a],button,a,summary,label,.chip,.seg button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+[data-a],button,a,summary,label,select,.chip,.seg button,[role=button],[role=switch]{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+[data-a]:not(input):not(textarea):not(select){-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 button,.btn,.chip,.seg button,#nav a,.dcard,.rwcard,summary{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .tapping{opacity:.75;transform:scale(.98);transition:none!important}
 .seg{display:flex!important;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain;scroll-snap-type:x proximity;max-width:100%}
@@ -4336,11 +4337,12 @@ A.dpCancel = () => dpClose();
 A.dpBg = (d, el, e) => { if (e.target === el) dpApply(DP.sel); };
 new MutationObserver(ms => { if (ms.some(m => m.addedNodes.length)) enhanceDates(); }).observe(document.documentElement, { childList: true, subtree: true });
 
-let fastTap = null, tapStart = null;
+let fastTap = null, tapStart = null, lastScroll = 0;
+addEventListener('scroll', () => { lastScroll = Date.now(); }, { passive: true, capture: true });
 document.addEventListener('click', e => { const t = e.target.closest('[data-a]'); if (!t) return; if (fastTap && fastTap.t === t && Date.now() - fastTap.at < 900) { e.preventDefault(); return; } const fn = A[t.dataset.a]; if (fn) { if (t.tagName === 'A') e.preventDefault(); fn(t.dataset, t, e); } });
 /* Directe tap-afhandeling voor touch (iOS-app): actie op touchend, geen wachten op de click */
 document.addEventListener('touchstart', e => {
-  tapStart = null; if (e.touches.length !== 1) return;
+  tapStart = null; if (e.touches.length !== 1 || Date.now() - lastScroll < 120) return;
   const t = e.target.closest('[data-a]'); if (!t || t.dataset.a === 'closebg' || t.dataset.a === 'dpBg' || t.disabled || t.closest('.cmp-stage')) return;
   const inter = e.target.closest('input,select,textarea,label,summary,button,a,[data-a]'); if (inter !== t) return;
   if (t.matches('input,select,textarea,label,summary') || (t.tagName === 'BUTTON' && t.form && (t.getAttribute('type') || 'submit') === 'submit')) return;
@@ -4350,7 +4352,7 @@ document.addEventListener('touchmove', e => { if (!tapStart) return; const p = e
 document.addEventListener('touchcancel', () => { if (tapStart) tapStart.t.classList.remove('tapping'); tapStart = null; }, { passive: true });
 document.addEventListener('touchend', e => {
   const s0 = tapStart; tapStart = null; if (!s0) return; const t = s0.t; t.classList.remove('tapping');
-  if (!t.isConnected || Date.now() - s0.at > 800) return; const fn = A[t.dataset.a]; if (!fn) return;
+  if (!t.isConnected || Date.now() - s0.at > 800 || lastScroll > s0.at) return; const fn = A[t.dataset.a]; if (!fn) return;
   e.preventDefault(); fastTap = { t, at: Date.now() }; fn(t.dataset, t, e);
 }, { passive: false });
 document.addEventListener('change', e => { const t = e.target.closest('[data-c]'); if (t && C[t.dataset.c]) C[t.dataset.c](t, e); });
