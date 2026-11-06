@@ -2,6 +2,12 @@
 
 Status: **voorbereid, nog niet gebouwd of getest.** De bouw draait in de cloud op een Mac van GitHub, je hebt zelf geen Mac of Xcode nodig.
 
+
+## Snel aan de slag op je Mac (zonder betaald account)
+Eenmalig:   `bash ios-app/setup.sh`   (bouwt alles op en zet Apple Gezondheid aan)
+Daarna bij elke update:   `bash ios-app/update.sh`
+In Xcode kies je bij Signing & Capabilities je Team, kiest je iPhone en drukt op ▶︎.
+
 ## Wat is er klaar
 - De web-app staat in de repo-root. `ios-app/` verpakt die met Capacitor tot een echte iOS-app.
 - De app herkent de native Gezondheid-plug-in (`@capgo/capacitor-health`) al: in de iOS-app verschijnt “Koppel Apple Gezondheid” en stappen worden automatisch bijgewerkt.
