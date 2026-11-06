@@ -2581,15 +2581,11 @@ A.pfTo = d => { if (d.k) ui[d.k] = d.t; go(d.r); };
 
 function linkCard() {
   const st = StepSensor.st, native = StepSensor.isNative ? StepSensor.isNative() : false, on = st.mode === 'auto';
-  const health = native || st.kind === 'health';
-  const avail = health || st.kind === 'motion' || st.mode === 'auto';
-  const name = health ? 'Apple Gezondheid' : 'Stappenteller van je telefoon';
-  const sub = on ? (health ? 'Stappen, gewicht en slaap worden automatisch bijgewerkt.' : 'Stappen worden geteld zolang de app open staat.')
-    : avail ? (health ? 'Zet aan om stappen, gewicht en slaap automatisch op te halen.' : 'Zet aan om stappen automatisch te tellen.')
-    : 'Beschikbaar in de iPhone-app. In de browser vul je stappen zelf in.';
-  return `<div class="card pf"><h3>Koppelingen</h3><div class="swrow ${avail ? '' : 'dis'}"><div><b>${name}</b><small>${sub}</small></div>
-   <button class="switch ${on ? 'on' : ''}" role="switch" aria-checked="${on}" aria-label="${name}" data-a="linkToggle" ${avail ? '' : 'disabled'}><i></i></button></div>
-   ${on && health ? '<button class="btn ghost sm" data-a="linkSync">Nu bijwerken</button>' : ''}</div>`;
+  const health = native || st.kind === 'health', motion = !health && (st.kind === 'motion' || (on && st.kind !== 'health'));
+  const row = (name, sub, isOn, avail) => `<div class="swrow ${avail ? '' : 'dis'}"><div><b>${name}</b><small>${sub}</small></div><button class="switch ${isOn ? 'on' : ''}" role="switch" aria-checked="${isOn}" aria-label="${name}" data-a="linkToggle" ${avail ? '' : 'disabled'}><i></i></button></div>`;
+  const hRow = row('Apple Gezondheid', health ? (on ? 'Stappen, gewicht en slaap worden automatisch bijgewerkt.' : 'Zet aan om stappen, gewicht en slaap automatisch op te halen.') : 'Werkt alleen in de iPhone-app die je via Xcode installeert, niet in de browser.', health && on, health);
+  const mRow = motion ? row('Stappenteller van je telefoon', on ? 'Stappen worden geteld zolang de app open staat.' : 'Zet aan om stappen te tellen zolang de app open staat.', on, true) : '';
+  return `<div class="card pf" id="koppelingen"><h3>Koppelingen</h3>${hRow}${mRow}${on && health ? '<button class="btn ghost sm" data-a="linkSync">Nu bijwerken</button>' : ''}</div>`;
 }
 A.linkToggle = async () => {
   if (StepSensor.st.mode === 'auto') { A.stepOff(); return; }
