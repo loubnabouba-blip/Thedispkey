@@ -1091,6 +1091,19 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .switch.on{background:var(--pg)}
 .switch.on i{transform:translateX(24px)}
 .switch:disabled{opacity:.4}
+
+/* ===== Opschoning ===== */
+.qbtn{display:block;padding:0;border:0;background:none;color:inherit;font:inherit;cursor:pointer;min-width:0}
+.wkh{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s2)}
+.wkh h3{margin:0}
+.wkh .link{min-height:44px}
+.wkgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:var(--s2);align-items:center;margin-top:var(--s1)}
+.wkgrid .wkhex{margin:0}
+.wkgrid .hexring{width:100%;max-width:150px;height:auto}
+.bodymap.compact{gap:6px}
+.bodymap.compact .bodies{padding:4px 0;gap:4px}
+.bodymap.compact .bodysvg{max-width:90px}
+.bodymap.compact .mulegend{gap:4px 10px;font-size:11px}
 </style>
 <div id="app">
  <header class="top"><div class="logo"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21M17 12v3M20 12v2"/></svg></i><span>The Discipline Key</span></div><div class="topbtns"><a id="rwchip" class="rwchip" href="#beloningen" aria-label="Beloningen" hidden></a><button id="profbtn" class="themebtn" type="button" data-a="go" data-r="mijn-plan" aria-label="Profiel en plan" title="Profiel en plan"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/></svg></button><button id="themebtn" class="themebtn" type="button" data-a="theme" aria-label="Kleurthema wisselen"></button></div></header>
@@ -2026,7 +2039,7 @@ function nextAction(sess, fd) {
 function compHomeCard() {
   const c = S.comp, ph = c && c.active ? phaseOn(today()) : null;
   if (c && c.active) { const l = diffDays(today(), c.date); return `<div class="card"><div class="row"><div><span class="eyebrow">Wedstrijd</span><b>${esc(CLASSES[c.cls].n)}${ph ? ' · ' + esc(ph.name) : ''}</b><small>${l >= 0 ? 'Nog ' + Math.floor(l / 7) + ' weken en ' + (l % 7) + ' dagen' : 'De wedstrijd is geweest'}</small></div><button class="btn sm" data-a="gotoComp">Open</button></div></div>`; }
-  return `<div class="card"><div class="row"><div><span class="eyebrow">Disciplines</span><b>Kies een discipline</b><small>Hardlopen, krachtsport, Hyrox, bodybuilding en meer</small></div><button class="btn ghost sm" data-a="gotoDisc">Bekijk</button></div></div>`;
+  return '';
 }
 A.gotoDisc = () => { ui.disc = null; ui.dTop = 'disc'; go('disciplines'); };
 A.gotoComp =() => { ui.disc = 'bb'; ui.dTop = 'disc'; ui.compTab = 'overzicht'; go('disciplines'); };
@@ -2186,7 +2199,7 @@ function rwHomeCard() {
     <div class="streak ${flame ? 'on' : ''}"><span class="fl">🔥</span><b>${flame}</b><small>${flame === 1 ? 'dag' : 'dagen'}</small></div></div>
     <div class="sdots" aria-hidden="true">${last7}${R.freezes ? `<span class="frz" title="Streakbeschermers">🧊×${R.freezes}</span>` : ''}</div></a>
    <div class="card quest"><div class="qhead"><h3>Dagdoelen</h3><span class="qwin ${won >= 3 ? 'on' : ''}">${won >= 4 ? 'Perfecte dag! +' + RW_XP.perfect + ' XP' : won >= 3 ? 'Dag gewonnen 🔥' : `${won}/4 · nog ${3 - won} voor je streak`}</span></div>
-    <div class="qrings">${quests.map(q => glowRing(q[1], q[2], q[3], q[4], `${q[0]}<em>${q[5]}</em>`)).join('')}</div></div>`;
+    <div class="qrings">${quests.map((q, i) => `<button class="qbtn" data-a="${['questTrain', 'stepsAsk', 'gotoFood', 'checkAsk'][i]}" aria-label="${q[0]}">${glowRing(q[1], q[2], q[3], q[4], `${q[0]}<em>${q[5]}</em>`)}</button>`).join('')}</div></div>`;
 }
 
 /* --- lichaam met spiergroepen --- */
@@ -2200,7 +2213,7 @@ function musWeek() {
   return Object.keys(MUS).map(k => ({ k, n: MUS[k], plan: Math.round(plan[k]), done: Math.round(done[k] * 10) / 10, p: plan[k] ? done[k] / plan[k] : (done[k] ? .75 : -1), extra: !plan[k] && done[k] > 0 }));
 }
 const musCol = p => p < 0 ? 'var(--mus0)' : p === 0 ? 'var(--mus1)' : p < .5 ? 'color-mix(in srgb,#FFD166 45%,var(--mus1))' : p < 1 ? '#FFD166' : 'var(--pg)';
-function bodyMap() {
+function bodyMap(compact) {
   const M = musWeek(), by = {}; M.forEach(m => by[m.k] = m);
   const f = (k, d) => `<path d="${d}" fill="${musCol(by[k].p)}" data-a="musInfo" data-k="${k}" class="mu${by[k].p >= 1 ? ' full' : ''}"><title>${by[k].n}: ${n1(by[k].done)}${by[k].extra ? ' sets extra' : ' / ' + by[k].plan + ' sets'}</title></path>`;
   const base = 'fill="var(--mus0)"';
@@ -2230,6 +2243,7 @@ function bodyMap() {
    <path d="M36 182 L44 182 L43 192 L37 192 Z" ${base}/><path d="M64 182 L56 182 L57 192 L63 192 Z" ${base}/></svg>`;
   const tot = M.filter(m => m.plan > 0), hit = tot.filter(m => m.p >= 1).length;
   const rows = M.filter(m => m.plan > 0 || m.done > 0).sort((a, b) => (b.plan > 0) - (a.plan > 0) || b.plan - a.plan || b.done - a.done).map(m => `<div class="murow"><i style="background:${musCol(m.p)}"></i><span>${m.n}</span><b>${n1(m.done)}<small>${m.extra ? ' extra' : ' / ' + m.plan}</small></b></div>`).join('');
+  if (compact) return `<div class="bodymap compact"><div class="bodies">${front}${back}</div><div class="mulegend"><span><i style="background:#FFD166"></i>bezig</span><span><i style="background:var(--pg)"></i>gehaald</span></div></div>`;
   return `<div class="bodymap"><div class="bodies">${front}${back}</div>
    <div class="mulegend"><span><i style="background:var(--mus1)"></i>nog niet</span><span><i style="background:#FFD166"></i>bezig</span><span><i style="background:var(--pg)"></i>target gehaald</span></div>
    ${tot.length ? `<p class="sub">${hit} van ${tot.length} spiergroepen hebben hun weektarget gehaald. Tik op een spier voor details.</p><div class="mulist">${rows}</div>` : '<p class="sub">Deze week staan er geen krachtsessies gepland.</p>'}</div>`;
@@ -2237,10 +2251,9 @@ function bodyMap() {
 A.musInfo = d => { const m = musWeek().find(x => x.k === d.k); if (m) toast(m.extra ? `${m.n}: ${n1(m.done)} sets extra deze week (geen target in je schema)` : `${m.n}: ${n1(m.done)} van ${m.plan} sets deze week${m.plan && m.done >= m.plan ? ' · target gehaald 🎯' : ''}`); };
 function rwWeekCard() {
   const W = rwWeek(); if (!W.P && !W.sess) return '';
-  const pct = Math.round(W.pct * 100), d = today(), we = addDays(W.w0, 6);
-  const rows = RW_GROUPS.filter(g => W.plan[g[0]] || W.done[g[0]]).map(g => { const pl = W.plan[g[0]], dn = W.done[g[0]], left = Math.max(0, pl - dn); return `<div class="wkrow">${hexRing(pl ? dn / pl : 1, 34, g[1], '', 'r' + g[0])}<div><b>${g[1]}</b><small>${pl ? dn + ' / ' + pl + ' sets' : dn + ' sets extra'}</small></div><span class="left">${left ? `<b>${left}</b><small>te gaan</small>` : '<b>✓</b><small>klaar</small>'}</span></div>`; }).join('');
-  return `<div class="card wkgoal"><h3 class="disp">Weekdoel</h3><p class="sub">${fmtDate(W.w0, { day: 'numeric', month: 'short' })} – ${fmtDate(we, { day: 'numeric', month: 'short' })} · ${W.sessDone}/${W.sess} sessies</p>
-   <div class="wkhex">${hexRing(W.pct, 168, 'Weekdoel ' + pct + ' procent', `<text x="84" y="84" text-anchor="middle" dominant-baseline="central" class="hexpct">${pct}%</text>`, 'wk')}</div>${rows}<h3 class="disp mt">Spiergroepen</h3>${bodyMap()}</div>`;
+  const pct = Math.round(W.pct * 100), we = addDays(W.w0, 6);
+  return `<div class="card wkgoal"><div class="wkh"><h3>Deze week</h3><button class="link" data-a="pfTo" data-r="training" data-k="trainTab" data-t="volume">Details ›</button></div><p class="sub">${fmtDate(W.w0, { day: 'numeric', month: 'short' })} – ${fmtDate(we, { day: 'numeric', month: 'short' })} · ${W.sessDone}/${W.sess} sessies · ${W.D}/${W.P} sets</p>
+   <div class="wkgrid"><div class="wkhex">${hexRing(W.pct, 140, 'Weekdoel ' + pct + ' procent', `<text x="70" y="70" text-anchor="middle" dominant-baseline="central" class="hexpct">${pct}%</text>`, 'wk')}</div>${bodyMap(true)}</div></div>`;
 }
 
 /* --- Beloningen-scherm --- */
@@ -2250,14 +2263,14 @@ function vRewards() {
   const recs = Object.keys(R.best).map(id => ({ id, v: R.best[id], h: R.hist[id] })).sort((a, b) => b.v - a.v).slice(0, 12);
   const spark = h => { if (!h || h.length < 2) return ''; const v = h.map(x => x.v), mn = Math.min(...v), mx = Math.max(...v), rg = mx - mn || 1; return `<svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="var(--pg)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="${v.map((y, i) => (i / (v.length - 1) * 100).toFixed(1) + ',' + (27 - (y - mn) / rg * 24).toFixed(1)).join(' ')}"/></svg>`; };
   const earn = [['Training afgerond', RW_XP.workout + RW_XP.full], ['Cardio of segmenten', RW_XP.cardio], ['Per gelogde set', RW_XP.set], ['Persoonlijk record', RW_XP.pr], ['Stappendoel', RW_XP.steps], ['Eiwitdoel', RW_XP.protein], ['Calorieën binnen 10%', RW_XP.kcal], ['Herstelcheck', RW_XP.check], ['Weging', RW_XP.weigh], ['Voortgangsfoto', RW_XP.photo], ['Perfecte dag (4/4)', RW_XP.perfect], ['Hele week afgerond', RW_XP.week], ['Elke 7 dagen op rij', '15 × dagen']];
-  return `<section class="rwpage"><p class="eyebrow">Jouw discipline, beloond</p><h1>Beloningen</h1>
+  return `<section class="rwpage"><h1>Beloningen</h1>
   <div class="card lvcard">${hexRing(lv.into / lv.need, 150, 'Level ' + lv.n, `<text x="75" y="70" text-anchor="middle" class="hexlv">${lv.n}</text><text x="75" y="98" text-anchor="middle" class="hexlbl">LEVEL</text>`, 'lv')}
    <div><h2 class="disp">${lv.title}</h2><p class="sub">${R.xp.toLocaleString('nl-NL')} XP totaal · nog ${lv.need - lv.into} XP tot level ${lv.n + 1}</p><div class="xpbar big"><i style="width:${(lv.into / lv.need * 100).toFixed(1)}%"></i></div>
    <div class="lvstats"><span><b>${R.m.streak}</b>huidige streak</span><span><b>${R.m.bestStreak}</b>langste streak</span><span><b>${R.m.prs}</b>records</span><span><b>${got}/${R.badges.length}</b>badges</span></div></div></div>
-  <div class="card"><h3>Streak</h3><p class="sub">Een dag telt als gewonnen bij 3 van de 4 dagdoelen. Een geplande rustdag telt als trainingsdoel gehaald, rust hoort erbij. Elke 7 dagen op rij verdien je een streakbeschermer 🧊 (max. 2): die vangt een gemiste dag op.</p>
+  <div class="card"><h3>Streak</h3>${why('Hoe werkt de streak?', '<p>Een dag telt als gewonnen bij 3 van de 4 dagdoelen. Een geplande rustdag telt als trainingsdoel gehaald. Elke 7 dagen op rij verdien je een streakbeschermer 🧊 (max. 2) die een gemiste dag opvangt.</p>')}
    <div class="calgrid">${days}</div><div class="legend"><span><i class="cal won"></i>gewonnen</span><span><i class="cal frozen"></i>beschermd</span><span><i class="cal miss"></i>gemist</span><span><i class="cal open"></i>vandaag</span></div>${R.freezes ? `<p class="sub">Je hebt ${R.freezes} streakbeschermer${R.freezes > 1 ? 's' : ''} 🧊.</p>` : ''}</div>
   <h3 class="sect">Badges</h3><div class="badges">${R.badges.map(b => `<div class="badge ${b.got ? 'got' : ''}" title="${esc(b.d)}"><span class="bx">${hexBadge(b.e, b.got ? 'gold' : 'off')}</span><b>${esc(b.n)}</b><small>${b.got ? esc(b.d) : `${b.cur.toLocaleString('nl-NL')} / ${b.tgt.toLocaleString('nl-NL')}`}</small>${b.got ? '' : `<i class="bprog"><i style="width:${(b.cur / b.tgt * 100).toFixed(0)}%"></i></i>`}</div>`).join('')}</div>
-  <h3 class="sect">Krachtrecords</h3>${recs.length ? `<div class="card recs"><p class="sub">Geschatte maximale kracht (1RM) per oefening, berekend uit gewicht en herhalingen. Elke verbetering is een record: +${RW_XP.pr} XP.</p>${recs.map(r => `<div class="rec"><div><b>${esc((EX[r.id] || {}).name || r.id)}</b><small>${r.h.length} keer gelogd</small></div>${spark(r.h)}<span class="rv">${String(+r.v.toFixed(1)).replace('.', ',')}<small> kg</small></span></div>`).join('')}</div>` : '<div class="card"><p class="sub">Log een krachttraining met gewicht en herhalingen. Daarna zie je hier je records groeien.</p></div>'}
+  <h3 class="sect">Krachtrecords</h3>${recs.length ? `<div class="card recs"><p class="sub">Geschatte 1RM per oefening.</p>${recs.map(r => `<div class="rec"><div><b>${esc((EX[r.id] || {}).name || r.id)}</b><small>${r.h.length} keer gelogd</small></div>${spark(r.h)}<span class="rv">${String(+r.v.toFixed(1)).replace('.', ',')}<small> kg</small></span></div>`).join('')}</div>` : '<div class="card"><p class="sub">Log een krachttraining met gewicht en herhalingen. Daarna zie je hier je records groeien.</p></div>'}
   ${acc('Zo verdien je XP', '', `<div class="earn">${earn.map(e => `<span>${e[0]}</span><b>+${e[1]}</b>`).join('')}</div><p class="sub">Levels worden steeds iets groter. Alles wordt berekend uit wat je logt, ook met terugwerkende kracht.</p>`)}
   </section>`;
 }
@@ -2316,6 +2329,11 @@ A.stepsAsk = () => { const st = S.steps[today()], m = StepSensor.st.mode;
   if (m === 'ready') { A.stepLink(); return; }
   modal(`<h3>Stappen vandaag</h3>${stepSrcNote()}<form data-submit="stepsM" class="inline"><input name="steps" type="number" inputmode="numeric" min="0" max="100000" placeholder="Aantal stappen" aria-label="Aantal stappen" value="${st != null ? st : ''}"><button class="btn sm">Opslaan</button></form>${m === 'auto' ? '<button class="btn ghost sm" data-a="stepOff">Zet automatisch uit</button>' : ''}<div class="btns end"><button class="btn ghost" data-a="close">Sluiten</button></div>`); };
 F.stepsM = (f, fd) => { closeModal(); F.steps(f, fd); };
+
+function checkBody() { const rec = S.recovery[today()] || {};
+  return `<div id="chk"><h3>Herstelcheck</h3><p class="sub">Tik wat past. Het wordt direct opgeslagen.</p>${scaleRow('sleep', 'Hoeveel sliep je?', SC.hours, nearest(SC.hours, rec.sleep), 'data-c="recTile"')}${scaleRow('energy', 'Energie', SC.energy, rec.energy, 'data-c="recTile"')}${scaleRow('soreness', 'Spierpijn', SC.sore, rec.soreness, 'data-c="recTile"')}${scaleRow('recovery', 'Herstel', SC.recov, rec.recovery, 'data-c="recTile"')}<div class="btns end"><button class="btn" data-a="close">Klaar</button></div></div>`; }
+A.checkAsk = () => modal(checkBody());
+A.questTrain = () => { ui.trainTab = 'week'; go('training'); };
 function vHome() {
   const p = S.profile, t = targets(), d = today(), sess = sessionsOn(d), rec = S.recovery[d] || {}, st = S.steps[d];
   const hr = new Date().getHours(), greet = hr < 12 ? 'Goedemorgen' : hr < 18 ? 'Goedemiddag' : 'Goedenavond';
@@ -2336,14 +2354,12 @@ function vHome() {
     `<div class="mini">${miniRing(eaten.kcal, t.kcal, 'var(--pg)', n0(eaten.kcal), 'kcal')}<div class="mnums"><b>${n0(eaten.kcal)}<small>/${t.kcal}</small></b><span class="mac"><i style="--mc:#B48CFF">E ${n0(eaten.p)}/${t.p}</i><i style="--mc:#5CC8FF">K ${n0(eaten.c)}/${t.c}</i><i style="--mc:#FFD166">V ${n0(eaten.f)}/${t.f}</i></span></div></div>`;
   return `<section class="home">${hero}${rwHomeCard()}
   <div class="dash">
-   <div class="tile dtrain"><h3>Training</h3>${train}${strip}</div>
    <button class="tile dmini" data-a="gotoFood" aria-label="Voeding: ${(!t || t.missing) ? 'nog niet ingesteld' : n0(eaten.kcal) + ' van ' + t.kcal + ' kcal'}"><h3>Voeding</h3>${food}</button>
    <button class="tile dmini" data-a="stepsAsk" aria-label="Stappen: ${st || 0} van ${stepsGoal}"><h3>Stappen</h3><div class="mini">${miniRing(st || 0, stepsGoal, '#5CC8FF', '', '')}<div class="mnums"><b>${st != null ? (st >= 10000 ? (st / 1000).toFixed(1).replace('.', ',') + 'k' : st.toLocaleString('nl-NL')) : '–'}<small>/${(stepsGoal / 1000).toFixed(stepsGoal % 1000 ? 1 : 0)}k</small></b><span class="msub">${StepSensor.st.mode === 'auto' ? 'automatisch' : StepSensor.st.mode === 'ready' ? 'tik om te koppelen' : 'tik om in te vullen'}</span></div></div></button>
   </div>${coachCard(coach)}
   ${rwWeekCard()}
   ${compHomeCard()}
-  ${acc('Herstelcheck', rec.energy ? 'Ingevuld' : 'Optioneel', `<p class="sub">Tik wat past. Het wordt direct opgeslagen.</p>${scaleRow('sleep', 'Hoeveel sliep je?', SC.hours, nearest(SC.hours, rec.sleep), 'data-c="recTile"')}${scaleRow('energy', 'Energie', SC.energy, rec.energy, 'data-c="recTile"')}${scaleRow('soreness', 'Spierpijn', SC.sore, rec.soreness, 'data-c="recTile"')}${scaleRow('recovery', 'Herstel', SC.recov, rec.recovery, 'data-c="recTile"')}`)}
-  ${S.example ? '<p class="sub">Je gebruikt een voorbeeldprofiel. Pas het aan bij Profiel, of wis alles onder Voortgang en Gegevens.</p>' : ''}</section>`;
+  ${S.example ? '<p class="sub">Je gebruikt een voorbeeldprofiel. Pas het aan of wis het bij Profiel.</p>' : ''}</section>`;
 }
 const scale = (cur, [lo, hi]) => `<option value="">–</option>` + [1, 2, 3, 4, 5].map(i => `<option value="${i}" ${cur === i ? 'selected' : ''}>${i}${i === 1 ? ' (' + lo + ')' : i === 5 ? ' (' + hi + ')' : ''}</option>`).join('');
 function coachCard(c) {
@@ -2507,7 +2523,7 @@ const SC = {
   cardio: [[0, 'Geen', 0], [20, 'Ong. 20 min', 0], [45, 'Ong. 45 min', 0], [75, 'Ong. 75 min', 0], [105, '90+ min', 0]]
 };
 const nearest = (opts, v) => v == null ? null : opts.reduce((b, o) => Math.abs(o[0] - v) < Math.abs(b[0] - v) ? o : b)[0];
-C.recTile = el => { const r = S.recovery[today()] = S.recovery[today()] || {}; r[el.name] = +el.value; save(); toast('Opgeslagen.'); };
+C.recTile = el => { const r = S.recovery[today()] = S.recovery[today()] || {}; r[el.name] = +el.value; delete r.hs; save(); if ($('#chk')) { const m = $('#chk'); m.outerHTML = checkBody(); render(); } else toast('Opgeslagen.'); };
 F.recovery = (f, fd) => { const r = { sleep: num(fd.get('sleep'), 1), energy: num(fd.get('energy')), soreness: num(fd.get('soreness')), recovery: num(fd.get('recovery')) }; S.recovery[today()] = r; save(); render(); toast('Herstelcheck opgeslagen.'); };
 
 /* --- mijn plan --- */
@@ -2543,7 +2559,7 @@ function macroCalcUI() {
    ${r.neg ? '<div class="note warn">Eiwit en vet nemen samen meer kcal in dan je totaal, dus er blijven geen koolhydraten over. Kies minder eiwit of vet, of meer kcal.</div>' : ''}
    ${r.gk > 2.2 ? '<div class="note">Boven 2,2 g per kg is zelden nodig. Vaak helpt meer eiwit dan niet extra.</div>' : ''}${r.kcal < 1200 ? '<div class="note warn">Dit is een erg laag aantal kcal. Overleg met een arts of diëtist voordat je zo weinig eet.</div>' : ''}
    <div class="btns"><button class="btn sm" data-a="macroCalcSave">Deze doelen opslaan</button></div>`}
-  <small>Gangbare richtlijn voor actieve mensen: 1,4 tot 2,0 g eiwit per kg (${SRC.issn}). Een tekort van 10 tot 20% is voor de meeste mensen houdbaar.</small>`;
+  ${why('Waar baseert dit op?', '<p>Gangbare richtlijn voor actieve mensen: 1,4 tot 2,0 g eiwit per kg (' + SRC.issn + '). Een tekort van 10 tot 20% is voor de meeste mensen houdbaar.</p>')}`;
 }
 function planParts() {
   const p = S.profile, t = targets(), w = planWeek(), te = timeEstimate(p), tot = planTotal(), pl = S.planLength || { mode: 'auto' };
@@ -2570,8 +2586,8 @@ function planParts() {
     <p class="sub">${t.auto ? 'Voorstel van de coach, een schatting.' : (t.fromCoach ? 'Aangepast via een coachvoorstel.' : 'Jouw eigen instelling.')}</p>
     ${t.auto ? why('Waarom deze getallen?', `<p>Basisverbranding (Mifflin-St Jeor): ca. <b>${n0(t.bmr)}</b> kcal. Met jouw activiteit (factor ${t.pal.toString().replace('.', ',')}) komt je behoefte op ca. <b>${n0(t.tdee)}</b> kcal. Doelaanpassing: <b>${t.adj > 0 ? '+' : ''}${n0(t.adj * 100)}%</b>${t.floored ? ' (begrensd op ' + n0(t.floorK) + ' kcal)' : ''}. Eiwit: <b>${n1(t.gkg)} g per kg</b>, binnen de 1,4–2,0 g/kg van de ISSN. Vet: minstens 0,8 g per kg en 25% van de energie. De rest is koolhydraten. Bronnen: ${SRC.issn}, ${SRC.vc}.</p>`) : ''}`;
   const cu = t && !t.missing ? t : { kcal: '', p: '', c: '', f: '' }, sumMacro = t && !t.missing ? n0(cu.p * 4 + cu.c * 4 + cu.f * 9) : null;
-  const macroBody = macro + macroCalcUI() + `<h4>Alles zelf invullen</h4><form data-submit="macros" class="grid4"><label class="f">kcal<input name="kcal" type="number" inputmode="numeric" value="${cu.kcal}"></label><label class="f">Eiwit (g)<input name="p" type="number" inputmode="numeric" value="${cu.p}"></label><label class="f">Koolh. (g)<input name="c" type="number" inputmode="numeric" value="${cu.c}"></label><label class="f">Vet (g)<input name="f" type="number" inputmode="numeric" value="${cu.f}"></label><div class="span4 btns"><button class="btn sm">Eigen doelen opslaan</button>${S.macroOverride && calcMacros(p).kcal ? '<button type="button" class="btn ghost sm" data-a="macroReset">Terug naar voorstel</button>' : ''}</div></form>
-   ${sumMacro != null && Math.abs(sumMacro - cu.kcal) > cu.kcal * .1 ? `<div class="note warn">Je macro’s komen samen op ongeveer ${sumMacro} kcal, niet op ${cu.kcal} kcal. Controleer of de getallen bij elkaar passen.</div>` : ''}`;
+  const macroBody = macro + acc('Doelen aanpassen', '', macroCalcUI() + `<h4>Alles zelf invullen</h4><form data-submit="macros" class="grid4"><label class="f">kcal<input name="kcal" type="number" inputmode="numeric" value="${cu.kcal}"></label><label class="f">Eiwit (g)<input name="p" type="number" inputmode="numeric" value="${cu.p}"></label><label class="f">Koolh. (g)<input name="c" type="number" inputmode="numeric" value="${cu.c}"></label><label class="f">Vet (g)<input name="f" type="number" inputmode="numeric" value="${cu.f}"></label><div class="span4 btns"><button class="btn sm">Eigen doelen opslaan</button>${S.macroOverride && calcMacros(p).kcal ? '<button type="button" class="btn ghost sm" data-a="macroReset">Terug naar voorstel</button>' : ''}</div></form>
+   ${sumMacro != null && Math.abs(sumMacro - cu.kcal) > cu.kcal * .1 ? `<div class="note warn">Je macro’s komen samen op ongeveer ${sumMacro} kcal, niet op ${cu.kcal} kcal. Controleer of de getallen bij elkaar passen.</div>` : ''}`);
   const dietName = (DIETS.find(x => x[0] === (p.diet || 'omni')) || [0, ''])[1];
   return { p, t, w, te, tot, as, per, cur, endDate, lenBody, perBody, progBody, macroBody, dietName };
 }
@@ -2598,22 +2614,18 @@ function vPlan() {
   const x = planParts(), p = x.p, t = x.t, tot = x.tot, prog = PROGRAMS[p.program || 'auto'];
   const planTxt = tot ? tot + ' weken' + (x.endDate ? ', t/m ' + fmtDate(x.endDate, { day: 'numeric', month: 'short', year: 'numeric' }) : '') : 'Doorlopend';
   const macroTxt = t && !t.missing ? t.kcal + ' kcal · ' + t.p + ' g eiwit' : 'Nog niet ingesteld';
-  return `<section><p class="eyebrow">${esc(weekLine())}</p><h1>Profiel</h1>
+  return `<section><h1>Profiel</h1>
   <div class="card pf"><h3>Jij</h3><form data-submit="pname" class="stack"><label class="f">Naam<input name="name" maxlength="40" autocomplete="given-name" placeholder="Hoe mag de app je noemen?" value="${esc(p.name || '')}"></label><button class="btn sm">Naam opslaan</button></form>
    <p class="sub">${[p.age ? p.age + ' jaar' : '', p.height ? p.height + ' cm' : '', p.weight ? String(p.weight).replace('.', ',') + ' kg' : ''].filter(Boolean).join(' · ') || 'Nog geen gegevens ingevuld.'}</p><button class="btn ghost sm" data-a="editProfile" data-s="1">Gegevens aanpassen</button></div>
   <div class="card pf"><div class="pfhead"><div><small>Jouw doel</small><h2>${GOALS[p.goal]}</h2></div></div>
    ${x.te ? `<p class="sub">${esc(x.te.text)}</p>` : '<p class="sub">Geen tijdsinschatting. Vul bij je profiel een streefgewicht in als je er een wilt.</p>'}
-   ${why('Hoe komt deze inschatting tot stand?', '<p>De schatting gaat uit van een gemiddelde wekelijkse verandering van een deel van je lichaamsgewicht (afvallen 0,25–0,75%, aankomen 0,1–0,35%). Echte vooruitgang schommelt en hangt af van opvolging, slaap, stress en je beginpunt. De inschatting is een scenario, geen belofte.</p>')}<button class="btn ghost sm" data-a="editProfile" data-s="2">Doel aanpassen</button><small>Opent direct de stap met je doel. Je kunt altijd annuleren.</small></div>
-  <div class="card pf"><h3>Jouw plan</h3><div class="pfrows">
-   ${pfRow('Training', esc(prog.name) + ' · ' + S.plan.schedule.length + ' dagen', 'data-a="pfTo" data-r="training" data-k="trainTab" data-t="schema"')}
-   ${pfRow('Voeding', macroTxt, 'data-a="pfTo" data-r="voeding" data-k="foodTab" data-t="macro"')}
-   ${pfRow('Eetpatroon', esc(x.dietName), 'data-a="foodPrefs"')}</div>
-   <small>Programma, periodisering en macrodoelen pas je aan op de pagina waar ze gebruikt worden.</small></div>
+   ${why('Hoe komt deze inschatting tot stand?', '<p>De schatting gaat uit van een gemiddelde wekelijkse verandering van een deel van je lichaamsgewicht (afvallen 0,25–0,75%, aankomen 0,1–0,35%). Echte vooruitgang schommelt en hangt af van opvolging, slaap, stress en je beginpunt. De inschatting is een scenario, geen belofte.</p>')}<button class="btn ghost sm" data-a="editProfile" data-s="2">Doel aanpassen</button></div>
   ${linkCard()}
   ${acc('Duur en planning', planTxt, x.lenBody)}
   ${acc('Receptfoto’s', RP.hasKey() ? RP.count() + ' van ' + RECIPES.length : 'Uit', rpSettings())}
   ${x.as.length ? acc('Aannames', x.as.length + '', `<ul class="plain">${x.as.map(a => `<li>${esc(a)}</li>`).join('')}</ul><small>Vul je profiel aan om aannames te vervangen door je eigen gegevens.</small>`) : ''}
-  <p class="sub">Weerstandstraining op minstens 2 dagen per week en 150–300 minuten matige activiteit passen bij de WHO-richtlijn voor volwassenen (${SRC.who}). Bij pijn stop je de oefening of pas je hem aan; bij aanhoudende klachten zoek je professionele hulp.</p></section>`;
+  ${acc('Je gegevens', 'Export en wissen', pData())}
+  </section>`;
 }
 A.foodPrefs = () => { ui.foodTab = 'recepten'; go('voeding'); };
 A.setPeriod = d => { S.period = d.m; save(); render(); };
@@ -2643,7 +2655,7 @@ const parseT = v => { v = String(v || '').trim().replace(',', '.'); if (!v) retu
 function vTraining() {
   if (ui.workout) return vWorkout();
   const t = ['week', 'planner', 'schema', 'volume', 'oefeningen', 'historie'].includes(ui.trainTab) ? ui.trainTab : 'week';
-  return `<section><p class="eyebrow">${esc(weekLine())}</p><h1>Training</h1>${tabs(t, [['week', 'Week'], ['planner', 'Planner'], ['schema', 'Schema'], ['volume', 'Volume'], ['oefeningen', 'Oefeningen'], ['historie', 'Historie']], 'trainTab')}${({ week: tWeek, planner: tPlanner, schema: tSchema, volume: tVolume, oefeningen: tLibrary, historie: tHistory })[t]()}</section>`;
+  return `<section><h1>Training</h1>${tabs(t, [['week', 'Week'], ['planner', 'Planner'], ['schema', 'Schema'], ['volume', 'Volume'], ['oefeningen', 'Oefeningen'], ['historie', 'Historie']], 'trainTab')}${({ week: tWeek, planner: tPlanner, schema: tSchema, volume: tVolume, oefeningen: tLibrary, historie: tHistory })[t]()}</section>`;
 }
 A.trainTab = d => { ui.trainTab = d.t; render(); };
 /* --- planner: maandoverzicht van alles wat gepland staat --- */
@@ -2680,7 +2692,7 @@ function tPlanner() {
 A.plSel = d => { ui.plSel = d.date; ui.tDate = d.date; render(); };
 A.plMonth = d => { const f = ui.plMonth || today().slice(0, 8) + '01', x = new Date(f + 'T12:00:00'); x.setMonth(x.getMonth() + +d.n, 1); ui.plMonth = iso(x); render(); };
 
-function exList(key) { return `<ul class="plain exl">${sessionExs(key).map(id => { const r = rx(id, key); return `<li class="exli"><button class="exrow" data-a="exInfo" data-id="${id}">${exMedia(id)}<span class="extxt"><b>${esc(EX[id].name)}</b><small>${PATTERN_LABELS[EX[id].pattern]}</small></span><span class="exrx"><b>${r.sets} × ${r.reps}</b><small>sets × herh.</small></span></button></li>`; }).join('')}</ul>`; }
+function exList(key) { return `<ul class="plain exl">${sessionExs(key).map(id => { const r = rx(id, key); return `<li class="exli"><button class="exrow" data-a="exInfo" data-id="${id}">${exMedia(id)}<span class="extxt"><b>${esc(EX[id].name)}</b><small>${PATTERN_LABELS[EX[id].pattern]}</small></span><span class="exrx"><b>${r.sets} × ${r.reps}</b></span></button></li>`; }).join('')}</ul>`; }
 function tWeek() {
   const d = ui.tDate, mon = addDays(d, -wdOf(d)), days = Array.from({ length: 7 }, (_, i) => addDays(mon, i));
   const strip = `<div class="weekstrip big"><button class="nav-arrow" data-a="tShift" data-n="-7" aria-label="Vorige week">‹</button>${days.map(x => { const ss = sessionsOn(x), dn = ss.length && ss.every(s => isDone(s.from, s.key)); return `<button class="day ${x === d ? 'sel' : ''} ${x === today() ? 'today' : ''}" data-a="gotoTrainDate" data-date="${x}" aria-label="${fmtDate(x)}"><span>${DAYS[wdOf(x)]}</span><em>${new Date(x + 'T12:00:00').getDate()}</em><i class="${ss.length ? (dn ? 'done' : 'plan') : ''}"></i></button>`; }).join('')}<button class="nav-arrow" data-a="tShift" data-n="7" aria-label="Volgende week">›</button></div>`;
@@ -2711,7 +2723,7 @@ C.short = el => { S.short[el.dataset.key] = el.checked; save(); render(); };
 function tSchema() {
   const p = S.profile, prog = PROGRAMS[p.program || 'auto'], per = PERIODS[S.period || 'lineair'];
   const dayOfKey = Object.fromEntries(S.plan.schedule.map(s => [s.key, DAYS_LONG[s.wd]])), xp = planParts();
-  return `<div class="card"><div class="row"><div><b>${prog.name}</b><small>${prog.desc}</small></div></div><p class="sub">Periodisering: ${per.name}. ${esc(weekLine())}</p></div>${acc('Programma en trainingsdagen', esc(prog.name) + ' · ' + S.plan.schedule.length + ' dagen', xp.progBody)}${acc('Periodisering', esc(per.name.split(' (')[0]), xp.perBody)}
+  return `${acc('Programma en trainingsdagen', esc(prog.name) + ' · ' + S.plan.schedule.length + ' dagen', xp.progBody)}${acc('Periodisering', esc(per.name.split(' (')[0]), xp.perBody)}
   ${S.plan.sessions.map(s => `<div class="card"><div class="row"><div><b>${esc(s.name)}</b><small>${dayOfKey[s.key] || ''} · ${sessionMeta(s, s.key)}</small></div></div>${s.type === 'kracht' ? exList(s.key) : s.type === 'segments' ? `<p class="sub">${esc(s.info)}</p><ul class="plain exl">${s.segs.map(x => `<li><span>${esc(x)}</span></li>`).join('')}</ul>` : '<p class="sub">Duurtraining of intervallen op een zelfgekozen vorm.</p>'}</div>`).join('')}${S.cardioWeek.length ? `<div class="card"><h3>Vaste cardio</h3><ul class="plain lst">${S.cardioWeek.map(c => `<li><span><b>${DAYS_LONG[c.wd]}</b> · ${esc(c.name)}</span><button class="link" data-a="weeklyDel" data-id="${c.id}">Verwijder</button></li>`).join('')}</ul><small>Voeg cardio toe via Week, kies een dag en zet herhalen aan.</small></div>` : ''}${p.program === 'hyrox' ? '<h3 class="sect">Hyrox</h3>' + tHyrox() : ''}`;
 }
 function tHyrox() {
@@ -2981,15 +2993,16 @@ A.avoidDo = d => { if (!S.draft || !ui.workout) { closeModal(); return; } const 
 const dietTag = r => { const f = recFlags(r); return !f.animal ? 'Vegan' : (!f.meat && !f.fish) ? 'Vegetarisch' : !f.meat ? 'Met vis' : ''; };
 const NL = { ontbijt: 'Ontbijt', lunch: 'Lunch', diner: 'Diner', tussendoor: 'Tussendoortje', alle: 'Alles' };
 function vFood() {
-  const t = ui.foodTab;
-  return `<section><p class="eyebrow">Plannen en registreren</p><h1>Voeding</h1>${tabs(t, [['dag', 'Dag'], ['week', 'Week'], ['macro', 'Macro’s'], ['prep', 'Mealprep'], ['recepten', 'Recepten'], ['eigen', 'Eigen']], 'foodTab')}${t === 'dag' ? fDay() : t === 'week' ? calReview() + fWeek() : t === 'macro' ? fMacro() : t === 'prep' ? fPrep() : t === 'recepten' ? fRecipes() : fCustom()}</section>`;
+  const t = ui.foodTab === 'eigen' ? 'recepten' : ui.foodTab;
+  return `<section><h1>Voeding</h1>${tabs(t, [['dag', 'Dag'], ['week', 'Week'], ['macro', 'Macro’s'], ['prep', 'Mealprep'], ['recepten', 'Recepten']], 'foodTab')}${t === 'dag' ? fDay() : t === 'week' ? calReview() + fWeek() : t === 'macro' ? fMacro() : t === 'prep' ? fPrep() : acc('Eigen maaltijden', S.custom.length ? S.custom.length + '' : '', fCustom(), ui.foodTab === 'eigen') + fRecipes()}</section>`;
 }
 function fMacro() { const x = planParts(); return `<div class="card"><h3>Macrodoelen</h3>${x.macroBody}</div><div class="card slim"><div class="row"><div><b>Eetpatroon</b><small>${esc(x.dietName)}</small></div><button class="btn ghost sm" data-a="foodPrefs">Wijzig</button></div></div>`; }
 function calReview() {
   const p = S.profile, t = targets(); if (!p || !t || t.missing || (S.comp && S.comp.active)) return '';
   const cp = coachProposal(), rec = cp && cp.kind === 'macro' ? cp.delta : 0, base = t.kcal;
+  if (!cp || cp.kind !== 'macro') return '';
   const opts = [[-150, 'Iets minder', 'Als je gewicht niet daalt zoals gepland.'], [0, 'Hetzelfde houden', 'Herhaal vorige week.'], [150, 'Iets meer', 'Als je moe bent of sneller afvalt dan past.']];
-  return `<div class="card coach"><p class="eyebrow">Wekelijkse review</p><h3>Kies je calorieën voor komende week</h3><p class="sub">Nu ${n0(base)} kcal per dag. ${cp && cp.why ? esc(cp.why) : 'Zonder genoeg wegingen houden we het bij je huidige doel.'}</p>
+  return `<div class="card coach"><h3>Calorieën voor komende week</h3><p class="sub">Nu ${n0(base)} kcal per dag. ${cp && cp.why ? esc(cp.why) : 'Zonder genoeg wegingen houden we het bij je huidige doel.'}</p>
    ${opts.map(([d, l, h]) => `<button class="opt ${d === rec ? 'cur' : ''}" data-a="kcalPick" data-d="${d}"><b>${l}: ${n0(base + d)} kcal${d === rec ? ' <span class="pill ok">Aanbevolen</span>' : ''}</b><small>${h}</small></button>`).join('')}</div>`;
 }
 A.kcalPick = d => { const delta = +d.d, fl = (calcMacros(S.profile).floorK || 1200); if (delta < 0 && targets().kcal + delta < fl) { toast('Dat komt onder een redelijke ondergrens.'); return; } if (delta) applyMacroDelta(delta); else { S.coachCheck = today(); save(); } render(); toast(delta ? 'Calorieën aangepast voor komende week.' : 'Je houdt hetzelfde plan.'); };
@@ -3155,7 +3168,7 @@ function fWeek() {
   return `<div class="datenav"><button data-a="fDate" data-n="-7" aria-label="Vorige week">‹</button><div><b>Week van ${fmtDate(mon, { day: 'numeric', month: 'long' })}</b></div><button data-a="fDate" data-n="7" aria-label="Volgende week">›</button></div>
   <div class="card"><div class="wtable" role="table"><div class="wrow head" role="row"><span>Dag</span><span>Gepland</span><span>Gegeten</span></div>${days.map(x => { const it = (S.food[x] || { items: [] }).items, p = sumNut(it), e = sumNut(it.filter(i => i.eaten));
     return `<button class="wrow" role="row" data-a="fOpenDay" data-date="${x}"><span><b>${DAYS[wdOf(x)]}</b> ${new Date(x + 'T12:00:00').getDate()}</span><span>${it.length ? kc(p.kcal) + ' kcal · ' + n0(p.p) + ' g' : '–'}${it.length && t && !t.missing ? meter(p.kcal, t.kcal, 'Gepland') : ''}</span><span>${e.kcal ? kc(e.kcal) + ' kcal · ' + n0(e.p) + ' g' : '–'}</span></button>`; }).join('')}</div>${t && !t.missing ? `<small>Doel per dag: ${t.kcal} kcal en ${t.p} g eiwit.</small>` : ''}</div>
-  <div class="card"><h3>Weekplanning maken</h3><p class="sub">De app stelt voor elke dag van deze week maaltijden voor uit je recepten, passend bij je dagdoel, eetpatroon en allergenen. Daarna pas je alles aan zoals je wilt. Gegeten maaltijden blijven altijd staan.</p><button class="btn" data-a="weekPlanAsk">Maak weekplanning</button></div>`;
+  <div class="card"><h3>Weekplanning maken</h3><p class="sub">Maaltijden voor elke dag, passend bij je doelen. Daarna pas je alles aan.</p><button class="btn" data-a="weekPlanAsk">Maak weekplanning</button></div>`;
 }
 A.weekPlanAsk = () => {
   const mon = addDays(ui.foodDate, -wdOf(ui.foodDate)), days = Array.from({ length: 7 }, (_, i) => addDays(mon, i)).filter(x => x >= today());
@@ -3174,7 +3187,7 @@ A.weekPlanDo = d => {
 function fPrep() {
   const mon = addDays(ui.foodDate, -wdOf(ui.foodDate)), pp = prepPlan(mon);
   const nav = `<div class="datenav"><button data-a="fDate" data-n="-7" aria-label="Vorige week">‹</button><div><b>Week van ${fmtDate(mon, { day: 'numeric', month: 'long' })}</b><small>Mealprep en boodschappen</small></div><button data-a="fDate" data-n="7" aria-label="Volgende week">›</button></div>`;
-  if (!pp.recipes.length) return nav + '<div class="card"><p>Er zijn deze week nog geen maaltijden gepland. Plan je dagen bij Dag of Week, dan verschijnt hier per maaltijd wat je moet maken en wat je moet kopen.</p><button class="btn sm" data-a="foodTab" data-t="week">Naar Week, maak weekplanning</button></div>';
+  if (!pp.recipes.length) return nav + '<div class="card"><p>Nog geen maaltijden gepland deze week. Plan ze bij Week, dan zie je hier wat je moet maken en kopen.</p><button class="btn sm" data-a="foodTab" data-t="week">Naar Week, maak weekplanning</button></div>';
   const groups = {}; Object.entries(pp.total).forEach(([id, g]) => (groups[ingGroup(id)] = groups[ingGroup(id)] || []).push({ id, g }));
   const shopTotal = Object.keys(pp.total).length, shopDone = Object.keys(pp.total).filter(id => S.shop[mon + ':' + id]).length;
   return nav + `<p class="sub">${pp.meals} maaltijden uit ${pp.recipes.length} recepten. Hoeveelheden zijn afgerond op 5 g.</p>` +
@@ -3190,7 +3203,7 @@ C.shop = el => { S.shop[el.dataset.k] = el.checked; save(); const s = el.closest
 A.fOpenDay = d => { ui.foodDate = d.date; ui.foodTab = 'dag'; render(); };
 
 function fCustom() {
-  return `<div class="btns"><button class="btn sm" data-a="customNew">+ Eigen maaltijd</button></div><p class="sub">Eigen maaltijden volgen niet de regel van 30 g eiwit. Foto’s blijven privé op dit apparaat; de app leest er geen voedingswaarden of ingrediënten uit af.</p>
+  return `<div class="btns"><button class="btn sm" data-a="customNew">+ Eigen maaltijd</button></div>
   ${S.custom.length ? S.custom.map(c => `<div class="card"><div class="row"><div><b>${esc(c.name)}</b><small>${esc(c.portion || 'per portie')} · ${kc(c.kcal)} kcal · ${n0(c.p)} g eiwit · ${n0(c.c)} g koolh. · ${n0(c.f)} g vet${c.fav ? ' · favoriet' : ''}</small></div></div>${c.photo ? `<img class="cphoto" src="${c.photo}" alt="Foto van ${esc(c.name)}">` : ''}${c.ingredients ? `<p>${esc(c.ingredients).replace(/\n/g, '<br>')}</p>` : ''}${c.note ? `<p class="sub">${esc(c.note)}</p>` : ''}<div class="btns"><button class="btn ghost sm" data-a="customEdit" data-id="${c.id}">Bewerk</button><button class="btn ghost sm" data-a="customDel" data-id="${c.id}">Verwijder</button></div></div>`).join('') : '<div class="card"><p>Nog geen eigen maaltijden. Voeg een maaltijd toe met naam, ingrediënten en voedingswaarden, optioneel met foto.</p></div>'}`;
 }
 function customForm(c) {
@@ -3594,10 +3607,9 @@ function tVolume() {
      <div class="vbar" role="img" aria-label="${g}: ${x.done} van ${x.plan} sets"><i class="rng" style="left:${pc(lm[0])}%;width:${(pc(lm[1]) - pc(lm[0])).toFixed(1)}%"></i><i class="pl" style="width:${pc(x.plan)}%"></i><i class="dn" style="width:${pc(x.done)}%"></i></div>
      ${adj ? `<small>Aanpassing door je feedback: ${adj > 0 ? '+' : '−'}${Math.abs(adj)} set${Math.abs(adj) > 1 ? 's' : ''} op je eerste oefening voor deze spiergroep.</small>` : ''}</div>`; }).join('');
   return `<div class="datenav"><button data-a="tShift" data-n="-7" aria-label="Vorige week">‹</button><div><b>Week van ${fmtDate(mon, { day: 'numeric', month: 'long' })}</b><small>Sets per spiergroep</small></div><button data-a="tShift" data-n="7" aria-label="Volgende week">›</button></div>
-  <div class="card"><p class="sub">De balk toont de geplande sets (licht) en wat je hebt gedaan (vol). Het gekleurde vak is het gangbare bereik voor jouw ervaring. Na elke training geef je feedback, en de app past het volume aan.</p>${rows || '<p>Geen krachttraining gepland deze week.</p>'}
+  ${mon === mondayOfD(today()) ? `<div class="card">${bodyMap()}</div>` : ''}<div class="card"><p class="sub">Licht: gepland. Vol: gedaan. Gekleurd vak: richtbereik.</p>${rows || '<p>Geen krachttraining gepland deze week.</p>'}
    ${Object.values(S.volAdj).some(x => x) ? '<button class="btn ghost sm" data-a="volReset">Aanpassingen terugzetten</button>' : ''}</div>
-  ${acc('Hoe werkt het?', '', '<p>Na elke krachttraining geef je per spiergroep aan hoe de pomp was, hoe je spieren aanvoelden toen je begon en hoe je presteerde. Weinig pomp met goed herstel betekent dat er ruimte is voor een extra set. Veel spierpijn of slechtere prestaties betekent een set minder. In een herstelweek verandert er niets. De bereiken zijn algemene richtlijnen uit onderzoek naar trainingsvolume (zoals Schoenfeld en Israetel) en geen harde regels.</p>')}
-  <h3 class="sect">Persoonlijke records</h3>${rl.length ? `<div class="card"><ul class="plain lst">${rl.map(([id, r]) => `<li><span><button class="link" data-a="exInfo" data-id="${id}">${esc(EX[id] ? EX[id].name : id)}</button><small> ${n1(r.w)} kg × ${r.r} · ${fmtDate(r.date)}</small></span><b>${n0(r.best)} kg${r.best > r.first + .4 ? ' <em class="up">+' + n0(r.best - r.first) + '</em>' : ''}</b></li>`).join('')}</ul><small>Geschatte 1RM volgens de Epley-formule, alleen voor sets van maximaal 12 herhalingen.</small></div>` : '<div class="card"><p>Records verschijnen zodra je krachttrainingen met gewicht logt.</p></div>'}`;
+  ${acc('Hoe werkt het?', '', '<p>Na elke krachttraining geef je per spiergroep aan hoe de pomp was, hoe je spieren aanvoelden toen je begon en hoe je presteerde. Weinig pomp met goed herstel betekent dat er ruimte is voor een extra set. Veel spierpijn of slechtere prestaties betekent een set minder. In een herstelweek verandert er niets. De bereiken zijn algemene richtlijnen uit onderzoek naar trainingsvolume (zoals Schoenfeld en Israetel) en geen harde regels.</p>')}`;
 }
 A.volReset = () => { S.volAdj = {}; save(); render(); };
 function weekReview() {
@@ -3780,18 +3792,18 @@ function weekLoad() {
     if (hard >= 2) warn.push(`${DAYS_LONG[wdOf(d)]}: ${hard} zware sessies op één dag.`); else if (n >= 3) warn.push(`${DAYS_LONG[wdOf(d)]}: ${n} sessies op één dag.`);
     return `<div class="wl t${tone} ${d === today() ? 'today' : ''}"><b>${DAYS[wdOf(d)]}</b><em>${n || '–'}</em><small>${ss.map(s => esc(sessionDef(s.key).name.replace(/^[^:]+: /, ''))).slice(0, 2).join(', ') || 'rust'}</small></div>`; }).join('');
   if (tot >= 7) warn.push('Je hebt 7 of meer sessies deze week. Zorg voor minstens één echte rustdag.');
-  return `<div class="card"><h3>Je week samen</h3><div class="wload">${cells}</div><p class="sub">Alle disciplines komen in één weekplan. Groen is 1 sessie, geel is 2 en rood is te vol (3 sessies of 2 zware sessies op één dag).</p>${warn.length ? `<div class="note warn"><b>Let op</b><ul>${warn.map(w => `<li>${esc(w)}</li>`).join('')}</ul>Verplaats een sessie via Training > Week > Meer > Verplaats naar andere dag.</div>` : '<p class="sub"><b>Je weekbelasting ziet er verdeeld uit.</b></p>'}</div>`;
+  return `<div class="card"><h3>Je week samen</h3><div class="wload">${cells}</div>${warn.length ? `<div class="note warn"><b>Let op</b><ul>${warn.map(w => `<li>${esc(w)}</li>`).join('')}</ul>Verplaats een sessie via Training > Week > Meer > Verplaats naar andere dag.</div>` : '<p class="sub"><b>Je weekbelasting ziet er verdeeld uit.</b></p>'}</div>`;
 }
 function discStatus(id) {
   const dc = D()[id]; if (!dc) return 'Niet gestart'; const w = dWeek(dc, today());
   return w > dc.weeks ? 'Afgerond' : w < 1 ? `Start ${fmtDate(dc.start, { day: 'numeric', month: 'long' })}` : `Actief · week ${w} van ${dc.weeks} · ${dc.role === 'support' ? 'ondersteunend' : 'hoofddoel'}`;
 }
 
-const DCARD = { run: ['#5CC8FF', 'walklunge_0', 'Duur · tempo · intervallen', '<path d="M13 4.5a1.5 1.5 0 1 0 0 .01M9 21l2.5-5.5L14 17v4M7 12l3-3.5 4 1.5 2 3h3M11.5 15.5L10 9"/>'],
-  pl: ['#FFD166', 'backsquat_1', 'Squat · bench · deadlift', '<path d="M2 12h20M5 8v8M8 6v12M16 6v12M19 8v8"/>'],
-  hx: ['#FF8A4C', 'sledpush_0', 'Run · stations · race', '<path d="M8 6h8l2 4H6zM6 10l-1 9h14l-1-9M12 13v3"/>'],
-  beg: ['#6FD6A0', 'farmers_0', 'Wandelen · basiskracht · gewoontes', '<path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/>'],
-  bb: ['#FF5C8A', 'lateraldb_1', 'Fases · peak week · posing', '<path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 3M17 6h3a3 3 0 0 1-3 3"/>'] };
+const DCARD = { run: ['#5CC8FF', 'd_run', 'Duur · tempo · intervallen', '<path d="M13 4.5a1.5 1.5 0 1 0 0 .01M9 21l2.5-5.5L14 17v4M7 12l3-3.5 4 1.5 2 3h3M11.5 15.5L10 9"/>'],
+  pl: ['#FFD166', 'd_pl', 'Squat · bench · deadlift', '<path d="M2 12h20M5 8v8M8 6v12M16 6v12M19 8v8"/>'],
+  hx: ['#FF8A4C', 'd_hx', 'Run · stations · race', '<path d="M8 6h8l2 4H6zM6 10l-1 9h14l-1-9M12 13v3"/>'],
+  beg: ['#6FD6A0', 'd_beg', 'Wandelen · basiskracht · gewoontes', '<path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/>'],
+  bb: ['#FF5C8A', 'd_bb', 'Fases · peak week · posing', '<path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 3M17 6h3a3 3 0 0 1-3 3"/>'] };
 function discCard(id, name, blurb, status, active, act) {
   const [col, img, tag, ic] = DCARD[id] || ['var(--pg)', '', '', ''];
   return `<button class="dcard ${active ? 'act' : ''}" style="--dc:${col}" data-a="${act}" data-id="${id}" aria-label="${esc(name)}: ${esc(status)}">
@@ -3801,10 +3813,10 @@ function discCard(id, name, blurb, status, active, act) {
 }
 function discHub() {
   const c = S.comp && S.comp.active;
-  return `<section><p class="eyebrow">Alles rond je doelen</p><h1>Disciplines</h1><p class="lead">Kies een of meer disciplines. Elke discipline heeft eigen fases, training en voortgang, en alles komt samen in je weekplan.</p>${weekLoad()}${hubCompat()}
+  return `<section><h1>Disciplines</h1>${activeDisc().length || (S.comp && S.comp.active) ? weekLoad() : ''}${hubCompat()}
   <div class="dcards">${Object.entries(DISC).map(([id, d]) => discCard(id, d.name, d.blurb, discStatus(id), !!D()[id], 'discGo')).join('')}
    ${discCard('bb', 'Bodybuilding', 'Voorbereiding op een wedstrijd met fases, peak week, check-ins en posing.', c ? 'Actief · ' + Math.max(0, Math.ceil(diffDays(today(), S.comp.date) / 7)) + ' weken tot de show' : 'Niet gestart', !!c, 'discBB')}</div>
-  <p class="sub">Dit zijn algemene trainingsschema’s op basis van gangbare principes. Ze vervangen geen persoonlijke begeleiding. Heb je klachten of een aandoening, overleg dan eerst met je huisarts.</p></section>`;
+  <small class="fine">Algemene schema’s, geen persoonlijke begeleiding. Bij klachten eerst naar je huisarts.</small></section>`;
 }
 function hubCompat() {
   const act = activeDisc(); if (act.length < 2) return '';
@@ -3959,7 +3971,7 @@ function vDisc() {
   if (id === 'bb') return `<section><button class="btn ghost sm" data-a="discBack">‹ Disciplines</button><p class="eyebrow">Bodybuilding</p><h1>Wedstrijd</h1>${syncBanner()}${vComp()}</section>`;
   if (id && DISC[id]) return D()[id] ? discChapter(id) : discSetup(id);
   const top = ui.dTop === 'goal' ? 'goal' : 'disc';
-  if (top === 'goal') return `<section><p class="eyebrow">Alles rond je doelen</p><h1>Doelen</h1>${tabs(top, [['disc', 'Disciplines'], ['goal', 'Mijn doel']], 'dTop')}${syncBanner()}${vGoalBasic().replace(/^<section><p class="eyebrow">([^<]*)<\/p><h1>(.*?)<\/h1>/, '<p class="eyebrow">$1</p><h2>$2</h2>').replace(/<\/section>$/, '')}</section>`;
+  if (top === 'goal') return `<section><h1>Doelen</h1>${tabs(top, [['disc', 'Disciplines'], ['goal', 'Mijn doel']], 'dTop')}${syncBanner()}${vGoalBasic().replace(/^<section><p class="eyebrow">([^<]*)<\/p><h1>(.*?)<\/h1>/, '<p class="eyebrow">$1</p><h2>$2</h2>').replace(/<\/section>$/, '')}</section>`;
   return discHub().replace('<h1>Disciplines</h1>', '<h1>Doelen</h1>' + tabs(top, [['disc', 'Disciplines'], ['goal', 'Mijn doel']], 'dTop'));
 }
 
@@ -3979,7 +3991,7 @@ function bars(vals, labels, o = {}) {
 }
 function weightChart() {
   const pts = S.body.filter(b => b.weight).sort((a, b) => a.date.localeCompare(b.date)).slice(-40);
-  if (pts.length < 2) return '<p class="sub">Een grafiek verschijnt vanaf twee wegingen.</p>';
+  if (pts.length < 2) return '';
   const W = 600, H = 220, L = 44, R = 12, T = 12, B = 28, d0 = pts[0].date, span = Math.max(1, diffDays(d0, pts[pts.length - 1].date));
   const tw = S.profile && S.profile.targetWeight, ws = pts.map(p => p.weight), mn = Math.floor(Math.min(...ws, tw || 1e9) - .5), mx = Math.ceil(Math.max(...ws, tw || 0) + .5), rg = mx - mn;
   const X = d => L + diffDays(d0, d) / span * (W - L - R), Y = v => T + (1 - (v - mn) / rg) * (H - T - B);
@@ -4006,7 +4018,7 @@ function weightSummary() {
 function trendText() {
   const tp = weightPts(28);
   if (tp.length >= 3 && diffDays(tp[0].date, tp[tp.length - 1].date) >= 14) { const s = slope(tp); return `<p><b>Trend afgelopen ${diffDays(tp[0].date, tp[tp.length - 1].date)} dagen:</b> ongeveer ${s > 0 ? '+' : s < 0 ? '−' : ''}${n1(Math.abs(s))} kg per week, gebaseerd op ${tp.length} metingen. Dagelijkse schommelingen door vocht en eten zijn normaal.</p>`; }
-  return '<p class="sub">Een trend verschijnt na minstens 3 metingen verspreid over 14 dagen. Eén weging zegt weinig en wordt niet als trend gepresenteerd.</p>';
+  return S.body.some(b => b.weight) ? '<p class="sub">Je trend verschijnt na 3 wegingen verspreid over 2 weken.</p>' : '';
 }
 function weekStats(n) {
   const mon0 = addDays(today(), -wdOf(today())), out = [];
@@ -4018,8 +4030,8 @@ function weekStats(n) {
 const MEAS = [['waist', 'Taille'], ['chest', 'Borst'], ['hips', 'Heupen'], ['arm', 'Bovenarm'], ['thigh', 'Bovenbeen']];
 ui.cmp = { a: null, b: null, mode: 'overlay', op: 50, wipe: 50, sel: 'b', pa: { sc: 100, dx: 0, dy: 0, rot: 0 }, pb: { sc: 100, dx: 0, dy: 0, rot: 0 } }; ui.progTab = 'overzicht';
 function vProgress() {
-  const t = ['overzicht', 'lichaam', 'fotos', 'data'].includes(ui.progTab) ? ui.progTab : 'overzicht';
-  return `<section><p class="eyebrow">Trends, geen oordeel</p><h1>Voortgang</h1>${tabs(t, [['overzicht', 'Overzicht'], ['lichaam', 'Lichaam'], ['fotos', 'Foto’s'], ['data', 'Gegevens']], 'progTab')}${({ overzicht: pOverview, lichaam: pBody, fotos: pPhotos, data: pData })[t]()}</section>`;
+  const t = ['overzicht', 'lichaam', 'fotos'].includes(ui.progTab) ? ui.progTab : 'overzicht';
+  return `<section><h1>Voortgang</h1>${tabs(t, [['overzicht', 'Overzicht'], ['lichaam', 'Lichaam'], ['fotos', 'Foto’s']], 'progTab')}${({ overzicht: pOverview, lichaam: pBody, fotos: pPhotos })[t]()}</section>`;
 }
 A.progTab = d => { ui.progTab = d.t; render(); };
 function pOverview() {
@@ -4032,7 +4044,7 @@ function pOverview() {
   return `<div class="card"><h3>Beweging deze week</h3>
    <div class="mrow"><span>Cardio en wandelen</span><b>${cur.cardioMin}</b><small>van 150 min</small></div>${meter(cur.cardioMin, 150, 'Minuten cardio')}
    <div class="mrow"><span>Krachtdagen</span><b>${cur.strengthDays}</b><small>van minstens 2</small></div>${meter(cur.strengthDays, 2, 'Krachtdagen')}
-   <small>Richtwaarde voor volwassenen volgens de WHO: 150–300 minuten matige activiteit en spierversterkende activiteit op minstens 2 dagen per week. ${SRC.who}.</small></div>
+   ${why('Waar komen deze richtwaarden vandaan?', '<p>De WHO adviseert volwassenen 150–300 minuten matige activiteit per week en spierversterkende activiteit op minstens 2 dagen (' + SRC.who + ').</p>')}</div>
   ${acc('Trainingen en volume', `${cur.n} deze week`, `<h4>Trainingen per week</h4>${bars(ws.map(w => w.n), lbl, { aria: 'Aantal trainingen per week, laatste 8 weken', max: Math.max(4, ...ws.map(w => w.n)) })}<h4>Volume per week</h4>${bars(ws.map(w => w.vol / 1000), lbl, { aria: 'Trainingsvolume in ton per week', fmt: v => n1(v) })}<small>Volume is gewicht × herhalingen in ton (1 ton = 1000 kg). Alleen geregistreerde sets tellen mee.</small>`, true)}
   ${acc('Voeding', ad.some(w => w.pl) ? n0(ad[ad.length - 1].pl ? ad[ad.length - 1].ea / ad[ad.length - 1].pl * 100 : 0) + '% deze week gegeten' : 'Nog geen data', ad.some(w => w.pl) ? bars(ad.map(w => w.pl ? w.ea / w.pl * 100 : 0), ad.map(w => new Date(w.mon + 'T12:00:00').getDate() + '/' + (new Date(w.mon + 'T12:00:00').getMonth() + 1)), { max: 100, aria: 'Percentage geplande maaltijden dat is gegeten, per week', fmt: v => Math.round(v) + '%' }) : '<p class="sub">Plan maaltijden en vink af wat je eet. Dan zie je hier hoeveel van je planning je hebt geregistreerd.</p>')}
   ${acc('Stappen', stepsAvg.length ? 'gem. ' + n0(stepsAvg.reduce((a, b) => a + b, 0) / stepsAvg.length).toLocaleString('nl-NL') : 'Nog geen data', bars(days7.map(d => S.steps[d] || 0), days7.map(d => DAYS[wdOf(d)]), { ref: stepsGoal, refLabel: 'richtwaarde', max: Math.max(stepsGoal * 1.2, ...days7.map(d => S.steps[d] || 0)), aria: 'Stappen per dag', fmt: v => (v / 1000).toFixed(1).replace('.', ',') + 'k' }) + '<small>Stappen voer je zelf in op Home. De app kan ze in deze weergave niet automatisch tellen.</small>')}
@@ -4041,10 +4053,9 @@ function pOverview() {
 function pBody() {
   const wl = S.body.filter(b => b.weight).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 6);
   const ml = S.body.filter(b => MEAS.some(([k]) => b[k])).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4);
-  return `${weightSummary()}<div class="card"><h3>Gewicht <small class="opt">optioneel</small></h3>${weightChart()}${trendText()}
+  return `${weightSummary()}<div class="card"><h3>Gewicht</h3>${weightChart()}${trendText()}
    <form data-submit="weight" class="inline"><label class="f">Datum<input name="date" type="date" value="${today()}" max="${today()}"></label><div class="f"><span>Gewicht (kg)</span>${wInput('pw', lastW(), true)}</div><button class="btn sm">Toevoegen</button></form>
-   ${wl.length ? `<ul class="plain lst">${wl.map(b => `<li><span>${fmtDate(b.date)}</span><b>${n1(b.weight)} kg</b><button class="link" data-a="delBody" data-id="${b.id}">Verwijder</button></li>`).join('')}</ul>` : ''}
-   <small>Meten is optioneel. Je plan werkt ook zonder weegschaal. Kijk ook naar kracht, energie en herstel.</small></div>
+   ${wl.length ? `<ul class="plain lst">${wl.map(b => `<li><span>${fmtDate(b.date)}</span><b>${n1(b.weight)} kg</b><button class="link" data-a="delBody" data-id="${b.id}">Verwijder</button></li>`).join('')}</ul>` : ''}</div>
   ${acc('Lichaamsmetingen', ml.length ? 'Laatste: ' + fmtDate(ml[0].date) : 'Optioneel', `<form data-submit="measure" class="grid3"><label class="f">Datum<input name="date" type="date" value="${today()}" max="${today()}"></label>${MEAS.map(([k, l]) => `<label class="f">${l} (cm)<input name="${k}" type="number" step="0.5" min="10" max="250" inputmode="decimal"></label>`).join('')}<button class="btn sm span3">Opslaan</button></form>
    ${ml.length ? `<div class="scrollx"><table class="tbl"><thead><tr><th>Datum</th>${MEAS.map(([, l]) => `<th>${l}</th>`).join('')}<th></th></tr></thead><tbody>${ml.map(b => `<tr><td>${fmtDate(b.date)}</td>${MEAS.map(([k]) => `<td>${b[k] ? n1(b[k]) : '–'}</td>`).join('')}<td><button class="link" data-a="delBody" data-id="${b.id}">Verwijder</button></td></tr>`).join('')}</tbody></table></div>` : ''}`)}`;
 }
@@ -4089,13 +4100,13 @@ A.demoDel = () => { S.photos = S.photos.filter(p => !p.demo); ui.cmp.a = ui.cmp.
 function pPhotos() {
   const ph = [...S.photos].sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id)), hasDemo = ph.some(p => p.demo);
   return `<div class="card"><h3>Vergelijk je foto’s</h3>${photoCompare(ph)}</div>
-  ${acc('Foto toevoegen', ph.length + ' foto’s', `<p class="sub">Foto’s blijven op dit apparaat en worden nergens gedeeld. Je kunt ze altijd verwijderen. Maak foto’s steeds op dezelfde plek, met hetzelfde licht en dezelfde afstand.</p><form data-submit="photo" class="grid3"><label class="f">Zicht<select name="angle"><option value="voor">Voorkant</option><option value="zij">Zijkant</option><option value="achter">Achterkant</option></select></label><label class="f">Datum<input name="date" type="date" value="${today()}" max="${today()}"></label><label class="f">Foto<input name="file" type="file" accept="image/*" required></label><button class="btn sm span3">Foto opslaan</button></form>
-   <div class="btns">${hasDemo ? '<button class="btn sm" data-a="demoRefresh">Nieuwe voorbeeldfoto’s ophalen</button><button class="btn ghost sm" data-a="demoDel">Voorbeeldfoto’s verwijderen</button>' : '<button class="btn ghost sm" data-a="demoPhotos">Voorbeeldfoto’s toevoegen</button>'}</div>${RP.hasKey() ? '' : '<div class="note">Er is nog geen Unsplash-sleutel ingesteld, dus je krijgt getekende figuren. Voor echte atletenfoto’s: Profiel, Receptfoto’s, sleutel plakken. Dat werkt alleen in de losse app, niet in het Artifact.</div>'}<small>Voorbeeldfoto’s zijn alleen om de vergelijking uit te proberen. Met een Unsplash-sleutel (Profiel, Receptfoto’s) zijn het foto’s van twee verschillende atleten, anders getekende figuren.</small>`, !ph.length)}
-  ${ph.length ? `<div class="pgrid">${[...ph].reverse().map(p => `<figure><img src="${p.data}" alt="Voortgangsfoto ${p.angle}kant van ${fmtDate(p.date)}"><figcaption>${fmtDate(p.date)} · ${p.angle}${p.demo ? ' · voorbeeld' : ''}${p.credit ? ` · <a href="${esc(p.credit.link)}" target="_blank" rel="noopener">${esc(p.credit.name)}</a> op Unsplash` : ''}<button class="link" data-a="delPhoto" data-id="${p.id}">Verwijder</button></figcaption></figure>`).join('')}</div>` : ''}`;
+  ${acc('Foto toevoegen', ph.length + ' foto’s', `<p class="sub">Foto’s blijven op dit apparaat. Tip: zelfde plek, licht en afstand.</p><form data-submit="photo" class="grid3"><label class="f">Zicht<select name="angle"><option value="voor">Voorkant</option><option value="zij">Zijkant</option><option value="achter">Achterkant</option></select></label><label class="f">Datum<input name="date" type="date" value="${today()}" max="${today()}"></label><label class="f">Foto<input name="file" type="file" accept="image/*" required></label><button class="btn sm span3">Foto opslaan</button></form>
+`, !ph.length)}
+  ${ph.length ? `<div class="pgrid">${[...ph].reverse().map(p => `<figure><img src="${p.data}" alt="Voortgangsfoto ${p.angle}kant van ${fmtDate(p.date)}"><figcaption>${fmtDate(p.date)} · ${p.angle}<button class="link" data-a="delPhoto" data-id="${p.id}">Verwijder</button></figcaption></figure>`).join('')}</div>` : ''}`;
 }
 function cmpTf(p) { return `translate(${p.dx}%,${p.dy}%) rotate(${p.rot}deg) scale(${p.sc / 100})`; }
 function photoCompare(ph) {
-  if (ph.length < 2) return `<p class="sub">Voeg minstens twee foto’s toe om je transformatie te vergelijken. Wil je het eerst proberen? Open hieronder “Foto toevoegen” en kies voorbeeldfoto’s.</p>${ph.length === 0 ? '<button class="btn sm" data-a="demoPhotos">Voorbeeldfoto’s toevoegen</button>' : ''}`;
+  if (ph.length < 2) return `<p class="sub">Voeg minstens twee foto’s toe om ze te vergelijken.</p>`;
   const c = ui.cmp; if (!ph.some(p => p.id === c.a)) c.a = ph[0].id; if (!ph.some(p => p.id === c.b)) c.b = ph[ph.length - 1].id;
   const A_ = ph.find(p => p.id === c.a), B_ = ph.find(p => p.id === c.b), opts = v => ph.map(p => `<option value="${p.id}" ${p.id === v ? 'selected' : ''}>${fmtDate(p.date, { day: 'numeric', month: 'short', year: 'numeric' })} · ${p.angle}</option>`).join('');
   const days = Math.abs(diffDays(A_.date, B_.date)), sp = c['p' + c.sel];
@@ -4110,7 +4121,7 @@ function photoCompare(ph) {
   const who = `<div class="cmp-who" role="group" aria-label="Welke foto verstellen">${[['a', 'Foto 1 verstellen'], ['b', 'Foto 2 verstellen']].map(([k, l]) => `<button class="${c.sel === k ? 'on' : ''}" data-a="cmpPick" data-w="${k}">${l}</button>`).join('')}</div>`;
   const ctl = `<div class="cmp-ctl"><label class="f">Schaal<input type="range" data-r="sc" min="50" max="200" value="${sp.sc}"></label><label class="f">Draaien<input type="range" data-r="rot" min="-20" max="20" value="${sp.rot}"></label><label class="f">Links / rechts<input type="range" data-r="dx" min="-50" max="50" value="${sp.dx}"></label><label class="f">Omhoog / omlaag<input type="range" data-r="dy" min="-50" max="50" value="${sp.dy}"></label>${mid}</div><div class="cmp-act"><button class="btn ghost sm" data-a="cmpReset" data-all="0">Reset foto</button><button class="btn ghost sm" data-a="cmpReset" data-all="1">Reset alles</button></div>`;
   return `<div class="grid2 tight"><label class="f">Eerste foto<select data-c="cmpSel" data-w="a">${opts(c.a)}</select></label><label class="f">Tweede foto<select data-c="cmpSel" data-w="b">${opts(c.b)}</select></label></div>
-  <div class="seg">${[['overlay', 'Overlay'], ['wipe', 'Scheidslijn'], ['side', 'Naast elkaar']].map(([k, l]) => `<button class="${c.mode === k ? 'on' : ''}" data-a="cmpMode" data-m="${k}">${l}</button>`).join('')}</div><div class="cmp-dock">${stage}${who}${ctl}</div><p class="sub">${hint}</p><p class="sub">Tussen beide foto’s zit ${days} dag${days === 1 ? '' : 'en'}${days >= 14 ? ' (ongeveer ' + Math.round(days / 7) + ' weken)' : ''}. Licht, houding en afstand beïnvloeden wat je ziet.</p>${ph.some(p => p.demo && p.credit) ? '<p class="sub">Voorbeeld: twee verschillende personen, geen echte voortgang. Foto’s via Unsplash.</p>' : ''}`;
+  <div class="seg">${[['overlay', 'Overlay'], ['wipe', 'Scheidslijn'], ['side', 'Naast elkaar']].map(([k, l]) => `<button class="${c.mode === k ? 'on' : ''}" data-a="cmpMode" data-m="${k}">${l}</button>`).join('')}</div><div class="cmp-dock">${stage}${who}${ctl}</div><p class="sub">${hint}</p><p class="sub">Tussen beide foto’s zit ${days} dag${days === 1 ? '' : 'en'}${days >= 14 ? ' (ongeveer ' + Math.round(days / 7) + ' weken)' : ''}. </p>`;
 }
 const cmpZero = () => ({ sc: 100, dx: 0, dy: 0, rot: 0 });
 C.cmpSel = el => { ui.cmp[el.dataset.w] = el.value; ui.cmp['p' + el.dataset.w] = cmpZero(); render(); };
@@ -4161,9 +4172,9 @@ function cmpSync() {
 })();
 document.addEventListener('input', e => { const t = e.target.closest('input[data-r]'); if (!t) return; const c = ui.cmp, k = t.dataset.r, p = c['p' + c.sel]; if (k in p) p[k] = +t.value; else if (k in c) c[k] = +t.value; applyCmp(); });
 function pData() {
-  return `<div class="card"><h3>Jouw gegevens</h3><p>Alles staat alleen op dit apparaat in deze browser. Wis je de browsergegevens, dan zijn ze weg. Maak daarom af en toe een export.</p>
-   <div class="btns"><button class="btn ghost sm" data-a="exportShow">Exporteer als tekst</button><button class="btn ghost sm" data-a="importAsk">Importeer een export</button></div>
-   <h4>Verwijderen</h4><div class="btns"><button class="btn ghost sm" data-a="delAsk" data-k="meas">Alle metingen</button><button class="btn ghost sm" data-a="delAsk" data-k="photos">Alle foto’s</button><button class="btn ghost sm" data-a="delAsk" data-k="all">Alles</button></div></div>`;
+  return `<p class="sub">Alles staat alleen op dit apparaat. Maak af en toe een export als back-up.</p>
+   <div class="btns"><button class="btn ghost sm" data-a="exportShow">Exporteren</button><button class="btn ghost sm" data-a="importAsk">Importeren</button></div>
+   <h4>Verwijderen</h4><div class="btns"><button class="btn ghost sm" data-a="delAsk" data-k="meas">Metingen</button><button class="btn ghost sm" data-a="delAsk" data-k="photos">Foto’s</button><button class="btn ghost sm" data-a="delAsk" data-k="all">Alles</button></div>`;
 }
 F.weight = (f, fd) => { const w = num(fd.get('w'), 1), date = fd.get('date'); if (!w) return; S.body.push({ id: uid(), date, weight: w }); save(); render(); toast('Gewicht opgeslagen.'); };
 F.measure = (f, fd) => { const b = { id: uid(), date: fd.get('date') }; let any = false; MEAS.forEach(([k]) => { const v = num(fd.get(k), 1); if (v) { b[k] = v; any = true; } }); if (!any) { toast('Vul minstens één meting in.'); return; } S.body.push(b); save(); render(); toast('Metingen opgeslagen.'); };
@@ -4240,11 +4251,11 @@ function vGoalBasic() {
   return `<section><p class="eyebrow">${GOAL_TYPES[m.type] || 'Eigen doel'}</p><h1>${esc(m.name)}</h1>
   <div class="card hero">${d == null ? '<p class="big">Geen datum gekozen</p><small>Een doel zonder datum is ook prima.</small>' : d < 0 ? '<p class="big">De datum is voorbij</p>' : `<p class="count"><b>${d}</b> dagen</p><small>${wk > 0 ? wk + ' weken en ' + (d % 7) + ' dagen' : 'Minder dan een week'}</small>`}
    ${m.note ? `<p>${esc(m.note)}</p>` : ''}</div>
-  <div class="card"><h3>Checklist <small>${done} van ${items.length}</small></h3><p class="sub">Pas de lijst aan zoals jij wilt.</p><ul class="checks">${items.map(i => `<li><label class="tick wide"><input type="checkbox" data-c="msCheck" data-k="${i.id}" ${i.done ? 'checked' : ''}><span></span><em>${esc(i.t)}</em></label><button class="link" data-a="msDel" data-k="${i.id}" aria-label="Verwijder: ${esc(i.t)}">Verwijder</button></li>`).join('')}</ul>
+  <div class="card"><h3>Checklist <small>${done} van ${items.length}</small></h3><ul class="checks">${items.map(i => `<li><label class="tick wide"><input type="checkbox" data-c="msCheck" data-k="${i.id}" ${i.done ? 'checked' : ''}><span></span><em>${esc(i.t)}</em></label><button class="link" data-a="msDel" data-k="${i.id}" aria-label="Verwijder: ${esc(i.t)}">Verwijder</button></li>`).join('')}</ul>
    <form class="inline" data-submit="msAdd"><input name="t" maxlength="120" placeholder="Nieuw punt toevoegen" aria-label="Nieuw punt"><button class="btn sm">Toevoegen</button></form>
    <button class="btn ghost sm" data-a="msTemplate">Standaardlijst voor dit soort doel laden</button></div>
   <div class="card"><h3>Instellingen</h3>${form}</div>
-  <div class="note"><b>Eerlijk over verwachtingen.</b> De app belooft geen gewicht, vetpercentage of uiterlijk op een bepaalde datum. Een doel is een routepunt. Je kunt het verschuiven, hernoemen of uitzetten.</div></section>`;
+</section>`;
 }
 F.milestone = (f, fd) => { const m = S.milestone, nt = fd.get('type') || 'eigen', changed = nt !== m.type, oldDate = m.date; m.type = nt; m.name = (fd.get('name') || '').trim() || 'Mijn doel'; m.date = fd.get('date') || null; m.note = (fd.get('note') || '').trim(); m.enabled = !!fd.get('enabled');
   if (changed && (!m.items || m.items.every(i => !i.done))) m.items = null; save(); render(); toast('Opgeslagen.');
@@ -4322,6 +4333,7 @@ document.addEventListener('error', e => {
 }, true);
 document.addEventListener('load', e => { const i = e.target; if (i && i.classList && i.classList.contains('rimg')) i.classList.add('ld'); }, true);
 S = loadState();
+if (S && S.photos && S.photos.some(p => p.demo)) { S.photos = S.photos.filter(p => !p.demo); try { save(); } catch (e) {} }
 const THEMES = { dark: 'Donker', light: 'Licht', system: 'Auto' };
 const THEME_ICONS = {
   dark: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.2A8 8 0 1 1 9.8 4a6.4 6.4 0 0 0 10.2 10.2z"/></svg>',
