@@ -789,9 +789,118 @@ main p b,main p strong,.dialog p b,.dialog p strong,.note b,.note strong,ol.step
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .btn:hover,.rcard:hover,.exrow:hover{transform:none}
 }
+
+/* ===== Beloningen ===== */
+.disp,h1{font-stretch:75%!important;text-transform:uppercase;letter-spacing:-.01em!important;font-weight:900}
+.hero:not(.card) h1{font-size:clamp(32px,9vw,50px)!important;line-height:.98!important;overflow-wrap:anywhere}
+.rwchip{display:inline-flex;align-items:center;height:48px;color:var(--head);font:800 13px/1 var(--fd);text-decoration:none;white-space:nowrap}
+.rwchip .pill{display:inline-flex;align-items:center;gap:5px;height:34px;padding:0 10px;border-radius:99px;background:var(--surface2);border:1px solid var(--line2)}
+.rwchip .lvn{color:var(--pg-ink)}
+.rwchip.on .pill{border-color:var(--pg)}
+.rwcard{display:block;margin:0 0 var(--s2);padding:var(--s2) var(--s3);border-radius:var(--r);text-decoration:none;color:var(--ink);background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--pg) 18%,transparent),transparent 60%),radial-gradient(100% 120% at 100% 100%,rgba(255,92,138,.16),transparent 60%),var(--surface);border:1px solid color-mix(in srgb,var(--pg) 30%,var(--line));box-shadow:0 18px 40px -24px color-mix(in srgb,var(--pg) 55%,transparent)}
+.rwtop{display:flex;align-items:center;gap:var(--s2)}
+.rwlv{flex:1;min-width:0;display:grid;gap:5px}
+.rwlv .eyebrow{margin:0;color:var(--head)}
+.rwlv small{font-size:12px;color:var(--ink2)}
+.rwlv small b{color:var(--pg-ink)}
+.xpbar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.xpbar.big{height:12px;margin:var(--s1) 0}
+.xpbar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--pg),#FFD166,#FF5C8A);box-shadow:0 0 12px color-mix(in srgb,var(--pg) 70%,transparent);transition:width .8s var(--ease)}
+.streak{display:grid;justify-items:center;line-height:1;flex:none;min-width:52px}
+.streak .fl{font-size:26px;filter:grayscale(1) opacity(.5)}
+.streak.on .fl{filter:none;animation:flick 1.6s ease-in-out infinite}
+.streak b{font:900 24px/1 var(--fd);font-stretch:80%;color:var(--head)}
+.streak small{font-size:11px;color:var(--ink2)}
+@keyframes flick{0%,100%{transform:scale(1) rotate(-3deg)}50%{transform:scale(1.12) rotate(3deg)}}
+.sdots{display:flex;align-items:center;gap:6px;margin-top:var(--s2)}
+.sd{flex:1;height:6px;border-radius:99px;background:var(--line)}
+.sd.won,.cal.won{background:linear-gradient(90deg,var(--pg),#FFD166)}
+.sd.frozen,.cal.frozen{background:#7FD4FF}
+.sd.miss,.cal.miss{background:color-mix(in srgb,var(--bad) 55%,transparent)}
+.sd.open,.cal.open{background:transparent;box-shadow:inset 0 0 0 1.5px var(--pg)}
+.frz{font-size:12px;color:var(--ink2);white-space:nowrap}
+.hexb{position:relative;display:inline-grid;place-items:center;width:52px;height:52px;flex:none}
+.hexb svg{position:absolute;inset:0;width:100%;height:100%}
+.hexb svg path{fill:var(--surface2);stroke:var(--line2);stroke-width:2}
+.hexb b{position:relative;font:900 20px/1 var(--fd);font-stretch:80%;color:var(--head)}
+.hexb.lvl svg path{fill:url(#none);fill:color-mix(in srgb,var(--pg) 22%,var(--surface));stroke:var(--pg);stroke-width:2.5}
+.hexb.gold svg path{fill:color-mix(in srgb,#FFD166 22%,var(--surface));stroke:#FFD166;stroke-width:2.5}
+.hexb.off{filter:grayscale(1);opacity:.45}
+.hexb.big{width:96px;height:96px}
+.hexb.big b{font-size:38px}
+.quest{padding:var(--s2) var(--s3) var(--s3)}
+.qhead{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s1);flex-wrap:wrap;margin-bottom:var(--s2)}
+.qwin{font-size:12px;font-weight:700;color:var(--ink2)}
+.qwin.on{color:var(--pg-ink)}
+.qrings{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+.gring{position:relative;display:grid;justify-items:center;text-align:center;gap:2px}
+.gring svg{width:100%;max-width:74px;height:auto;filter:drop-shadow(0 0 7px color-mix(in srgb,var(--rc) 45%,transparent))}
+.gring .gr{transition:stroke-dashoffset 1s var(--ease)}
+.gring>b{position:absolute;top:0;left:0;right:0;aspect-ratio:1;max-width:74px;margin:0 auto;display:grid;place-items:center;font:800 15px/1 var(--fd);font-stretch:85%;color:color-mix(in srgb,var(--rc) var(--pgm),var(--ink))}
+.gring>span{font-size:12px;font-weight:600;color:var(--head);line-height:1.25}
+.gring em{display:block;font-style:normal;font-size:10.5px;font-weight:500;color:var(--ink2)}
+.wkgoal h3{font-size:24px}
+.wkhex{display:grid;place-items:center;margin:var(--s1) 0 var(--s2)}
+.hexring .hexfill{filter:drop-shadow(0 0 6px rgba(255,209,102,.35));transition:stroke-dashoffset 1.1s var(--ease)}
+.hexpct{font:900 40px var(--fd);font-stretch:78%;fill:var(--head);font-style:italic}
+.wkrow{display:flex;align-items:center;gap:var(--s2);padding:10px 12px;margin-top:6px;border-radius:var(--r-s);background:var(--surface2)}
+.wkrow>div{flex:1;min-width:0;display:grid}
+.wkrow b{font-size:14px;color:var(--head)}
+.wkrow small{font-size:12px;color:var(--ink2)}
+.wkrow .left{display:grid;justify-items:end;line-height:1.1}
+.wkrow .left b{font:900 20px/1 var(--fd);font-stretch:80%}
+.lvcard{display:flex;align-items:center;gap:var(--s3);flex-wrap:wrap}
+.lvcard>div{flex:1 1 200px;min-width:0}
+.lvcard h2{font:900 34px/1 var(--fd);color:var(--head);margin:0}
+.hexlv{font:900 50px var(--fd);font-stretch:78%;fill:var(--head)}
+.hexlbl{font:800 11px var(--fb);letter-spacing:.2em;fill:var(--ink2)}
+.lvstats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin-top:var(--s2)}
+.lvstats span{display:grid;font-size:11px;color:var(--ink2);line-height:1.2}
+.lvstats b{font:900 22px/1.1 var(--fd);font-stretch:80%;color:var(--head)}
+.calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin:var(--s2) 0 var(--s1)}
+.cal{display:block;aspect-ratio:1;border-radius:6px;background:var(--line)}
+.legend{display:flex;flex-wrap:wrap;gap:6px var(--s2);font-size:12px;color:var(--ink2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend .cal{width:12px;height:12px;border-radius:3px}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(102px,1fr));gap:var(--s1);margin-bottom:var(--s3)}
+.badge{display:grid;justify-items:center;text-align:center;gap:4px;padding:var(--s2) 6px;border-radius:var(--r);background:var(--card-bg);border:1px solid var(--line)}
+.badge.got{border-color:color-mix(in srgb,#FFD166 45%,var(--line));box-shadow:0 10px 26px -18px #FFD166}
+.badge b{font-size:12.5px;color:var(--head);line-height:1.2}
+.badge small{font-size:11px;color:var(--ink2);line-height:1.25}
+.badge .hexb b{font-size:22px}
+.bprog{display:block;width:80%;height:4px;border-radius:99px;background:var(--line);overflow:hidden}
+.bprog i{display:block;height:100%;background:var(--pg)}
+.recs .rec{display:grid;grid-template-columns:minmax(0,1fr) 70px auto;align-items:center;gap:var(--s2);padding:10px 0;border-top:1px solid var(--line)}
+.rec>div{display:grid;min-width:0}
+.rec b{font-size:14px;color:var(--head);overflow-wrap:anywhere}
+.rec small{font-size:12px;color:var(--ink2)}
+.spark{width:70px;height:28px}
+.rv{font:900 22px/1 var(--fd);font-stretch:80%;color:var(--head);white-space:nowrap}
+.rv small{font-size:12px;color:var(--ink2);font-family:var(--fb)}
+.earn{display:grid;grid-template-columns:1fr auto;gap:6px var(--s2);font-size:14px}
+.earn b{color:var(--pg-ink)}
+#xpfly{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 74px);z-index:120;transform:translate(-50%,-10px);padding:8px 16px;border-radius:99px;background:linear-gradient(90deg,var(--pg),#FFD166);color:#10140A;font:900 16px/1 var(--fd);font-stretch:85%;opacity:0;pointer-events:none;box-shadow:0 10px 30px -10px rgba(255,209,102,.8)}
+#xpfly.on{animation:xpf 1.8s var(--ease) forwards}
+@keyframes xpf{0%{opacity:0;transform:translate(-50%,8px) scale(.8)}15%{opacity:1;transform:translate(-50%,0) scale(1.08)}25%{transform:translate(-50%,0) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-18px)}}
+.confetti{position:fixed;inset:0;width:100vw;height:100vh;z-index:300;pointer-events:none}
+.cel{display:grid;gap:var(--s3);text-align:center;justify-items:center}
+.cel h2{font:900 34px/1 var(--fd);color:var(--head);margin:var(--s1) 0 0}
+.cel p{margin:4px 0 0;color:var(--ink2)}
+.cel .big{font:900 34px/1 var(--fd);font-stretch:80%;color:var(--pg-ink)}
+.cel-lv,.cel-pr{display:grid;justify-items:center}
+.cel-lv .hexb,.cel-pr .hexb{animation:pop .6s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes pop{0%{transform:scale(.3) rotate(-20deg);opacity:0}100%{transform:none;opacity:1}}
+.cel-bl{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--s2);margin-top:var(--s1)}
+.cel-bl>div{display:grid;justify-items:center;max-width:130px;gap:2px}
+.cel-bl b{font-size:14px;color:var(--head)}
+.cel-bl small{font-size:12px;color:var(--ink2)}
+.cel-xp{font:900 28px/1 var(--fd)!important;font-stretch:85%;background:linear-gradient(90deg,var(--pg),#FFD166,#FF5C8A);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+.cel .btns{justify-content:center}
+@media (prefers-reduced-motion:reduce){.streak.on .fl,#xpfly.on,.cel .hexb{animation:none}#xpfly.on{opacity:1}}
+
 </style>
 <div id="app">
- <header class="top"><div class="logo"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21M17 12v3M20 12v2"/></svg></i><span>The Discipline Key</span></div><div class="topbtns"><button id="profbtn" class="themebtn" type="button" data-a="go" data-r="mijn-plan" aria-label="Profiel en plan" title="Profiel en plan"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/></svg></button><button id="themebtn" class="themebtn" type="button" data-a="theme" aria-label="Kleurthema wisselen"></button></div></header>
+ <header class="top"><div class="logo"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21M17 12v3M20 12v2"/></svg></i><span>The Discipline Key</span></div><div class="topbtns"><a id="rwchip" class="rwchip" href="#beloningen" aria-label="Beloningen" hidden></a><button id="profbtn" class="themebtn" type="button" data-a="go" data-r="mijn-plan" aria-label="Profiel en plan" title="Profiel en plan"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/></svg></button><button id="themebtn" class="themebtn" type="button" data-a="theme" aria-label="Kleurthema wisselen"></button></div></header>
  <div id="savewarn" role="alert" hidden style="grid-column:1/-1">Opslaan in deze browser lukt niet. Je laatste invoer gaat verloren als je de pagina sluit. Maak een export onder Voortgang.</div>
  <nav id="nav" aria-label="Hoofdnavigatie"></nav>
  <main id="main"></main>
@@ -1171,7 +1280,9 @@ function loadState() {
   try { const t = localStorage.getItem(KEY); if (t) return Object.assign(defaultState(), JSON.parse(t)); } catch (e) {}
   return defaultState();
 }
+let rwVer = 0;
 function save() {
+  rwVer++;
   try { localStorage.setItem(KEY, JSON.stringify(S)); saveOK = true; memCopy = null; }
   catch (e) { saveOK = false; memCopy = S; }
   const b = $('#savewarn'); if (b) b.hidden = saveOK;
@@ -1575,7 +1686,7 @@ const ICONS = {
   disciplines: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4"/>',
   'mijn-doel': '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4"/>'
 };
-const ROUTES = [['home', 'Home'], ['mijn-plan', 'Mijn plan'], ['training', 'Training'], ['voeding', 'Voeding'], ['disciplines', 'Doelen'], ['voortgang', 'Voortgang'], ['mijn-doel', 'Mijn doel']];
+const ROUTES = [['home', 'Home'], ['mijn-plan', 'Mijn plan'], ['training', 'Training'], ['voeding', 'Voeding'], ['disciplines', 'Doelen'], ['voortgang', 'Voortgang'], ['mijn-doel', 'Mijn doel'], ['beloningen', 'Beloningen']];
 const ico = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
 const GOALS = { kracht: 'Sterker worden', spier: 'Spiermassa opbouwen', vet: 'Vet verliezen', conditie: 'Conditie verbeteren', bewegen: 'Meer bewegen', combi: 'Spier opbouwen en vet verliezen' };
 const ACTS = { laag: 'Laag (zittend werk, weinig lopen)', licht: 'Licht (af en toe lopen of fietsen)', matig: 'Matig (veel staan of fietsen)', hoog: 'Hoog (fysiek werk of veel sport)' };
@@ -1603,19 +1714,20 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('#modal-
 /* --- schaal --- */
 function nav() {
   const pb = $('#profbtn'); if (pb) { pb.classList.toggle('on', route === 'mijn-plan'); if (route === 'mijn-plan') pb.setAttribute('aria-current', 'page'); else pb.removeAttribute('aria-current'); }
-  $('#nav').innerHTML = ROUTES.filter(r => !['mijn-plan', 'mijn-doel'].includes(r[0])).map(([id, l]) => `<a href="#${id}" class="${route === id ? 'on' : ''}" ${route === id ? 'aria-current="page"' : ''}>${ico(id)}<span>${l}</span></a>`).join('');
+  $('#nav').innerHTML = ROUTES.filter(r => !['mijn-plan', 'mijn-doel', 'beloningen'].includes(r[0])).map(([id, l]) => `<a href="#${id}" class="${route === id ? 'on' : ''}" ${route === id ? 'aria-current="page"' : ''}>${ico(id)}<span>${l}</span></a>`).join('');
 }
 const accKey = d => route + ':' + ((d.querySelector(':scope>summary span') || {}).textContent || '');
 document.addEventListener('toggle', e => { const d = e.target; if (d && d.matches && d.matches('details.acc')) ui.open[accKey(d)] = d.open; }, true);
 function render() {
   const main = $('#main');
-  if (!S.profile || ui.ob) { $('#app').classList.add('ob'); renderOnboarding(); return; }
+  if (!S.profile || ui.ob) { $('#app').classList.add('ob'); renderOnboarding(); rwHeaderChip(); return; }
   $('#app').classList.remove('ob'); $('#app').classList.toggle('wk', !!ui.workout); nav();
-  const V = { home: vHome, 'mijn-plan': vPlan, training: vTraining, voeding: vFood, voortgang: vProgress, disciplines: vDisc, 'mijn-doel': vMilestone };
+  const V = { home: vHome, 'mijn-plan': vPlan, training: vTraining, voeding: vFood, voortgang: vProgress, disciplines: vDisc, 'mijn-doel': vMilestone, beloningen: vRewards };
   const entering = route !== ui._lr; ui._lr = route; main.classList.toggle('enter', entering); document.documentElement.dataset.route = route;
   main.innerHTML = (V[route] || vHome)();
   $$('details.acc', main).forEach(d => { const k = accKey(d); if (k in ui.open) d.open = ui.open[k]; });
   if (route === 'voortgang') afterProgress && afterProgress();
+  rwHeaderChip(); clearTimeout(window._rwT); window._rwT = setTimeout(rwCheck, 400);
 }
 function routeFrom(h) {
   if (h === 'fotoshoot' || h === 'mijn-doel') { ui.disc = ui.goalTab === 'wedstrijd' && h === 'mijn-doel' ? 'bb' : null; ui.dTop = ui.disc ? 'disc' : 'goal'; return 'disciplines'; }
@@ -1732,6 +1844,223 @@ function stepSrcNote() {
   if (m === 'ready') return `<p class="sub">Koppel je telefoon om stappen automatisch te laden. Handmatig invullen kan ook.</p>`;
   return `<p class="sub">Richtwaarde, een schatting</p>`;
 }
+/* ===== BELONINGEN: XP, levels, streak, dagdoelen, badges, records ===== */
+const RW_GROUPS = [['push', 'Duwen', ['pushH', 'pushV', 'tri', 'lat']], ['pull', 'Trekken', ['pullV', 'pullH', 'bi', 'rear']], ['legs', 'Benen', ['squat', 'hinge', 'lunge', 'hamcurl', 'calf']], ['core', 'Core', ['core']]];
+const rwGroupOf = pat => (RW_GROUPS.find(g => g[2].includes(pat)) || [null])[0];
+const RW_TITLES = [[1, 'Starter'], [3, 'Doorzetter'], [5, 'Grinder'], [8, 'Atleet'], [11, 'Krijger'], [15, 'Beest'], [20, 'Elite'], [30, 'Legende']];
+const rwNeed = n => 150 + 50 * n;
+function rwLevel(xp) { let n = 1, rest = xp; while (rest >= rwNeed(n)) { rest -= rwNeed(n); n++; } return { n, into: rest, need: rwNeed(n), title: RW_TITLES.filter(t => n >= t[0]).pop()[1] }; }
+const rwStepsGoal = () => S.stepsGoal || { laag: 7000, licht: 8000, matig: 9000, hoog: 10000 }[S.profile && S.profile.activity] || 8000;
+const e1rm = (w, r) => w > 0 && r > 0 ? w * (1 + Math.min(r, 12) / 30) : 0;
+const RW_XP = { workout: 100, full: 50, cardio: 80, set: 2, pr: 50, steps: 30, steps10k: 10, protein: 30, kcal: 20, check: 15, weigh: 10, photo: 25, perfect: 50, week: 150 };
+let rwMemo = null;
+
+function rwPillars(d) {
+  const sg = rwStepsGoal(), ls = S.logs.filter(l => l.date === d), sess = sessionsOn(d), rest = !sess.length;
+  let t = null; try { t = targets(d); } catch (e) {}
+  const fd = S.food[d], eat = fd && fd.items ? sumNut(fd.items.filter(i => i.eaten)) : { kcal: 0, p: 0 };
+  const tp = t && !t.missing ? t.p : 0, tk = t && !t.missing ? t.kcal : 0;
+  const r = S.recovery[d] || {};
+  return {
+    train: ls.length > 0, rest: rest && !ls.length, steps: (S.steps[d] || 0) >= sg, stepsV: S.steps[d] || 0, sg,
+    protein: tp ? eat.p >= tp * .9 : false, pV: eat.p, tp, kcalOk: tk ? Math.abs(eat.kcal - tk) <= tk * .1 && eat.kcal > 0 : false,
+    check: !!(r.energy || r.sleep || r.recovery)
+  };
+}
+const rwScore = p => (p.train || p.rest ? 1 : 0) + (p.steps ? 1 : 0) + (p.protein ? 1 : 0) + (p.check ? 1 : 0);
+
+function rewards() {
+  const key = today() + '|' + rwVer;
+  if (rwMemo && rwMemo.key === key) return rwMemo;
+  const T = today(), xpLog = [], add = (n, why, d) => xpLog.push({ n, why, d });
+  // trainingen, sets, volume, records
+  const logs = [...S.logs].sort((a, b) => a.date.localeCompare(b.date)), best = {}, prs = [], hist = {};
+  let sets = 0, vol = 0, workouts = 0, cardio = 0;
+  logs.forEach(l => {
+    if (l.type === 'cardio' || l.type === 'segments') { cardio++; add(RW_XP.cardio, 'Cardio: ' + l.name, l.date); return; }
+    workouts++; add(RW_XP.workout + (l.partial ? 0 : RW_XP.full), 'Training: ' + l.name, l.date);
+    (l.items || []).forEach(it => {
+      let top = 0;
+      it.sets.forEach(s => { sets++; vol += (s.w || 0) * s.r; top = Math.max(top, e1rm(s.w, s.r)); });
+      if (it.sets.length) add(RW_XP.set * it.sets.length, 'Sets', l.date);
+      if (top > 0) {
+        (hist[it.ex] = hist[it.ex] || []).push({ d: l.date, v: +top.toFixed(1) });
+        if (best[it.ex] != null && top > best[it.ex] + 0.05) { prs.push({ ex: it.ex, name: (EX[it.ex] || {}).name || it.name, v: +top.toFixed(1), prev: +best[it.ex].toFixed(1), d: l.date, log: l.id }); add(RW_XP.pr, 'Record: ' + it.name, l.date); }
+        best[it.ex] = Math.max(best[it.ex] || 0, top);
+      }
+    });
+  });
+  // dagen
+  const days = new Set([...Object.keys(S.steps || {}), ...Object.keys(S.food || {}), ...Object.keys(S.recovery || {}), ...S.logs.map(l => l.date), ...S.body.map(b => b.date)].filter(d => d <= T));
+  let first = [...days].sort()[0] || T; if (diffDays(first, T) > 400) first = addDays(T, -400);
+  let stepDays = 0, steps10k = 0, proteinDays = 0, checks = 0, perfect = 0, cur = 0, bestStreak = 0, freezes = 0, run = 0, pStreak = 0, bestP = 0, cStreak = 0, bestC = 0;
+  const dayInfo = {};
+  for (let d = first; d <= T; d = addDays(d, 1)) {
+    const p = rwPillars(d), sc = rwScore(p);
+    if (p.steps) { stepDays++; add(RW_XP.steps, 'Stappendoel', d); }
+    if (p.stepsV >= 10000) { steps10k++; add(RW_XP.steps10k, '10.000 stappen', d); }
+    if (p.protein) { proteinDays++; add(RW_XP.protein, 'Eiwitdoel', d); pStreak++; bestP = Math.max(bestP, pStreak); } else if (d !== T) pStreak = 0;
+    if (p.kcalOk) add(RW_XP.kcal, 'Calorieën op doel', d);
+    if (p.check) { checks++; add(RW_XP.check, 'Herstelcheck', d); cStreak++; bestC = Math.max(bestC, cStreak); } else if (d !== T) cStreak = 0;
+    if (sc === 4 && (p.train || p.rest)) { perfect++; add(RW_XP.perfect, 'Perfecte dag', d); }
+    let st;
+    if (sc >= 3) { cur++; run++; st = 'won'; if (run % 7 === 0) { freezes = Math.min(2, freezes + 1); add(run * 15, run + ' dagen op rij', d); } }
+    else if (d === T) st = 'open';
+    else if (freezes > 0) { freezes--; st = 'frozen'; }
+    else { cur = 0; run = 0; st = 'miss'; }
+    bestStreak = Math.max(bestStreak, cur);
+    dayInfo[d] = { st, sc, p };
+  }
+  const weighDays = new Set(S.body.map(b => b.date)); weighDays.forEach(d => add(RW_XP.weigh, 'Weging', d));
+  const photos = S.photos.filter(p => !p.demo).length; S.photos.filter(p => !p.demo).forEach(p => add(RW_XP.photo, 'Voortgangsfoto', p.date));
+  // volle weken (alle geplande sessies gedaan)
+  let fullWeeks = 0;
+  if (S.planStart) for (let w = addDays(S.planStart, -wdOf(S.planStart)); addDays(w, 6) < T; w = addDays(w, 7)) {
+    let n = 0, done = 0; for (let i = 0; i < 7; i++) { const dd = addDays(w, i); sessionsOn(dd).forEach(s => { n++; if (isDone(s.from, s.key)) done++; }); }
+    if (n && done >= n) { fullWeeks++; add(RW_XP.week, 'Hele week afgerond', addDays(w, 6)); }
+  }
+  const xp = xpLog.reduce((a, x) => a + x.n, 0), lv = rwLevel(xp);
+  const m = { workouts, cardio, sets, vol, prs: prs.length, streak: cur, bestStreak, perfect, stepDays, steps10k, proteinDays, bestP, checks, bestC, weighs: weighDays.size, photos, fullWeeks, level: lv.n };
+  const badges = RW_BADGES.map(b => { const [c, t] = b.p(m); return { ...b, cur: Math.min(c, t), tgt: t, got: c >= t }; });
+  const todayXp = xpLog.filter(x => x.d === T).reduce((a, x) => a + x.n, 0);
+  rwMemo = { key, xp, lv, m, prs, best, hist, badges, dayInfo, freezes, todayXp, today: dayInfo[T] || { st: 'open', sc: 0, p: rwPillars(T) } };
+  return rwMemo;
+}
+
+const RW_BADGES = [
+  { id: 'w1', e: '🏁', n: 'Eerste training', d: 'Rond je eerste training af.', p: m => [m.workouts + m.cardio, 1] },
+  { id: 'w10', e: '💪', n: 'Tien keer', d: '10 trainingen afgerond.', p: m => [m.workouts + m.cardio, 10] },
+  { id: 'w50', e: '🏋️', n: 'Vaste klant', d: '50 trainingen afgerond.', p: m => [m.workouts + m.cardio, 50] },
+  { id: 'w100', e: '🏛️', n: 'Honderdclub', d: '100 trainingen afgerond.', p: m => [m.workouts + m.cardio, 100] },
+  { id: 's3', e: '🔥', n: 'Op gang', d: '3 dagen op rij je dag gewonnen.', p: m => [m.bestStreak, 3] },
+  { id: 's7', e: '⚡', n: 'Week vol vuur', d: '7 dagen op rij.', p: m => [m.bestStreak, 7] },
+  { id: 's30', e: '☄️', n: 'Onbreekbaar', d: '30 dagen op rij.', p: m => [m.bestStreak, 30] },
+  { id: 's100', e: '👑', n: 'Discipline-koning', d: '100 dagen op rij.', p: m => [m.bestStreak, 100] },
+  { id: 'pf1', e: '✨', n: 'Perfecte dag', d: 'Alle vier de dagdoelen gehaald.', p: m => [m.perfect, 1] },
+  { id: 'pf10', e: '💎', n: 'Perfectionist', d: '10 perfecte dagen.', p: m => [m.perfect, 10] },
+  { id: 'pr1', e: '🏆', n: 'Eerste record', d: 'Verbeter je geschatte kracht op een oefening.', p: m => [m.prs, 1] },
+  { id: 'pr10', e: '🥇', n: 'Recordjager', d: '10 persoonlijke records.', p: m => [m.prs, 10] },
+  { id: 'pr25', e: '🚀', n: 'Krachtpatser', d: '25 persoonlijke records.', p: m => [m.prs, 25] },
+  { id: 'v10k', e: '🧱', n: '10 ton', d: '10.000 kg totaal getild.', p: m => [Math.round(m.vol), 10000] },
+  { id: 'v100k', e: '🗿', n: '100 ton', d: '100.000 kg totaal getild.', p: m => [Math.round(m.vol), 100000] },
+  { id: 'st10k', e: '👟', n: 'Tienduizend', d: 'Een dag met 10.000 stappen.', p: m => [m.steps10k, 1] },
+  { id: 'st30', e: '🗺️', n: 'Wandelaar', d: '30 dagen je stappendoel gehaald.', p: m => [m.stepDays, 30] },
+  { id: 'p7', e: '🥩', n: 'Eiwitweek', d: '7 dagen op rij je eiwitdoel.', p: m => [m.bestP, 7] },
+  { id: 'c7', e: '🧘', n: 'Luisteraar', d: '7 dagen op rij een herstelcheck.', p: m => [m.bestC, 7] },
+  { id: 'wk1', e: '📅', n: 'Volle week', d: 'Alle geplande sessies van een week gedaan.', p: m => [m.fullWeeks, 1] },
+  { id: 'wk4', e: '🗓️', n: 'Maand op schema', d: '4 volle weken.', p: m => [m.fullWeeks, 4] },
+  { id: 'ph1', e: '📸', n: 'Startpunt', d: 'Je eerste voortgangsfoto.', p: m => [m.photos, 1] },
+  { id: 'wg10', e: '⚖️', n: 'Meetlat', d: '10 keer gewogen.', p: m => [m.weighs, 10] },
+  { id: 'lv10', e: '🛡️', n: 'Level 10', d: 'Bereik level 10.', p: m => [m.level, 10] }
+];
+
+/* --- tekenen --- */
+const hexPath = (cx, cy, r) => Array.from({ length: 6 }, (_, i) => { const a = Math.PI / 180 * (60 * i - 90); return (i ? 'L' : 'M') + (cx + r * Math.cos(a)).toFixed(1) + ' ' + (cy + r * Math.sin(a)).toFixed(1); }).join('') + 'Z';
+function hexRing(p, size, label, inner, id) {
+  const c = size / 2, r = size / 2 - 10, path = hexPath(c, c, r), L = 6 * r;
+  return `<svg class="hexring" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" role="img" aria-label="${esc(label)}"><defs><linearGradient id="hg${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--pg)"/><stop offset=".55" stop-color="#FFD166"/><stop offset="1" stop-color="#FF5C8A"/></linearGradient></defs>
+  <path d="${path}" fill="none" stroke="var(--line2)" stroke-width="9" stroke-linejoin="round"/><path class="hexfill" d="${path}" fill="none" stroke="url(#hg${id})" stroke-width="9" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="${L}" stroke-dashoffset="${(L * (1 - clamp(p, 0, 1))).toFixed(1)}" style="--L:${L}"/>${inner || ''}</svg>`;
+}
+const hexBadge = (txt, cls) => `<span class="hexb ${cls || ''}"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="${hexPath(20, 20, 18)}"/></svg><b>${txt}</b></span>`;
+function glowRing(val, tgt, col, txt, sub) {
+  const s = 74, r = 30, cc = 2 * Math.PI * r, p = tgt ? clamp(val / tgt, 0, 1) : 0;
+  return `<div class="gring" style="--rc:${col}"><svg viewBox="0 0 ${s} ${s}" width="${s}" height="${s}" aria-hidden="true"><circle cx="37" cy="37" r="${r}" fill="none" stroke="var(--line)" stroke-width="7"/><circle class="gr" cx="37" cy="37" r="${r}" fill="none" stroke="${col}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${cc.toFixed(1)}" stroke-dashoffset="${(cc * (1 - p)).toFixed(1)}" transform="rotate(-90 37 37)"/></svg><b>${txt}</b><span>${sub}</span></div>`;
+}
+
+/* --- weekdoel per spiergroep (sets) --- */
+function rwWeek() {
+  const d = today(), w0 = addDays(d, -wdOf(d)), plan = {}, done = {}; RW_GROUPS.forEach(g => { plan[g[0]] = 0; done[g[0]] = 0; });
+  let sess = 0, sessDone = 0;
+  for (let i = 0; i < 7; i++) { const dd = addDays(w0, i); sessionsOn(dd).forEach(s => { sess++; if (isDone(s.from, s.key)) sessDone++; try { sessionExs(s.key).forEach(id => { const e = EX[id]; const g = e && rwGroupOf(e.pattern); if (g) plan[g] += (rx(id, s.key) || {}).sets || 3; }); } catch (e) {} }); }
+  S.logs.filter(l => l.date >= w0 && l.date <= addDays(w0, 6)).forEach(l => (l.items || []).forEach(it => { const e = EX[it.ex], g = e && rwGroupOf(e.pattern); if (g) done[g] += it.sets.length; }));
+  const P = Object.values(plan).reduce((a, b) => a + b, 0), D = RW_GROUPS.reduce((a, g) => a + Math.min(done[g[0]], plan[g[0]] || done[g[0]]), 0);
+  return { plan, done, P, D, pct: P ? D / P : (sessDone && sess ? sessDone / sess : 0), sess, sessDone, w0 };
+}
+
+/* --- Home-blokken --- */
+function rwHomeCard() {
+  const R = rewards(), lv = R.lv, t = R.today, p = t.p, won = rwScore(p);
+  const flame = R.m.streak;
+  const quests = [
+    ['Training', p.train ? 1 : 0, 1, '#C9F24D', p.train ? '✓' : (p.rest ? 'Rust' : '0/1'), p.rest ? 'rustdag telt' : '+' + (RW_XP.workout + RW_XP.full) + ' XP'],
+    ['Stappen', p.stepsV, p.sg, '#5CC8FF', p.stepsV >= 1000 ? (p.stepsV / 1000).toFixed(1).replace('.', ',') + 'k' : String(p.stepsV), '+' + RW_XP.steps + ' XP'],
+    ['Eiwit', p.pV, p.tp || 1, '#B48CFF', p.tp ? n0(p.pV) + 'g' : '–', '+' + RW_XP.protein + ' XP'],
+    ['Check-in', p.check ? 1 : 0, 1, '#FF9F5A', p.check ? '✓' : '0/1', '+' + RW_XP.check + ' XP']
+  ];
+  const last7 = Array.from({ length: 7 }, (_, i) => addDays(today(), i - 6)).map(d => { const x = R.dayInfo[d]; return `<i class="sd ${x ? x.st : 'none'}" title="${fmtDate(d)}"></i>`; }).join('');
+  return `<a class="rwcard" href="#beloningen" aria-label="Beloningen: level ${lv.n}, ${flame} dagen op rij">
+    <div class="rwtop">${hexBadge(lv.n, 'lvl')}<div class="rwlv"><span class="eyebrow">Level ${lv.n} · ${lv.title}</span><div class="xpbar"><i style="width:${(lv.into / lv.need * 100).toFixed(1)}%"></i></div><small>${lv.into} / ${lv.need} XP${R.todayXp ? ` · <b>+${R.todayXp} vandaag</b>` : ''}</small></div>
+    <div class="streak ${flame ? 'on' : ''}"><span class="fl">🔥</span><b>${flame}</b><small>${flame === 1 ? 'dag' : 'dagen'}</small></div></div>
+    <div class="sdots" aria-hidden="true">${last7}${R.freezes ? `<span class="frz" title="Streakbeschermers">🧊×${R.freezes}</span>` : ''}</div></a>
+   <div class="card quest"><div class="qhead"><h3>Dagdoelen</h3><span class="qwin ${won >= 3 ? 'on' : ''}">${won >= 4 ? 'Perfecte dag! +' + RW_XP.perfect + ' XP' : won >= 3 ? 'Dag gewonnen 🔥' : `${won}/4 · nog ${3 - won} voor je streak`}</span></div>
+    <div class="qrings">${quests.map(q => glowRing(q[1], q[2], q[3], q[4], `${q[0]}<em>${q[5]}</em>`)).join('')}</div></div>`;
+}
+function rwWeekCard() {
+  const W = rwWeek(); if (!W.P && !W.sess) return '';
+  const pct = Math.round(W.pct * 100), d = today(), we = addDays(W.w0, 6);
+  const rows = RW_GROUPS.filter(g => W.plan[g[0]] || W.done[g[0]]).map(g => { const pl = W.plan[g[0]], dn = W.done[g[0]], left = Math.max(0, pl - dn); return `<div class="wkrow">${hexRing(pl ? dn / pl : 1, 34, g[1], '', 'r' + g[0])}<div><b>${g[1]}</b><small>${pl ? dn + ' / ' + pl + ' sets' : dn + ' sets extra'}</small></div><span class="left">${left ? `<b>${left}</b><small>te gaan</small>` : '<b>✓</b><small>klaar</small>'}</span></div>`; }).join('');
+  return `<div class="card wkgoal"><h3 class="disp">Weekdoel</h3><p class="sub">${fmtDate(W.w0, { day: 'numeric', month: 'short' })} – ${fmtDate(we, { day: 'numeric', month: 'short' })} · ${W.sessDone}/${W.sess} sessies</p>
+   <div class="wkhex">${hexRing(W.pct, 168, 'Weekdoel ' + pct + ' procent', `<text x="84" y="84" text-anchor="middle" dominant-baseline="central" class="hexpct">${pct}%</text>`, 'wk')}</div>${rows}</div>`;
+}
+
+/* --- Beloningen-scherm --- */
+function vRewards() {
+  const R = rewards(), lv = R.lv, got = R.badges.filter(b => b.got).length;
+  const days = Array.from({ length: 35 }, (_, i) => addDays(today(), i - 34)).map(d => { const x = R.dayInfo[d]; return `<i class="cal ${x ? x.st : 'none'}" title="${fmtDate(d)}${x ? ' · ' + x.sc + '/4' : ''}"></i>`; }).join('');
+  const recs = Object.keys(R.best).map(id => ({ id, v: R.best[id], h: R.hist[id] })).sort((a, b) => b.v - a.v).slice(0, 12);
+  const spark = h => { if (!h || h.length < 2) return ''; const v = h.map(x => x.v), mn = Math.min(...v), mx = Math.max(...v), rg = mx - mn || 1; return `<svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="var(--pg)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="${v.map((y, i) => (i / (v.length - 1) * 100).toFixed(1) + ',' + (27 - (y - mn) / rg * 24).toFixed(1)).join(' ')}"/></svg>`; };
+  const earn = [['Training afgerond', RW_XP.workout + RW_XP.full], ['Cardio of segmenten', RW_XP.cardio], ['Per gelogde set', RW_XP.set], ['Persoonlijk record', RW_XP.pr], ['Stappendoel', RW_XP.steps], ['Eiwitdoel', RW_XP.protein], ['Calorieën binnen 10%', RW_XP.kcal], ['Herstelcheck', RW_XP.check], ['Weging', RW_XP.weigh], ['Voortgangsfoto', RW_XP.photo], ['Perfecte dag (4/4)', RW_XP.perfect], ['Hele week afgerond', RW_XP.week], ['Elke 7 dagen op rij', '15 × dagen']];
+  return `<section class="rwpage"><p class="eyebrow">Jouw discipline, beloond</p><h1>Beloningen</h1>
+  <div class="card lvcard">${hexRing(lv.into / lv.need, 150, 'Level ' + lv.n, `<text x="75" y="70" text-anchor="middle" class="hexlv">${lv.n}</text><text x="75" y="98" text-anchor="middle" class="hexlbl">LEVEL</text>`, 'lv')}
+   <div><h2 class="disp">${lv.title}</h2><p class="sub">${R.xp.toLocaleString('nl-NL')} XP totaal · nog ${lv.need - lv.into} XP tot level ${lv.n + 1}</p><div class="xpbar big"><i style="width:${(lv.into / lv.need * 100).toFixed(1)}%"></i></div>
+   <div class="lvstats"><span><b>${R.m.streak}</b>huidige streak</span><span><b>${R.m.bestStreak}</b>langste streak</span><span><b>${R.m.prs}</b>records</span><span><b>${got}/${R.badges.length}</b>badges</span></div></div></div>
+  <div class="card"><h3>Streak</h3><p class="sub">Een dag telt als gewonnen bij 3 van de 4 dagdoelen. Een geplande rustdag telt als trainingsdoel gehaald, rust hoort erbij. Elke 7 dagen op rij verdien je een streakbeschermer 🧊 (max. 2): die vangt een gemiste dag op.</p>
+   <div class="calgrid">${days}</div><div class="legend"><span><i class="cal won"></i>gewonnen</span><span><i class="cal frozen"></i>beschermd</span><span><i class="cal miss"></i>gemist</span><span><i class="cal open"></i>vandaag</span></div>${R.freezes ? `<p class="sub">Je hebt ${R.freezes} streakbeschermer${R.freezes > 1 ? 's' : ''} 🧊.</p>` : ''}</div>
+  <h3 class="sect">Badges</h3><div class="badges">${R.badges.map(b => `<div class="badge ${b.got ? 'got' : ''}" title="${esc(b.d)}"><span class="bx">${hexBadge(b.e, b.got ? 'gold' : 'off')}</span><b>${esc(b.n)}</b><small>${b.got ? esc(b.d) : `${b.cur.toLocaleString('nl-NL')} / ${b.tgt.toLocaleString('nl-NL')}`}</small>${b.got ? '' : `<i class="bprog"><i style="width:${(b.cur / b.tgt * 100).toFixed(0)}%"></i></i>`}</div>`).join('')}</div>
+  <h3 class="sect">Krachtrecords</h3>${recs.length ? `<div class="card recs"><p class="sub">Geschatte maximale kracht (1RM) per oefening, berekend uit gewicht en herhalingen. Elke verbetering is een record: +${RW_XP.pr} XP.</p>${recs.map(r => `<div class="rec"><div><b>${esc((EX[r.id] || {}).name || r.id)}</b><small>${r.h.length} keer gelogd</small></div>${spark(r.h)}<span class="rv">${String(+r.v.toFixed(1)).replace('.', ',')}<small> kg</small></span></div>`).join('')}</div>` : '<div class="card"><p class="sub">Log een krachttraining met gewicht en herhalingen. Daarna zie je hier je records groeien.</p></div>'}
+  ${acc('Zo verdien je XP', '', `<div class="earn">${earn.map(e => `<span>${e[0]}</span><b>+${e[1]}</b>`).join('')}</div><p class="sub">Levels worden steeds iets groter. Alles wordt berekend uit wat je logt, ook met terugwerkende kracht.</p>`)}
+  </section>`;
+}
+
+/* --- vieren --- */
+function rwCheck() {
+  if (!S || !S.profile || ui.ob || ui.workout) return;
+  let R; try { R = rewards(); } catch (e) { return; }
+  const now = { xp: R.xp, lv: R.lv.n, b: R.badges.filter(b => b.got).map(b => b.id), pr: R.prs.length, st: R.m.streak };
+  if (!S.rw) { S.rw = now; save(); return; }
+  const o = S.rw, nb = R.badges.filter(b => b.got && !o.b.includes(b.id)), npr = Object.values(R.prs.slice(o.pr).reduce((a, x) => (a[x.ex] = x, a), {})), up = now.lv > o.lv, dxp = now.xp - o.xp;
+  if (JSON.stringify(o) === JSON.stringify(now)) return;
+  S.rw = now; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+  if (up || nb.length || npr.length) rwCelebrate({ up, lv: R.lv, nb, npr: npr.slice(-3), dxp });
+  else if (dxp > 0) rwFly('+' + dxp + ' XP');
+}
+function rwFly(txt) {
+  let el = $('#xpfly'); if (!el) { el = document.createElement('div'); el.id = 'xpfly'; el.setAttribute('aria-live', 'polite'); document.body.appendChild(el); }
+  el.textContent = txt; el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
+}
+function rwCelebrate(c) {
+  const parts = [];
+  if (c.up) parts.push(`<div class="cel-lv">${hexBadge(c.lv.n, 'lvl big')}<h2 class="disp">Level ${c.lv.n}</h2><p>${esc(c.lv.title)}</p></div>`);
+  if (c.npr.length) parts.push(`<div class="cel-pr"><span class="tro">${hexBadge('🏆', 'gold big')}</span><h2 class="disp">Nieuw record</h2>${c.npr.map(p => `<p><b>${esc(p.name)}</b><br><span class="big">${String(p.v).replace('.', ',')} kg</span> <small>geschatte 1RM, was ${String(p.prev).replace('.', ',')}</small></p>`).join('')}</div>`);
+  if (c.nb.length) parts.push(`<div class="cel-b"><h3>${c.nb.length > 1 ? 'Nieuwe badges' : 'Nieuwe badge'}</h3><div class="cel-bl">${c.nb.map(b => `<div>${hexBadge(b.e, 'gold')}<b>${esc(b.n)}</b><small>${esc(b.d)}</small></div>`).join('')}</div></div>`);
+  modal(`<div class="cel">${parts.join('')}${c.dxp > 0 ? `<p class="cel-xp">+${c.dxp} XP</p>` : ''}<div class="btns end"><button class="btn" data-a="close">Lekker bezig</button><button class="btn ghost" data-a="rwGo">Bekijk beloningen</button></div></div>`);
+  rwConfetti();
+}
+function rwConfetti() {
+  try { if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; } catch (e) {}
+  const cv = document.createElement('canvas'); cv.className = 'confetti'; document.body.appendChild(cv);
+  const dpr = Math.min(2, devicePixelRatio || 1), W = innerWidth, H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; const g = cv.getContext('2d'); g.scale(dpr, dpr);
+  const cols = ['#C9F24D', '#FFD166', '#FF5C8A', '#5CC8FF', '#B48CFF', '#FFFFFF'];
+  const P = Array.from({ length: 140 }, () => ({ x: W / 2 + (Math.random() - .5) * 80, y: H * .35, vx: (Math.random() - .5) * 11, vy: -Math.random() * 13 - 4, s: 5 + Math.random() * 6, r: Math.random() * 6, vr: (Math.random() - .5) * .4, c: cols[Math.random() * cols.length | 0] }));
+  const t0 = performance.now();
+  (function f(t) { const k = (t - t0) / 1800; g.clearRect(0, 0, W, H); P.forEach(p => { p.vy += .32; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.r += p.vr; g.save(); g.globalAlpha = Math.max(0, 1 - k); g.translate(p.x, p.y); g.rotate(p.r); g.fillStyle = p.c; g.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); g.restore(); }); if (k < 1) requestAnimationFrame(f); else cv.remove(); })(t0);
+}
+function rwHeaderChip() {
+  const el = $('#rwchip'); if (!el) return; if (!S || !S.profile || ui.ob) { el.hidden = true; return; }
+  try { const R = rewards(); el.hidden = false; el.innerHTML = `<span class="pill"><span>🔥${R.m.streak}</span><span class="lvn">Lv${R.lv.n}</span></span>`; el.classList.toggle('on', route === 'beloningen'); } catch (e) { el.hidden = true; }
+}
+A.rwGo = () => { closeModal(); go('beloningen'); };
+
 function vHome() {
   const p = S.profile, t = targets(), d = today(), sess = sessionsOn(d), rec = S.recovery[d] || {}, st = S.steps[d];
   const hr = new Date().getHours(), greet = hr < 12 ? 'Goedemorgen' : hr < 18 ? 'Goedemiddag' : 'Goedenavond';
@@ -1747,7 +2076,7 @@ function vHome() {
     sess.map(s => { const def = sessionDef(s.key), done = isDone(s.from, s.key); return `<p class="tile-main">${esc(def.name)}</p><p class="sub">${sessionMeta(def, s.key)}${s.moved ? ' · verplaatst' : ''}${done ? ' · gedaan' : ''}</p>`; }).join('');
   const food = (!t || t.missing) ? `<p class="sub">Stel je gegevens in om dagdoelen te krijgen.</p><button class="btn ghost sm" data-a="go" data-r="mijn-plan">Naar Profiel</button>` :
     `<div class="ringrow">${ring(eaten.kcal, t.kcal, 'Calorieën gegeten t.o.v. doel')}<div><p class="tile-main">${n0(eaten.kcal)}<small> / ${t.kcal} kcal</small></p><p class="sub">Eiwit ${n0(eaten.p)} / ${t.p} g<br>Gepland: ${fd.items.length ? kc(planned.kcal) + ' kcal' : 'nog niets'}</p></div></div><button class="btn ghost sm" data-a="gotoFood">${fd.items.length ? 'Open planner' : 'Plan je dag'}</button>`;
-  return `<section>${hero}${coachCard(coach)}
+  return `<section>${hero}${rwHomeCard()}${coachCard(coach)}
   <div class="tiles">
    <div class="tile"><h3>Training</h3>${train}${strip}</div>
    <div class="tile"><h3>Voeding</h3>${food}</div>
@@ -1755,6 +2084,7 @@ function vHome() {
     ${StepSensor.st.mode === 'ready' ? (StepSensor.st.kind === 'motion' ? '<button class="btn ghost sm" data-a="stepLink">Koppel iPhone Stappenteller</button>' : '<button class="btn sm" data-a="stepLink">Koppel stappenteller</button>') : ''}
     <form class="inline" data-submit="steps"><input name="steps" type="number" inputmode="numeric" min="0" max="100000" placeholder="Aantal stappen" aria-label="${StepSensor.st.mode === 'auto' ? 'Stappen handmatig corrigeren' : 'Aantal stappen'}" value="${st != null ? st : ''}"><button class="btn sm">Opslaan</button></form>${StepSensor.st.mode === 'auto' ? '<button class="btn ghost sm" data-a="stepOff">Zet automatisch uit</button>' : ''}</div>
   </div>
+  ${rwWeekCard()}
   ${compHomeCard()}
   ${acc('Herstelcheck', rec.energy ? 'Ingevuld' : 'Optioneel', `<p class="sub">Tik wat past. Het wordt direct opgeslagen.</p>${scaleRow('sleep', 'Hoeveel sliep je?', SC.hours, nearest(SC.hours, rec.sleep), 'data-c="recTile"')}${scaleRow('energy', 'Energie', SC.energy, rec.energy, 'data-c="recTile"')}${scaleRow('soreness', 'Spierpijn', SC.sore, rec.soreness, 'data-c="recTile"')}${scaleRow('recovery', 'Herstel', SC.recov, rec.recovery, 'data-c="recTile"')}`)}
   ${S.example ? '<p class="sub">Je gebruikt een voorbeeldprofiel. Pas het aan bij Profiel, of wis alles onder Voortgang en Gegevens.</p>' : ''}</section>`;
