@@ -933,6 +933,61 @@ main p b,main p strong,.dialog p b,.dialog p strong,.note b,.note strong,ol.step
 .hrow{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:var(--s1);align-items:center;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
 .hrow .hs{color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
 .hrow b{font:900 16px/1 var(--fd);color:var(--pg-ink)}
+
+/* ===== PR-banner, disciplinekaarten, lichaam, geel accent ===== */
+:root{--gold:#FFD166;--gold-ink:#FFD166;--mus0:rgba(255,255,255,.07);--mus1:rgba(255,255,255,.16)}
+:root[data-theme=light]{--gold-ink:#B7791F;--mus0:rgba(14,18,24,.07);--mus1:rgba(14,18,24,.16)}
+@media (prefers-color-scheme:light){:root:not([data-theme=dark]){--gold-ink:#B7791F;--mus0:rgba(14,18,24,.07);--mus1:rgba(14,18,24,.16)}}
+#prban{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 70px);z-index:130;display:flex;align-items:center;gap:12px;width:min(92vw,400px);padding:12px 16px;border-radius:18px;background:var(--surface);border:1.5px solid var(--gold);box-shadow:0 20px 50px -12px rgba(0,0,0,.65),0 0 30px -8px rgba(255,209,102,.6);transform:translate(-50%,-140%);opacity:0;pointer-events:none;transition:transform .45s cubic-bezier(.2,1.3,.4,1),opacity .3s}
+#prban.on{transform:translate(-50%,0);opacity:1}
+#prban>div{display:grid;min-width:0}
+#prban b{font:900 22px/1.05 var(--fd);font-stretch:78%;text-transform:uppercase;color:var(--gold-ink)}
+#prban small{font-size:13px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#prban .hexb{width:46px;height:46px}
+.dcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:var(--s2);margin:var(--s2) 0 var(--s3)}
+.dcard{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:230px;padding:var(--s3);border-radius:22px;border:1px solid color-mix(in srgb,var(--dc) 40%,var(--line));background:#10141d;color:#fff;text-align:left;font:inherit;cursor:pointer;overflow:hidden;isolation:isolate;box-shadow:0 22px 44px -26px color-mix(in srgb,var(--dc) 70%,transparent);transition:transform .2s var(--ease)}
+.dcard:active{transform:scale(.98)}
+.dimg{position:absolute;inset:0;z-index:-2;background-size:cover;background-position:center 30%;filter:grayscale(1) contrast(1.15) brightness(.9)}
+.dshade{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,color-mix(in srgb,var(--dc) 40%,transparent) 0%,rgba(10,13,20,.55) 45%,rgba(10,13,20,.94) 100%);mix-blend-mode:normal}
+.dtop{display:flex;align-items:center;justify-content:space-between}
+.dic{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:color-mix(in srgb,var(--dc) 85%,#000);color:#10140A;box-shadow:0 0 20px color-mix(in srgb,var(--dc) 60%,transparent)}
+.dic svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dlive{padding:5px 12px;border-radius:99px;background:var(--dc);color:#10140A;font:800 12px/1 var(--fb);letter-spacing:.06em;text-transform:uppercase}
+.dbody{display:grid;gap:6px;margin-top:var(--s4)}
+.dtag{font:700 11px/1.2 var(--fb);letter-spacing:.14em;text-transform:uppercase;color:var(--dc)}
+.dname{font:900 38px/.95 var(--fd);font-stretch:75%;text-transform:uppercase;letter-spacing:-.01em;color:#fff}
+.dblurb{font-size:14px;line-height:1.45;color:rgba(255,255,255,.82);max-width:42ch}
+.dstat{font-size:13px;font-weight:700;color:#fff}
+.dgo{justify-self:start;display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:10px 18px;border-radius:99px;background:var(--dc);color:#10140A;font:800 14px/1 var(--fb)}
+.dgo i{font-style:normal;font-size:18px;line-height:0}
+.dcard:not(.act) .dgo{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25)}
+.mt{margin-top:var(--s3)!important}
+.bodymap{display:grid;gap:var(--s2)}
+.bodies{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2);justify-items:center;padding:var(--s2) 0;border-radius:var(--r);background:radial-gradient(60% 60% at 50% 40%,rgba(255,209,102,.08),transparent 70%)}
+.bodysvg{width:100%;max-width:150px;height:auto;overflow:visible}
+.bodysvg .mu{cursor:pointer;stroke:var(--bg);stroke-width:.8;transition:fill .6s}
+.bodysvg .mu.full{filter:drop-shadow(0 0 3px color-mix(in srgb,var(--pg) 70%,transparent))}
+.mulegend{display:flex;flex-wrap:wrap;justify-content:center;gap:6px var(--s2);font-size:12px;color:var(--ink2)}
+.mulegend span{display:inline-flex;align-items:center;gap:6px}
+.mulegend i,.murow i{display:inline-block;width:10px;height:10px;border-radius:3px}
+.mulist{display:grid;grid-template-columns:1fr 1fr;gap:6px var(--s2)}
+.murow{display:grid;grid-template-columns:10px minmax(0,1fr) auto;align-items:center;gap:8px;font-size:13px}
+.murow span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.murow b{font:800 14px/1 var(--fd)}
+.murow small{color:var(--ink2);font-weight:600}
+/* meer geel */
+.eyebrow{color:var(--gold-ink)!important}
+.sect{color:var(--gold-ink)!important;display:flex;align-items:center;gap:10px}
+.sect::before{content:"";width:18px;height:3px;border-radius:2px;background:var(--gold)}
+.tile h3{color:var(--gold-ink)!important}
+#nav a.on::after{background:var(--gold)!important;box-shadow:0 0 10px var(--gold)!important}
+.chipb svg{color:var(--gold-ink)}
+.card h3::after{content:none}
+.xpbar i{background:linear-gradient(90deg,#FFD166,var(--pg))}
+.rwcard{border-color:color-mix(in srgb,var(--gold) 40%,var(--line))!important}
+.hexb.lvl svg path{stroke:var(--gold)!important;fill:color-mix(in srgb,var(--gold) 18%,var(--surface))!important}
+.rwlv .eyebrow{color:var(--head)!important}
+.qwin.on{color:var(--gold-ink)!important}
 </style>
 <div id="app">
  <header class="top"><div class="logo"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21M17 12v3M20 12v2"/></svg></i><span>The Discipline Key</span></div><div class="topbtns"><a id="rwchip" class="rwchip" href="#beloningen" aria-label="Beloningen" hidden></a><button id="profbtn" class="themebtn" type="button" data-a="go" data-r="mijn-plan" aria-label="Profiel en plan" title="Profiel en plan"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/></svg></button><button id="themebtn" class="themebtn" type="button" data-a="theme" aria-label="Kleurthema wisselen"></button></div></header>
@@ -2030,12 +2085,59 @@ function rwHomeCard() {
    <div class="card quest"><div class="qhead"><h3>Dagdoelen</h3><span class="qwin ${won >= 3 ? 'on' : ''}">${won >= 4 ? 'Perfecte dag! +' + RW_XP.perfect + ' XP' : won >= 3 ? 'Dag gewonnen 🔥' : `${won}/4 · nog ${3 - won} voor je streak`}</span></div>
     <div class="qrings">${quests.map(q => glowRing(q[1], q[2], q[3], q[4], `${q[0]}<em>${q[5]}</em>`)).join('')}</div></div>`;
 }
+
+/* --- lichaam met spiergroepen --- */
+const MUS = { chest: 'Borst', shoulders: 'Schouders', biceps: 'Biceps', triceps: 'Triceps', abs: 'Buik', back: 'Rug', lowback: 'Onderrug', glutes: 'Billen', quads: 'Bovenbenen voor', hams: 'Hamstrings', calves: 'Kuiten' };
+const PAT_MUS = { pushH: { chest: 1, triceps: .5, shoulders: .5 }, pushV: { shoulders: 1, triceps: .5 }, tri: { triceps: 1 }, lat: { shoulders: 1 }, pullV: { back: 1, biceps: .5 }, pullH: { back: 1, biceps: .5, shoulders: .3 }, bi: { biceps: 1 }, rear: { shoulders: 1, back: .3 }, squat: { quads: 1, glutes: .5 }, hinge: { hams: 1, glutes: 1, lowback: .5 }, lunge: { quads: 1, glutes: 1 }, hamcurl: { hams: 1 }, calf: { calves: 1 }, core: { abs: 1 } };
+function musWeek() {
+  const d = today(), w0 = addDays(d, -wdOf(d)), plan = {}, done = {}; Object.keys(MUS).forEach(k => { plan[k] = 0; done[k] = 0; });
+  const addTo = (o, exId, n) => { const e = EX[exId], m = e && PAT_MUS[e.pattern]; if (m) Object.entries(m).forEach(([k, f]) => o[k] += n * f); };
+  for (let i = 0; i < 7; i++) sessionsOn(addDays(w0, i)).forEach(s => { try { sessionExs(s.key).forEach(id => addTo(plan, id, (rx(id, s.key) || {}).sets || 3)); } catch (e) {} });
+  S.logs.filter(l => l.date >= w0 && l.date <= addDays(w0, 6)).forEach(l => (l.items || []).forEach(it => addTo(done, it.ex, it.sets.length)));
+  return Object.keys(MUS).map(k => ({ k, n: MUS[k], plan: Math.round(plan[k]), done: Math.round(done[k] * 10) / 10, p: plan[k] ? done[k] / plan[k] : (done[k] ? .75 : -1), extra: !plan[k] && done[k] > 0 }));
+}
+const musCol = p => p < 0 ? 'var(--mus0)' : p === 0 ? 'var(--mus1)' : p < .5 ? 'color-mix(in srgb,#FFD166 45%,var(--mus1))' : p < 1 ? '#FFD166' : 'var(--pg)';
+function bodyMap() {
+  const M = musWeek(), by = {}; M.forEach(m => by[m.k] = m);
+  const f = (k, d) => `<path d="${d}" fill="${musCol(by[k].p)}" data-a="musInfo" data-k="${k}" class="mu${by[k].p >= 1 ? ' full' : ''}"><title>${by[k].n}: ${n1(by[k].done)}${by[k].extra ? ' sets extra' : ' / ' + by[k].plan + ' sets'}</title></path>`;
+  const base = 'fill="var(--mus0)"';
+  const mir = d => d.replace(/(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)/g, (_, x, y) => (100 - +x).toFixed(1) + ' ' + y);
+  const both = (k, d) => f(k, d) + f(k, mir(d));
+  const front = `<svg viewBox="0 0 100 210" class="bodysvg" role="img" aria-label="Voorkant lichaam">
+   <ellipse cx="50" cy="14" rx="9" ry="11" ${base}/><path d="M45 24 L55 24 L56 31 L44 31 Z" ${base}/>
+   ${both('shoulders', 'M37 33 Q27 31 24 40 Q24 46 29 47 Q33 40 38 37 Z')}
+   ${both('chest', 'M49 34 L39 35 Q33 39 34 48 Q41 54 49 52 Z')}
+   ${both('biceps', 'M25 48 Q22 56 24 64 Q28 66 31 63 Q32 55 30 48 Z')}
+   ${'<path d="M23 66 Q19 78 21 90 L25 90 Q29 78 30 66 Z" ' + base + '/><path d="M77 66 Q81 78 79 90 L75 90 Q71 78 70 66 Z" ' + base + '/>'}
+   ${f('abs', 'M42 55 Q50 52 58 55 L57 90 Q50 95 43 90 Z')}
+   <path d="M35 52 Q34 70 38 88 L42 90 L41 56 Z" ${base}/><path d="M65 52 Q66 70 62 88 L58 90 L59 56 Z" ${base}/>
+   ${both('quads', 'M38 96 Q31 112 33 140 Q38 148 45 144 Q49 120 48 98 Z')}
+   ${'<path d="M35 150 Q33 168 36 190 L42 190 Q45 170 44 150 Z" ' + base + '/><path d="M65 150 Q67 168 64 190 L58 190 Q55 170 56 150 Z" ' + base + '/>'}
+   <path d="M38 92 Q50 99 62 92 L60 100 Q50 104 40 100 Z" ${base}/></svg>`;
+  const back = `<svg viewBox="0 0 100 210" class="bodysvg" role="img" aria-label="Achterkant lichaam">
+   <ellipse cx="50" cy="14" rx="9" ry="11" ${base}/>
+   ${f('back', 'M50 25 L38 33 L36 40 Q34 56 40 72 L50 74 L60 72 Q66 56 64 40 L62 33 Z')}
+   ${both('shoulders', 'M37 33 Q27 31 24 40 Q24 46 29 47 Q33 40 37 38 Z')}
+   ${both('triceps', 'M25 48 Q22 56 24 64 Q28 66 31 63 Q32 55 30 48 Z')}
+   ${'<path d="M23 66 Q19 78 21 90 L25 90 Q29 78 30 66 Z" ' + base + '/><path d="M77 66 Q81 78 79 90 L75 90 Q71 78 70 66 Z" ' + base + '/>'}
+   ${f('lowback', 'M42 75 L58 75 L58 89 Q50 92 42 89 Z')}
+   ${both('glutes', 'M49 92 Q38 90 36 100 Q37 110 48 110 Z')}
+   ${both('hams', 'M37 113 Q32 128 35 144 Q41 148 46 144 Q48 128 48 113 Z')}
+   ${both('calves', 'M35 150 Q31 162 35 178 Q40 182 44 176 Q46 162 44 150 Z')}
+   <path d="M36 182 L44 182 L43 192 L37 192 Z" ${base}/><path d="M64 182 L56 182 L57 192 L63 192 Z" ${base}/></svg>`;
+  const tot = M.filter(m => m.plan > 0), hit = tot.filter(m => m.p >= 1).length;
+  const rows = M.filter(m => m.plan > 0 || m.done > 0).sort((a, b) => (b.plan > 0) - (a.plan > 0) || b.plan - a.plan || b.done - a.done).map(m => `<div class="murow"><i style="background:${musCol(m.p)}"></i><span>${m.n}</span><b>${n1(m.done)}<small>${m.extra ? ' extra' : ' / ' + m.plan}</small></b></div>`).join('');
+  return `<div class="bodymap"><div class="bodies">${front}${back}</div>
+   <div class="mulegend"><span><i style="background:var(--mus1)"></i>nog niet</span><span><i style="background:#FFD166"></i>bezig</span><span><i style="background:var(--pg)"></i>target gehaald</span></div>
+   ${tot.length ? `<p class="sub">${hit} van ${tot.length} spiergroepen hebben hun weektarget gehaald. Tik op een spier voor details.</p><div class="mulist">${rows}</div>` : '<p class="sub">Deze week staan er geen krachtsessies gepland.</p>'}</div>`;
+}
+A.musInfo = d => { const m = musWeek().find(x => x.k === d.k); if (m) toast(m.extra ? `${m.n}: ${n1(m.done)} sets extra deze week (geen target in je schema)` : `${m.n}: ${n1(m.done)} van ${m.plan} sets deze week${m.plan && m.done >= m.plan ? ' · target gehaald 🎯' : ''}`); };
 function rwWeekCard() {
   const W = rwWeek(); if (!W.P && !W.sess) return '';
   const pct = Math.round(W.pct * 100), d = today(), we = addDays(W.w0, 6);
   const rows = RW_GROUPS.filter(g => W.plan[g[0]] || W.done[g[0]]).map(g => { const pl = W.plan[g[0]], dn = W.done[g[0]], left = Math.max(0, pl - dn); return `<div class="wkrow">${hexRing(pl ? dn / pl : 1, 34, g[1], '', 'r' + g[0])}<div><b>${g[1]}</b><small>${pl ? dn + ' / ' + pl + ' sets' : dn + ' sets extra'}</small></div><span class="left">${left ? `<b>${left}</b><small>te gaan</small>` : '<b>✓</b><small>klaar</small>'}</span></div>`; }).join('');
   return `<div class="card wkgoal"><h3 class="disp">Weekdoel</h3><p class="sub">${fmtDate(W.w0, { day: 'numeric', month: 'short' })} – ${fmtDate(we, { day: 'numeric', month: 'short' })} · ${W.sessDone}/${W.sess} sessies</p>
-   <div class="wkhex">${hexRing(W.pct, 168, 'Weekdoel ' + pct + ' procent', `<text x="84" y="84" text-anchor="middle" dominant-baseline="central" class="hexpct">${pct}%</text>`, 'wk')}</div>${rows}</div>`;
+   <div class="wkhex">${hexRing(W.pct, 168, 'Weekdoel ' + pct + ' procent', `<text x="84" y="84" text-anchor="middle" dominant-baseline="central" class="hexpct">${pct}%</text>`, 'wk')}</div>${rows}<h3 class="disp mt">Spiergroepen</h3>${bodyMap()}</div>`;
 }
 
 /* --- Beloningen-scherm --- */
@@ -2068,6 +2170,12 @@ function rwCheck() {
   S.rw = now; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
   if (up || nb.length || npr.length) rwCelebrate({ up, lv: R.lv, nb, npr: npr.slice(-3), dxp });
   else if (dxp > 0) rwFly('+' + dxp + ' XP');
+}
+
+function rwPR(title, sub) {
+  let el = $('#prban'); if (!el) { el = document.createElement('div'); el.id = 'prban'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite'); document.body.appendChild(el); }
+  el.innerHTML = `${hexBadge('🏆', 'gold')}<div><b>${esc(title)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</div>`;
+  el.classList.remove('on'); void el.offsetWidth; el.classList.add('on'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('on'), 3200);
 }
 function rwFly(txt) {
   let el = $('#xpfly'); if (!el) { el = document.createElement('div'); el.id = 'xpfly'; el.setAttribute('aria-live', 'polite'); document.body.appendChild(el); }
@@ -2639,7 +2747,7 @@ function prCheck(it, st, announce) {
   let best = 0; try { best = rewards().best[it.ex] || 0; } catch (e) {}
   it.sets.forEach(o => { if (o !== st && o.done) best = Math.max(best, e1rm(num(o.w, 1) || 0, num(o.r) || 0)); });
   const was = !!st.pr; st.pr = best > 0 && v > best + 0.05;
-  if (st.pr && !was && announce) { rwFly('🏆 Record · ' + n1(v) + ' kg'); rwConfetti(); }
+  if (st.pr && !was && announce) { rwPR('Nieuw record', ((EX[it.ex] || {}).name || '') + ' · ' + n1(v) + ' kg (1RM)'); rwConfetti(); }
   return st.pr;
 }
 function setDoneFx(it, st, announce) {
@@ -2660,7 +2768,7 @@ A.setDone = d => { const it = S.draft.items[+d.idx], st = it.sets[+d.i];
 A.logAll = d => { const it = S.draft.items[+d.idx]; let n = 0, pr = false;
   it.sets.forEach((st, i) => { if (st.done) return; const gh = wkGhost(it, i); if (!(num(st.r) > 0) && gh.r !== '') st.r = String(gh.r); if (st.w === '' && gh.w !== '') st.w = String(gh.w); if (num(st.r) > 0) { st.done = true; n++; } });
   it.sets.forEach(st => { if (st.done && prCheck(it, st, false)) pr = true; });
-  save(); render(); if (pr) { rwFly('🏆 Nieuw record'); rwConfetti(); } else if (n) rwFly('+' + n * RW_XP.set + ' XP'); else toast('Vul eerst herhalingen in.'); };
+  save(); render(); if (pr) { const bs = it.sets.filter(x => x.pr).map(x => e1rm(num(x.w, 1) || 0, num(x.r) || 0)); rwPR('Nieuw record', ((EX[it.ex] || {}).name || '') + ' · ' + n1(Math.max(...bs)) + ' kg (1RM)'); rwConfetti(); } else if (n) rwFly('+' + n * RW_XP.set + ' XP'); else toast('Vul eerst herhalingen in.'); };
 A.restNow = d => { const it = S.draft.items[+d.idx]; S.restOff = false; save(); startRest(restSecs(it.ex, ui.workout.key)); };
 A.exHist = d => { const id = d.id, rows = S.logs.filter(l => (l.items || []).some(x => x.ex === id)).slice(-12).reverse();
   modal(`<h3>${esc((EX[id] || {}).name || id)}</h3>${rows.length ? `<p class="sub">Je laatste ${rows.length} keer. Geschatte 1RM uit je beste set.</p><div class="hist">${rows.map(l => { const it = l.items.find(x => x.ex === id), b = Math.max(0, ...it.sets.map(x => e1rm(x.w, x.r))); return `<div class="hrow"><span>${fmtDate(l.date, { day: 'numeric', month: 'short' })}</span><span class="hs">${it.sets.map(x => (x.w ? n1(x.w) + '×' : '') + x.r).join('  ')}</span><b>${b ? n1(b) + ' kg' : ''}</b></div>`; }).join('')}</div>` : '<p class="sub">Je hebt deze oefening nog niet eerder gelogd.</p>'}<div class="btns end"><button class="btn" data-a="close">Sluiten</button></div>`); };
@@ -3535,11 +3643,24 @@ function discStatus(id) {
   const dc = D()[id]; if (!dc) return 'Niet gestart'; const w = dWeek(dc, today());
   return w > dc.weeks ? 'Afgerond' : w < 1 ? `Start ${fmtDate(dc.start, { day: 'numeric', month: 'long' })}` : `Actief · week ${w} van ${dc.weeks} · ${dc.role === 'support' ? 'ondersteunend' : 'hoofddoel'}`;
 }
+
+const DCARD = { run: ['#5CC8FF', 'walklunge_0', 'Duur · tempo · intervallen', '<path d="M13 4.5a1.5 1.5 0 1 0 0 .01M9 21l2.5-5.5L14 17v4M7 12l3-3.5 4 1.5 2 3h3M11.5 15.5L10 9"/>'],
+  pl: ['#FFD166', 'backsquat_1', 'Squat · bench · deadlift', '<path d="M2 12h20M5 8v8M8 6v12M16 6v12M19 8v8"/>'],
+  hx: ['#FF8A4C', 'sledpush_0', 'Run · stations · race', '<path d="M8 6h8l2 4H6zM6 10l-1 9h14l-1-9M12 13v3"/>'],
+  beg: ['#6FD6A0', 'farmers_0', 'Wandelen · basiskracht · gewoontes', '<path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/>'],
+  bb: ['#FF5C8A', 'lateraldb_1', 'Fases · peak week · posing', '<path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 3M17 6h3a3 3 0 0 1-3 3"/>'] };
+function discCard(id, name, blurb, status, active, act) {
+  const [col, img, tag, ic] = DCARD[id] || ['var(--pg)', '', '', ''];
+  return `<button class="dcard ${active ? 'act' : ''}" style="--dc:${col}" data-a="${act}" data-id="${id}" aria-label="${esc(name)}: ${esc(status)}">
+   ${img ? `<span class="dimg" style="background-image:url('ex/${img}.webp')"></span>` : ''}<span class="dshade"></span>
+   <span class="dtop"><span class="dic"><svg viewBox="0 0 24 24" aria-hidden="true">${ic}</svg></span>${active ? '<span class="dlive">Actief</span>' : ''}</span>
+   <span class="dbody"><small class="dtag">${tag}</small><b class="dname">${esc(name)}</b><span class="dblurb">${esc(blurb)}</span><span class="dstat">${esc(status)}</span><span class="dgo">${active ? 'Open' : 'Start'} <i>›</i></span></span></button>`;
+}
 function discHub() {
   const c = S.comp && S.comp.active;
   return `<section><p class="eyebrow">Alles rond je doelen</p><h1>Disciplines</h1><p class="lead">Kies een of meer disciplines. Elke discipline heeft eigen fases, training en voortgang, en alles komt samen in je weekplan.</p>${weekLoad()}${hubCompat()}
-  <div class="tiles">${Object.entries(DISC).map(([id, d]) => `<div class="tile"><h3>${d.name}</h3><p>${d.blurb}</p><p class="sub"><b>${discStatus(id)}</b></p><button class="btn ${D()[id] ? '' : 'ghost'} sm" data-a="discGo" data-id="${id}">${D()[id] ? 'Open discipline' : 'Start discipline'}</button></div>`).join('')}
-   <div class="tile"><h3>Bodybuilding</h3><p>Voorbereiding op een wedstrijd met fases, peak week, check-ins en posing.</p><p class="sub"><b>${c ? 'Actief · ' + Math.max(0, Math.ceil(diffDays(today(), S.comp.date) / 7)) + ' weken tot de show' : 'Niet gestart'}</b></p><button class="btn ${c ? '' : 'ghost'} sm" data-a="discBB">${c ? 'Open discipline' : 'Start discipline'}</button></div></div>
+  <div class="dcards">${Object.entries(DISC).map(([id, d]) => discCard(id, d.name, d.blurb, discStatus(id), !!D()[id], 'discGo')).join('')}
+   ${discCard('bb', 'Bodybuilding', 'Voorbereiding op een wedstrijd met fases, peak week, check-ins en posing.', c ? 'Actief · ' + Math.max(0, Math.ceil(diffDays(today(), S.comp.date) / 7)) + ' weken tot de show' : 'Niet gestart', !!c, 'discBB')}</div>
   <p class="sub">Dit zijn algemene trainingsschema’s op basis van gangbare principes. Ze vervangen geen persoonlijke begeleiding. Heb je klachten of een aandoening, overleg dan eerst met je huisarts.</p></section>`;
 }
 function hubCompat() {
