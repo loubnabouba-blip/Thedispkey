@@ -898,6 +898,41 @@ main p b,main p strong,.dialog p b,.dialog p strong,.note b,.note strong,ol.step
 .cel .btns{justify-content:center}
 @media (prefers-reduced-motion:reduce){.streak.on .fl,#xpfly.on,.cel .hexb{animation:none}#xpfly.on{opacity:1}}
 
+
+/* ===== Trainingsscherm (setlogger) ===== */
+.set{grid-template-columns:34px minmax(0,1fr) minmax(0,1fr) 48px 30px!important;padding:6px;border:1px solid transparent;transition:background .25s,border-color .25s}
+.set.notw{grid-template-columns:34px minmax(0,1fr) 48px 30px!important}
+.set .snum{display:grid;place-items:center;width:30px;height:30px;font:900 14px/1 var(--fd);color:var(--ink2);background:var(--surface2);clip-path:polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%)}
+.set.done{background:color-mix(in srgb,var(--pg) 8%,transparent);border-color:color-mix(in srgb,var(--pg) 25%,transparent)}
+.set.done .snum{background:var(--pg);color:var(--on-accent)}
+.set.pr{background:color-mix(in srgb,#FFD166 12%,transparent);border-color:color-mix(in srgb,#FFD166 45%,transparent)}
+.set.pr .snum{background:#FFD166;color:#2A1E00;font-size:13px}
+.set .fl{position:relative;display:block;margin:0;min-width:0}
+.set .fl input{width:100%;padding-top:12px!important}
+.set .fl em{position:absolute;left:0;right:0;top:5px;text-align:center;font-style:normal;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.set .fl input::placeholder{color:color-mix(in srgb,var(--ink) 32%,transparent);font-weight:600}
+.setchk{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;border:2px solid var(--line2);background:transparent;color:var(--ink2);cursor:pointer;transition:transform .15s,background .2s,border-color .2s}
+.setchk svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.setchk:active{transform:scale(.9)}
+.set.done .setchk{background:var(--pg);border-color:var(--pg);color:var(--on-accent);box-shadow:0 0 16px color-mix(in srgb,var(--pg) 55%,transparent)}
+.set.pr .setchk{background:#FFD166;border-color:#FFD166;color:#2A1E00}
+.set .smenu summary{width:30px;min-width:30px;padding:0}
+.exchips{display:flex;gap:6px;overflow-x:auto;margin:0 calc(var(--s3)*-1) var(--s2);padding:0 var(--s3);scrollbar-width:none}
+.exchips::-webkit-scrollbar{display:none}
+.chipb{display:inline-flex;align-items:center;gap:6px;flex:none;min-height:40px;padding:0 14px;border-radius:99px;border:1px solid var(--line2);background:var(--surface2);color:var(--head);font:600 13px/1 var(--fb);cursor:pointer;white-space:nowrap}
+.chipb svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.focuscard .exhead{grid-template-columns:minmax(0,1fr)!important}
+.focuscard .exhead .exmedia{grid-row:auto!important;width:auto!important;height:auto!important;aspect-ratio:16/9;margin:calc(var(--s3)*-1) calc(var(--s3)*-1) var(--s1);border-radius:var(--r) var(--r) 0 0!important;overflow:hidden;background:#fff}
+.focuscard .exhead .exmedia img{width:100%;height:100%;object-fit:contain}
+.focuscard .exhead .extxt,.focuscard .exhead .exrx{grid-column:1!important}
+.focuscard .link.title{font-stretch:78%!important;text-transform:uppercase;font-size:28px!important;line-height:1!important}
+.wkprog{display:flex;align-items:center;gap:var(--s1);margin:0 0 var(--s1)}
+.wkprog .xpbar{flex:1}
+.wkprog small{font:800 13px/1 var(--fd);color:var(--head);white-space:nowrap}
+.hist{display:grid;gap:2px;margin:var(--s2) 0}
+.hrow{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:var(--s1);align-items:center;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.hrow .hs{color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.hrow b{font:900 16px/1 var(--fd);color:var(--pg-ink)}
 </style>
 <div id="app">
  <header class="top"><div class="logo"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21M17 12v3M20 12v2"/></svg></i><span>The Discipline Key</span></div><div class="topbtns"><a id="rwchip" class="rwchip" href="#beloningen" aria-label="Beloningen" hidden></a><button id="profbtn" class="themebtn" type="button" data-a="go" data-r="mijn-plan" aria-label="Profiel en plan" title="Profiel en plan"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/></svg></button><button id="themebtn" class="themebtn" type="button" data-a="theme" aria-label="Kleurthema wisselen"></button></div></header>
@@ -2536,7 +2571,7 @@ A.exInfo = d => {
    <div class="btns end"><button class="btn ghost" data-a="close">Sluiten</button></div>`, true);
 };
 /* --- workout --- */
-A.openWorkout = d => { ui.workout = { key: d.key, date: d.date, from: d.from }; ui.wkIdx = 0; draftEnsure(); render(); window.scrollTo(0, 0); };
+A.openWorkout = d => { ui.workout = { key: d.key, date: d.date, from: d.from }; ui.wkIdx = 0; draftEnsure(); if (route !== 'training') go('training'); else render(); window.scrollTo(0, 0); };
 function draftEnsure() {
   const wk = ui.workout, def = sessionDef(wk.key); let dr = S.draft;
   if (!dr || dr.key !== wk.key || dr.date !== wk.date) { dr = S.draft = { key: wk.key, date: wk.date, from: wk.from, startedAt: Date.now(), items: [], segs: [], cardio: { kind: def.kind || 'Wandelen', min: def.min || '', km: '', rpe: '' } }; }
@@ -2563,19 +2598,20 @@ function vWorkout() {
   }
   const exCard = (it, idx) => {
     const e = EX[it.ex], r = rx(it.ex, wk.key), sg = r.tw ? { kind: 'up', w: r.tw, text: r.note } : suggest(it.ex, wk.key), time = e.type === 'time', unit = time ? 'sec' : e.type === 'dist' ? 'meter' : 'herh.';
-    return `<div class="card ex" data-idx="${idx}"><div class="exhead">${exMedia(it.ex)}<div class="extxt"><button class="link title" data-a="exInfo" data-id="${it.ex}">${esc(e.name)}</button><small>rust ${r.rest} · RPE ${r.rpe}</small></div><div class="exrx"><b>${r.sets} × ${r.reps}</b><small>sets × herh.</small></div></div>
+    return `<div class="card ex" data-idx="${idx}"><div class="exhead">${exMedia(it.ex)}<div class="extxt"><button class="link title" data-a="exInfo" data-id="${it.ex}">${esc(e.name)}</button></div><div class="exrx"><b>${r.sets} × ${r.reps}</b><small>sets × herh. · RPE ${r.rpe}</small></div></div>
+     <div class="exchips"><button class="chipb" data-a="restNow" data-idx="${idx}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>${esc(r.rest)} rust</button><button class="chipb" data-a="exHist" data-id="${it.ex}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5-5 4 4 8-8M15 8h5v5"/></svg>Historie</button><button class="chipb" data-a="swapAsk" data-idx="${idx}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4L3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></svg>Vervang</button></div>
      ${sg ? `<div class="sugg"><span>${esc(sg.text)}</span>${sg.w != null && sg.kind === 'up' ? `<button class="btn ghost sm" data-a="applySugg" data-idx="${idx}" data-w="${sg.w}">Gebruik ${n1(sg.w)} kg</button>` : ''}</div>` : `<p class="sub">Eerste keer: kies een gewicht of tempo waarbij je netjes ${time ? '30 seconden' : e.type === 'dist' ? 'de afstand' : r.lo + ' herhalingen'} haalt en 2 à 3 herhalingen over houdt.</p>`}
      ${r.note && !r.tw ? '<p class="sub"><b>' + esc(r.note) + '</b></p>' : ''}${r.main ? '<p class="sub"><b>Hoofdoefening.</b> Laatste set: zoveel herhalingen als je netjes haalt, met 1 herhaling in reserve.</p>' : ''}<details class="why"><summary>Uitvoering en video</summary><div>${exPics(e.id)}${esc(e.cue)}<div class="btns">${exLinks(e)}</div></div></details>
-     <div class="sets">${it.sets.map((s, i) => `<div class="set"><span>${s.t === 'warm' ? 'W' : s.t === 'myo' ? 'M' : s.t === 'down' ? 'D' : i + 1 - it.sets.slice(0, i).filter(x => x.t === 'warm').length}<em class="stype">${s.t ? ({ warm: 'Opwarmen', myo: 'Myo-rep', down: 'Down set' })[s.t] : ''}</em></span>${time ? '' : `<input aria-label="Gewicht set ${i + 1} (kg)" data-c="set" data-idx="${idx}" data-i="${i}" data-k="w" type="number" inputmode="decimal" step="0.5" min="0" placeholder="kg" value="${s.w}">`}<input aria-label="${unit} set ${i + 1}" data-c="set" data-idx="${idx}" data-i="${i}" data-k="r" type="number" inputmode="numeric" min="0" placeholder="${unit}" value="${s.r}"><details class="menu smenu"><summary aria-label="Setmenu set ${i + 1}">⋯</summary><div class="menubox"><b class="sm-h">Settype</b>${[['', 'Regulier'], ['warm', 'Opwarmen'], ['myo', 'Myo-rep'], ['down', 'Down set']].map(([k, l]) => `<button class="link ${(s.t || '') === k ? 'cur' : ''}" data-a="setType" data-idx="${idx}" data-i="${i}" data-t="${k}">${(s.t || '') === k ? '✓ ' : ''}${l}</button>`).join('')}<hr><button class="link" data-a="setBelow" data-idx="${idx}" data-i="${i}">Set eronder toevoegen</button><button class="link" data-a="setDel" data-idx="${idx}" data-i="${i}">Set verwijderen</button></div></details></div>`).join('')}</div>
+     <div class="sets">${it.sets.map((s, i) => { const gh = wkGhost(it, i); return `<div class="set ${s.done ? 'done' : ''} ${s.pr ? 'pr' : ''} ${time ? 'notw' : ''}" data-idx="${idx}" data-i="${i}"><span class="snum">${s.pr ? '🏆' : s.done ? '✓' : s.t === 'warm' ? 'W' : s.t === 'myo' ? 'M' : s.t === 'down' ? 'D' : i + 1 - it.sets.slice(0, i).filter(x => x.t === 'warm').length}</span>${time ? '' : `<label class="fl"><input aria-label="Gewicht set ${i + 1} (kg)" data-c="set" data-idx="${idx}" data-i="${i}" data-k="w" type="number" inputmode="decimal" step="0.5" min="0" placeholder="${gh.w !== '' ? n1(gh.w).replace(',', '.') : '–'}" value="${s.w}"><em>kg</em></label>`}<label class="fl"><input aria-label="${unit} set ${i + 1}" data-c="set" data-idx="${idx}" data-i="${i}" data-k="r" type="number" inputmode="numeric" min="0" placeholder="${gh.r !== '' ? gh.r : '–'}" value="${s.r}"><em>${unit}${s.t ? ' · ' + ({ warm: 'opwarmen', myo: 'myo-rep', down: 'down set' })[s.t] : ''}</em></label><button class="setchk" data-a="setDone" data-idx="${idx}" data-i="${i}" aria-label="Set ${i + 1} ${s.done ? 'niet meer' : ''} als gedaan markeren" aria-pressed="${!!s.done}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><details class="menu smenu"><summary aria-label="Setmenu set ${i + 1}">⋯</summary><div class="menubox"><b class="sm-h">Settype</b>${[['', 'Regulier'], ['warm', 'Opwarmen'], ['myo', 'Myo-rep'], ['down', 'Down set']].map(([k, l]) => `<button class="link ${(s.t || '') === k ? 'cur' : ''}" data-a="setType" data-idx="${idx}" data-i="${i}" data-t="${k}">${(s.t || '') === k ? '✓ ' : ''}${l}</button>`).join('')}<hr><button class="link" data-a="setBelow" data-idx="${idx}" data-i="${i}">Set eronder toevoegen</button><button class="link" data-a="setDel" data-idx="${idx}" data-i="${i}">Set verwijderen</button></div></details></div>`; }).join('')}</div>
      <div class="btns"><label class="f inl">RPE<select data-c="rpe" data-idx="${idx}"><option value="">–</option>${[6, 7, 8, 9, 10].map(n => `<option ${+it.rpe === n ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
-      <button class="btn ghost sm" data-a="addSet" data-idx="${idx}">+ set</button>
+      <button class="btn ghost sm" data-a="addSet" data-idx="${idx}">+ set</button><button class="btn ghost sm" data-a="logAll" data-idx="${idx}">Alle sets loggen</button>
       <details class="menu"><summary class="btn ghost sm">Meer</summary><div class="menubox"><button class="link" data-a="swapAsk" data-idx="${idx}">Vervang oefening</button><button class="link" data-a="painAsk" data-idx="${idx}">Pijn of niet prettig</button></div></details></div></div>`;
   };
   const items = dr.items.map(exCard).join('');
   if (!S.listView && dr.items.length) {
     const n = dr.items.length, k = clamp(ui.wkIdx || 0, 0, n - 1), cur = dr.items[k], done = it => it.sets.some(s => num(s.r) > 0), last = k === n - 1;
     return `<section class="focus"><div class="fhead"><button class="btn ghost sm" data-a="wkClose">‹ Terug</button><span class="eyebrow">${esc(def.name)}</span><button class="link" data-a="listView">Toon lijst</button></div>
-    <div class="wkdots" role="tablist" aria-label="Oefeningen">${dr.items.map((it, i) => `<button class="${i === k ? 'on' : ''} ${done(it) ? 'done' : ''}" data-a="wkGo" data-i="${i}" aria-label="Oefening ${i + 1}: ${esc(EX[it.ex].name)}${done(it) ? ', ingevuld' : ''}"></button>`).join('')}</div>
+    ${wkProg(dr)}<div class="wkdots" role="tablist" aria-label="Oefeningen">${dr.items.map((it, i) => `<button class="${i === k ? 'on' : ''} ${done(it) ? 'done' : ''}" data-a="wkGo" data-i="${i}" aria-label="Oefening ${i + 1}: ${esc(EX[it.ex].name)}${done(it) ? ', ingevuld' : ''}"></button>`).join('')}</div>
     <p class="fcount">Oefening ${k + 1} van ${n} · ${esc(b.label)}: RPE ${b.rpe}</p>${exCard(cur, k).replace('class="card ex"', 'class="card ex focuscard"')}
     <div class="btns sticky fnav">${k > 0 ? '<button class="btn ghost" data-a="wkPrev">‹ Vorige</button>' : ''}${last ? '<button class="btn" data-a="wkFinish">Training afronden</button>' : '<button class="btn" data-a="wkNext">Volgende ›</button>'}</div>
     <div class="btns tight"><label class="chip"><input type="checkbox" data-c="restToggle" ${S.restOff ? '' : 'checked'}><span>Rusttimer</span></label>${last ? '' : '<button class="link" data-a="wkFinish">Nu afronden</button>'}<button class="link" data-a="wkDiscard">Verwerpen</button></div></section>`;
@@ -2589,7 +2625,45 @@ A.wkGo = d => { ui.wkIdx = +d.i; render(); window.scrollTo(0, 0); };
 A.wkPrev = () => { ui.wkIdx = Math.max(0, (ui.wkIdx || 0) - 1); render(); window.scrollTo(0, 0); };
 A.wkNext = () => { ui.wkIdx = (ui.wkIdx || 0) + 1; render(); window.scrollTo(0, 0); };
 A.listView = () => { S.listView = !S.listView; save(); render(); };
-C.set = el => { const it = S.draft.items[+el.dataset.idx]; it.sets[+el.dataset.i][el.dataset.k] = el.value; save(); if (el.dataset.k === 'r' && el.value && !S.restOff && ui.workout) startRest(restSecs(it.ex, ui.workout.key)); };
+C.set = el => { const it = S.draft.items[+el.dataset.idx], st = it.sets[+el.dataset.i]; st[el.dataset.k] = el.value; 
+  if (el.dataset.k === 'r' && num(el.value) > 0 && !st.done) { setDoneFx(it, st, true); save(); paintSetRow(+el.dataset.idx, +el.dataset.i); return; }
+  if (st.done) { prCheck(it, st, true); paintSetRow(+el.dataset.idx, +el.dataset.i); } save(); };
+function wkGhost(it, i) {
+  const prev = (() => { for (let k = S.logs.length - 1; k >= 0; k--) { const f = (S.logs[k].items || []).find(x => x.ex === it.ex); if (f && f.sets.length) return f.sets.filter(x => !x.t || x.t !== 'warm'); } return null; })();
+  const p = prev && (prev[i] || prev[prev.length - 1]); let w = p ? p.w : '', r = p ? p.r : '';
+  if (ui.workout) { try { const R_ = rx(it.ex, ui.workout.key), sg = R_.tw ? { w: R_.tw } : suggest(it.ex, ui.workout.key); if (sg && sg.w != null && sg.kind !== 'down') w = sg.w; if (r === '' && R_.lo) r = R_.lo; } catch (e) {} }
+  if (w === 0 || w == null) w = ''; return { w, r };
+}
+function prCheck(it, st, announce) {
+  const v = e1rm(num(st.w, 1) || 0, num(st.r) || 0); if (!v) { st.pr = false; return false; }
+  let best = 0; try { best = rewards().best[it.ex] || 0; } catch (e) {}
+  it.sets.forEach(o => { if (o !== st && o.done) best = Math.max(best, e1rm(num(o.w, 1) || 0, num(o.r) || 0)); });
+  const was = !!st.pr; st.pr = best > 0 && v > best + 0.05;
+  if (st.pr && !was && announce) { rwFly('🏆 Record · ' + n1(v) + ' kg'); rwConfetti(); }
+  return st.pr;
+}
+function setDoneFx(it, st, announce) {
+  st.done = true; const pr = prCheck(it, st, announce);
+  if (!pr && announce) rwFly('+' + RW_XP.set + ' XP');
+  if (announce && !S.restOff && ui.workout) startRest(restSecs(it.ex, ui.workout.key));
+}
+function paintSetRow(idx, i) {
+  const row = document.querySelector(`.set[data-idx="${idx}"][data-i="${i}"]`); if (!row) return; const st = S.draft.items[idx].sets[i];
+  row.classList.toggle('done', !!st.done); row.classList.toggle('pr', !!st.pr); const n = $('.snum', row); if (n && (st.done || st.pr)) n.textContent = st.pr ? '🏆' : '✓';
+  const b = $('.setchk', row); if (b) b.setAttribute('aria-pressed', !!st.done); const pg = $('.wkprog'); if (pg) pg.outerHTML = wkProg(S.draft);
+}
+function wkProg(dr) { const all = dr.items.reduce((a, it) => a + it.sets.length, 0), dn = dr.items.reduce((a, it) => a + it.sets.filter(x => x.done || num(x.r) > 0).length, 0); return `<div class="wkprog" aria-label="${dn} van ${all} sets gedaan"><div class="xpbar"><i style="width:${all ? (dn / all * 100).toFixed(0) : 0}%"></i></div><small>${dn}/${all} sets</small></div>`; }
+A.setDone = d => { const it = S.draft.items[+d.idx], st = it.sets[+d.i];
+  if (st.done) { st.done = false; st.pr = false; save(); render(); return; }
+  const gh = wkGhost(it, +d.i); if (!(num(st.r) > 0)) { if (gh.r === '') { toast('Vul eerst het aantal herhalingen in.'); return; } st.r = String(gh.r); } if (st.w === '' && gh.w !== '') st.w = String(gh.w);
+  setDoneFx(it, st, true); save(); render(); };
+A.logAll = d => { const it = S.draft.items[+d.idx]; let n = 0, pr = false;
+  it.sets.forEach((st, i) => { if (st.done) return; const gh = wkGhost(it, i); if (!(num(st.r) > 0) && gh.r !== '') st.r = String(gh.r); if (st.w === '' && gh.w !== '') st.w = String(gh.w); if (num(st.r) > 0) { st.done = true; n++; } });
+  it.sets.forEach(st => { if (st.done && prCheck(it, st, false)) pr = true; });
+  save(); render(); if (pr) { rwFly('🏆 Nieuw record'); rwConfetti(); } else if (n) rwFly('+' + n * RW_XP.set + ' XP'); else toast('Vul eerst herhalingen in.'); };
+A.restNow = d => { const it = S.draft.items[+d.idx]; S.restOff = false; save(); startRest(restSecs(it.ex, ui.workout.key)); };
+A.exHist = d => { const id = d.id, rows = S.logs.filter(l => (l.items || []).some(x => x.ex === id)).slice(-12).reverse();
+  modal(`<h3>${esc((EX[id] || {}).name || id)}</h3>${rows.length ? `<p class="sub">Je laatste ${rows.length} keer. Geschatte 1RM uit je beste set.</p><div class="hist">${rows.map(l => { const it = l.items.find(x => x.ex === id), b = Math.max(0, ...it.sets.map(x => e1rm(x.w, x.r))); return `<div class="hrow"><span>${fmtDate(l.date, { day: 'numeric', month: 'short' })}</span><span class="hs">${it.sets.map(x => (x.w ? n1(x.w) + '×' : '') + x.r).join('  ')}</span><b>${b ? n1(b) + ' kg' : ''}</b></div>`; }).join('')}</div>` : '<p class="sub">Je hebt deze oefening nog niet eerder gelogd.</p>'}<div class="btns end"><button class="btn" data-a="close">Sluiten</button></div>`); };
 C.restToggle = el => { S.restOff = !el.checked; save(); if (S.restOff) stopRest(); };
 /* --- rusttimer --- */
 function restSecs(exId, key) { const m = (rx(exId, key).rest.match(/\d+/g) || [90]).map(Number), v = m.length > 1 ? (m[0] + m[1]) / 2 : m[0]; return Math.max(30, Math.round(v / 15) * 15); }
