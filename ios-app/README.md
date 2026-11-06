@@ -20,6 +20,6 @@ Status: **voorbereid, nog niet gebouwd of getest.** De bouw draait in de cloud o
 7. Na ±15 minuten staat de build in TestFlight. Voeg testers toe (intern tot 100 mensen zonder review; extern tot 10.000 na een korte Apple-controle) en nodig ze uit via hun e-mail. Zij installeren via de TestFlight-app.
 
 ## Let op
-- Niet getest: de eerste build kan om kleine aanpassingen vragen (pluginversies staan op `latest`; pin ze zodra het werkt).
+- Capacitor en de Gezondheid-plug-in staan vast op versie 8: de plug-in compileert niet tegen nieuwere Capacitor-versies.
 - De Gezondheid-koppeling leest nu **stappen**. Gewicht en slaap kunnen later worden toegevoegd in de adapter in `index.html` (`StepSensor`).
 - Voor de App Store (niet nodig voor TestFlight) heb je nog een privacyverklaring, schermafbeeldingen en een beschrijving nodig.

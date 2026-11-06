@@ -7,11 +7,11 @@
     "prepare-web": "node scripts/prepare-web.mjs"
   },
   "dependencies": {
-    "@capacitor/core": "latest",
-    "@capacitor/ios": "latest",
-    "@capgo/capacitor-health": "latest"
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/ios": "^8.0.0",
+    "@capgo/capacitor-health": "^8.11.0"
   },
   "devDependencies": {
-    "@capacitor/cli": "latest"
+    "@capacitor/cli": "^8.0.0"
   }
 }
