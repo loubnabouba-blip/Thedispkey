@@ -1104,6 +1104,16 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .bodymap.compact .bodies{padding:4px 0;gap:4px}
 .bodymap.compact .bodysvg{max-width:90px}
 .bodymap.compact .mulegend{gap:4px 10px;font-size:11px}
+
+.goalhero{display:grid;gap:10px;background:radial-gradient(120% 140% at 0% 0%,rgba(255,209,102,.14),transparent 60%),var(--surface);border-color:color-mix(in srgb,var(--gold) 35%,var(--line))}
+.goalhero h2{margin:0;font:900 clamp(26px,8vw,36px)/1 var(--fd);font-stretch:78%;text-transform:uppercase;color:var(--head)}
+.goalhero .eyebrow{margin:0}
+.gsport{margin:0;color:var(--ink2)}
+.gsport b{color:var(--gold-ink)}
+.gstats{display:flex;gap:var(--s3)}
+.gstats div{display:grid}
+.gstats b{font:900 28px/1 var(--fd);font-stretch:80%;color:var(--head)}
+.gstats span{font-size:12px;color:var(--ink2)}
 </style>
 <div id="app">
  <header class="top"><div class="logo"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21M17 12v3M20 12v2"/></svg></i><span>The Discipline Key</span></div><div class="topbtns"><a id="rwchip" class="rwchip" href="#beloningen" aria-label="Beloningen" hidden></a><button id="profbtn" class="themebtn" type="button" data-a="go" data-r="mijn-plan" aria-label="Profiel en plan" title="Profiel en plan"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/></svg></button><button id="themebtn" class="themebtn" type="button" data-a="theme" aria-label="Kleurthema wisselen"></button></div></header>
@@ -1964,7 +1974,8 @@ function renderOnboarding() {
     ${fld('Naam (optioneel)', inp('name', d.name))}${fld('Leeftijd', inp('age', d.age, 'number', 'min="18" max="99" inputmode="numeric"'))}
     ${fld('Lengte (cm)', inp('height', d.height, 'number', 'min="120" max="230" inputmode="numeric"'))}${fld('Gewicht (kg, optioneel)', inp('weight', d.weight, 'number', 'min="35" max="250" step="0.1" inputmode="decimal"'))}
     ${fld('Geslacht voor de berekening', sel('sex', [['', 'Liever niet delen'], ['m', 'Man'], ['v', 'Vrouw']], d.sex), 'De formule voor je energiebehoefte verschilt per geslacht. Zonder antwoord gebruikt de app een gemiddelde en meldt dat.')}</div>`;
-  if (st === 2) body = `<div class="grid2">${fld('Hoofddoel', sel('goal', Object.entries(GOALS), d.goal))}
+  if (st === 2) body = `<div class="grid2">${fld('Doel voor je lichaam', sel('goal', GOAL_ORDER.map(k => [k, GOALS[k]]), d.goal))}
+    ${fld('Sport (optioneel)', sel('sport', [['', 'Geen sport'], ['run', 'Hardlopen'], ['pl', 'Powerlifting'], ['hx', 'Hyrox en functional'], ['bb', 'Bodybuilding-wedstrijd']], d.sport || ''), 'Train je voor een sport of wedstrijd? Na het opslaan stel je die in.')}
     ${fld('Streefgewicht (kg, optioneel)', inp('targetWeight', d.targetWeight, 'number', 'min="35" max="250" step="0.1" inputmode="decimal"'), 'Alleen voor een tijdsinschatting. Het plan werkt ook zonder.')}
     ${fld('Trainingservaring', sel('experience', [['', 'Niet opgegeven'], ['beginner', 'Beginner (minder dan 1 jaar)'], ['gemiddeld', 'Gemiddeld (1 à 3 jaar)'], ['gevorderd', 'Gevorderd (meer dan 3 jaar)']], d.experience))}
     ${fld('Startdatum', inp('startDate', d.startDate, 'date'))}</div>
@@ -2022,7 +2033,10 @@ A.obFinish = () => {
   if (old && old.goal !== d.goal) S.macroOverride = null;
   S.milestone.enabled = !!d.milestoneOn; if (d.milestoneDate) S.milestone.date = d.milestoneDate;
   if (S.food) Object.values(S.food).forEach(x => x.saved = x.saved);
-  const wasEdit = ui.obEdit; ui.ob = null; ui.obEdit = false; save(); const dest = wasEdit ? 'mijn-plan' : 'home'; if (location.hash.slice(1) !== dest) location.hash = dest; route = dest; render(); window.scrollTo(0, 0); toast(wasEdit ? 'Profiel bijgewerkt.' : 'Je plan is opgeslagen.');
+  const sp = d.sport, needSport = sp && (!old || old.sport !== sp) && (sp === 'bb' ? !(S.comp && S.comp.active) : !D()[sp]);
+  const wasEdit = ui.obEdit, fromStep = ui.obStart; ui.ob = null; ui.obEdit = false; save();
+  if (needSport) { ui.disc = sp; ui.dtab = 'overzicht'; if (sp !== 'bb') ui.dsetup = discDefaults(sp); location.hash = 'disciplines'; route = 'disciplines'; render(); window.scrollTo(0, 0); toast('Stel nu je sport in.'); return; }
+  const dest = wasEdit ? (fromStep === 2 ? 'disciplines' : 'mijn-plan') : 'home'; if (location.hash.slice(1) !== dest) location.hash = dest; route = dest; render(); window.scrollTo(0, 0); toast(wasEdit ? 'Profiel bijgewerkt.' : 'Je plan is opgeslagen.');
 };
 A.editProfile = d => { const st = d && d.s != null ? +d.s : 1; ui.ob = { ...newDraft(), ...S.profile, days: [...(S.profile.days || [])], equipment: [...(S.profile.equipment || [])], allergens: [...(S.profile.allergens || [])], startDate: S.planStart || today(), milestoneOn: S.milestone.enabled, milestoneDate: S.milestone.date || '' }; ui.obStep = st; ui.obStart = st; ui.obEdit = true; render(); window.scrollTo(0, 0); };
 
@@ -2617,9 +2631,6 @@ function vPlan() {
   return `<section><h1>Profiel</h1>
   <div class="card pf"><h3>Jij</h3><form data-submit="pname" class="stack"><label class="f">Naam<input name="name" maxlength="40" autocomplete="given-name" placeholder="Hoe mag de app je noemen?" value="${esc(p.name || '')}"></label><button class="btn sm">Naam opslaan</button></form>
    <p class="sub">${[p.age ? p.age + ' jaar' : '', p.height ? p.height + ' cm' : '', p.weight ? String(p.weight).replace('.', ',') + ' kg' : ''].filter(Boolean).join(' · ') || 'Nog geen gegevens ingevuld.'}</p><button class="btn ghost sm" data-a="editProfile" data-s="1">Gegevens aanpassen</button></div>
-  <div class="card pf"><div class="pfhead"><div><small>Jouw doel</small><h2>${GOALS[p.goal]}</h2></div></div>
-   ${x.te ? `<p class="sub">${esc(x.te.text)}</p>` : '<p class="sub">Geen tijdsinschatting. Vul bij je profiel een streefgewicht in als je er een wilt.</p>'}
-   ${why('Hoe komt deze inschatting tot stand?', '<p>De schatting gaat uit van een gemiddelde wekelijkse verandering van een deel van je lichaamsgewicht (afvallen 0,25–0,75%, aankomen 0,1–0,35%). Echte vooruitgang schommelt en hangt af van opvolging, slaap, stress en je beginpunt. De inschatting is een scenario, geen belofte.</p>')}<button class="btn ghost sm" data-a="editProfile" data-s="2">Doel aanpassen</button></div>
   ${linkCard()}
   ${acc('Duur en planning', planTxt, x.lenBody)}
   ${acc('Receptfoto’s', RP.hasKey() ? RP.count() + ' van ' + RECIPES.length : 'Uit', rpSettings())}
@@ -3855,7 +3866,7 @@ function discSetup(id) {
   const cl = compatWith(nwd), later = cl.filter(x => x.lv >= 2).sort((a, b) => b.o.end.localeCompare(a.o.end))[0];
   const rolePick = others.length ? `<div class="f"><span>Rol van deze discipline</span><div class="chips">${[['main', 'Hoofddoel'], ['support', 'Ondersteunend']].map(([k, l]) => `<label class="chip"><input type="radio" name="role" value="${k}" data-c="dsf" ${o.role === k ? 'checked' : ''}><span>${l}</span></label>`).join('')}</div><small>Het hoofddoel is de piek waar je naartoe werkt. Een ondersteunende discipline krijgt een lichter schema: korter, rustiger en minder sets.</small></div>` : '';
   const bmi = id === 'beg' && o.goal === 'afvallen' && S.profile && S.profile.weight && S.profile.height ? S.profile.weight / Math.pow(S.profile.height / 100, 2) : null;
-  return `<section><button class="btn ghost sm" data-a="discBack">‹ Disciplines</button><p class="eyebrow">Nieuwe discipline</p><h1>${DISC[id].name}</h1>${intro}
+  return `<section><button class="btn ghost sm" data-a="discBack">‹ Doelen</button><p class="eyebrow">Nieuwe discipline</p><h1>${DISC[id].name}</h1>${intro}
   ${compatCard(cl, later && later.o)}<form data-submit="discStart" class="card"><h3>Instellingen</h3>${fields}${rolePick}${bmi && bmi < 20 ? '<div class="note warn">Je BMI ligt laag. Afvallen is dan waarschijnlijk niet nodig. Kies liever “Fitter worden”, of bespreek dit met je huisarts of diëtist.</div>' : ''}
    <div class="f"><span>Trainingsdagen (${mn} tot ${mx})</span><div class="chips">${DAYS.map((d, i) => `<label class="chip"><input type="checkbox" data-c="dday" value="${i}" ${o.days.includes(i) ? 'checked' : ''}><span>${d}</span></label>`).join('')}</div><small>Voorgesteld op basis van de dagen die nog het rustigst zijn in je weekplan. Pas aan zoals het jou past.</small></div>
    <div class="btns"><button class="btn">${cl.some(x => x.lv >= 2) ? 'Toch starten' : 'Start deze discipline'}</button><button type="button" class="btn ghost" data-a="discBack">Annuleren</button></div></form></section>`;
@@ -3891,7 +3902,7 @@ function discChapter(id) {
   const dc = D()[id], w = dWeek(dc, today()), t = ui.dtab, tl = [['overzicht', 'Overzicht'], ['schema', 'Schema']];
   if (id === 'pl') tl.push(['wedstrijd', 'Wedstrijd']); if (id === 'hx') tl.push(['sims', 'Simulaties']); if (id === 'beg') tl.push(['doelen', 'Weekdoelen'], ['leren', 'Leren']); tl.push(['instel', 'Instellingen']);
   const tt = tl.some(x => x[0] === t) ? t : 'overzicht', body = ({ overzicht: dOverview, schema: dSchema, wedstrijd: dPl, sims: dHx, doelen: dBegGoals, leren: dBegLearn, instel: dSettings })[tt](dc, w);
-  return `<section><button class="btn ghost sm" data-a="discBack">‹ Disciplines</button><p class="eyebrow">${discStatus(id)}</p><h1>${DISC[id].name}</h1>${tabs(tt, tl, 'discTab')}${body}</section>`;
+  return `<section><button class="btn ghost sm" data-a="discBack">‹ Doelen</button><p class="eyebrow">${discStatus(id)}</p><h1>${DISC[id].name}</h1>${tabs(tt, tl, 'discTab')}${body}</section>`;
 }
 function sessLine(dc, k, i, s) { const date = addDays(dMon(dc), (k - 1) * 7 + dSorted(dc)[i]), key = `d:${dc.id}:${k}:${i}`, done = isDone(date, key); return { date, key, done }; }
 function dOverview(dc, w) {
@@ -3966,13 +3977,34 @@ function dBegGoals(dc, w) {
 function dBegLearn() {
   return acc('Hoe werkt afvallen?', '', '<p>Je valt af als je over een langere periode iets minder energie binnenkrijgt dan je verbruikt. Een rustig tempo (grofweg 0,25 tot 1% van je lichaamsgewicht per week) is beter vol te houden dan een crashdieet.</p><p>Eiwit en groente helpen je verzadigd te blijven. Krachttraining helpt je spieren te behouden.</p>', true) + acc('Wandelen en stappen', '', '<p>Dagelijks bewegen buiten je trainingen telt mee. Verhoog je stappen geleidelijk: dat is makkelijker vol te houden dan in één keer veel meer doen.</p>') + acc('Slaap en stress', '', '<p>Weinig slaap en veel stress maken honger en trek vaak sterker en herstel trager. Een vaste bedtijd en wat rust in je dag helpen.</p>') + acc('Als het even niet lukt', '', '<p>Terugval hoort erbij. Pak de volgende training of maaltijd weer op, en pas het schema aan als het te veel is. Gebruik de herstelweek als je moe bent.</p>') + '<p class="sub">Dit is algemene informatie en geen medisch advies. Heb je een aandoening, gebruik je medicijnen of ben je zwanger? Overleg dan met je huisarts voordat je met afvallen of een nieuw trainingsprogramma begint.</p>';
 }
+
+/* ===== Doelen: één doel voor je lichaam + optioneel één sport ===== */
+const GOAL_ORDER = ['combi', 'spier', 'vet', 'kracht', 'conditie', 'bewegen'];
+const GOAL_SUB = { combi: 'Strakker en sterker', spier: 'Meer spiermassa', vet: 'Lager vetpercentage', kracht: 'Zwaarder tillen', conditie: 'Langer en sneller', bewegen: 'Fitter en gezonder' };
+function goalsPage() {
+  const p = S.profile, m = S.milestone, x = planParts(), dleft = m.enabled !== false && m.date ? diffDays(today(), m.date) : null, items = msItems(), done = items.filter(i => i.done).length;
+  const act = activeDisc(), sport = act.find(a => a.role === 'main') || act[0];
+  const hero = `<div class="card goalhero"><span class="eyebrow">Jouw doel</span><h2>${esc(GOALS[p.goal])}</h2>
+    ${sport ? `<p class="gsport">Met sport: <b>${esc(nameOf(sport.id))}</b></p>` : ''}
+    <div class="gstats">${dleft != null && dleft >= 0 ? `<div><b>${dleft}</b><span>dagen tot ${esc(m.name)}</span></div>` : ''}<div><b>${done}/${items.length}</b><span>checklist</span></div></div>
+    ${x.te ? `<p class="sub">${esc(x.te.text)}</p>` : ''}
+    <div class="btns"><button class="btn ghost sm" data-a="editProfile" data-s="2">Doel wijzigen</button></div></div>`;
+  const form = `<form data-submit="milestone" class="stack"><label class="f">Naam<input name="name" value="${esc(m.name)}" maxlength="40" placeholder="Bijvoorbeeld zomer, fotoshoot of wedstrijd"></label><label class="f">Einddatum<input name="date" type="date" value="${m.date || ''}" min="${today()}"></label><input type="hidden" name="type" value="${esc(m.type || 'eigen')}"><input type="hidden" name="note" value="${esc(m.note || '')}"><input type="hidden" name="enabled" value="1"><button class="btn sm">Opslaan</button></form>`;
+  const check = `<ul class="checks">${items.map(i => `<li><label class="tick wide"><input type="checkbox" data-c="msCheck" data-k="${i.id}" ${i.done ? 'checked' : ''}><span></span><em>${esc(i.t)}</em></label><button class="link" data-a="msDel" data-k="${i.id}" aria-label="Verwijder: ${esc(i.t)}">Verwijder</button></li>`).join('')}</ul><form class="inline" data-submit="msAdd"><input name="t" maxlength="120" placeholder="Nieuw punt" aria-label="Nieuw punt"><button class="btn sm">Toevoegen</button></form>`;
+  const c = S.comp && S.comp.active, ids = ['run', 'pl', 'hx'].concat(D().beg ? ['beg'] : []);
+  const cards = ids.map(id => discCard(id, DISC[id].name, DISC[id].blurb, discStatus(id), !!D()[id], 'discGo')).join('') + discCard('bb', 'Bodybuilding', 'Voorbereiding op een wedstrijd met fases, peak week, check-ins en posing.', c ? 'Actief · ' + Math.max(0, Math.ceil(diffDays(today(), S.comp.date) / 7)) + ' weken tot de show' : 'Niet gestart', !!c, 'discBB');
+  return `<section><h1>Doelen</h1>${syncBanner()}${hero}
+   ${acc('Einddatum', m.date ? fmtDate(m.date, { day: 'numeric', month: 'short', year: 'numeric' }) : 'Geen', form)}
+   ${acc('Checklist', done + ' van ' + items.length, check)}
+   <h3 class="sect">Sport</h3><p class="sub">Optioneel. Train je voor een sport of wedstrijd? Kies hem hier. Je doel hierboven blijft je voeding en krachttraining sturen.</p>
+   ${act.length || c ? weekLoad() : ''}${hubCompat()}<div class="dcards">${cards}</div>
+   <small class="fine">Algemene schema’s, geen persoonlijke begeleiding. Bij klachten eerst naar je huisarts.</small></section>`;
+}
 function vDisc() {
   const id = ui.disc;
-  if (id === 'bb') return `<section><button class="btn ghost sm" data-a="discBack">‹ Disciplines</button><p class="eyebrow">Bodybuilding</p><h1>Wedstrijd</h1>${syncBanner()}${vComp()}</section>`;
+  if (id === 'bb') return `<section><button class="btn ghost sm" data-a="discBack">‹ Doelen</button><p class="eyebrow">Bodybuilding</p><h1>Wedstrijd</h1>${syncBanner()}${vComp()}</section>`;
   if (id && DISC[id]) return D()[id] ? discChapter(id) : discSetup(id);
-  const top = ui.dTop === 'goal' ? 'goal' : 'disc';
-  if (top === 'goal') return `<section><h1>Doelen</h1>${tabs(top, [['disc', 'Disciplines'], ['goal', 'Mijn doel']], 'dTop')}${syncBanner()}${vGoalBasic().replace(/^<section><p class="eyebrow">([^<]*)<\/p><h1>(.*?)<\/h1>/, '<p class="eyebrow">$1</p><h2>$2</h2>').replace(/<\/section>$/, '')}</section>`;
-  return discHub().replace('<h1>Disciplines</h1>', '<h1>Doelen</h1>' + tabs(top, [['disc', 'Disciplines'], ['goal', 'Mijn doel']], 'dTop'));
+  return goalsPage();
 }
 
 const blkOf = key => String(key).startsWith('d:') ? (d => ({ label: d.label || '', rpe: d.rpe || '7', setsD: 0, deload: false }))(discDef(key)) : blockOf(planWeek(), key);
