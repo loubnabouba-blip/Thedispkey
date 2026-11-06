@@ -1,0 +1,6 @@
+{
+  "appId": "nl.thediscipline.key",
+  "appName": "Discipline Key",
+  "webDir": "www",
+  "ios": { "contentInset": "never", "backgroundColor": "#0E1116" }
+}

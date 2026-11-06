@@ -1,0 +1,41 @@
+name: iOS build naar TestFlight
+# Handmatig starten: GitHub > Actions > "iOS build naar TestFlight" > Run workflow.
+# Vereist een Apple Developer-account en de 4 secrets uit ios-app/README.md.
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Web-app voorbereiden
+        run: cd ios-app && npm install && npm run prepare-web
+      - name: iOS-project aanmaken
+        run: cd ios-app && npx cap add ios && npx cap sync ios
+      - name: HealthKit aanzetten
+        env: { APPLE_TEAM_ID: "${{ secrets.APPLE_TEAM_ID }}" }
+        run: |
+          sudo gem install xcodeproj --no-document
+          ios-app/scripts/patch-ios.sh
+      - name: API-sleutel klaarzetten
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "${{ secrets.ASC_KEY_P8_BASE64 }}" | base64 --decode > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.ASC_KEY_ID }}.p8
+      - name: Bouwen en archiveren
+        env: { APPLE_TEAM_ID: "${{ secrets.APPLE_TEAM_ID }}" }
+        run: |
+          cd ios-app/ios/App
+          xcodebuild archive -project App.xcodeproj -scheme App -configuration Release \
+            -destination 'generic/platform=iOS' -archivePath $RUNNER_TEMP/App.xcarchive \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.ASC_KEY_ID }}.p8 \
+            -authenticationKeyID ${{ secrets.ASC_KEY_ID }} -authenticationKeyIssuerID ${{ secrets.ASC_ISSUER_ID }} \
+            DEVELOPMENT_TEAM=$APPLE_TEAM_ID CURRENT_PROJECT_VERSION=${{ github.run_number }}
+      - name: Uploaden naar TestFlight
+        run: |
+          sed "s/TEAMID_PLACEHOLDER/${{ secrets.APPLE_TEAM_ID }}/" ios-app/ExportOptions.plist > $RUNNER_TEMP/export.plist
+          xcodebuild -exportArchive -archivePath $RUNNER_TEMP/App.xcarchive -exportOptionsPlist $RUNNER_TEMP/export.plist \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.ASC_KEY_ID }}.p8 \
+            -authenticationKeyID ${{ secrets.ASC_KEY_ID }} -authenticationKeyIssuerID ${{ secrets.ASC_ISSUER_ID }}

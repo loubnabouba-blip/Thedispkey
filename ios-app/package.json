@@ -1,0 +1,17 @@
+{
+  "name": "discipline-key-ios",
+  "private": true,
+  "version": "1.0.0",
+  "description": "iOS-wrapper (Capacitor) rond The Discipline Key, met Apple Gezondheid.",
+  "scripts": {
+    "prepare-web": "node scripts/prepare-web.mjs"
+  },
+  "dependencies": {
+    "@capacitor/core": "latest",
+    "@capacitor/ios": "latest",
+    "@capgo/capacitor-health": "latest"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "latest"
+  }
+}
