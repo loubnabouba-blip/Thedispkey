@@ -1165,6 +1165,16 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .rdy .row .chip.on{--lc:var(--pg)}
 .rdy .row .chip{white-space:nowrap;flex:none}
 .rdyn{margin:6px 0 0;font-size:13px;color:var(--warn);font-weight:600}
+[data-swipe]{touch-action:pan-y}.set{transition:transform .18s var(--ease)}
+.radsvg{display:block;width:100%;max-width:300px;margin:var(--s2) auto 0;overflow:visible}.radlbl{font:700 11px var(--fb);fill:var(--ink2)}
+.radcur{filter:drop-shadow(0 0 7px color-mix(in srgb,var(--pg) 60%,transparent))}
+.radleg{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;font-size:12px;color:var(--ink2);margin:var(--s1) 0}.radleg i{display:inline-block;width:14px;height:0;border-top:3px solid var(--pg);margin-right:6px;vertical-align:middle}.radleg i.old{border-top:2px dashed var(--ink2)}
+.radrow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;text-align:center;font-size:11px;color:var(--ink2);margin:var(--s2) 0}.radrow span{display:grid;gap:2px}.radrow b{font:800 17px var(--fd);color:var(--ink)}.radrow em{font-style:normal;font-size:11px}.radrow em.up{color:var(--ok)}.radrow em.dn{color:var(--warn)}
+:root[data-route=disciplines][data-disc=bb]{--pg:#C9F24D}:root[data-route=disciplines][data-disc=run]{--pg:#5CC8FF}:root[data-route=disciplines][data-disc=hx]{--pg:#FF8A3D}:root[data-route=disciplines][data-disc=pl]{--pg:#FF5C7A}:root[data-route=disciplines][data-disc=beg]{--pg:#7BE0A0}
+.seg button.on{box-shadow:0 1px 2px rgba(0,0,0,.2),0 0 0 1px var(--line2),0 0 16px -4px color-mix(in srgb,var(--pg) 60%,transparent)}
+.meter i,.vbar .dn{box-shadow:0 0 10px color-mix(in srgb,var(--pg) 50%,transparent)}
+.hexring .hexfill,.gring .gr{filter:drop-shadow(0 0 5px color-mix(in srgb,var(--pg) 55%,transparent))}
+.gring .gr{filter:drop-shadow(0 0 5px var(--rc))}
 </style>
 <div id="app">
  <header class="top"><div class="logo"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21M17 12v3M20 12v2"/></svg></i><span>The Discipline Key</span></div><div class="topbtns"><a id="rwchip" class="rwchip" href="#beloningen" aria-label="Beloningen" hidden></a><button id="profbtn" class="themebtn" type="button" data-a="go" data-r="mijn-plan" aria-label="Profiel en plan" title="Profiel en plan"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/></svg></button><button id="themebtn" class="themebtn" type="button" data-a="theme" aria-label="Kleurthema wisselen"></button></div></header>
@@ -1990,6 +2000,7 @@ const accKey = d => route + ':' + ((d.querySelector(':scope>summary span') || {}
 document.addEventListener('toggle', e => { const d = e.target; if (d && d.matches && d.matches('details.acc')) ui.open[accKey(d)] = d.open; }, true);
 function render() {
   const main = $('#main');
+  document.documentElement.dataset.disc = route === 'disciplines' && ui.disc ? ui.disc : '';
   if (!S.profile || ui.ob) { $('#app').classList.add('ob'); renderOnboarding(); rwHeaderChip(); return; }
   $('#app').classList.remove('ob'); $('#app').classList.toggle('wk', !!ui.workout); nav();
   const V = { home: vHome, 'mijn-plan': vPlan, training: vTraining, voeding: vFood, voortgang: vProgress, disciplines: vDisc, 'mijn-doel': vMilestone, beloningen: vRewards };
@@ -2264,6 +2275,62 @@ function rwOrbit(R, mini) {
   return `<div class="orb ${mini ? 'mini' : ''}" style="--sz:${sz}px" role="img" aria-label="${flame} dagen op rij"><div class="orp">${rings}</div><div class="orc ${flame ? 'on' : ''}"><b>${flame}</b><small>${flame === 1 ? 'dag' : 'dagen'}</small></div></div>`;
 }
 function rwOrbitLegend() { return `<div class="orleg"><span><i style="background:#C9F24D"></i>Training</span><span><i style="background:#5CC8FF"></i>Stappen</span><span><i style="background:#B48CFF"></i>Eiwit</span><span><i style="background:#FF9F5A"></i>Check-in</span></div>`; }
+
+
+/* ===== Haptics en swipe (iOS-app via Capacitor Haptics; in de browser een korte trilling waar dat kan) ===== */
+function hap(k) {
+  try { if (S && S.haptics === false) return; const H = window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.Haptics;
+    if (H) { if (k === 'ok') H.notification({ type: 'SUCCESS' }); else if (k === 'sel') H.selectionChanged(); else H.impact({ style: k === 'med' ? 'MEDIUM' : 'LIGHT' }); }
+    else if (navigator.vibrate) navigator.vibrate(k === 'ok' ? [12, 40, 12] : 8); } catch (e) {}
+}
+(function () {
+  let sw = null;
+  document.addEventListener('touchstart', e => {
+    sw = null; if (e.touches.length !== 1) return; const el = e.target.closest('[data-swipe]'), p = e.touches[0];
+    if (!el || e.target.closest('select,textarea') || p.clientX < 24 || p.clientX > innerWidth - 24) return;
+    sw = { el, x: p.clientX, y: p.clientY, at: Date.now(), on: false };
+  }, { passive: true });
+  document.addEventListener('touchmove', e => {
+    if (!sw) return; const p = e.touches[0], dx = p.clientX - sw.x, dy = p.clientY - sw.y;
+    if (!sw.on) { if (Math.abs(dy) > 14 && Math.abs(dy) > Math.abs(dx)) { sw = null; return; } if (Math.abs(dx) > 14) sw.on = true; }
+    if (sw.on && sw.el.dataset.swipe !== undefined && sw.el.classList.contains('set')) sw.el.style.transform = 'translateX(' + clamp(dx, -48, 48) + 'px)';
+  }, { passive: true });
+  document.addEventListener('touchend', e => {
+    const s0 = sw; sw = null; if (!s0) return; s0.el.style.transform = ''; if (!s0.on || Date.now() - s0.at > 700) return;
+    const p = e.changedTouches[0], dx = p.clientX - s0.x, dy = p.clientY - s0.y; if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.8) return;
+    const name = s0.el.dataset[dx > 0 ? 'swR' : 'swL']; if (!name || !A[name]) return; hap('sel'); lastScroll = Date.now(); A[name](s0.el.dataset, s0.el, e);
+  }, { passive: true });
+})();
+
+/* ===== Spinweb: je Discipline Key in 5 assen (laatste 14 dagen tegenover de 14 dagen daarvoor) ===== */
+function radarVals(to, n) {
+  const days = Array.from({ length: n }, (_, i) => addDays(to, i - n + 1)), R = rewards();
+  let plan = 0, done = 0, pl = 0, ea = 0, cardio = 0, rc = [], won = 0, filled = 0;
+  days.forEach(d => { sessionsOn(d).forEach(s => { const df = sessionDef(s.key); if (df && df.type === 'kracht') { plan++; if (isDone(s.from, s.key)) done++; } });
+    ((S.food[d] || {}).items || []).forEach(i => { pl++; if (i.eaten) ea++; });
+    const r = S.recovery[d]; if (r && (r.energy || r.recovery)) { filled++; rc.push(((r.energy || 3) + (r.recovery || 3)) / 10); }
+    const x = R.dayInfo[d]; if (x && x.st === 'won') won++; });
+  S.logs.filter(l => l.date >= days[0] && l.date <= to && l.type !== 'kracht').forEach(l => cardio += l.min || 0);
+  const kr = plan ? done / plan : S.logs.some(l => l.type === 'kracht' && l.date >= days[0] && l.date <= to) ? 1 : 0;
+  const hr = rc.length ? rc.reduce((a, b) => a + b, 0) / rc.length * Math.min(1, filled / (n * .5)) : 0;
+  return [clamp(kr, 0, 1), clamp(cardio / (n / 7 * 75), 0, 1), pl ? clamp(ea / pl, 0, 1) : 0, clamp(hr, 0, 1), clamp(won / n, 0, 1)];
+}
+function radarCard() {
+  const L = ['Kracht', 'Conditie', 'Voeding', 'Herstel', 'Consistentie'], T = today(), cur = radarVals(T, 14), prev = radarVals(addDays(T, -14), 14), c = 110, rad = 78;
+  const pt = (i, v) => { const a = -Math.PI / 2 + i * 2 * Math.PI / 5; return [c + Math.cos(a) * rad * v, c + Math.sin(a) * rad * v]; };
+  const poly = v => v.map((x, i) => pt(i, Math.max(.04, x)).map(n => n.toFixed(1)).join(',')).join(' ');
+  const ring = f => `<polygon points="${[0, 1, 2, 3, 4].map(i => pt(i, f).map(n => n.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="var(--line2)" stroke-width="1"/>`;
+  const any = cur.some(x => x > 0) || prev.some(x => x > 0);
+  return `<div class="card radar"><h3>Jouw Discipline Key</h3><p class="sub">Vijf assen over alles heen. Hoe verder naar buiten, hoe beter.</p>
+   <svg viewBox="0 0 220 220" class="radsvg" role="img" aria-label="Spinweb: ${L.map((l, i) => l + ' ' + Math.round(cur[i] * 100) + ' procent').join(', ')}">${[.25, .5, .75, 1].map(ring).join('')}${[0, 1, 2, 3, 4].map(i => `<line x1="${c}" y1="${c}" x2="${pt(i, 1)[0].toFixed(1)}" y2="${pt(i, 1)[1].toFixed(1)}" stroke="var(--line2)" stroke-width="1"/>`).join('')}
+    <polygon points="${poly(prev)}" fill="none" stroke="var(--ink2)" stroke-width="1.5" stroke-dasharray="4 3" stroke-linejoin="round"/>
+    <polygon class="radcur" points="${poly(cur)}" fill="color-mix(in srgb,var(--pg) 24%,transparent)" stroke="var(--pg)" stroke-width="2.5" stroke-linejoin="round"/>
+    ${cur.map((v, i) => { const [x, y] = pt(i, Math.max(.04, v)); return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.5" fill="var(--pg)"/>`; }).join('')}
+    ${L.map((l, i) => { const [x, y] = pt(i, 1.2); return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="central" class="radlbl">${l}</text>`; }).join('')}</svg>
+   <div class="radleg"><span><i class="cur"></i>Laatste 14 dagen</span><span><i class="old"></i>14 dagen daarvoor</span></div>
+   ${any ? `<div class="radrow">${L.map((l, i) => { const d = Math.round((cur[i] - prev[i]) * 100); return `<span><b>${Math.round(cur[i] * 100)}%</b>${l}<em class="${d > 0 ? 'up' : d < 0 ? 'dn' : ''}">${d > 0 ? '+' : ''}${d || 0}</em></span>`; }).join('')}</div>` : '<p class="sub">Log trainingen, maaltijden en je herstelcheck. Dan vult het web zich.</p>'}
+   ${acc('Hoe wordt dit berekend?', '', '<p><b>Kracht:</b> gedane krachttrainingen ten opzichte van je planning. <b>Conditie:</b> minuten cardio tegenover 75 minuten per week. <b>Voeding:</b> aandeel geplande maaltijden dat je at. <b>Herstel:</b> je gemiddelde energie en herstel uit de check-in, meegewogen naar hoe vaak je die invult. <b>Consistentie:</b> aandeel dagen waarop je je dag won (3 van de 4 dagdoelen).</p>')}</div>`;
+}
 
 /* --- Home-blokken --- */
 function rwHomeCard() {
@@ -2979,7 +3046,7 @@ function tWeek() {
      ${def.type === 'kracht' ? `<details class="why"><summary>Bekijk oefeningen</summary><div>${exList(s.key)}</div></details>` : def.type === 'segments' ? `<p class="sub">${esc(def.info)}</p>` : `<p class="sub">${esc(def.info || 'Kies zelf de vorm, duur en afstand.')}</p>`}
      <div class="btns"><button class="btn sm ${done ? 'ghost' : ''}" data-a="openWorkout" data-key="${s.key}" data-date="${d}" data-from="${s.from}">${done ? 'Nog een keer loggen' : d > today() ? 'Alvast bekijken' : 'Start training'}</button>
      <details class="menu"><summary class="btn ghost sm">Meer</summary><div class="menubox">${!done && !s.extra && !s.weekly ? `<button class="link" data-a="moveAsk" data-key="${s.key}" data-from="${s.from}">Verplaats naar andere dag</button>` : ''}${s.extra ? `<button class="link" data-a="extraDel" data-id="${s.extra}">Verwijder uit agenda</button>` : ''}${s.weekly ? `<button class="link" data-a="weeklyDel" data-id="${s.weekly}">Verwijder uit vast weekschema</button>` : ''}${def.type === 'kracht' ? `<button class="link" data-a="shortToggle" data-key="${s.key}">${S.short[s.key] ? 'Volledige versie gebruiken' : 'Kortere versie gebruiken'}</button>` : ''}</div></details></div></div>`; });
-  return weekReview() + strip + body + `<button class="btn ghost" data-a="addTrainAsk" data-date="${d}">+ Training of cardio toevoegen</button>`;
+  return weekReview() + strip + `<div data-swipe data-sw-l="tDayNext" data-sw-r="tDayPrev">${body}<button class="btn ghost" data-a="addTrainAsk" data-date="${d}">+ Training of cardio toevoegen</button></div>`;
 }
 A.addTrainAsk = d => { const date = d.date, ks = S.plan.sessions.filter(s => s.type !== 'cardio');
   modal(`<h3>Toevoegen op ${fmtDate(date, { weekday: 'long', day: 'numeric', month: 'long' })}</h3><p class="sub">Kies een cardiosessie of een training uit je schema. Dit past je vaste schema niet aan, tenzij je herhalen aanzet.</p>
@@ -2993,6 +3060,8 @@ A.addCardio = d => { const c = CARDIO_TYPES.find(x => x[0] === d.t), rep = $('#a
 A.addKracht = d => { S.extras.push({ id: uid(), date: d.date, key: d.key }); ui.tDate = d.date; save(); closeModal(); render(); toast('Toegevoegd aan je agenda.'); };
 A.extraDel = d => { S.extras = S.extras.filter(e => e.id !== d.id); save(); render(); };
 A.weeklyDel = d => { S.cardioWeek = S.cardioWeek.filter(e => e.id !== d.id); save(); render(); toast('Verwijderd uit je vaste weekschema.'); };
+A.tDayNext = () => { ui.tDate = addDays(ui.tDate, 1); render(); };
+A.tDayPrev = () => { ui.tDate = addDays(ui.tDate, -1); render(); };
 A.tShift = d => { ui.tDate = addDays(ui.tDate, +d.n); render(); };
 A.shortToggle = d => { S.short[d.key] = !S.short[d.key]; save(); render(); };
 C.short = el => { S.short[el.dataset.key] = el.checked; save(); render(); };
@@ -3141,7 +3210,7 @@ function vWorkout() {
      <div class="exchips"><button class="chipb" data-a="restNow" data-idx="${idx}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>${esc(r.rest)} rust</button><button class="chipb" data-a="exHist" data-id="${it.ex}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5-5 4 4 8-8M15 8h5v5"/></svg>Historie</button><button class="chipb" data-a="swapAsk" data-idx="${idx}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4L3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></svg>Vervang</button></div>
      ${sg ? `<div class="sugg"><span>${esc(sg.text)}</span>${sg.w != null && sg.kind === 'up' ? `<button class="btn ghost sm" data-a="applySugg" data-idx="${idx}" data-w="${sg.w}">Gebruik ${n1(sg.w)} kg</button>` : ''}</div>` : `<p class="sub">Eerste keer: kies een gewicht of tempo waarbij je netjes ${time ? '30 seconden' : e.type === 'dist' ? 'de afstand' : r.lo + ' herhalingen'} haalt en 2 à 3 herhalingen over houdt.</p>`}
      ${r.rdy ? `<p class="rdyn">Slim volume: ${esc(r.rdy)}.</p>` : ''}${r.note && !r.tw ? '<p class="sub"><b>' + esc(r.note) + '</b></p>' : ''}${r.main ? '<p class="sub"><b>Hoofdoefening.</b> Laatste set: zoveel herhalingen als je netjes haalt, met 1 herhaling in reserve.</p>' : ''}<details class="why"><summary>Uitvoering en video</summary><div>${exPics(e.id)}${esc(e.cue)}<div class="btns">${exLinks(e)}</div></div></details>
-     <div class="sets">${it.sets.map((s, i) => { const gh = wkGhost(it, i); return `<div class="set ${s.done ? 'done' : ''} ${s.pr ? 'pr' : ''} ${time ? 'notw' : ''}" data-idx="${idx}" data-i="${i}"><span class="snum">${s.pr ? '🏆' : s.done ? '✓' : s.t === 'warm' ? 'W' : s.t === 'myo' ? 'M' : s.t === 'down' ? 'D' : i + 1 - it.sets.slice(0, i).filter(x => x.t === 'warm').length}</span>${time ? '' : `<label class="fl"><input aria-label="Gewicht set ${i + 1} (kg)" data-c="set" data-idx="${idx}" data-i="${i}" data-k="w" type="number" inputmode="decimal" step="0.5" min="0" placeholder="${gh.w !== '' ? n1(gh.w).replace(',', '.') : '–'}" value="${s.w}"><em>kg</em></label>`}<label class="fl"><input aria-label="${unit} set ${i + 1}" data-c="set" data-idx="${idx}" data-i="${i}" data-k="r" type="number" inputmode="numeric" min="0" placeholder="${gh.r !== '' ? gh.r : '–'}" value="${s.r}"><em>${unit}${s.t ? ' · ' + ({ warm: 'opwarmen', myo: 'myo-rep', down: 'down set' })[s.t] : ''}</em></label><button class="setchk" data-a="setDone" data-idx="${idx}" data-i="${i}" aria-label="Set ${i + 1} ${s.done ? 'niet meer' : ''} als gedaan markeren" aria-pressed="${!!s.done}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><details class="menu smenu"><summary aria-label="Setmenu set ${i + 1}">⋯</summary><div class="menubox"><b class="sm-h">Settype</b>${[['', 'Regulier'], ['warm', 'Opwarmen'], ['myo', 'Myo-rep'], ['down', 'Down set']].map(([k, l]) => `<button class="link ${(s.t || '') === k ? 'cur' : ''}" data-a="setType" data-idx="${idx}" data-i="${i}" data-t="${k}">${(s.t || '') === k ? '✓ ' : ''}${l}</button>`).join('')}<hr><button class="link" data-a="setBelow" data-idx="${idx}" data-i="${i}">Set eronder toevoegen</button><button class="link" data-a="setDel" data-idx="${idx}" data-i="${i}">Set verwijderen</button></div></details></div>`; }).join('')}</div>
+     <div class="sets">${it.sets.map((s, i) => { const gh = wkGhost(it, i); return `<div class="set ${s.done ? 'done' : ''} ${s.pr ? 'pr' : ''} ${time ? 'notw' : ''}" data-swipe data-sw-${s.done ? 'l' : 'r'}="setDone" data-idx="${idx}" data-i="${i}"><span class="snum">${s.pr ? '🏆' : s.done ? '✓' : s.t === 'warm' ? 'W' : s.t === 'myo' ? 'M' : s.t === 'down' ? 'D' : i + 1 - it.sets.slice(0, i).filter(x => x.t === 'warm').length}</span>${time ? '' : `<label class="fl"><input aria-label="Gewicht set ${i + 1} (kg)" data-c="set" data-idx="${idx}" data-i="${i}" data-k="w" type="number" inputmode="decimal" step="0.5" min="0" placeholder="${gh.w !== '' ? n1(gh.w).replace(',', '.') : '–'}" value="${s.w}"><em>kg</em></label>`}<label class="fl"><input aria-label="${unit} set ${i + 1}" data-c="set" data-idx="${idx}" data-i="${i}" data-k="r" type="number" inputmode="numeric" min="0" placeholder="${gh.r !== '' ? gh.r : '–'}" value="${s.r}"><em>${unit}${s.t ? ' · ' + ({ warm: 'opwarmen', myo: 'myo-rep', down: 'down set' })[s.t] : ''}</em></label><button class="setchk" data-a="setDone" data-idx="${idx}" data-i="${i}" aria-label="Set ${i + 1} ${s.done ? 'niet meer' : ''} als gedaan markeren" aria-pressed="${!!s.done}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><details class="menu smenu"><summary aria-label="Setmenu set ${i + 1}">⋯</summary><div class="menubox"><b class="sm-h">Settype</b>${[['', 'Regulier'], ['warm', 'Opwarmen'], ['myo', 'Myo-rep'], ['down', 'Down set']].map(([k, l]) => `<button class="link ${(s.t || '') === k ? 'cur' : ''}" data-a="setType" data-idx="${idx}" data-i="${i}" data-t="${k}">${(s.t || '') === k ? '✓ ' : ''}${l}</button>`).join('')}<hr><button class="link" data-a="setBelow" data-idx="${idx}" data-i="${i}">Set eronder toevoegen</button><button class="link" data-a="setDel" data-idx="${idx}" data-i="${i}">Set verwijderen</button></div></details></div>`; }).join('')}</div>
      <div class="btns"><label class="f inl">RPE<select data-c="rpe" data-idx="${idx}"><option value="">–</option>${[6, 7, 8, 9, 10].map(n => `<option ${+it.rpe === n ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
       <button class="btn ghost sm" data-a="addSet" data-idx="${idx}">+ set</button><button class="btn ghost sm" data-a="logAll" data-idx="${idx}">Alle sets loggen</button>
       <details class="menu"><summary class="btn ghost sm">Meer</summary><div class="menubox"><button class="link" data-a="swapAsk" data-idx="${idx}">Vervang oefening</button><button class="link" data-a="painAsk" data-idx="${idx}">Pijn of niet prettig</button></div></details></div></div>`;
@@ -3195,7 +3264,7 @@ function wkProg(dr) { const all = dr.items.reduce((a, it) => a + it.sets.length,
 A.setDone = d => { const it = S.draft.items[+d.idx], st = it.sets[+d.i];
   if (st.done) { st.done = false; st.pr = false; save(); render(); return; }
   const gh = wkGhost(it, +d.i); if (!(num(st.r) > 0)) { if (gh.r === '') { toast('Vul eerst het aantal herhalingen in.'); return; } st.r = String(gh.r); } if (st.w === '' && gh.w !== '') st.w = String(gh.w);
-  setDoneFx(it, st, true); save(); render(); };
+  setDoneFx(it, st, true); hap(st.pr ? 'ok' : 'med'); save(); render(); };
 A.logAll = d => { const it = S.draft.items[+d.idx]; let n = 0, pr = false;
   it.sets.forEach((st, i) => { if (st.done) return; const gh = wkGhost(it, i); if (!(num(st.r) > 0) && gh.r !== '') st.r = String(gh.r); if (st.w === '' && gh.w !== '') st.w = String(gh.w); if (num(st.r) > 0) { st.done = true; n++; } });
   it.sets.forEach(st => { if (st.done && prCheck(it, st, false)) pr = true; });
@@ -3232,7 +3301,7 @@ A.addSet = d => { S.draft.items[+d.idx].sets.push({ w: '', r: '' }); save(); ren
 A.applySugg = d => { const it = S.draft.items[+d.idx]; it.sets.forEach(s => s.w = d.w); save(); render(); };
 A.wkClose = () => { ui.workout = null; stopRest(); render(); };
 A.wkDiscard = () => { stopRest(); S.draft = null; ui.workout = null; save(); render(); toast('Training verworpen.'); };
-A.wkFinish = () => {
+A.wkFinish = () => { hap('ok');
   const wk = ui.workout, def = sessionDef(wk.key), dr = S.draft;
   if (def.type === 'segments') {
     const segs = def.segs.map((n, i) => ({ name: n, sec: parseT(dr.segs[i]) })).filter(s => s.sec && s.sec > 0);
@@ -3315,7 +3384,7 @@ function itemCard(it) {
    <div class="btns tight">${stepper(it.id, it.f)}<details class="menu"><summary class="btn ghost xs">Meer</summary><div class="menubox"><button class="link" data-a="replaceAsk" data-id="${it.id}">Vervang</button><button class="link" data-a="moveMealAsk" data-id="${it.id}">Verplaats naar ander eetmoment</button><button class="link" data-a="copyAsk" data-scope="meal" data-id="${it.id}">Kopieer naar andere dag</button><button class="link" data-a="delMeal" data-id="${it.id}">Verwijder</button></div></details></div></div></div>`;
 }
 const findItem = id => { for (const [date, d] of Object.entries(S.food)) { const it = d.items.find(i => i.id === id); if (it) return { it, d, date }; } };
-C.eaten = el => { const f = findItem(el.dataset.id); if (f) { f.it.eaten = el.checked; save(); render(); } };
+C.eaten = el => { const f = findItem(el.dataset.id); if (f) { hap(el.checked ? 'med' : 'sel'); f.it.eaten = el.checked; save(); render(); } };
 A.portion = d => { const f = findItem(d.id); if (!f) return; const it = f.it; let nf = Math.round((it.f + +d.d) * 20) / 20;
   const mn = it.type === 'r' ? minFactor(RX[it.ref]) : 0.2; if (nf < mn) { nf = mn; toast('Minimaal 30 g eiwit per maaltijd: de portie wordt niet kleiner.'); } if (nf > 3) nf = 3; it.f = nf; f.d.saved = false; save(); render(); };
 A.fDate = d => { ui.foodDate = addDays(ui.foodDate, +d.n); render(); };
@@ -3912,7 +3981,7 @@ function rdyCard() {
    <details class="why"><summary>Waarom werkt dit zo?</summary><div><p>De app combineert drie signalen: hoe stijf een spiergroep is, je algemene herstel (energie en herstel van vandaag) en of je prestaties zakken. Onderzoek naar autoregulatie (aanpassen aan hoe je je voelt) laat zien dat het kracht zeker niet slechter maakt dan een vast schema. Voor spiergroei is het bewijs nog beperkt. Spierpijn zegt weinig over hoeveel een spier groeit. Daarom gebruikt de app spierpijn alleen om vandaag iets terug te schroeven, nooit om vandaag extra te doen. Een set erbij volgt pas na een week met goed herstel en goede prestaties, binnen de richtbereiken. Bij meerdere zware dagen achter elkaar stelt de coach een herstelweek voor.</p><p class="sub">Dit is geen medisch advies. Heb je pijn in een gewricht of pees, sla de oefening dan over.</p></div></details>
    <div class="btns tight"><button class="link" data-a="b3d" data-m="checkin">Per spier in 3D aangeven</button></div></div>`;
 }
-A.rdy = d => { const ks = RDY_MAP[d.g] || [], day = (S.musCheck = S.musCheck || {}), c = day[today()] = day[today()] || {}; const l = +d.l; if (rdyLevel(d.g) === l) ks.forEach(k => delete c[k]); else ks.forEach(k => c[k] = l); if (!Object.keys(c).length) delete day[today()]; rdyResize(); save(); render(); };
+A.rdy = d => { hap('sel'); const ks = RDY_MAP[d.g] || [], day = (S.musCheck = S.musCheck || {}), c = day[today()] = day[today()] || {}; const l = +d.l; if (rdyLevel(d.g) === l) ks.forEach(k => delete c[k]); else ks.forEach(k => c[k] = l); if (!Object.keys(c).length) delete day[today()]; rdyResize(); save(); render(); };
 A.rdyAuto = () => { S.autoReg = S.autoReg === false; rdyResize(); save(); render(); toast(S.autoReg === false ? 'Slim volume staat uit.' : 'Slim volume staat aan.'); };
 
 /* --- volume en records --- */
@@ -4368,7 +4437,7 @@ const MEAS = [['waist', 'Taille'], ['chest', 'Borst'], ['hips', 'Heupen'], ['arm
 ui.cmp = { a: null, b: null, mode: 'overlay', op: 50, wipe: 50, sel: 'b', pa: { sc: 100, dx: 0, dy: 0, rot: 0 }, pb: { sc: 100, dx: 0, dy: 0, rot: 0 } }; ui.progTab = 'overzicht';
 function vProgress() {
   const t = ['overzicht', 'lichaam', 'fotos'].includes(ui.progTab) ? ui.progTab : 'overzicht';
-  return `<section><h1>Voortgang</h1>${tabs(t, [['overzicht', 'Overzicht'], ['lichaam', 'Lichaam'], ['fotos', 'Foto’s']], 'progTab')}${({ overzicht: pOverview, lichaam: pBody, fotos: pPhotos })[t]()}</section>`;
+  return `<section><h1>Voortgang</h1>${tabs(t, [['overzicht', 'Overzicht'], ['lichaam', 'Lichaam'], ['fotos', 'Foto’s']], 'progTab')}${({ overzicht: () => radarCard() + pOverview(), lichaam: pBody, fotos: pPhotos })[t]()}</section>`;
 }
 A.progTab = d => { ui.progTab = d.t; render(); };
 function pOverview() {
