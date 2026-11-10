@@ -1115,6 +1115,31 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .gstats div{display:grid}
 .gstats b{font:900 28px/1 var(--fd);font-stretch:80%;color:var(--head)}
 .gstats span{font-size:12px;color:var(--ink2)}
+/* 3D-spierkaart */
+.b3d{display:grid;gap:var(--s3)}
+.b3d>.row{margin:0}
+.b3d .seg{margin:0}
+.b3d-stage{position:relative;height:min(52dvh,460px);min-height:280px;border-radius:var(--r);overflow:hidden;background:radial-gradient(ellipse at 50% 38%,#1B1E22 0%,#101114 62%,#0C0D0F 100%);border:1px solid var(--line);touch-action:none;-webkit-user-select:none;user-select:none}
+.b3d-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+.b3d-status{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:var(--s4);font-size:14px;color:#9CA3AF;pointer-events:none}
+.b3d-views{position:absolute;top:10px;right:10px;display:grid;gap:6px}
+.b3d-views button{appearance:none;min-width:68px;min-height:44px;padding:0 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(21,23,26,.82);color:#F5F5F5;font:600 13px var(--fb);cursor:pointer}
+.b3d-hint{position:absolute;left:12px;top:12px;max-width:calc(100% - 112px);font-size:11px;line-height:1.45;color:#9CA3AF;pointer-events:none}
+#b3dPanel{min-height:132px}
+#b3dPanel h3{margin:0 0 4px}
+#b3dPanel h4{margin:var(--s3) 0 4px}
+#b3dPanel p{margin:0 0 var(--s2)}
+#b3dPanel .mulegend{justify-content:flex-start;margin:0 0 var(--s2)}
+#b3dPanel .eyebrow{margin:0 0 4px}
+.b3d-la{font-style:italic}
+.b3d-lvs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.b3d-lv{appearance:none;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:6px 2px;border-radius:var(--r-s);border:2px solid transparent;background:var(--surface2);color:var(--ink);font:600 12px var(--fb);cursor:pointer}
+.b3d-lv i{width:22px;height:8px;border-radius:4px;background:var(--c)}
+.b3d-lv.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 16%,var(--surface2))}
+.b3d-lv:disabled,.b3d .link:disabled{opacity:.4;cursor:default}
+.b3d .btns{justify-content:space-between;margin:var(--s1) 0 0}
+.b3d-credit{display:block;font-size:11px;line-height:1.4;color:var(--ink2)}
+.bodymap .b3d-open{justify-self:center;min-height:44px;font-size:14px}
 </style>
 <div id="app">
  <header class="top"><div class="logo"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21M17 12v3M20 12v2"/></svg></i><span>The Discipline Key</span></div><div class="topbtns"><a id="rwchip" class="rwchip" href="#beloningen" aria-label="Beloningen" hidden></a><button id="profbtn" class="themebtn" type="button" data-a="go" data-r="mijn-plan" aria-label="Profiel en plan" title="Profiel en plan"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/></svg></button><button id="themebtn" class="themebtn" type="button" data-a="theme" aria-label="Kleurthema wisselen"></button></div></header>
@@ -2258,12 +2283,208 @@ function bodyMap(compact) {
    <path d="M36 182 L44 182 L43 192 L37 192 Z" ${base}/><path d="M64 182 L56 182 L57 192 L63 192 Z" ${base}/></svg>`;
   const tot = M.filter(m => m.plan > 0), hit = tot.filter(m => m.p >= 1).length;
   const rows = M.filter(m => m.plan > 0 || m.done > 0).sort((a, b) => (b.plan > 0) - (a.plan > 0) || b.plan - a.plan || b.done - a.done).map(m => `<div class="murow"><i style="background:${musCol(m.p)}"></i><span>${m.n}</span><b>${n1(m.done)}<small>${m.extra ? ' extra' : ' / ' + m.plan}</small></b></div>`).join('');
-  if (compact) return `<div class="bodymap compact"><div class="bodies">${front}${back}</div><div class="mulegend"><span><i style="background:#FFD166"></i>bezig</span><span><i style="background:var(--pg)"></i>gehaald</span></div></div>`;
+  if (compact) return `<div class="bodymap compact"><div class="bodies">${front}${back}</div><div class="mulegend"><span><i style="background:#FFD166"></i>bezig</span><span><i style="background:var(--pg)"></i>gehaald</span></div><button class="link b3d-open" data-a="b3d" data-m="week">Bekijk in 3D ›</button></div>`;
   return `<div class="bodymap"><div class="bodies">${front}${back}</div>
    <div class="mulegend"><span><i style="background:var(--mus1)"></i>nog niet</span><span><i style="background:#FFD166"></i>bezig</span><span><i style="background:var(--pg)"></i>target gehaald</span></div>
-   ${tot.length ? `<p class="sub">${hit} van ${tot.length} spiergroepen hebben hun weektarget gehaald. Tik op een spier voor details.</p><div class="mulist">${rows}</div>` : '<p class="sub">Deze week staan er geen krachtsessies gepland.</p>'}</div>`;
+   ${tot.length ? `<p class="sub">${hit} van ${tot.length} spiergroepen hebben hun weektarget gehaald. Tik op een spier voor details.</p><div class="mulist">${rows}</div>` : '<p class="sub">Deze week staan er geen krachtsessies gepland.</p>'}<div class="btns"><button class="btn ghost sm" data-a="b3d" data-m="week">Bekijk in 3D</button></div></div>`;
 }
 A.musInfo = d => { const m = musWeek().find(x => x.k === d.k); if (m) toast(m.extra ? `${m.n}: ${n1(m.done)} sets extra deze week (geen target in je schema)` : `${m.n}: ${n1(m.done)} van ${m.plan} sets deze week${m.plan && m.done >= m.plan ? ' · target gehaald 🎯' : ''}`); };
+/* ===== 3D-spierkaart: draaibaar anatomisch model (m3d/), pas geladen als je hem opent ===== */
+const M3_LABELS = { schouders: 'Schouders', borst: 'Borst', buik: 'Buik en core', nek: 'Nek en trapezius', rug: 'Rug', onderrug: 'Onderrug', biceps: 'Biceps', triceps: 'Triceps', onderarmen: 'Onderarmen', billen: 'Bilspieren', quadriceps: 'Quadriceps', adductoren: 'Adductoren', hamstrings: 'Hamstrings', kuiten: 'Kuiten', schenen: 'Scheenspieren' };
+// spiergroep in het 3D-model → spiergroep van het weekvolume (MUS)
+const M3_MUS = { schouders: 'shoulders', borst: 'chest', buik: 'abs', nek: 'back', rug: 'back', onderrug: 'lowback', biceps: 'biceps', triceps: 'triceps', billen: 'glutes', quadriceps: 'quads', hamstrings: 'hams', kuiten: 'calves' };
+// bewegingspatroon → [hoofdspieren, hulpspieren] (id's uit m3d/model.js)
+const M3_PAT = {
+  pushH: [['pec_stern', 'pec_clav', 'pec_abd'], ['delt_ant', 'tri_long', 'tri_lat', 'tri_med', 'serratus']],
+  pushV: [['delt_ant', 'delt_lat'], ['tri_long', 'tri_lat', 'tri_med', 'trap_up', 'pec_clav', 'serratus']],
+  tri: [['tri_long', 'tri_lat', 'tri_med'], ['anconeus']],
+  lat: [['delt_lat'], ['delt_ant', 'supraspin', 'trap_up']],
+  pullV: [['lat', 'teres_maj'], ['bic_long', 'bic_short', 'brachialis', 'brachiorad', 'trap_low', 'rhomboid', 'delt_post']],
+  pullH: [['lat', 'trap_mid', 'rhomboid'], ['delt_post', 'bic_long', 'bic_short', 'brachialis', 'teres_maj', 'erector', 'fa_flex']],
+  bi: [['bic_long', 'bic_short', 'brachialis'], ['brachiorad', 'fa_flex']],
+  rear: [['delt_post'], ['trap_mid', 'rhomboid', 'infraspin', 'teres_min']],
+  squat: [['rect_fem', 'vast_lat', 'vast_med', 'vast_int', 'glut_max'], ['add_mag', 'erector', 'glut_med', 'soleus']],
+  hinge: [['glut_max', 'bf_long', 'semitend', 'semimemb', 'erector'], ['add_mag', 'multifidus', 'trap_up', 'fa_flex']],
+  lunge: [['rect_fem', 'vast_lat', 'vast_med', 'vast_int', 'glut_max'], ['glut_med', 'add_mag', 'bf_long', 'semitend', 'gastroc']],
+  hamcurl: [['bf_long', 'bf_short', 'semitend', 'semimemb'], ['gastroc']],
+  calf: [['gastroc', 'soleus'], []],
+  core: [['rectus_abd', 'obl_ext', 'obl_int', 'transv_abd'], ['serratus']]
+};
+const M3_LV = [['Erg stijf', '#FF5A5A'], ['Stijf', '#FF8A3D'], ['Licht', '#FFD23D'], ['Fris', '#C6FF3E']];
+const M3_MODES = [['week', 'Week'], ['sess', 'Training'], ['spieren', 'Spieren'], ['checkin', 'Check-in']];
+const m3 = { mode: 'week', key: null, sel: null };
+const m3Check = d => ((S.musCheck = S.musCheck || {})[d || today()]) || {};
+
+const M3D = (() => {
+  let ready = null, T, el, canvas, statusEl, renderer, scene, camera, pivot, mesh, gid, mid, colAttr, groups, opts = {}, running = false;
+  let yaw = 0, pitch = .05, dist = 3.1, panY = 0, targetYaw = null, dirty = true, zoomed = false, spin = true;
+  const reduce = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const loadScript = src => new Promise((ok, no) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => { s.remove(); no(new Error(src)); }; document.head.appendChild(s); });
+  const lin = hex => new T.Color(hex).convertSRGBToLinear();
+  async function decode(b64) {
+    const bin = atob(b64), bytes = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
+  }
+  function ensure() {
+    return ready || (ready = (async () => {
+      if (typeof DecompressionStream === 'undefined') throw new Error('old');
+      if (!window.THREE) await loadScript('m3d/three.min.js');
+      if (!window.DK_MODEL && !mesh) await loadScript('m3d/model.js');
+      T = window.THREE; const buf = await decode(window.DK_MODEL); window.DK_MODEL = null; build(buf);
+    })().catch(e => { ready = null; throw e; }));
+  }
+  function build(buf) {
+    const dv = new DataView(buf), hl = dv.getUint32(0, true), head = JSON.parse(new TextDecoder().decode(new Uint8Array(buf, 4, hl)));
+    let off = 4 + hl; off += (4 - off % 4) % 4;
+    const q = new Uint16Array(buf, off, head.nv * 3); off += head.nv * 6; off += (4 - off % 4) % 4;
+    const idx = new Uint32Array(buf, off, head.nt * 3); off += head.nt * 12;
+    gid = new Uint8Array(buf, off, head.nv); off += head.nv; mid = new Uint8Array(buf, off, head.nv); groups = head.groups;
+    // Bron-assen: X links-rechts, Y voor-achter, Z omhoog (mm). Omzetten naar Y omhoog, centreren, hoogte 2.
+    const pos = new Float32Array(head.nv * 3), s = head.span / 65535, lo = head.lo; let minY = Infinity, maxY = -Infinity, sx = 0, sz = 0;
+    for (let i = 0; i < head.nv; i++) { const x = q[i * 3] * s + lo[0], y = q[i * 3 + 1] * s + lo[1], z = q[i * 3 + 2] * s + lo[2]; pos[i * 3] = x; pos[i * 3 + 1] = z; pos[i * 3 + 2] = -y; if (z < minY) minY = z; if (z > maxY) maxY = z; sx += x; sz -= y; }
+    const k = 2 / (maxY - minY), cx = sx / head.nv, cz = sz / head.nv, cy = (minY + maxY) / 2;
+    for (let i = 0; i < head.nv; i++) { pos[i * 3] = (pos[i * 3] - cx) * k; pos[i * 3 + 1] = (pos[i * 3 + 1] - cy) * k; pos[i * 3 + 2] = (pos[i * 3 + 2] - cz) * k; }
+    const geo = new T.BufferGeometry(); geo.setAttribute('position', new T.BufferAttribute(pos, 3));
+    colAttr = new T.BufferAttribute(new Float32Array(head.nv * 3), 3); geo.setAttribute('color', colAttr);
+    geo.setIndex(new T.BufferAttribute(idx, 1)); geo.computeVertexNormals(); geo.computeBoundingSphere(); geo.computeBoundingBox();
+    renderer = new T.WebGLRenderer({ canvas, antialias: true, alpha: true }); renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.outputEncoding = T.sRGBEncoding; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+    scene = new T.Scene(); camera = new T.PerspectiveCamera(30, 1, .1, 50);
+    scene.add(new T.HemisphereLight(0xfff1e6, 0x1a1210, .75));
+    [[0xffffff, 1.5, 1.6, 2.2, 3], [0xffd9c8, .45, -2.5, .5, 2], [0xdff5ff, 1.3, -2.4, 1.6, -2.6], [0xdff5ff, .9, 2.6, 1.2, -2.4]].forEach(([c, i, x, y, z]) => { const l = new T.DirectionalLight(c, i); l.position.set(x, y, z); scene.add(l); });
+    mesh = new T.Mesh(geo, new T.MeshStandardMaterial({ vertexColors: true, roughness: .42, metalness: .05 }));
+    pivot = new T.Group(); pivot.add(mesh); scene.add(pivot);
+  }
+  const muscleId = i => i ? window.DK_MUSCLES[i - 1].id : null;
+  function repaint() {
+    if (!colAttr) return; const arr = colAttr.array, cache = {}, white = new T.Color(1, 1, 1);
+    const colorOf = (g, m) => {
+      if (g === 64) return lin('#B4AC9E');
+      const name = groups[g & 31], tendon = !!(g & 32), id = muscleId(m);
+      const hex = name === 'overig' || !opts.color ? null : opts.color(name, id), tint = hex ? lin(hex).multiplyScalar(.74) : null;
+      let c; if (tendon) { c = lin('#D8CEC2'); if (tint) c.lerp(tint, .6); } else c = tint || lin(name === 'overig' ? '#663430' : '#743631');
+      if (name !== 'overig' && opts.picked && opts.picked(name, id)) c.lerp(white, tint ? .06 : .3);
+      return c;
+    };
+    for (let i = 0, n = gid.length; i < n; i++) { const key = gid[i] | (mid[i] << 8), c = cache[key] || (cache[key] = colorOf(gid[i], mid[i])); arr[i * 3] = c.r; arr[i * 3 + 1] = c.g; arr[i * 3 + 2] = c.b; }
+    colAttr.needsUpdate = true; dirty = true;
+  }
+  function fit() { const t = Math.tan(camera.fov * Math.PI / 360); return Math.max(1.12 / t, .52 / (t * camera.aspect)); }
+  function resize() { if (!renderer || !el.isConnected) return; const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); if (!zoomed) dist = fit(); dirty = true; }
+  function loop() {
+    if (!el.isConnected) { running = false; return; } requestAnimationFrame(loop);
+    if (spin) { yaw += .0035; dirty = true; }
+    if (targetYaw !== null) { let d = targetYaw - yaw; d = Math.atan2(Math.sin(d), Math.cos(d)); if (Math.abs(d) < .004 || reduce()) { yaw = targetYaw; targetYaw = null; } else yaw += d * .16; dirty = true; }
+    if (!dirty) return; dirty = false; pivot.rotation.set(pitch, yaw, 0);
+    const lim = Math.max(0, 1.05 - dist * .3); panY = clamp(panY, -lim, lim); camera.position.set(0, panY, dist); camera.lookAt(0, panY, 0); renderer.render(scene, camera);
+  }
+  function pick(cx, cy) {
+    const r = canvas.getBoundingClientRect(), ray = new T.Raycaster(); pivot.updateMatrixWorld(true); camera.updateMatrixWorld(true);
+    ray.setFromCamera(new T.Vector2((cx - r.left) / r.width * 2 - 1, -((cy - r.top) / r.height) * 2 + 1), camera);
+    const hits = ray.intersectObject(mesh, false); let hit = null;
+    for (let i = 0; i < hits.length && i < 3; i++) { const v = hits[i].face.a, g = gid[v]; if (g === 64) continue; const n = groups[g & 31]; if (n !== 'overig') hit = { g: n, m: muscleId(mid[v]) }; break; }
+    opts.pick && opts.pick(hit);
+  }
+  function turn(a) { spin = false; targetYaw = a; pitch = .05; dirty = true; }
+  function make() {
+    el = document.createElement('div'); el.className = 'b3d-stage';
+    el.innerHTML = '<canvas aria-label="Draaibaar 3D-spiermodel. Sleep om te draaien, knijp om in te zoomen, tik op een spier."></canvas><div class="b3d-status">3D-model laden…</div><div class="b3d-views"><button type="button" data-v="front">Voor</button><button type="button" data-v="back">Achter</button><button type="button" data-v="fit">Passend</button></div><div class="b3d-hint">Sleep om te draaien<br>Knijp om te zoomen</div>';
+    canvas = $('canvas', el); statusEl = $('.b3d-status', el);
+    el.addEventListener('click', e => { const b = e.target.closest('[data-v]'); if (!b || !mesh) return; if (b.dataset.v === 'fit') { spin = false; dist = fit(); panY = 0; pitch = .05; zoomed = false; dirty = true; } else turn(b.dataset.v === 'front' ? 0 : Math.PI); });
+    const pts = new Map(); let moved = 0, lastPinch = 0, lastMid = 0;
+    const setDist = d => { const f = fit(); dist = clamp(d, f * .28, f * 1.15); zoomed = true; dirty = true; };
+    canvas.addEventListener('pointerdown', e => { if (!mesh) return; try { canvas.setPointerCapture(e.pointerId); } catch (x) {} pts.set(e.pointerId, { x: e.clientX, y: e.clientY }); if (pts.size === 1) moved = 0;
+      if (pts.size === 2) { const p = [...pts.values()]; lastPinch = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y); lastMid = (p[0].y + p[1].y) / 2; moved = 99; } spin = false; targetYaw = null; });
+    canvas.addEventListener('pointermove', e => { const p = pts.get(e.pointerId); if (!p) return; const dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY;
+      if (pts.size === 1) { moved += Math.abs(dx) + Math.abs(dy); if (e.shiftKey) panY += dy * dist * .0016; else { yaw += dx * .0085; pitch = clamp(pitch + dy * .004, -.6, .6); } }
+      else if (pts.size === 2) { const a = [...pts.values()], pd = Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y), my = (a[0].y + a[1].y) / 2; if (lastPinch) setDist(dist * lastPinch / pd); panY += (my - lastMid) * dist * .0016; lastPinch = pd; lastMid = my; }
+      dirty = true; });
+    const end = e => { const p = pts.get(e.pointerId); pts.delete(e.pointerId); lastPinch = 0; if (p && e.type === 'pointerup' && moved < 8 && pts.size === 0) pick(e.clientX, e.clientY); };
+    canvas.addEventListener('pointerup', end); canvas.addEventListener('pointercancel', end);
+    canvas.addEventListener('wheel', e => { if (!mesh) return; e.preventDefault(); spin = false; setDist(dist * Math.exp(e.deltaY * .0012)); }, { passive: false });
+    if (window.ResizeObserver) new ResizeObserver(resize).observe(el); else addEventListener('resize', resize);
+  }
+  // Zet het (ene) 3D-podium in `slot`. o.color(groep, spierId) → hex of null; o.picked(groep, spierId) → bool; o.pick(hit of null).
+  function mount(slot, o) {
+    if (!el) make(); opts = o || {}; slot.appendChild(el); statusEl.hidden = !!mesh; statusEl.textContent = '3D-model laden…';
+    ensure().then(() => { if (!el.isConnected) return; statusEl.hidden = true; if (reduce()) spin = false; resize(); repaint(); if (!running) { running = true; requestAnimationFrame(loop); } })
+      .catch(e => { statusEl.hidden = false; statusEl.textContent = e && e.message === 'old' ? 'Dit toestel is te oud voor het 3D-model. Werk iOS of je browser bij.' : 'Het 3D-model kon niet geladen worden. Controleer je verbinding en probeer het opnieuw.'; });
+  }
+  return { mount, repaint, turn, muscles: () => window.DK_MUSCLES || [] };
+})();
+
+const m3Muscle = id => M3D.muscles().find(x => x.id === id);
+function m3Session() {
+  if (m3.key) return { key: m3.key, date: null };
+  for (let i = 0; i < 7; i++) { const d = addDays(today(), i), s = sessionsOn(d).find(x => { const df = sessionDef(x.key); return df && df.type === 'kracht'; }); if (s) return { key: s.key, date: d }; }
+  return null;
+}
+function m3Roles(key) {
+  const main = new Set(), help = new Set(); let ids = []; try { ids = sessionExs(key); } catch (e) {}
+  ids.forEach(id => { const p = EX[id] && M3_PAT[EX[id].pattern]; if (p) { p[0].forEach(m => main.add(m)); p[1].forEach(m => help.add(m)); } });
+  main.forEach(m => help.delete(m)); return { main, help };
+}
+function m3Ctx() {
+  const c = { week: null, roles: null, sess: null };
+  if (m3.mode === 'week') { c.week = {}; musWeek().forEach(m => c.week[m.k] = m); }
+  if (m3.mode === 'sess') { c.sess = m3Session(); c.roles = c.sess ? m3Roles(c.sess.key) : { main: new Set(), help: new Set() }; }
+  return c;
+}
+let m3C = null;
+function m3Color(g, id) {
+  if (m3.mode === 'week') { const m = m3C.week[M3_MUS[g]]; return !m || m.p <= 0 ? null : m.p < 1 ? '#FFD166' : '#C9F24D'; }
+  if (m3.mode === 'sess') return id && m3C.roles.main.has(id) ? '#C9F24D' : id && m3C.roles.help.has(id) ? '#5CC8FF' : null;
+  if (m3.mode === 'spieren') return m3.sel && m3.sel.g === g && m3.sel.m === id ? '#C9F24D' : null;
+  const lv = m3Check()[g]; return lv != null ? M3_LV[lv][1] : null;
+}
+const m3Picked = (g, id) => !!m3.sel && m3.sel.g === g && (m3.mode === 'week' || m3.mode === 'checkin' ? true : m3.sel.m === id);
+const m3Names = set => [...set].map(id => { const m = m3Muscle(id); return m ? m.nl : null; }).filter(Boolean);
+function m3AppEx(id) {
+  const rank = e => { const p = M3_PAT[e.pattern]; return !p ? 0 : p[0].includes(id) ? 2 : p[1].includes(id) ? 1 : 0; };
+  return EXERCISES.filter(e => rank(e) === 2).slice(0, 4).concat(EXERCISES.filter(e => rank(e) === 1).slice(0, 2)).slice(0, 5);
+}
+function m3Panel() {
+  const sel = m3.sel, mu = sel && sel.m ? m3Muscle(sel.m) : null, leg = (...xs) => `<div class="mulegend">${xs.map(([c, t]) => `<span><i style="background:${c}"></i>${t}</span>`).join('')}</div>`;
+  const muHead = mu ? `<h3 class="b3d-la">${esc(mu.la)}</h3><p class="sub">${esc(mu.nl)} · ${M3_LABELS[mu.g]}</p>` : sel ? `<h3>${M3_LABELS[sel.g]}</h3>` : '';
+  if (m3.mode === 'week') {
+    const m = sel && m3C.week[M3_MUS[sel.g]];
+    return leg(['#743631', 'nog niet'], ['#FFD166', 'bezig'], ['#C9F24D', 'target gehaald']) + (sel ? `<h3>${M3_LABELS[sel.g]}</h3><p class="sub">${!m || (m.plan <= 0 && !m.done) ? 'Geen target in je schema deze week.' : m.extra ? n1(m.done) + ' sets extra deze week (geen target in je schema).' : n1(m.done) + ' van ' + m.plan + ' sets deze week' + (m.done >= m.plan ? ' · target gehaald.' : '.')}</p>` : '<p class="sub">Tik op een spiergroep voor je sets van deze week.</p>');
+  }
+  if (m3.mode === 'sess') {
+    const s = m3C.sess; if (!s) return '<p class="sub">Er staat de komende 7 dagen geen krachttraining gepland.</p>';
+    const def = sessionDef(s.key), r = m3C.roles, chk = m3Check(), stiff = [...new Set([...r.main].map(id => (m3Muscle(id) || {}).g))].filter(g => g && chk[g] != null && chk[g] <= 1);
+    const role = mu ? (r.main.has(mu.id) ? 'Hoofdspier in deze training.' : r.help.has(mu.id) ? 'Hulpspier in deze training.' : 'Doet niet mee in deze training.') : sel ? 'Doet niet mee in deze training.' : '';
+    return `<p class="eyebrow">${s.date ? (s.date === today() ? 'Vandaag' : fmtDate(s.date, { weekday: 'long' })) : 'Training'}</p><h3>${esc(def ? def.name : 'Training')}</h3>` + leg(['#C9F24D', 'hoofdspier'], ['#5CC8FF', 'hulpspier'])
+      + (stiff.length ? `<p class="note"><b>Let op:</b> bij je check-in van vandaag gaf je aan dat ${stiff.map(g => M3_LABELS[g].toLowerCase()).join(', ')} stijf ${stiff.length > 1 ? 'zijn' : 'is'}. Begin lichter of warm extra op.</p>` : '')
+      + (sel ? muHead + `<p class="sub">${role}</p>` : `<p class="sub"><b>Hoofdspieren:</b> ${esc(m3Names(r.main).join(', ') || 'geen')}</p>${r.help.size ? `<p class="sub"><b>Hulpspieren:</b> ${esc(m3Names(r.help).join(', '))}</p>` : ''}<p class="sub">Tik op een spier voor de naam en zijn rol.</p>`);
+  }
+  if (m3.mode === 'spieren') {
+    if (!sel) return '<h3>Tik op een spier</h3><p class="sub">Je ziet de Latijnse naam, wat de spier doet en hoe je hem traint.</p>';
+    if (!mu) return muHead + '<p class="sub">Dit onderdeel heeft nog geen eigen beschrijving.</p>';
+    const app = m3AppEx(mu.id);
+    return muHead + `<p>${esc(mu.fn)}</p>${mu.ex.length ? `<h4>Train met</h4><p>${mu.ex.map(esc).join(' · ')}</p>` : ''}${app.length ? `<h4>In jouw oefeningenlijst</h4><div class="chips">${app.map(e => `<button class="chip btnchip" data-a="exInfo" data-id="${e.id}">${esc(e.name)}</button>`).join('')}</div>` : ''}`;
+  }
+  const chk = m3Check(), n = Object.keys(chk).length, lv = sel ? chk[sel.g] : null;
+  return `<div class="row"><h3>${sel ? M3_LABELS[sel.g] : 'Tik op een spiergroep'}</h3><span class="pill">${n} van 15 aangegeven</span></div><p class="sub">${sel ? (lv != null ? 'Vandaag: ' + M3_LV[lv][0].toLowerCase() + '.' : 'Hoe voelt deze spiergroep vandaag?') : 'Geef per spiergroep aan hoe stijf of fris die vandaag voelt.'}</p>
+   <div class="b3d-lvs">${M3_LV.map(([t, c], i) => `<button class="b3d-lv${lv === i ? ' on' : ''}" style="--c:${c}" data-a="b3dLv" data-l="${i}" ${sel ? '' : 'disabled'}><i></i>${t}</button>`).join('')}</div>
+   <div class="btns"><button class="link" data-a="b3dLv" data-l="-1" ${sel && lv != null ? '' : 'disabled'}>Wis deze spiergroep</button><button class="link" data-a="b3dLvClear" ${n ? '' : 'disabled'}>Alles wissen</button></div>`;
+}
+function m3Paint() {
+  m3C = m3Ctx(); const t = $('#b3dTabs'); if (!t) return;
+  t.innerHTML = `<div class="seg" role="tablist">${M3_MODES.map(([id, l]) => `<button role="tab" aria-selected="${m3.mode === id}" class="${m3.mode === id ? 'on' : ''}" data-a="b3dMode" data-m="${id}">${l}</button>`).join('')}</div>`;
+  $('#b3dPanel').innerHTML = m3Panel(); M3D.repaint();
+}
+A.b3d = d => {
+  m3.mode = M3_MODES.some(x => x[0] === d.m) ? d.m : 'week'; m3.key = d.key || null; m3.sel = null;
+  modal(`<div class="b3d"><div class="row"><div><p class="eyebrow">Spierkaart</p><h2>Je lichaam in 3D</h2></div><button class="btn ghost sm" data-a="close">Sluiten</button></div><div id="b3dTabs"></div><div id="b3dSlot"></div><div id="b3dPanel"></div>
+   <small class="b3d-credit">3D-model: BodyParts3D © DBCLS (CC BY-SA 2.1 JP) en Z-Anatomy, G. Kervyn (CC BY-SA 4.0), via BodyExplorer. Vereenvoudigd en gegroepeerd; zelfde licentie.</small></div>`, true);
+  m3C = m3Ctx();
+  M3D.mount($('#b3dSlot'), { color: m3Color, picked: m3Picked, pick: hit => { m3.sel = hit; m3Paint(); } });
+  m3Paint(); if (m3.mode === 'sess' && m3C.sess) { const r = m3C.roles, back = [...r.main].filter(id => ['rug', 'nek', 'onderrug', 'hamstrings', 'billen', 'kuiten', 'triceps'].includes((m3Muscle(id) || {}).g)).length; if (M3D.muscles().length) M3D.turn(back > r.main.size / 2 ? Math.PI : 0); }
+};
+A.b3dMode = d => { m3.mode = d.m; m3.sel = null; m3Paint(); };
+A.b3dLv = d => { if (!m3.sel) return; const day = (S.musCheck = S.musCheck || {}), c = day[today()] = day[today()] || {}; if (+d.l < 0) delete c[m3.sel.g]; else c[m3.sel.g] = +d.l; if (!Object.keys(c).length) delete day[today()]; save(); m3Paint(); };
+A.b3dLvClear = () => { if (S.musCheck) delete S.musCheck[today()]; save(); m3Paint(); };
 function rwWeekCard() {
   const W = rwWeek(); if (!W.P && !W.sess) return '';
   const pct = Math.round(W.pct * 100), we = addDays(W.w0, 6);
@@ -2346,7 +2567,7 @@ A.stepsAsk = () => { const st = S.steps[today()], m = StepSensor.st.mode;
 F.stepsM = (f, fd) => { closeModal(); F.steps(f, fd); };
 
 function checkBody() { const rec = S.recovery[today()] || {};
-  return `<div id="chk"><h3>Herstelcheck</h3><p class="sub">Tik wat past. Het wordt direct opgeslagen.</p>${scaleRow('sleep', 'Hoeveel sliep je?', SC.hours, nearest(SC.hours, rec.sleep), 'data-c="recTile"')}${scaleRow('energy', 'Energie', SC.energy, rec.energy, 'data-c="recTile"')}${scaleRow('soreness', 'Spierpijn', SC.sore, rec.soreness, 'data-c="recTile"')}${scaleRow('recovery', 'Herstel', SC.recov, rec.recovery, 'data-c="recTile"')}<div class="btns end"><button class="btn" data-a="close">Klaar</button></div></div>`; }
+  return `<div id="chk"><h3>Herstelcheck</h3><p class="sub">Tik wat past. Het wordt direct opgeslagen.</p>${scaleRow('sleep', 'Hoeveel sliep je?', SC.hours, nearest(SC.hours, rec.sleep), 'data-c="recTile"')}${scaleRow('energy', 'Energie', SC.energy, rec.energy, 'data-c="recTile"')}${scaleRow('soreness', 'Spierpijn', SC.sore, rec.soreness, 'data-c="recTile"')}${scaleRow('recovery', 'Herstel', SC.recov, rec.recovery, 'data-c="recTile"')}<div class="btns end"><button class="btn ghost" data-a="b3d" data-m="checkin">Per spiergroep in 3D</button><button class="btn" data-a="close">Klaar</button></div></div>`; }
 A.checkAsk = () => modal(checkBody());
 A.questTrain = () => { ui.trainTab = 'week'; go('training'); };
 function vHome() {
@@ -2889,11 +3110,11 @@ function vWorkout() {
     ${wkProg(dr)}<div class="wkdots" role="tablist" aria-label="Oefeningen">${dr.items.map((it, i) => `<button class="${i === k ? 'on' : ''} ${done(it) ? 'done' : ''}" data-a="wkGo" data-i="${i}" aria-label="Oefening ${i + 1}: ${esc(EX[it.ex].name)}${done(it) ? ', ingevuld' : ''}"></button>`).join('')}</div>
     <p class="fcount">Oefening ${k + 1} van ${n} · ${esc(b.label)}: RPE ${b.rpe}</p>${exCard(cur, k).replace('class="card ex"', 'class="card ex focuscard"')}
     <div class="btns sticky fnav">${k > 0 ? '<button class="btn ghost" data-a="wkPrev">‹ Vorige</button>' : ''}${last ? '<button class="btn" data-a="wkFinish">Training afronden</button>' : '<button class="btn" data-a="wkNext">Volgende ›</button>'}</div>
-    <div class="btns tight"><label class="chip"><input type="checkbox" data-c="restToggle" ${S.restOff ? '' : 'checked'}><span>Rusttimer</span></label>${last ? '' : '<button class="link" data-a="wkFinish">Nu afronden</button>'}<button class="link" data-a="wkDiscard">Verwerpen</button></div></section>`;
+    <div class="btns tight"><button class="link" data-a="b3d" data-m="sess" data-key="${wk.key}">Spieren in 3D</button><label class="chip"><input type="checkbox" data-c="restToggle" ${S.restOff ? '' : 'checked'}><span>Rusttimer</span></label>${last ? '' : '<button class="link" data-a="wkFinish">Nu afronden</button>'}<button class="link" data-a="wkDiscard">Verwerpen</button></div></section>`;
   }
 
   return `<section>${head}<p class="lead">${esc(b.label)}: RPE ${b.rpe}. Vul in wat je doet. Afronden kan altijd, ook als niet alles is ingevuld.</p>
-  <div class="btns tight"><button class="link" data-a="listView">Toon per oefening</button><label class="chip"><input type="checkbox" data-c="short" data-key="${wk.key}" ${S.short[wk.key] ? 'checked' : ''}><span>Kortere versie</span></label><label class="chip"><input type="checkbox" data-c="restToggle" ${S.restOff ? '' : 'checked'}><span>Rusttimer</span></label></div>${items || '<div class="card"><p>Met jouw materiaal en voorkeuren zijn er geen oefeningen gevonden. Pas je materiaal aan in je profiel.</p></div>'}
+  <div class="btns tight"><button class="link" data-a="listView">Toon per oefening</button><button class="link" data-a="b3d" data-m="sess" data-key="${wk.key}">Spieren in 3D</button><label class="chip"><input type="checkbox" data-c="short" data-key="${wk.key}" ${S.short[wk.key] ? 'checked' : ''}><span>Kortere versie</span></label><label class="chip"><input type="checkbox" data-c="restToggle" ${S.restOff ? '' : 'checked'}><span>Rusttimer</span></label></div>${items || '<div class="card"><p>Met jouw materiaal en voorkeuren zijn er geen oefeningen gevonden. Pas je materiaal aan in je profiel.</p></div>'}
   <div class="btns sticky"><button class="btn" data-a="wkFinish">Training afronden</button><button class="btn ghost" data-a="wkDiscard">Verwerpen</button></div></section>`;
 }
 A.wkGo = d => { ui.wkIdx = +d.i; render(); window.scrollTo(0, 0); };
