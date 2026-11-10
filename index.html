@@ -1685,24 +1685,30 @@ function calcMacros(p) {
   const bmr = 10 * p.weight + 6.25 * p.height - 5 * p.age + sexAdj;
   let act = p.activity; if (!act) { act = 'licht'; as.push('Activiteit buiten trainingen niet opgegeven: "licht actief" aangenomen.'); }
   const pal = { laag: 1.35, licht: 1.45, matig: 1.55, hoog: 1.7 }[act], tdee = bmr * pal;
-  let adj = { vet: -.15, spier: .07, kracht: .03, conditie: 0, bewegen: 0, combi: -.05 }[p.goal] ?? 0;
+  const bmi = p.weight / Math.pow(p.height / 100, 2), adv = p.experience === 'gevorderd';
+  /* Tekort: 15% (20% bij BMI vanaf 30) voor ca. 0,5% lichaamsgewicht per week, onderkant van 0,5-1% (Helms 2014). Overschot: ca. 10%, gevorderden 5% (Iraki 2019). */
+  let adj = { vet: bmi >= 30 ? -.2 : -.15, spier: adv ? .05 : .1, kracht: .05, conditie: 0, bewegen: 0, combi: -.05 }[p.goal] ?? 0;
   if (p.care && adj < 0) { adj = 0; as.push('Je gaf aan dat overleg met een arts of diëtist verstandig is: er is geen calorietekort ingesteld.'); }
   let kcal = tdee * (1 + adj);
   const floorK = Math.max(bmr, p.sex === 'm' ? 1500 : p.sex === 'v' ? 1200 : 1350);
   let floored = false; if (kcal < floorK) { kcal = floorK; floored = true; }
   const gkg = { vet: 2.0, spier: 1.8, kracht: 1.8, conditie: 1.4, bewegen: 1.4, combi: 2.0 }[p.goal] ?? 1.6;
-  const prot = Math.round(p.weight * gkg / 5) * 5;
-  const fat = Math.round(Math.max(.8 * p.weight, kcal * .25 / 9) / 5) * 5;
+  /* Bij BMI vanaf 30 rekent de app eiwit en vet op een referentiegewicht (BMI 25): de behoefte volgt vetvrije massa, niet vetmassa. */
+  const refW = bmi >= 30 ? +(25 * Math.pow(p.height / 100, 2)).toFixed(1) : p.weight;
+  if (refW !== p.weight) as.push(`Eiwit en vet zijn berekend op een referentiegewicht van ${String(refW).replace('.', ',')} kg (BMI 25), omdat de behoefte samenhangt met vetvrije massa.`);
+  const prot = Math.round(refW * gkg / 5) * 5;
+  const fat = Math.round(Math.max(.8 * refW, kcal * .25 / 9) / 5) * 5;
   const carb = Math.max(0, Math.round((kcal - prot * 4 - fat * 9) / 4 / 5) * 5);
   const total = Math.round((prot * 4 + carb * 4 + fat * 9) / 10) * 10;
-  return { kcal: total, p: prot, c: carb, f: fat, bmr, tdee, pal, adj, floored, floorK, gkg, assumptions: as, auto: true };
+  if (['spier', 'kracht', 'conditie'].includes(p.goal) && carb / p.weight < 3) as.push('Je koolhydraten komen onder 3 g per kg uit. Voor zware trainingen is 3–5 g per kg een gangbare ondergrens. Overweeg een hogere activiteitsfactor of iets minder vet.');
+  return { kcal: total, p: prot, c: carb, f: fat, bmr, tdee, pal, adj, floored, floorK, gkg, refW, pm: [Math.round(refW * .4 / 5) * 5, Math.round(refW * .55 / 5) * 5], assumptions: as, auto: true };
 }
 function targets(date) { if (S.comp && S.comp.active) { const t = compTargets(date || today()); if (t) return t; } if (S.macroOverride) return S.macroOverride; return calcMacros(S.profile); }
 function timeEstimate(p) {
   if (!p || !p.targetWeight || !p.weight) return null; const d = p.targetWeight - p.weight;
   if (Math.abs(d) < .5) return { text: 'Je streefgewicht ligt dicht bij je huidige gewicht. Er is geen tijdsinschatting nodig.' };
   const loss = d < 0; if (loss && !['vet', 'combi'].includes(p.goal) || !loss && !['spier', 'kracht', 'combi'].includes(p.goal)) return { text: 'Je streefgewicht past niet bij het gekozen doel. Pas het doel of het streefgewicht aan voor een inschatting.' };
-  const rate = loss ? [.25, .75] : [.1, .35];
+  const rate = loss ? [.25, .75] : p.experience === 'gevorderd' ? [.1, .25] : [.25, .5];
   const lo = Math.ceil(Math.abs(d) / (p.weight * rate[1] / 100)), hi = Math.ceil(Math.abs(d) / (p.weight * rate[0] / 100));
   return { lo, hi, loss, d: Math.abs(d), text: `Bij een gemiddelde verandering van ${rate[0]}–${rate[1]}% van je lichaamsgewicht per week kan ${Math.abs(d).toString().replace('.', ',')} kg ${loss ? 'afvallen' : 'aankomen'} ongeveer ${lo}–${hi} weken duren.` + (hi > 26 ? ' Dat is een lange periode: plan tussentijds evaluatiemomenten in.' : '') };
 }
@@ -2007,6 +2013,10 @@ const SRC = {
   who: '<a href="https://www.who.int/europe/publications/i/item/9789240014886" target="_blank" rel="noopener">WHO, richtlijnen lichaamsbeweging</a>',
   issn: '<a href="https://jissn.biomedcentral.com/articles/10.1186/s12970-017-0177-8" target="_blank" rel="noopener">ISSN, positiestandpunt eiwit en training (2017)</a>',
   acsm: '<a href="https://pubmed.ncbi.nlm.nih.gov/19204579/" target="_blank" rel="noopener">ACSM, progressiemodellen krachttraining (2009)</a>',
+  mifflin: '<a href="https://doi.org/10.1016/j.jada.2005.02.005" target="_blank" rel="noopener">Frankenfield e.a. 2005, vergelijking van formules voor rustverbranding</a>',
+  morton: '<a href="https://doi.org/10.1136/bjsports-2017-097608" target="_blank" rel="noopener">Morton e.a. 2018, meta-analyse eiwit en krachttraining</a>',
+  helms: '<a href="https://doi.org/10.1186/1550-2783-11-20" target="_blank" rel="noopener">Helms e.a. 2014, voeding in een tekort</a>',
+  iraki: '<a href="https://doi.org/10.3390/sports7070154" target="_blank" rel="noopener">Iraki e.a. 2019, voeding in de opbouwfase</a>',
   vc: '<a href="https://www.voedingscentrum.nl/professionals/schijf-van-vijf/onderbouwing-schijf-van-vijf/aanbevolen-hoeveelheden.aspx" target="_blank" rel="noopener">Voedingscentrum, aanbevolen hoeveelheden</a>'
 };
 
@@ -3061,7 +3071,7 @@ function planParts() {
   if (!t || t.missing) macro += `<p>Een betrouwbare berekening is nog niet mogelijk: ${(t && t.missing || []).join(', ')} ontbreekt. Vul de gegevens aan bij je profiel of stel zelf doelen in.</p>`;
   else macro += `<div class="stats"><div><b>${t.kcal}</b><span>kcal</span></div><div><b>${t.p}</b><span>g eiwit</span></div><div><b>${t.c}</b><span>g koolhydraten</span></div><div><b>${t.f}</b><span>g vet</span></div></div>
     <p class="sub">${t.auto ? 'Voorstel van de coach, een schatting.' : (t.fromCoach ? 'Aangepast via een coachvoorstel.' : 'Jouw eigen instelling.')}</p>
-    ${t.auto ? why('Waarom deze getallen?', `<p>Basisverbranding (Mifflin-St Jeor): ca. <b>${n0(t.bmr)}</b> kcal. Met jouw activiteit (factor ${t.pal.toString().replace('.', ',')}) komt je behoefte op ca. <b>${n0(t.tdee)}</b> kcal. Doelaanpassing: <b>${t.adj > 0 ? '+' : ''}${n0(t.adj * 100)}%</b>${t.floored ? ' (begrensd op ' + n0(t.floorK) + ' kcal)' : ''}. Eiwit: <b>${n1(t.gkg)} g per kg</b>, binnen de 1,4–2,0 g/kg van de ISSN. Vet: minstens 0,8 g per kg en 25% van de energie. De rest is koolhydraten. Bronnen: ${SRC.issn}, ${SRC.vc}.</p>`) : ''}`;
+    ${t.auto ? why('Waarom deze getallen?', `<p>Basisverbranding (Mifflin-St Jeor): ca. <b>${n0(t.bmr)}</b> kcal. Met jouw activiteit (factor ${t.pal.toString().replace('.', ',')}) komt je behoefte op ca. <b>${n0(t.tdee)}</b> kcal. Doelaanpassing: <b>${t.adj > 0 ? '+' : ''}${n0(t.adj * 100)}%</b>${t.floored ? ' (begrensd op ' + n0(t.floorK) + ' kcal)' : ''}. Eiwit: <b>${n1(t.gkg)} g per kg</b>${t.refW && t.refW !== S.profile.weight ? ' referentiegewicht' : ''}. Boven ongeveer 1,6 g per kg levert extra eiwit gemiddeld geen extra spiergroei op; in een tekort is iets meer zinvol om spiermassa te houden. Verdeel het over 3 tot 6 maaltijden van elk ongeveer <b>${t.pm ? t.pm[0] + '–' + t.pm[1] : '25–40'} g</b> eiwit. Vet: minstens 0,8 g per kg en 25% van de energie. De rest is koolhydraten.</p><p>De formule voor je verbranding kan bij een individu 10% of meer afwijken. Daarom stuurt de coach na vier weken bij op je echte gewichtstrend.</p><p class="sub">Bronnen: ${SRC.mifflin}, ${SRC.morton}, ${SRC.helms}, ${SRC.iraki}, ${SRC.issn}, ${SRC.vc}.</p>`) : ''}`;
   const cu = t && !t.missing ? t : { kcal: '', p: '', c: '', f: '' }, sumMacro = t && !t.missing ? n0(cu.p * 4 + cu.c * 4 + cu.f * 9) : null;
   const macroBody = macro + acc('Doelen aanpassen', '', macroCalcUI() + `<h4>Alles zelf invullen</h4><form data-submit="macros" class="grid4"><label class="f">kcal<input name="kcal" type="number" inputmode="numeric" value="${cu.kcal}"></label><label class="f">Eiwit (g)<input name="p" type="number" inputmode="numeric" value="${cu.p}"></label><label class="f">Koolh. (g)<input name="c" type="number" inputmode="numeric" value="${cu.c}"></label><label class="f">Vet (g)<input name="f" type="number" inputmode="numeric" value="${cu.f}"></label><div class="span4 btns"><button class="btn sm">Eigen doelen opslaan</button>${S.macroOverride && calcMacros(p).kcal ? '<button type="button" class="btn ghost sm" data-a="macroReset">Terug naar voorstel</button>' : ''}</div></form>
    ${sumMacro != null && Math.abs(sumMacro - cu.kcal) > cu.kcal * .1 ? `<div class="note warn">Je macro’s komen samen op ongeveer ${sumMacro} kcal, niet op ${cu.kcal} kcal. Controleer of de getallen bij elkaar passen.</div>` : ''}`);
