@@ -27,5 +27,6 @@ In Xcode kies je bij Signing & Capabilities je Team, kiest je iPhone en drukt op
 
 ## Let op
 - Capacitor en de Gezondheid-plug-in staan vast op versie 8: de plug-in compileert niet tegen nieuwere Capacitor-versies.
-- De Gezondheid-koppeling leest nu **stappen**. Gewicht en slaap kunnen later worden toegevoegd in de adapter in `index.html` (`StepSensor`).
+- De Gezondheid-koppeling leest **stappen, gewicht, slaap, HRV en rusthartslag** (alleen lezen). HRV en rusthartslag gebruikt de coach als herstelsignaal: de trend van 3 dagen tegenover je eigen basislijn van 3 weken. Na een update vraagt iOS één keer om toestemming voor die twee extra gegevens.
+- De app gebruikt ook `@capacitor/haptics` voor trilfeedback. `bash ios-app/update.sh` installeert die automatisch.
 - Voor de App Store (niet nodig voor TestFlight) heb je nog een privacyverklaring, schermafbeeldingen en een beschrijving nodig.

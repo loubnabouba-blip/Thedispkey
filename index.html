@@ -1888,6 +1888,14 @@ function adherence(days = 14) {
   let pl = 0, ea = 0; for (let i = 0; i < days; i++) (S.food[addDays(today(), -i)]?.items || []).forEach(it => { pl++; if (it.eaten) ea++; });
   return { pl, ea, ratio: pl ? ea / pl : 0 };
 }
+/* HRV en rusthartslag (Apple Gezondheid): trend van de laatste 3 dagen tegenover je eigen basislijn van de 3 weken ervoor. Eén dag zegt weinig, dus alleen de trend telt. */
+function hrvFlag() {
+  const T = today(), vals = (k, a, b) => { const o = []; for (let i = a; i <= b; i++) { const r = S.recovery[addDays(T, -i)]; if (r && r[k]) o.push(+r[k]); } return o; }, mean = v => v.reduce((x, y) => x + y, 0) / v.length;
+  const bh = vals('hrv', 4, 28), rh = vals('hrv', 0, 2), br = vals('rhr', 4, 28), rr = vals('rhr', 0, 2);
+  const hrvDrop = bh.length >= 10 && rh.length >= 2 && mean(rh) < mean(bh) * .88 ? Math.round((1 - mean(rh) / mean(bh)) * 100) : 0;
+  const rhrUp = br.length >= 10 && rr.length >= 2 && mean(rr) >= mean(br) + 5 ? Math.round(mean(rr) - mean(br)) : 0;
+  return { hrvDrop, rhrUp, low: !!(hrvDrop || rhrUp) };
+}
 const stiffCount = d => Object.values((S.musCheck || {})[d] || {}).filter(v => v <= 1).length;
 function recoveryFlag() {
   const ds = Object.keys(S.recovery).filter(d => diffDays(d, today()) <= 7 && diffDays(d, today()) >= 0); if (ds.length < 4) return false;
@@ -1898,7 +1906,10 @@ function coachProposal() {
   const p = S.profile, t = targets(); if (!p || !t || t.missing) return null;
   const out = [];
   const w = planWeek();
-  if (recoveryFlag() && w && !S.lightWeeks.includes(w)) out.push({ kind: 'recover', title: 'Je herstel lijkt laag', why: 'In de afgelopen week gaf je op meerdere dagen lage energie of laag herstel aan. Eerst herstel, dan pas meer belasting.', change: 'Een lichtere week: één set minder per oefening en een lagere inspanning (RPE 6).', apply: 'lightweek' });
+  const hv = hrvFlag();
+  if (hv.low && recoveryFlag() && w && !S.lightWeeks.includes(w)) out.push({ kind: 'recover', title: 'Je lichaam vraagt om herstel', why: `${hv.hrvDrop ? `Je HRV ligt ${hv.hrvDrop}% onder je eigen gemiddelde. ` : ''}${hv.rhrUp ? `Je rusthartslag ligt ${hv.rhrUp} slagen per minuut hoger dan normaal. ` : ''}Samen met je eigen herstelscores wijst dat op te weinig herstel.`, change: 'Een lichtere week: één set minder per oefening en een lagere inspanning (RPE 6).', apply: 'lightweek' });
+  else if (hv.low && !(S.nsDismiss && S.nsDismiss.hrv === today())) out.push({ kind: 'info', title: 'Let op je herstel', why: `${hv.hrvDrop ? `Je HRV ligt ${hv.hrvDrop}% onder je eigen gemiddelde. ` : ''}${hv.rhrUp ? `Je rusthartslag ligt ${hv.rhrUp} slagen per minuut hoger dan normaal. ` : ''}Eén meting zegt weinig. Let de komende dagen op slaap, stress en hoe zwaar je traint.`, nsId: 'hrv' });
+  if (recoveryFlag() && w && !S.lightWeeks.includes(w) && !out.length) out.push({ kind: 'recover', title: 'Je herstel lijkt laag', why: 'In de afgelopen week gaf je op meerdere dagen lage energie of laag herstel aan. Eerst herstel, dan pas meer belasting.', change: 'Een lichtere week: één set minder per oefening en een lagere inspanning (RPE 6).', apply: 'lightweek' });
   const ref = S.coachCheck || S.planStart; if (!ref || diffDays(ref, today()) < 28) return out[0] || null;
   if (!['vet', 'spier', 'combi'].includes(p.goal)) return out[0] || null;
   const pts = weightPts(28);
@@ -2749,11 +2760,26 @@ function vHomeBento() {
 }
 A.homeLayout = () => { S.homeClassic = !S.homeClassic; save(); render(); };
 const scale = (cur, [lo, hi]) => `<option value="">–</option>` + [1, 2, 3, 4, 5].map(i => `<option value="${i}" ${cur === i ? 'selected' : ''}>${i}${i === 1 ? ' (' + lo + ')' : i === 5 ? ' (' + hi + ')' : ''}</option>`).join('');
+
+/* ===== Volgende stap: een kaart die zichzelf aandient (check-in, weging, foto, herstel) ===== */
+function nextStep() {
+  const T = today(), dis = S.nsDismiss || {}, ok = id => dis[id] !== T, hr = new Date().getHours(), p = S.profile || {};
+  const r = S.recovery[T] || {}, lastW = S.body.filter(b => b.weight && !b.demo).map(b => b.date).sort().pop(), lastPh = S.photos.filter(x => !x.demo).map(x => x.date).sort().pop();
+  if (ok('check') && hr >= 6 && !(r.energy || r.recovery)) return { id: 'check', title: 'Doe je herstelcheck', why: 'Dat kost 20 seconden. Daarmee past de app je training aan op hoe je je voelt.', a: 'checkAsk', label: 'Check-in doen' };
+  if (ok('weigh') && ['vet', 'spier', 'combi'].includes(p.goal) && (!lastW || diffDays(lastW, T) >= 7)) return { id: 'weigh', title: 'Tijd om te wegen', why: lastW ? `Je laatste weging was ${diffDays(lastW, T)} dagen geleden. Voor een betrouwbare trend heb je meerdere metingen per week nodig.` : 'Zonder wegingen kan de coach je voeding niet bijsturen.', a: 'pfTo', data: 'data-r="voortgang" data-k="progTab" data-t="lichaam"', label: 'Gewicht invullen' };
+  if (ok('photo') && S.planStart && diffDays(S.planStart, T) >= 14 && (!lastPh || diffDays(lastPh, T) >= 28)) return { id: 'photo', title: 'Tijd voor een voortgangsfoto', why: lastPh ? `Je laatste foto is ${diffDays(lastPh, T)} dagen oud. Een foto per vier weken laat zien wat de weegschaal niet toont.` : 'Een startfoto maakt je voortgang later zichtbaar.', a: 'pfTo', data: 'data-r="voortgang" data-k="progTab" data-t="fotos"', label: 'Foto maken' };
+  return null;
+}
+A.nsDismiss = d => { (S.nsDismiss = S.nsDismiss || {})[d.id] = today(); save(); render(); };
+function nextStepCard() {
+  const n = nextStep(); if (!n) return '';
+  return `<div class="card coach quiet nstep"><span class="eyebrow">Volgende stap</span><h3>${esc(n.title)}</h3><p>${esc(n.why)}</p><div class="btns"><button class="btn sm" data-a="${n.a}" ${n.data || ''}>${esc(n.label)}</button><button class="btn ghost sm" data-a="nsDismiss" data-id="${n.id}">Nu niet</button></div></div>`;
+}
 function coachCard(c) {
-  if (!c) return '';
+  if (!c) return nextStepCard();
   if (c.kind === 'macro') return `<div class="card coach"><span class="eyebrow">Coachvoorstel</span><h3>${esc(c.title)}</h3><p>${esc(c.why)}</p><div class="diff"><span>Nu <b>${c.old} kcal</b></span><span>→</span><span>Voorstel <b>${c.nw} kcal</b></span></div><p class="sub">Eiwit en vet blijven gelijk; koolhydraten passen mee. Je beslist zelf.</p><div class="btns"><button class="btn sm" data-a="coachAccept" data-d="${c.delta}">Accepteren</button><button class="btn ghost sm" data-a="pfTo" data-r="voeding" data-k="foodTab" data-t="macro">Zelf aanpassen</button><button class="btn ghost sm" data-a="coachReject">Afwijzen</button></div></div>`;
   if (c.kind === 'recover') return `<div class="card coach"><span class="eyebrow">Coachvoorstel</span><h3>${esc(c.title)}</h3><p>${esc(c.why)}</p><p><b>Voorstel:</b> ${esc(c.change)}</p><div class="btns"><button class="btn sm" data-a="lightWeek">Plan herstelweek</button><button class="btn ghost sm" data-a="coachReject">Nu niet</button></div></div>`;
-  return `<div class="card coach quiet"><span class="eyebrow">Coach</span><h3>${esc(c.title)}</h3><p>${esc(c.why)}</p><button class="btn ghost sm" data-a="coachReject">Begrepen</button></div>`;
+  return `<div class="card coach quiet"><span class="eyebrow">Coach</span><h3>${esc(c.title)}</h3><p>${esc(c.why)}</p><button class="btn ghost sm" data-a="${c.nsId ? 'nsDismiss' : 'coachReject'}" ${c.nsId ? 'data-id="' + c.nsId + '"' : ''}>Begrepen</button></div>`;
 }
 A.go = d => go(d.r);
 A.gotoTraining = () => { ui.tDate = today(); ui.trainTab = 'week'; go('training'); };
@@ -2784,7 +2810,7 @@ const StepSensor = (() => {
     const h = healthPlugin(); if (!h) return null;
     return {
       isAvailable: async () => { const r = await h.isAvailable(); return r && r.available !== false; },
-      requestPermission: async () => { try { await h.requestAuthorization({ read: ['steps', 'weight', 'sleep'], write: [] }); } catch (e) { await h.requestAuthorization({ read: ['steps'], write: [] }); } return true; },
+      requestPermission: async () => { try { await h.requestAuthorization({ read: ['steps', 'weight', 'sleep', 'restingHeartRate', 'heartRateVariability'], write: [] }); } catch (e) { try { await h.requestAuthorization({ read: ['steps', 'weight', 'sleep'], write: [] }); return true; } catch (e2) {} await h.requestAuthorization({ read: ['steps'], write: [] }); } return true; },
       getWeight: async d => {
         const r = await h.readSamples(Object.assign({ dataType: 'weight', limit: 5, ascending: false }, dayRange(d)));
         const x = ((r && (r.samples || r.data)) || [])[0]; if (!x) return null; let v = +x.value; if (/lb/i.test(x.unit || '')) v *= 0.4536; else if (/^g$/i.test(x.unit || '')) v /= 1000; return v > 20 && v < 400 ? +v.toFixed(1) : null;
@@ -2795,6 +2821,11 @@ const StepSensor = (() => {
         const list = ((r && (r.samples || r.data)) || []).filter(x => !/awake|inbed|in_bed/i.test(String(x.sleepState || x.state || x.value || '')));
         let ms = 0, last = 0; list.map(x => [+new Date(x.startDate), +new Date(x.endDate)]).filter(x => x[1] > x[0]).sort((p, q) => p[0] - q[0]).forEach(([s0, e0]) => { const st0 = Math.max(s0, last); if (e0 > st0) ms += e0 - st0; last = Math.max(last, e0); });
         const hrs = ms / 36e5; return hrs >= 1 && hrs <= 16 ? +hrs.toFixed(1) : null;
+      },
+      getHeart: async d => {
+        const avg = async t => { const r = await h.queryAggregated(Object.assign({ dataType: t, bucket: 'day', aggregation: 'average' }, dayRange(d))); const x = ((r && (r.samples || r.data)) || [])[0]; const v = x && +(x.value != null ? x.value : x.values && x.values.average); return v > 0 ? v : null; };
+        const hrv = await avg('heartRateVariability').catch(() => null), rhr = await avg('restingHeartRate').catch(() => null);
+        return { hrv: hrv && hrv < 300 ? +hrv.toFixed(0) : null, rhr: rhr && rhr > 25 && rhr < 130 ? +rhr.toFixed(0) : null };
       },
       getSteps: async d => {
         const r = await h.queryAggregated(Object.assign({ dataType: 'steps', bucket: 'day', aggregation: 'sum' }, dayRange(d)));
@@ -2864,6 +2895,7 @@ const StepSensor = (() => {
       await withTimeout(a.requestPermission());
       const m = meta(); m.linked = true; m.off = false; save(); st.mode = 'auto';
       const ok = await sync(true);
+      if (ok && st.zero && typeof toast === 'function') setTimeout(() => toast('Nog geen stappen gevonden. Controleer in Gezondheid, bij Delen > Apps, of Discipline Key toegang heeft.'), 1800);
       if (!ok) { m.linked = false; st.mode = 'ready'; save(); }
       return ok;
     } catch (e) { st.mode = 'ready'; return false; }
@@ -2872,15 +2904,17 @@ const StepSensor = (() => {
     if (st.mode !== 'auto' || st.kind !== 'health' || st.busy) return false;
     st.busy = true; let changed = false, ok = false;
     try {
-      const a = adapter(), m = meta(), t = today();
+      const a = adapter(), m = meta(), t = today(); let total = 0;
+      if (!m.perm2) { try { await withTimeout(a.requestPermission()); } catch (e) {} m.perm2 = true; save(); }
       for (let i = 0; i < 7; i++) {
         const d = addDays(t, -i); if (m.manual[d]) continue;
         const v = Math.round(+(await withTimeout(a.getSteps(d)))); if (!isFinite(v) || v < 0) continue;
-        ok = true; if (S.steps[d] !== v) { S.steps[d] = v; changed = true; }
+        ok = true; total += v; if (S.steps[d] !== v) { S.steps[d] = v; changed = true; }
+        if (a.getHeart) try { const hh = await withTimeout(a.getHeart(d)); if (hh && (hh.hrv || hh.rhr)) { const n = S.recovery[d] = S.recovery[d] || {}; if (n.hrv !== hh.hrv || n.rhr !== hh.rhr) { n.hrv = hh.hrv; n.rhr = hh.rhr; changed = true; } } } catch (e) {}
         if (a.getWeight) try { const w = await withTimeout(a.getWeight(d)); if (w) { const own = S.body.find(b => b.date === d && !b.health); const e = S.body.find(b => b.date === d && b.health); if (!own) { if (e) { if (e.weight !== w) { e.weight = w; changed = true; } } else { S.body.push({ id: uid(), date: d, weight: w, health: true }); changed = true; } } } } catch (e) {}
         if (a.getSleep) try { const hs = await withTimeout(a.getSleep(d)); const rc = S.recovery[d]; if (hs && (!rc || rc.sleep == null || rc.hs)) { const n = S.recovery[d] = rc || {}; if (n.sleep !== hs) { n.sleep = hs; n.hs = true; changed = true; } } } catch (e) {}
       }
-      if (ok) { m.last = Date.now(); save(); }
+      st.zero = ok && total === 0; if (ok) { m.last = Date.now(); save(); }
     } catch (e) { /* stil terugvallen: bestaande (handmatige) waarden blijven staan */ }
     st.busy = false;
     if ((changed || force) && typeof render === 'function') render();
