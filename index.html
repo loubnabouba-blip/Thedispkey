@@ -1722,7 +1722,7 @@ function planTotal() {
 }
 const PERIODS = {
   geen: { name: 'Geen periodisering', desc: 'Elke week dezelfde opzet. Eenvoudig en goed voor wie net begint.' },
-  lineair: { name: 'Lineair (4-weekse cyclus)', desc: 'Drie weken opbouwen en daarna een herstelweek.' },
+  lineair: { name: 'Lineair (6-weekse cyclus)', desc: 'Vijf weken opbouwen en daarna een herstelweek.' },
   golvend: { name: 'Golvend (zwaar, gemiddeld, licht)', desc: 'Elke training in de week heeft een eigen accent. Je traint elke belasting regelmatig.' },
   blokken: { name: 'Blokperiodisering (12 weken)', desc: 'Vier weken volume, vier weken kracht, drie weken piek en een herstelweek.' }
 };
@@ -1730,8 +1730,8 @@ const defaultPeriod = p => p && p.experience === 'gevorderd' ? 'blokken' : p && 
 const strengthIndex = key => S.plan ? S.plan.sessions.filter(s => s.type === 'kracht').findIndex(s => s.key === key) : 0;
 function blockOf(w, key) {
   w = Math.max(1, w || 1); const m = S.period || 'lineair'; let b = { label: 'Standaard', setsD: 0, rpe: '7–8', reps: null, deload: false };
-  if (m === 'lineair') b = [{ label: 'Opbouw 1', setsD: 0, rpe: '7' }, { label: 'Opbouw 2', setsD: 0, rpe: '7–8' }, { label: 'Opbouw 3', setsD: 1, rpe: '8–9' }, { label: 'Herstelweek', setsD: -1, rpe: '6', deload: true }][(w - 1) % 4];
-  else if (m === 'golvend') { if (w % 5 === 0) b = { label: 'Herstelweek', setsD: -1, rpe: '6', deload: true };
+  if (m === 'lineair') b = [{ label: 'Opbouw 1', setsD: 0, rpe: '7' }, { label: 'Opbouw 2', setsD: 0, rpe: '7–8' }, { label: 'Opbouw 3', setsD: 0, rpe: '8' }, { label: 'Opbouw 4', setsD: 1, rpe: '8' }, { label: 'Opbouw 5', setsD: 1, rpe: '8–9' }, { label: 'Herstelweek', setsD: -1, rpe: '6', deload: true }][(w - 1) % 6];
+  else if (m === 'golvend') { if (w % 7 === 0) b = { label: 'Herstelweek', setsD: -1, rpe: '6', deload: true };
     else b = [{ label: 'Zwaar', reps: [4, 6], rpe: '8–9', setsD: 0 }, { label: 'Gemiddeld', reps: [6, 10], rpe: '7–8', setsD: 0 }, { label: 'Licht (volume)', reps: [10, 15], rpe: '7', setsD: 1 }][(Math.max(0, strengthIndex(key)) + w - 1) % 3]; }
   else if (m === 'blokken') { const i = (w - 1) % 12; b = i < 4 ? { label: 'Volume', reps: [8, 12], rpe: '7', setsD: 0 } : i < 8 ? { label: 'Kracht', reps: [4, 6], rpe: '8', setsD: 0 } : i < 11 ? { label: 'Piek', reps: [3, 5], rpe: '8–9', setsD: 0 } : { label: 'Herstelweek', setsD: -1, rpe: '6', deload: true }; }
   if (S.lightWeeks.includes(w)) b = { label: 'Herstelweek', setsD: -1, rpe: '6', reps: null, deload: true };
@@ -1852,7 +1852,7 @@ function rx(exId, key) {
   const e = EX[exId], goal = S.profile.goal, exp = S.profile.experience || 'beginner', b = blockOf(planWeek(), key);
   let lo, hi;
   if (e.type === 'time') { lo = 30; hi = 45; } else if (e.type === 'dist') { lo = 20; hi = 50; }
-  else { const m = { kracht: ['5–8', '8–12'], spier: ['6–10', '10–15'], vet: ['8–12', '10–15'], combi: ['8–12', '10–15'], bewegen: ['8–12', '10–15'], conditie: ['10–15', '12–15'] }[goal] || ['8–12', '10–15'];
+  else { const m = { kracht: [exp === 'beginner' ? '5–8' : '3–6', '8–12'], spier: ['6–10', '10–15'], vet: ['8–12', '10–15'], combi: ['8–12', '10–15'], bewegen: ['8–12', '10–15'], conditie: ['10–15', '12–15'] }[goal] || ['8–12', '10–15'];
     [lo, hi] = (e.type === 'comp' ? m[0] : m[1]).match(/\d+/g).map(Number); if (e.type === 'comp' && b.reps) [lo, hi] = b.reps; }
   const reps = e.type === 'time' ? '30–45 sec' : e.type === 'dist' ? '20–50 m' : lo + '–' + hi, heavy = e.type === 'comp' || e.type === 'dist';
   let sets = heavy ? (exp === 'gevorderd' ? 4 : 3) : (exp === 'beginner' ? 2 : 3);
@@ -1861,7 +1861,7 @@ function rx(exId, key) {
   if (!b.deload && adj) sets = clamp(sets + (first ? adj : adj <= -2 ? -1 : adj >= 2 ? 1 : 0), 2, 7);
   let rdy = '';
   if (!b.deload && typeof ui !== 'undefined' && ui.workout && ui.workout.key === key && ui.workout.date === today()) { const ra = rdyAdj(g), dd = first ? ra.d : ra.d <= -2 ? -1 : 0; const nw = Math.max(2, sets + dd); if (dd && nw < sets) { rdy = `${nw - sets} set vanwege ${ra.why.join(' en ')}`; sets = nw; } }
-  const out = { sets, reps, lo, hi, rest: heavy ? '90–150 sec' : '60–90 sec', rpe: b.rpe, light: b.deload, label: b.label, rdy };
+  const out = { sets, reps, lo, hi, rest: heavy ? '120–180 sec' : '60–120 sec', rpe: (!b.deload && !heavy && exp !== 'beginner' && ['spier', 'combi', 'vet'].includes(goal)) ? '8–9' : b.rpe, light: b.deload, label: b.label, rdy };
   if (S.profile.program === 'powerbuilding' && e.type === 'comp' && idx >= 0 && idx < 2) Object.assign(out, { main: true, sets: b.deload ? 3 : 4, reps: '3–6', lo: 3, hi: 6, rest: '150–210 sec', rpe: b.deload ? '6' : '8' });
   return out;
 }
@@ -2017,6 +2017,14 @@ const SRC = {
   morton: '<a href="https://doi.org/10.1136/bjsports-2017-097608" target="_blank" rel="noopener">Morton e.a. 2018, meta-analyse eiwit en krachttraining</a>',
   helms: '<a href="https://doi.org/10.1186/1550-2783-11-20" target="_blank" rel="noopener">Helms e.a. 2014, voeding in een tekort</a>',
   iraki: '<a href="https://doi.org/10.3390/sports7070154" target="_blank" rel="noopener">Iraki e.a. 2019, voeding in de opbouwfase</a>',
+  vol1: '<a href="https://doi.org/10.1080/02640414.2016.1210197" target="_blank" rel="noopener">Schoenfeld e.a. 2017, volume en spiergroei</a>',
+  vol2: '<a href="https://doi.org/10.1007/s40279-025-02344-w" target="_blank" rel="noopener">Pelland e.a. 2025, volume en frequentie</a>',
+  load: '<a href="https://doi.org/10.1519/JSC.0000000000002200" target="_blank" rel="noopener">Schoenfeld e.a. 2017, lichte en zware gewichten</a>',
+  rir: '<a href="https://doi.org/10.1007/s40279-024-02069-2" target="_blank" rel="noopener">Robinson e.a. 2024, afstand tot falen</a>',
+  rest: '<a href="https://doi.org/10.3389/fspor.2024.1429789" target="_blank" rel="noopener">Singer e.a. 2024, rust tussen sets</a>',
+  prog: '<a href="https://pubmed.ncbi.nlm.nih.gov/36199287/" target="_blank" rel="noopener">Plotkin e.a. 2022, gewicht of herhalingen verhogen</a>',
+  deload: '<a href="https://doi.org/10.7717/peerj.16777" target="_blank" rel="noopener">Coleman e.a. 2024, herstelweek</a>',
+  delphi: '<a href="https://doi.org/10.1186/s40798-023-00633-0" target="_blank" rel="noopener">Bell e.a. 2023, consensus over herstelweken</a>',
   vc: '<a href="https://www.voedingscentrum.nl/professionals/schijf-van-vijf/onderbouwing-schijf-van-vijf/aanbevolen-hoeveelheden.aspx" target="_blank" rel="noopener">Voedingscentrum, aanbevolen hoeveelheden</a>'
 };
 
@@ -3061,7 +3069,7 @@ function planParts() {
    ${Object.entries(PERIODS).map(([k, v]) => `<button class="opt ${per === k ? 'cur' : ''}" data-a="setPeriod" data-m="${k}"><b>${v.name}</b><small>${v.desc}</small></button>`).join('')}
    <h4>Komende weken</h4><div class="chips weeks">${Array.from({ length: 8 }, (_, i) => { const wk = Math.max(1, w) + i, b = blockOf(wk, firstK), lab = (per === 'golvend' && !b.deload) ? 'Golvend' : b.label; return `<span class="wk ${b.deload ? 'dl' : ''} ${i === 0 ? 'now' : ''}"><b>Wk ${wk}</b>${lab}</span>`; }).join('')}</div>
    <div class="btns"><button class="btn ghost sm" data-a="lightWeekBtn">${S.lightWeeks.includes(w) ? 'Herstelweek nu uitzetten' : 'Maak deze week een herstelweek'}</button></div>
-   <small>Een herstelweek is een hulpmiddel en geen verplichting. Bij aanhoudende vermoeidheid kun je hem eerder inplannen. Bron: ${SRC.acsm}.</small>`;
+   <small>Een herstelweek is een hulpmiddel en geen verplichting. Bij aanhoudende vermoeidheid kun je hem eerder inplannen. Vaste herstelweken zijn spaarzaam gepland, omdat ze in onderzoek geen extra spiergroei gaven. Bronnen: ${SRC.deload}, ${SRC.delphi}, ${SRC.acsm}.</small>`;
   const progBody = `<p class="sub">${PROGRAMS[p.program || 'auto'].desc}</p>
    <form data-submit="program"><label class="f">Programma<select name="program">${Object.entries(PROGRAMS).map(([k, v]) => `<option value="${k}" ${(p.program || 'auto') === k ? 'selected' : ''}>${v.name}</option>`).join('')}</select></label>
    <div class="f"><span>Trainingsdagen</span><div class="chips">${DAYS.map((x, i) => `<label class="chip"><input type="checkbox" name="d" value="${i}" ${(p.days || []).includes(i) ? 'checked' : ''}><span>${x}</span></label>`).join('')}</div></div><button class="btn sm">Schema opnieuw opbouwen</button></form>
@@ -4041,10 +4049,12 @@ function lmFor(g) { const l = LANDMARK[g]; if (!l) return null; const f = ({ beg
 const e1 = (w, r) => (+w > 0 && +r > 0 && +r <= 12) ? +w * (1 + +r / 30) : 0;
 const mondayOfD = d => addDays(d, -wdOf(d));
 
+/* Sets tellen: 1 voor de hoofdspier, 0,5 voor spieren die meehelpen (fractioneel tellen, Pelland e.a. 2025). */
+const VOL_G = { chest: 'Borst', shoulders: 'Schouders', biceps: 'Biceps', triceps: 'Triceps', abs: 'Core', back: 'Rug', glutes: 'Hamstrings en billen', hams: 'Hamstrings en billen', quads: 'Quadriceps', calves: 'Kuiten' };
 function weekVolume(mon) {
-  const m = {}, add = (g, k, n) => { (m[g] = m[g] || { plan: 0, done: 0 })[k] += n; };
-  for (let i = 0; i < 7; i++) sessionsOn(addDays(mon, i)).forEach(s => { const def = sessionDef(s.key); if (!def || def.type !== 'kracht') return; sessionExs(s.key).forEach(id => add(muscleOf(id), 'plan', rx(id, s.key).sets)); });
-  S.logs.filter(l => l.type === 'kracht' && l.date >= mon && l.date <= addDays(mon, 6)).forEach(l => l.items.forEach(it => add(muscleOf(it.ex), 'done', it.sets.filter(s => s.t !== 'warm').length)));
+  const m = {}, add = (g, k, n) => { (m[g] = m[g] || { plan: 0, done: 0 })[k] += n; const e = EX[add.ex], pm = e && PAT_MUS[e.pattern]; if (pm) [...new Set(Object.keys(pm).map(x => VOL_G[x]).filter(x => x && x !== g))].forEach(h => { (m[h] = m[h] || { plan: 0, done: 0 })[k] += n * .5; }); };
+  for (let i = 0; i < 7; i++) sessionsOn(addDays(mon, i)).forEach(s => { const def = sessionDef(s.key); if (!def || def.type !== 'kracht') return; sessionExs(s.key).forEach(id => { add.ex = id; add(muscleOf(id), 'plan', rx(id, s.key).sets); }); });
+  S.logs.filter(l => l.type === 'kracht' && l.date >= mon && l.date <= addDays(mon, 6)).forEach(l => l.items.forEach(it => { add.ex = it.ex; add(muscleOf(it.ex), 'done', it.sets.filter(s => s.t !== 'warm').length); }));
   return m;
 }
 function bestSets() {
@@ -4129,13 +4139,13 @@ A.rdyAuto = () => { S.autoReg = S.autoReg === false; rdyResize(); save(); render
 function tVolume() {
   const mon = mondayOfD(ui.tDate), v = weekVolume(mon), recs = bestSets(), rl = Object.entries(recs).sort((a, b) => b[1].best - a[1].best).slice(0, 12);
   const rows = MUSCLES.filter(g => v[g]).map(g => { const lm = lmFor(g), x = v[g], mx = Math.max(lm[2] * 1.1, x.plan, x.done, 1), pc = n => Math.min(100, n / mx * 100).toFixed(1), st = x.plan < lm[0] ? ['Laag', ''] : x.plan > lm[2] ? ['Te hoog', 'warn'] : ['In bereik', 'ok'], adj = S.volAdj[g] || 0;
-    return `<div class="vrow"><div class="row"><div><b>${g}</b><small>${x.done} van ${x.plan} sets gedaan · richtlijn ${lm[0]} tot ${lm[1]} (max ${lm[2]})</small></div><span class="pill ${st[1]}">${st[0]}</span></div>
+    return `<div class="vrow"><div class="row"><div><b>${g}</b><small>${n1(x.done)} van ${n1(x.plan)} sets gedaan · richtlijn ${lm[0]} tot ${lm[1]} (max ${lm[2]})</small></div><span class="pill ${st[1]}">${st[0]}</span></div>
      <div class="vbar" role="img" aria-label="${g}: ${x.done} van ${x.plan} sets"><i class="rng" style="left:${pc(lm[0])}%;width:${(pc(lm[1]) - pc(lm[0])).toFixed(1)}%"></i><i class="pl" style="width:${pc(x.plan)}%"></i><i class="dn" style="width:${pc(x.done)}%"></i></div>
      ${adj ? `<small>Aanpassing door je feedback: ${adj > 0 ? '+' : '−'}${Math.abs(adj)} set${Math.abs(adj) > 1 ? 's' : ''} op je eerste oefening voor deze spiergroep.</small>` : ''}</div>`; }).join('');
   return `<div class="datenav"><button data-a="tShift" data-n="-7" aria-label="Vorige week">‹</button><div><b>Week van ${fmtDate(mon, { day: 'numeric', month: 'long' })}</b><small>Sets per spiergroep</small></div><button data-a="tShift" data-n="7" aria-label="Volgende week">›</button></div>
   ${mon === mondayOfD(today()) ? `<div class="card">${bodyMap()}</div>` : ''}<div class="card"><p class="sub">Licht: gepland. Vol: gedaan. Gekleurd vak: richtbereik.</p>${rows || '<p>Geen krachttraining gepland deze week.</p>'}
    ${Object.values(S.volAdj).some(x => x) ? '<button class="btn ghost sm" data-a="volReset">Aanpassingen terugzetten</button>' : ''}</div>
-  ${acc('Hoe werkt het?', '', '<p>Na elke krachttraining geef je per spiergroep aan hoe de pomp was, hoe je spieren aanvoelden toen je begon en hoe je presteerde. Weinig pomp met goed herstel betekent dat er ruimte is voor een extra set. Veel spierpijn of slechtere prestaties betekent een set minder. In een herstelweek verandert er niets. De bereiken zijn algemene richtlijnen uit onderzoek naar trainingsvolume (zoals Schoenfeld en Israetel) en geen harde regels.</p>')}`;
+  ${acc('Hoe werkt het?', '', '<p>Na elke krachttraining geef je per spiergroep aan hoe de pomp was, hoe je spieren aanvoelden toen je begon en hoe je presteerde. Weinig pomp met goed herstel betekent dat er ruimte is voor een extra set. Veel spierpijn of slechtere prestaties betekent een set minder. In een herstelweek verandert er niets.</p>') + acc('Waar is dit op gebaseerd?', '', `<p><b>Volume:</b> meer sets per week geeft meer spiergroei, met afnemende meeropbrengst. Voor kracht vlakt het effect nog sneller af. Een set telt hier volledig voor de hoofdspier en half voor spieren die meehelpen. Dat voorspelt de resultaten het best. De richtbereiken per spiergroep zijn praktijkrichtlijnen van coaches en komen niet rechtstreeks uit een studie. <b>Gewicht en herhalingen:</b> spiergroei is vergelijkbaar bij lichte en zware gewichten, zolang de sets zwaar genoeg zijn. Voor maximale kracht werken zware gewichten beter. <b>Inspanning:</b> dichter bij falen geeft meer spiergroei, maar niet meer kracht. Daarom staan je hulpoefeningen bij spieropbouw op RPE 8–9 en je zware basisoefeningen iets lager. <b>Rust:</b> langer dan 60 seconden rusten helpt iets. Boven de 90 seconden is voor spiergroei geen verschil meer gevonden. Bij zware basisoefeningen houdt de app 2 tot 3 minuten aan. <b>Opbouw:</b> eerst meer herhalingen, dan meer gewicht. <b>Herstelweek:</b> een vaste rustweek midden in een blok gaf in onderzoek geen extra spiergroei en iets minder krachtwinst. De app plant ze daarom spaarzaam en stelt er vooral een voor als je herstel laag is.</p><p class="sub">Bronnen: ${SRC.vol1}, ${SRC.vol2}, ${SRC.load}, ${SRC.rir}, ${SRC.rest}, ${SRC.prog}, ${SRC.deload}, ${SRC.delphi}, ${SRC.acsm}.</p>`)}`;
 }
 A.volReset = () => { S.volAdj = {}; save(); render(); };
 function weekReview() {
