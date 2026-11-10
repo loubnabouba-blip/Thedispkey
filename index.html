@@ -345,9 +345,9 @@ form.inline .f:has(.wstep){flex:1 1 100%}
 .chip input:checked+span,.chip.on,.chip.btnchip.on{border-color:var(--ink);background:var(--surface2)}
 .chip input:focus-visible+span{outline:2px solid var(--ink);outline-offset:3px}
 .chip.btnchip{display:inline-flex;cursor:pointer;font-family:var(--fb)}
-.chips.sc{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-bottom:var(--s2)}
+.chips.sc{flex-wrap:wrap;overflow:visible;margin-bottom:var(--s2)}
 .chips.sc::-webkit-scrollbar{display:none}
-.chips.sc .chip{flex:none;white-space:nowrap}
+.chips.sc .chip{flex:0 1 auto;white-space:normal}
 .dialog .chip{margin-bottom:var(--s1)}
 
 .seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;padding:5px;margin:0 0 var(--s4);border-radius:var(--r);background:var(--surface2);border:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
@@ -919,7 +919,7 @@ main p b,main p strong,.dialog p b,.dialog p strong,.note b,.note strong,ol.step
 .set.done .setchk{background:var(--pg);border-color:var(--pg);color:var(--on-accent);box-shadow:0 0 16px color-mix(in srgb,var(--pg) 55%,transparent)}
 .set.pr .setchk{background:#FFD166;border-color:#FFD166;color:#2A1E00}
 .set .smenu summary{width:30px;min-width:30px;padding:0}
-.exchips{display:flex;gap:6px;overflow-x:auto;margin:0 calc(var(--s3)*-1) var(--s2);padding:0 var(--s3);scrollbar-width:none}
+.exchips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 var(--s2)}
 .exchips::-webkit-scrollbar{display:none}
 .chipb{display:inline-flex;align-items:center;gap:6px;flex:none;min-height:40px;padding:0 14px;border-radius:99px;border:1px solid var(--line2);background:var(--surface2);color:var(--head);font:600 13px/1 var(--fb);cursor:pointer;white-space:nowrap}
 .chipb svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -997,10 +997,19 @@ html{touch-action:manipulation}
 [data-a]:not(input):not(textarea):not(select){-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 button,.btn,.chip,.seg button,#nav a,.dcard,.rwcard,summary{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .tapping{opacity:.75;transform:scale(.98);transition:none!important}
-.seg{display:flex!important;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain;scroll-snap-type:x proximity;max-width:100%}
+.seg{display:flex!important;flex-wrap:wrap;gap:4px;max-width:100%}
 .seg::-webkit-scrollbar{display:none;width:0;height:0}
-.seg button{flex:1 0 auto;scroll-snap-align:start;padding:0 14px}
+.seg button{flex:1 1 auto;padding:0 14px}
 .exchips,.qrings{-webkit-overflow-scrolling:touch}
+.btn,button.btn,a.btn{white-space:normal;text-align:center;max-width:100%;padding-block:10px}
+.nameform{display:flex;gap:var(--s2);align-items:flex-end;margin:0 0 var(--s2)}.nameform .f{flex:1;min-width:0;margin:0}.nameform .btn{flex:none;min-height:56px}
+.mtab .mh,.mtab .mr{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(4,minmax(0,1fr));gap:6px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.mtab .mh{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink2)}
+.mtab .mh span:not(:first-child),.mtab .mr span:not(:first-child){text-align:right;font-variant-numeric:tabular-nums}
+.mtab .mr small{display:block;color:var(--ink2);font-size:11px;line-height:1.2}.mtab .mr .none{grid-column:2/-1;color:var(--ink2)}
+.cutctl .chips{margin:var(--s1) 0}.cutctl small{display:block;color:var(--ink2)}
+.steps{margin:0 0 var(--s3);padding-left:20px;display:grid;gap:var(--s1)}
+.compnav .btn{flex:1 1 140px}
 .card,.tile,.dialog,section{overflow-wrap:break-word;min-width:0}
 
 h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
@@ -1550,11 +1559,16 @@ function rpCredit(id) {
   return `<small class="rp-credit">Foto: <a href="${esc(c.link)}" target="_blank" rel="noopener">${esc(c.name)}</a> op <a href="https://unsplash.com/?utm_source=discipline_key&amp;utm_medium=referral" target="_blank" rel="noopener">Unsplash</a>${c.generic ? '. Algemene afbeelding, geen exacte match.' : ''}</small>`;
 }
 function rpSettings() {
-  return `<p class="sub">Haal automatisch foto’s bij je recepten op via Unsplash. Dit werkt in de losse app, niet in het Artifact.</p>
-  <form data-submit="rpkey" class="inline"><label class="f">Unsplash Access Key<input name="key" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${RP.hasKey() ? 'Sleutel is bewaard. Plak een nieuwe om te vervangen.' : 'Plak hier je Access Key'}"></label><button class="btn sm">Bewaar en haal foto’s op</button></form>
-  <p class="sub" id="rpstat">${esc(RP.status())}</p>
-  ${RP.hasKey() ? `<div class="btns"><button class="btn ghost sm" data-a="rpRun">Opnieuw proberen</button><button class="btn ghost sm" data-a="rpClear">Foto’s wissen en opnieuw zoeken</button><button class="btn ghost sm" data-a="rpDel">Sleutel verwijderen</button></div>` : ''}
-  <small>Sleutel aanvragen: unsplash.com/developers, gratis account, nieuwe applicatie, kopieer de Access Key. De gratis sleutel mag 50 zoekopdrachten per uur doen. Sleutel en foto’s blijven op dit apparaat en zitten niet in je export.</small>`;
+  const has = RP.hasKey(), cnt = RP.count(), tot = RECIPES.length, st = RP.status(), bad = /niet geaccepteerd/i.test(st);
+  const keyForm = (label) => `<form data-submit="rpkey" class="stack"><label class="f">Access Key<input name="key" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Plak hier je Access Key"></label><button class="btn">${label}</button></form>`;
+  if (!has) return `<p class="sub">Foto’s bij je recepten halen kan gratis via Unsplash. Je hebt daarvoor één keer een sleutel nodig. Dit werkt in de losse app, niet in het Artifact.</p>
+   <ol class="steps"><li>Maak een gratis account op <a href="https://unsplash.com/developers" target="_blank" rel="noopener">unsplash.com/developers</a> en kies “New Application”.</li><li>Kopieer de <b>Access Key</b> van je applicatie.</li><li>Plak de sleutel hieronder. De foto’s worden daarna vanzelf opgehaald.</li></ol>
+   ${keyForm('Opslaan en foto’s ophalen')}<small>De sleutel en foto’s blijven op dit apparaat en zitten niet in je export.</small>`;
+  return `<p><b>${cnt} van ${tot}</b> recepten hebben een foto.</p>${meter(cnt, tot, 'Foto’s')}
+   ${bad ? '<div class="note warn"><b>De sleutel werkt niet.</b> Controleer of je de Access Key hebt gekopieerd en niet de Secret Key. Vervang de sleutel hieronder bij “Meer”.</div>' : `<p class="sub" id="rpstat">${esc(st)}</p>`}
+   <div class="btns"><button class="btn" data-a="rpRun">${cnt >= tot ? 'Opnieuw controleren' : cnt ? 'Ga verder met ophalen' : 'Foto’s ophalen'}</button></div>
+   <details class="menu"><summary class="btn ghost sm">Meer</summary><div class="menubox">${keyForm('Sleutel vervangen')}<button class="link" data-a="rpClear">Foto’s wissen en opnieuw zoeken</button><button class="link" data-a="rpDel">Sleutel verwijderen</button></div></details>
+   <small>De gratis sleutel mag 50 zoekopdrachten per uur doen. Is de limiet bereikt, ga dan later verder.</small>`;
 }
 F.rpkey = (f, fd) => { const k = (fd.get('key') || '').trim(); if (!k) { toast('Plak eerst je Access Key.'); return; } RP.setKey(k); toast('Sleutel bewaard. De foto’s worden opgehaald.'); render(); };
 A.rpRun = () => { RP.run(); toast('Foto’s ophalen…'); };
@@ -1686,8 +1700,8 @@ function calcMacros(p) {
   let act = p.activity; if (!act) { act = 'licht'; as.push('Activiteit buiten trainingen niet opgegeven: "licht actief" aangenomen.'); }
   const pal = { laag: 1.35, licht: 1.45, matig: 1.55, hoog: 1.7 }[act], tdee = bmr * pal;
   const bmi = p.weight / Math.pow(p.height / 100, 2), adv = p.experience === 'gevorderd';
-  /* Tekort: 15% (20% bij BMI vanaf 30) voor ca. 0,5% lichaamsgewicht per week, onderkant van 0,5-1% (Helms 2014). Overschot: ca. 10%, gevorderden 5% (Iraki 2019). */
-  let adj = { vet: bmi >= 30 ? -.2 : -.15, spier: adv ? .05 : .1, kracht: .05, conditie: 0, bewegen: 0, combi: -.05 }[p.goal] ?? 0;
+  /* Tekort: 15% standaard, 20% bij BMI vanaf 30 of als de gebruiker zelf 'sneller' kiest (p.cutPct) voor ca. 0,5% lichaamsgewicht per week, onderkant van 0,5-1% (Helms 2014). Overschot: ca. 10%, gevorderden 5% (Iraki 2019). */
+  let adj = { vet: bmi >= 30 || p.cutPct === 20 ? -.2 : -.15, spier: adv ? .05 : .1, kracht: .05, conditie: 0, bewegen: 0, combi: -.05 }[p.goal] ?? 0;
   if (p.care && adj < 0) { adj = 0; as.push('Je gaf aan dat overleg met een arts of diëtist verstandig is: er is geen calorietekort ingesteld.'); }
   let kcal = tdee * (1 + adj);
   const floorK = Math.max(bmr, p.sex === 'm' ? 1500 : p.sex === 'v' ? 1200 : 1350);
@@ -2130,6 +2144,7 @@ function renderOnboarding() {
     body = `<p class="lead">Dit is je eerste voorstel${d.name ? ', ' + esc(d.name) : ''}. Alles is een schatting en later aan te passen.</p>
     <div class="card"><h3>Trainingsweek</h3><ul class="plain">${plan.schedule.map(s => `<li><b>${DAYS_LONG[s.wd]}</b> ${esc(plan.sessions.find(x => x.key === s.key).name)}</li>`).join('')}</ul></div>
     <div class="card"><h3>Dagdoel voeding</h3>${m.missing ? `<p>Een betrouwbare berekening is nog niet mogelijk: ${m.missing.join(', ')} ontbreekt. Je kunt later in Profiel zelf doelen invullen of de gegevens aanvullen.</p>` : `<div class="stats"><div><b>${m.kcal}</b><span>kcal</span></div><div><b>${m.p}</b><span>g eiwit</span></div><div><b>${m.c}</b><span>g koolhydraten</span></div><div><b>${m.f}</b><span>g vet</span></div></div>`}</div>
+    ${d.goal === 'vet' && !m.missing ? (() => { const bm = d.weight / Math.pow(d.height / 100, 2), hi = bm >= 30, cur = hi || d.cutPct === 20 ? 20 : 15; return `<div class="card slim cutctl"><b>Tempo van afvallen</b><div class="chips">${[[15, 'Standaard · 15%'], [20, 'Sneller · 20%']].map(([v, l]) => `<button class="chip btnchip ${cur === v ? 'on' : ''}" data-a="obCut" data-v="${v}" aria-pressed="${cur === v}" ${hi ? 'disabled' : ''}>${l}</button>`).join('')}</div><small>${hi ? 'Bij een BMI vanaf 30 is 20% al het uitgangspunt.' : 'Standaard is een tekort van 15%, ongeveer 0,5% van je lichaamsgewicht per week. 20% gaat sneller maar kost eerder spiermassa en energie. Je kunt dit later wijzigen.'}</small></div>`; })() : ''}
     ${te ? `<div class="card"><h3>Tijdsinschatting</h3><p>${esc(te.text)}</p><small>Dit is een scenario, geen belofte.</small></div>` : ''}
     ${as.length ? `<div class="note"><b>Aannames</b><ul class="plain">${as.map(a => `<li>${esc(a)}</li>`).join('')}</ul></div>` : ''}
     ${d.care ? '<div class="note warn">Overleg met je arts of diëtist voordat je je voeding of training aanpast.</div>' : ''}`;
@@ -2153,6 +2168,7 @@ A.obNext = () => { obRead(); const d = ui.ob;
   if (ui.obStep === 0 && !d.adult) { toast('Vink aan dat je 18 jaar of ouder bent om verder te gaan.'); return; }
   if (ui.obStep === 1 && d.age && d.age < 18) { toast('Deze app is alleen voor volwassenen (18+).'); return; }
   ui.obStep++; renderOnboarding(); window.scrollTo(0, 0); };
+A.obCut = d => { obRead(); ui.ob.cutPct = +d.v === 20 ? 20 : 15; renderOnboarding(); };
 A.obBack = () => { obRead(); ui.obStep = Math.max(0, ui.obStep - 1); renderOnboarding(); };
 A.obExample = () => { ui.ob = exampleDraft(); ui.obStep = 6; S.example = true; renderOnboarding(); };
 A.obCancel = () => { ui.ob = null; ui.obEdit = false; render(); };
@@ -2924,6 +2940,7 @@ function coachCard(c) {
   return `<div class="card coach quiet"><span class="eyebrow">Coach</span><h3>${esc(c.title)}</h3><p>${esc(c.why)}</p><button class="btn ghost sm" data-a="${c.nsId ? 'nsDismiss' : 'coachReject'}" ${c.nsId ? 'data-id="' + c.nsId + '"' : ''}>Begrepen</button></div>`;
 }
 A.go = d => go(d.r);
+A.cutPct = d => { S.profile.cutPct = +d.v === 20 ? 20 : 15; save(); render(); toast(S.profile.cutPct === 20 ? 'Tempo: tekort van 20%.' : 'Tempo: tekort van 15%.'); };
 A.gotoTraining = () => { ui.tDate = today(); ui.trainTab = 'week'; go('training'); };
 A.gotoTrainDate = d => { ui.tDate = d.date; ui.trainTab = 'week'; ui.workout = null; go('training'); };
 A.gotoFood = () => { ui.foodDate = today(); ui.foodTab = 'dag'; go('voeding'); };
@@ -3155,7 +3172,11 @@ function planParts() {
     <p class="sub">${t.auto ? 'Voorstel van de coach, een schatting.' : (t.fromCoach ? 'Aangepast via een coachvoorstel.' : 'Jouw eigen instelling.')}</p>
     ${t.auto ? why('Waarom deze getallen?', `<p>Basisverbranding (Mifflin-St Jeor): ca. <b>${n0(t.bmr)}</b> kcal. Met jouw activiteit (factor ${t.pal.toString().replace('.', ',')}) komt je behoefte op ca. <b>${n0(t.tdee)}</b> kcal. Doelaanpassing: <b>${t.adj > 0 ? '+' : ''}${n0(t.adj * 100)}%</b>${t.floored ? ' (begrensd op ' + n0(t.floorK) + ' kcal)' : ''}. Eiwit: <b>${n1(t.gkg)} g per kg</b>${t.refW && t.refW !== S.profile.weight ? ' referentiegewicht' : ''}. Boven ongeveer 1,6 g per kg levert extra eiwit gemiddeld geen extra spiergroei op; in een tekort is iets meer zinvol om spiermassa te houden. Verdeel het over 3 tot 6 maaltijden van elk ongeveer <b>${t.pm ? t.pm[0] + '–' + t.pm[1] : '25–40'} g</b> eiwit. Vet: minstens 0,8 g per kg en 25% van de energie. De rest is koolhydraten.</p><p>De formule voor je verbranding kan bij een individu 10% of meer afwijken. Daarom stuurt de coach na vier weken bij op je echte gewichtstrend.</p><p class="sub">Bronnen: ${SRC.mifflin}, ${SRC.morton}, ${SRC.helms}, ${SRC.iraki}, ${SRC.issn}, ${SRC.vc}.</p>`) : ''}`;
   const cu = t && !t.missing ? t : { kcal: '', p: '', c: '', f: '' }, sumMacro = t && !t.missing ? n0(cu.p * 4 + cu.c * 4 + cu.f * 9) : null;
-  const macroBody = macro + acc('Doelen aanpassen', '', macroCalcUI() + `<h4>Alles zelf invullen</h4><form data-submit="macros" class="grid4"><label class="f">kcal<input name="kcal" type="number" inputmode="numeric" value="${cu.kcal}"></label><label class="f">Eiwit (g)<input name="p" type="number" inputmode="numeric" value="${cu.p}"></label><label class="f">Koolh. (g)<input name="c" type="number" inputmode="numeric" value="${cu.c}"></label><label class="f">Vet (g)<input name="f" type="number" inputmode="numeric" value="${cu.f}"></label><div class="span4 btns"><button class="btn sm">Eigen doelen opslaan</button>${S.macroOverride && calcMacros(p).kcal ? '<button type="button" class="btn ghost sm" data-a="macroReset">Terug naar voorstel</button>' : ''}</div></form>
+  const cutCtl = p.goal === 'vet' ? (() => {
+    const bmiNow = p.weight && p.height ? p.weight / Math.pow(p.height / 100, 2) : 0, hi = bmiNow >= 30, cur = hi || p.cutPct === 20 ? 20 : 15, ovr = S.macroOverride && S.macroOverride.auto === false;
+    return `<div class="card slim cutctl"><b>Tempo van afvallen</b><div class="chips">${[[15, 'Standaard · 15%'], [20, 'Sneller · 20%']].map(([v, l]) => `<button class="chip btnchip ${cur === v ? 'on' : ''}" data-a="cutPct" data-v="${v}" aria-pressed="${cur === v}" ${hi ? 'disabled' : ''}>${l}</button>`).join('')}</div>
+    <small>${hi ? 'Bij een BMI vanaf 30 is 20% al het uitgangspunt.' : 'Standaard is een tekort van 15% van je onderhoud, ongeveer 0,5% van je lichaamsgewicht per week. 20% gaat sneller maar kost eerder spiermassa en energie. Houd je trainingsprestaties in de gaten.'}${ovr ? ' Je gebruikt nu eigen doelen. Dit tempo geldt pas als je terugkeert naar het voorstel van de app.' : ''}</small></div>`; })() : '';
+  const macroBody = macro + cutCtl + acc('Doelen aanpassen', '', macroCalcUI() + `<h4>Alles zelf invullen</h4><form data-submit="macros" class="grid4"><label class="f">kcal<input name="kcal" type="number" inputmode="numeric" value="${cu.kcal}"></label><label class="f">Eiwit (g)<input name="p" type="number" inputmode="numeric" value="${cu.p}"></label><label class="f">Koolh. (g)<input name="c" type="number" inputmode="numeric" value="${cu.c}"></label><label class="f">Vet (g)<input name="f" type="number" inputmode="numeric" value="${cu.f}"></label><div class="span4 btns"><button class="btn sm">Eigen doelen opslaan</button>${S.macroOverride && calcMacros(p).kcal ? '<button type="button" class="btn ghost sm" data-a="macroReset">Terug naar voorstel</button>' : ''}</div></form>
    ${sumMacro != null && Math.abs(sumMacro - cu.kcal) > cu.kcal * .1 ? `<div class="note warn">Je macro’s komen samen op ongeveer ${sumMacro} kcal, niet op ${cu.kcal} kcal. Controleer of de getallen bij elkaar passen.</div>` : ''}`);
   const dietName = (DIETS.find(x => x[0] === (p.diet || 'omni')) || [0, ''])[1];
   return { p, t, w, te, tot, as, per, cur, endDate, lenBody, perBody, progBody, macroBody, dietName };
@@ -3184,7 +3205,7 @@ function vPlan() {
   const planTxt = tot ? tot + ' weken' + (x.endDate ? ', t/m ' + fmtDate(x.endDate, { day: 'numeric', month: 'short', year: 'numeric' }) : '') : 'Doorlopend';
   const macroTxt = t && !t.missing ? t.kcal + ' kcal · ' + t.p + ' g eiwit' : 'Nog niet ingesteld';
   return `<section><h1>Profiel</h1>
-  <div class="card pf"><h3>Jij</h3><form data-submit="pname" class="stack"><label class="f">Naam<input name="name" maxlength="40" autocomplete="given-name" placeholder="Hoe mag de app je noemen?" value="${esc(p.name || '')}"></label><button class="btn sm">Naam opslaan</button></form>
+  <div class="card pf"><h3>Jij</h3><form data-submit="pname" class="nameform"><label class="f">Naam<input name="name" maxlength="40" autocomplete="given-name" placeholder="Hoe mag de app je noemen?" value="${esc(p.name || '')}"></label><button class="btn">Opslaan</button></form>
    <p class="sub">${[p.age ? p.age + ' jaar' : '', p.height ? p.height + ' cm' : '', p.weight ? String(p.weight).replace('.', ',') + ' kg' : ''].filter(Boolean).join(' · ') || 'Nog geen gegevens ingevuld.'}</p><button class="btn ghost sm" data-a="editProfile" data-s="1">Gegevens aanpassen</button></div>
   ${linkCard()}
   ${acc('Duur en planning', planTxt, x.lenBody)}
@@ -3738,7 +3759,8 @@ function fWeek() {
     return `<button class="wrow" role="row" data-a="fOpenDay" data-date="${x}"><span><b>${DAYS[wdOf(x)]}</b> ${new Date(x + 'T12:00:00').getDate()}</span><span>${it.length ? kc(p.kcal) + ' kcal · ' + n0(p.p) + ' g' : '–'}${it.length && t && !t.missing ? meter(p.kcal, t.kcal, 'Gepland') : ''}</span><span>${e.kcal ? kc(e.kcal) + ' kcal · ' + n0(e.p) + ' g' : '–'}</span></button>`; }).join('')}</div>${t && !t.missing ? `<small>Doel per dag: ${t.kcal} kcal en ${t.p} g eiwit.</small>` : ''}</div>
   <div class="card"><h3>Weekplanning maken</h3><p class="sub">Maaltijden voor elke dag, passend bij je doelen. Daarna pas je alles aan.</p><button class="btn" data-a="weekPlanAsk">Maak weekplanning</button></div>`;
 }
-A.weekPlanAsk = () => {
+A.weekPlanAsk = d => {
+  if (d && d.today) ui.foodDate = today();
   const mon = addDays(ui.foodDate, -wdOf(ui.foodDate)), days = Array.from({ length: 7 }, (_, i) => addDays(mon, i)).filter(x => x >= today());
   if (!days.length) { toast('Deze week is voorbij. Ga naar de volgende week.'); return; }
   const filled = days.filter(x => (S.food[x] || { items: [] }).items.some(i => !i.eaten)).length;
@@ -3755,7 +3777,7 @@ A.weekPlanDo = d => {
 function fPrep() {
   const mon = addDays(ui.foodDate, -wdOf(ui.foodDate)), pp = prepPlan(mon);
   const nav = `<div class="datenav"><button data-a="fDate" data-n="-7" aria-label="Vorige week">‹</button><div><b>Week van ${fmtDate(mon, { day: 'numeric', month: 'long' })}</b><small>Mealprep en boodschappen</small></div><button data-a="fDate" data-n="7" aria-label="Volgende week">›</button></div>`;
-  if (!pp.recipes.length) return nav + '<div class="card"><p>Nog geen maaltijden gepland deze week. Plan ze bij Week, dan zie je hier wat je moet maken en kopen.</p><button class="btn sm" data-a="foodTab" data-t="week">Naar Week, maak weekplanning</button></div>';
+  if (!pp.recipes.length) return nav + '<div class="card"><p>Nog geen maaltijden gepland deze week. Plan ze bij Week, dan zie je hier wat je moet maken en kopen.</p><button class="btn sm" data-a="weekPlanAsk">Maak weekplanning</button></div>';
   const groups = {}; Object.entries(pp.total).forEach(([id, g]) => (groups[ingGroup(id)] = groups[ingGroup(id)] || []).push({ id, g }));
   const shopTotal = Object.keys(pp.total).length, shopDone = Object.keys(pp.total).filter(id => S.shop[mon + ':' + id]).length;
   return nav + `<p class="sub">${pp.meals} maaltijden uit ${pp.recipes.length} recepten. Hoeveelheden zijn afgerond op 5 g.</p>` +
@@ -3934,13 +3956,14 @@ function compSetup() {
    <label class="f">Datum van de wedstrijd<input data-c="compSet" data-k="date" name="date" type="date" min="${addDays(today(), 28)}" value="${o.date}"></label>
    <label class="f">Lengte voorbereiding (weken)<select name="weeks" data-c="compSet" data-k="weeks">${Array.from({ length: mx - mn + 1 }, (_, i) => mn + i).filter(x => !wl || x <= wl).map(x => `<option value="${x}" ${+(o.weeks || df) === x ? 'selected' : ''}>${x} weken${x === df ? ' (aanbevolen)' : ''}</option>`).join('') || '<option value="">Eerst een datum kiezen</option>'}</select></label></div>
    <div class="note"><b>${cl.n}.</b> ${cl.d}<br><small>Beoordeeld op: ${cl.focus} Vetpercentage op het podium ligt ${cl.bf}. Dit is een indicatie en verschilt per persoon. Gezondheid gaat altijd voor een getal.</small></div>
+   ${wl != null && wl >= 8 ? (() => { const w2 = Math.min(+(o.weeks || df), wl), st = addDays(o.date, -7 * w2), gap = wl - w2; return `<div class="note"><b>Zo valt het uit.</b> Je voorbereiding duurt ${w2} weken en start op ${fmtDate(st, { day: 'numeric', month: 'long' })}. ${gap > 0 ? 'Tot dan sta je in de opbouwfase (' + gap + ' weken). Een langere voorbereiding start eerder.' : 'Je begint dus meteen.'} De wedstrijd is over ${wl} weken, dus langer dan ${wl} weken kan niet.</div>`; })() : ''}
    <p class="sub">${FEDS[o.fed].note}</p>
    ${wl != null && wl < 8 ? '<div class="note warn">Minder dan 8 weken is te kort voor een verantwoorde voorbereiding. Kies een latere wedstrijd of doe dit nu nog niet.</div>' : wl != null && wl < mn ? `<div class="note warn">Voor ${cl.n} adviseert de app minstens ${mn} weken. Met ${wl} weken wordt het tempo hoger. Houd dat extra goed in de gaten.</div>` : ''}
    <label class="chip block"><input type="checkbox" name="adapt" ${o.adapt ? 'checked' : ''}><span>Pas mijn trainingsprogramma aan op deze klasse (aanbevolen)</span></label>
    <h4>Veiligheid</h4>${g('g1', 'Ik ben 18 jaar of ouder en gezond. Ik laat vooraf een gezondheidscheck doen bij mijn huisarts.')}${g('g2', 'Ik begrijp dat de adviezen schattingen zijn en geen vervanging voor een arts, diëtist of ervaren coach.')}${g('g3', 'Ik stop en zoek hulp bij duizeligheid, hartkloppingen, flauwvallen, een wegblijvende cyclus of als eten en gewicht mijn leven gaan beheersen.')}
    <div class="btns"><button class="btn" ${p && p.care ? 'disabled' : ''}>Start mijn voorbereiding</button></div></form>${bbEvidence()}`;
 }
-C.compSet = el => { ui.cs[el.dataset.k] = el.value; if (el.dataset.k === 'cls') ui.cs.weeks = ''; render(); };
+C.compSet = el => { ui.cs[el.dataset.k] = el.value; if (el.dataset.k === 'cls') ui.cs.weeks = ''; if (el.dataset.k === 'date') { const wl2 = el.value ? Math.ceil(diffDays(today(), el.value) / 7) : null; if (wl2 != null && +ui.cs.weeks > wl2) ui.cs.weeks = ''; } render(); };
 F.compStart = (f, fd) => {
   const o = ui.cs, cl = CLASSES[o.cls], date = fd.get('date') || o.date, wl = date ? Math.ceil(diffDays(today(), date) / 7) : 0;
   if (S.profile && S.profile.care) { toast('Overleg eerst met een arts of diëtist.'); return; }
@@ -3961,9 +3984,11 @@ function vComp() {
   if (!c || !c.active) return compSetup();
   const tabsList = [['overzicht', 'Overzicht'], ['fases', 'Fases'], ['voeding', 'Voeding'], ['peak', 'Peak week'], ['checkin', 'Check-in'], ['posing', 'Posing'], ['supps', 'Supplementen'], ['instel', 'Instellingen']];
   const t = tabsList.some(x => x[0] === ui.compTab) ? ui.compTab : 'overzicht';
-  return tabs(t, tabsList, 'compTab') + ({ overzicht: cOverzicht, fases: cFases, voeding: cVoeding, peak: cPeak, checkin: cCheckin, posing: cPosing, supps: cSupps, instel: cInstel })[t]();
+  const ix = tabsList.findIndex(x => x[0] === t), nx = tabsList[ix + 1];
+  const nav = `<div class="btns compnav">${t !== 'overzicht' ? '<button class="btn ghost" data-a="compTab" data-t="overzicht">‹ Overzicht</button>' : ''}${t === 'voeding' ? '<button class="btn ghost" data-a="compTab" data-t="checkin">Naar check-in</button>' : ''}${nx ? `<button class="btn" data-a="compTab" data-t="${nx[0]}">Volgende: ${nx[1]} ›</button>` : ''}</div>`;
+  return tabs(t, tabsList, 'compTab') + ({ overzicht: cOverzicht, fases: cFases, voeding: cVoeding, peak: cPeak, checkin: cCheckin, posing: cPosing, supps: cSupps, instel: cInstel })[t]() + nav;
 }
-A.compTab = d => { ui.compTab = d.t; render(); };
+A.compTab = d => { ui.compTab = d.t; render(); window.scrollTo(0, 0); };
 A.goalTab = d => { ui.goalTab = d.t; render(); };
 
 const bbEvidence = () => acc('Waar is deze voorbereiding op gebaseerd?', '', `<p><b>Tempo en voeding:</b> gewichtsverlies van 0,5 tot 1% per week, 2,3 tot 3,1 g eiwit per kg vetvrije massa en 15 tot 30% van je calorieën uit vet (${SRC.helms}).</p><p><b>Training in een tekort:</b> houd je zware gewichten en train elke spiergroep minstens 2× per week. De meeste herhalingen liggen tussen 6 en 12 op 70 tot 80% van je maximum, en gaan niet tot falen bij zware, vermoeiende oefeningen. Cardio gebruik je zo weinig als nodig is voor je vetverlies, omdat meer cardio je krachttraining kan remmen (${SRC.helmsT}).</p><p><b>Waarom geen eeuwig tekort:</b> tijdens een lang tekort daalt je energieverbruik meer dan alleen door je lagere gewicht, en je honger stijgt (${SRC.trexler}). In een onderzoek met mannen met obesitas viel er meer vet af met 2 weken tekort afgewisseld met 2 weken op onderhoud dan met 16 weken aaneen (${SRC.byrne}). Dat waren geen bodybuilders, en de refeed-dag in deze app is veel korter. Gebruik het dus als reden om niet langer in een tekort te blijven dan nodig, niet als bewijs dat een refeed-dag werkt.</p><p><b>Minder zeker of risicovol:</b> koolhydraten laden is weinig onderzocht. Uitdrogen of met zout spelen kan gevaarlijk zijn en maakt je uiterlijk mogelijk niet beter. In sporten waar uiterlijk telt komen eet- en lichaamsbeeldstoornissen vaker voor. Merk je dat eten, wegen of je spiegelbeeld je dagen gaat beheersen, praat dan met je huisarts of een psycholoog.</p><p class="sub">Een voorbereiding is geen medisch advies. Bij duizeligheid, hartkloppingen of gestopte menstruatie: stop met afvallen en bel je huisarts.</p>`);
@@ -4001,8 +4026,8 @@ function cVoeding() {
   const c = S.comp, days = Array.from({ length: 7 }, (_, i) => addDays(today(), i)), base = calcMacros(S.profile);
   if (base.missing) return '<div class="note warn">Vul eerst je gegevens in bij Profiel om je eetplan te berekenen.</div>';
   return `<p class="sub">Je doelen worden per dag berekend uit je fase, je trainingsdagen en je gewicht. Voeding en Home gebruiken deze doelen automatisch.</p>
-  <div class="card scrollx"><table class="tbl"><thead><tr><th>Dag</th><th>Type</th><th>kcal</th><th>Eiwit</th><th>Koolh.</th><th>Vet</th></tr></thead><tbody>${days.map(d => { const t = compTargets(d); return t ? `<tr><td>${DAYS[wdOf(d)]} ${new Date(d + 'T12:00:00').getDate()}</td><td>${esc(t.dayType)}</td><td>${t.kcal}</td><td>${t.p} g</td><td>${t.c} g</td><td>${t.f} g</td></tr>` : `<tr><td>${DAYS[wdOf(d)]}</td><td colspan="5">Geen fase</td></tr>`; }).join('')}</tbody></table></div>
-  <div class="card"><h3>Eetplan maken</h3><p class="sub">De app stelt maaltijden voor uit je recepten, passend bij elk dagdoel. Dagen met al afgevinkte maaltijden blijven staan.</p><div class="btns"><button class="btn sm" data-a="compPlan" data-n="1">Plan komende 7 dagen</button><button class="btn ghost sm" data-a="compPlan" data-n="4">Plan komende 4 weken</button><button class="btn ghost sm" data-a="go" data-r="voeding">Naar Voeding</button></div></div>
+  <div class="card"><div class="mtab"><div class="mh"><span>Dag</span><span>kcal</span><span>Eiwit</span><span>Koolh.</span><span>Vet</span></div>${days.map(d => { const t = compTargets(d); return t ? `<div class="mr"><span><b>${DAYS[wdOf(d)]} ${new Date(d + 'T12:00:00').getDate()}</b><small>${esc(t.dayType)}</small></span><span>${t.kcal}</span><span>${t.p}</span><span>${t.c}</span><span>${t.f}</span></div>` : `<div class="mr"><span><b>${DAYS[wdOf(d)]}</b></span><span class="none">Geen fase</span></div>`; }).join('')}</div><small>Eiwit, koolhydraten en vet in gram.</small></div>
+  <div class="card"><h3>Eetplan maken</h3><p class="sub">De app stelt maaltijden voor uit je recepten, passend bij elk dagdoel. Dagen met al afgevinkte maaltijden blijven staan.</p><div class="btns"><button class="btn" data-a="weekPlanAsk" data-today="1">Maak weekplanning</button></div></div>
   ${acc('Zo eet je tijdens de voorbereiding', '', `<ul class="plain"><li>Eet 4 tot 6 maaltijden en verdeel eiwit gelijkmatig, ongeveer 0,4 tot 0,55 g per kg per maaltijd.</li><li>Zet koolhydraten rond je training: in de maaltijd ervoor en erna.</li><li>Kies voor volume met weinig calorieën: groente, magere kwark, aardappel, fruit.</li><li>Weeg je dagelijks na het opstaan en kijk naar het weekgemiddelde, niet naar één dag.</li><li>Zout en water blijven normaal. Je hoeft die niet te beperken voor de wedstrijd.</li><li>Eet 1 tot 2 uur voor het slapen nog iets met eiwit, zoals kwark of caseïne.</li></ul>`)}
   ${acc('Refeed en cycling', c.refeed === false ? 'Uit' : 'Refeed op ' + DAYS_LONG[c.refeedWd ?? 5].toLowerCase(), `<p>Een refeed-dag brengt je calorieën naar onderhoud met extra koolhydraten. Dat helpt voor energie en trainingskwaliteit in de fases 2 en 3. Je kunt dit aanpassen bij Instellingen.</p>`)}`;
 }
@@ -4073,7 +4098,7 @@ function cInstel() {
   return `<form data-submit="compSet2" class="card"><h3>Instellingen</h3><div class="grid2"><label class="f">Federatie<select name="fed">${Object.entries(FEDS).map(([k, v]) => `<option value="${k}" ${c.fed === k ? 'selected' : ''}>${v.name}</option>`).join('')}</select></label>
    <label class="f">Klasse<select name="cls">${Object.entries(CLASSES).map(([k, v]) => `<option value="${k}" ${c.cls === k ? 'selected' : ''}>${v.n}</option>`).join('')}</select></label>
    <label class="f">Datum van de wedstrijd<input name="date" type="date" value="${c.date}"></label>
-   <label class="f">Lengte voorbereiding (weken)<input name="weeks" type="number" min="8" max="30" inputmode="numeric" value="${c.prepWeeks}"></label>
+   <label class="f">Lengte voorbereiding (weken)<input name="weeks" type="number" min="8" max="30" inputmode="numeric" value="${c.prepWeeks}"><small>Hoogstens het aantal weken tot de wedstrijd (nu ${Math.max(0, Math.ceil(diffDays(today(), c.date) / 7))}). Een latere datum geeft meer ruimte.</small></label>
    <label class="f">Refeed-dag<select name="refeedWd">${DAYS_LONG.map((d, i) => `<option value="${i}" ${(c.refeedWd ?? 5) === i ? 'selected' : ''}>${d}</option>`).join('')}</select></label>
    <label class="f">Refeed gebruiken<select name="refeed"><option value="1" ${c.refeed !== false ? 'selected' : ''}>Ja</option><option value="0" ${c.refeed === false ? 'selected' : ''}>Nee</option></select></label></div>
    <label class="chip"><input type="checkbox" name="cycle" ${c.cycle ? 'checked' : ''}><span>Koolhydraten cyclen (meer op trainingsdagen, minder op rustdagen)</span></label>
@@ -4082,7 +4107,7 @@ function cInstel() {
    <div class="card"><h3>Opnieuw beginnen</h3><p class="sub">Reset alleen de wedstrijdvoorbereiding: fases, aanpassingen, check-ins en posing-log. Je gewone training, voeding en andere disciplines blijven staan.</p><button class="btn danger sm" data-a="compResetAsk">Reset wedstrijdvoorbereiding</button></div>`;
 }
 F.compSet2 = (f, fd) => { const c = S.comp, nd = fd.get('date'), oldD = c.date, oldCls = c.cls; if (!nd || diffDays(today(), nd) < 0) { toast('Kies een wedstrijddatum in de toekomst.'); return; }
-  c.fed = fd.get('fed'); c.cls = fd.get('cls'); c.date = nd; c.prepWeeks = clamp(+fd.get('weeks') || c.prepWeeks, 8, 30); c.refeedWd = +fd.get('refeedWd'); c.refeed = fd.get('refeed') !== '0'; c.cycle = !!fd.get('cycle');
+  c.fed = fd.get('fed'); c.cls = fd.get('cls'); c.date = nd; const wlMax = Math.max(1, Math.ceil(diffDays(today(), nd) / 7)); let pw2 = clamp(+fd.get('weeks') || c.prepWeeks, 8, 30); if (pw2 > wlMax) { pw2 = Math.max(wlMax, 1); toast(`De wedstrijd is over ${wlMax} weken. De voorbereiding is ingekort tot ${pw2} weken.`); } c.prepWeeks = pw2; c.refeedWd = +fd.get('refeedWd'); c.refeed = fd.get('refeed') !== '0'; c.cycle = !!fd.get('cycle');
   save(); render(); toast('Opgeslagen.');
   if (S.milestone.date !== nd || S.milestone.type !== 'wedstrijd' || oldCls !== c.cls) askSyncFromComp(); };
 A.compResetAdj = () => { S.comp.kcalAdj = 0; S.comp.cardioAdj = 0; save(); render(); };
