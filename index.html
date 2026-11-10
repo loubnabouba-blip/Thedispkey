@@ -1175,6 +1175,18 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .meter i,.vbar .dn{box-shadow:0 0 10px color-mix(in srgb,var(--pg) 50%,transparent)}
 .hexring .hexfill,.gring .gr{filter:drop-shadow(0 0 5px color-mix(in srgb,var(--pg) 55%,transparent))}
 .gring .gr{filter:drop-shadow(0 0 5px var(--rc))}
+.center{text-align:center}
+.bhead{margin:0 0 var(--s2)}.bhead h1{margin:2px 0 0;font-size:clamp(22px,7vw,30px);line-height:1.05}
+.bgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s2);margin:0 0 var(--s2)}
+.bt{display:flex;flex-direction:column;gap:8px;min-width:0;padding:var(--s3);border-radius:22px;background:var(--surface);border:1px solid var(--line);color:var(--ink);text-align:left;text-decoration:none;font:inherit;appearance:none;position:relative;overflow:hidden}
+.bt h3{margin:0;font:700 12px/1.3 var(--fb);text-transform:uppercase;letter-spacing:.14em;color:var(--ink2)}
+.bt .sub{margin:0;font-size:13px}.bt .tile-main{font-size:26px}
+.bt:active{transform:scale(.98)}
+.b-hero{grid-column:1/-1;gap:6px;background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--pg) 22%,transparent),transparent 62%),var(--surface);border-color:color-mix(in srgb,var(--pg) 38%,var(--line));box-shadow:0 20px 44px -28px color-mix(in srgb,var(--pg) 75%,transparent)}
+.b-hero .tile-main{font-size:30px}.b-hero .weekstrip{margin-top:6px;gap:4px}.b-hero .btn.big{margin:6px 0 0;min-height:52px}
+.b-streak{grid-row:span 2;align-items:center;justify-content:center;text-align:center;background:radial-gradient(90% 70% at 50% 40%,color-mix(in srgb,var(--pg) 18%,transparent),transparent 70%),var(--surface);box-shadow:0 0 30px -14px color-mix(in srgb,var(--pg) 70%,transparent)}
+.b-streak h3{align-self:flex-start}.b-streak .orb.mini{margin:10px auto 0}
+.b-lv .mini{flex-direction:column;align-items:flex-start;gap:6px}.b-lv .xpbar{margin-top:2px}.b-lv .mnums{min-width:0}.b-lv .mnums b{font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}.b-wt .tile-main small{font:500 14px var(--fb)}
 </style>
 <div id="app">
  <header class="top"><div class="logo"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21M17 12v3M20 12v2"/></svg></i><span>The Discipline Key</span></div><div class="topbtns"><a id="rwchip" class="rwchip" href="#beloningen" aria-label="Beloningen" hidden></a><button id="profbtn" class="themebtn" type="button" data-a="go" data-r="mijn-plan" aria-label="Profiel en plan" title="Profiel en plan"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/></svg></button><button id="themebtn" class="themebtn" type="button" data-a="theme" aria-label="Kleurthema wisselen"></button></div></header>
@@ -2263,10 +2275,10 @@ function rwWeek() {
 }
 
 /* --- streak-orbit (3D, 4 banen = 4 dagdoelen, 7 stippen = laatste 7 dagen) --- */
-function rwOrbit(R, mini) {
+function rwOrbit(R, mini, sz0) {
   const T = today(), days = Array.from({ length: 7 }, (_, i) => addDays(T, i - 6));
   const G = [['train', '#C9F24D', 'Training'], ['steps', '#5CC8FF', 'Stappen'], ['protein', '#B48CFF', 'Eiwit'], ['check', '#FF9F5A', 'Check-in']];
-  const sz = mini ? 104 : 248, step = mini ? 11 : 24, d0 = sz - 6, flame = R.m.streak;
+  const sz = sz0 || (mini ? 104 : 248), step = mini ? (sz0 ? 15 : 11) : 24, d0 = sz - 6, flame = R.m.streak;
   const rings = G.map((g, k) => {
     const D = d0 - k * step * 2 * (mini ? .9 : 1), dur = 22 - k * 3.5;
     const dots = days.map((d, i) => { const x = R.dayInfo[d], p = x && x.p, ok = p && (g[0] === 'train' ? (p.train || p.rest) : p[g[0]]); return `<i class="od ${ok ? 'on' : ''} ${i === 6 ? 'td' : ''}" style="--a:${(i * 360 / 7).toFixed(1)}deg;--c:${g[1]}" title="${g[2]} · ${fmtDate(d)}"></i>`; }).join('');
@@ -2680,7 +2692,8 @@ function checkBody() { const rec = S.recovery[today()] || {};
   return `<div id="chk"><h3>Herstelcheck</h3><p class="sub">Tik wat past. Het wordt direct opgeslagen.</p>${scaleRow('sleep', 'Hoeveel sliep je?', SC.hours, nearest(SC.hours, rec.sleep), 'data-c="recTile"')}${scaleRow('energy', 'Energie', SC.energy, rec.energy, 'data-c="recTile"')}${scaleRow('soreness', 'Spierpijn', SC.sore, rec.soreness, 'data-c="recTile"')}${scaleRow('recovery', 'Herstel', SC.recov, rec.recovery, 'data-c="recTile"')}<div class="btns end"><button class="btn ghost" data-a="b3d" data-m="checkin">Per spiergroep in 3D</button><button class="btn" data-a="close">Klaar</button></div></div>`; }
 A.checkAsk = () => modal(checkBody());
 A.questTrain = () => { ui.trainTab = 'week'; go('training'); };
-function vHome() {
+function vHome() { return S.homeClassic ? vHomeClassic() : vHomeBento(); }
+function vHomeClassic() {
   const p = S.profile, t = targets(), d = today(), sess = sessionsOn(d), rec = S.recovery[d] || {}, st = S.steps[d];
   const hr = new Date().getHours(), greet = hr < 12 ? 'Goedemorgen' : hr < 18 ? 'Goedemiddag' : 'Goedenavond';
   const fd = S.food[d] || { items: [] }, planned = sumNut(fd.items), eaten = sumNut(fd.items.filter(i => i.eaten));
@@ -2707,6 +2720,34 @@ function vHome() {
   ${compHomeCard()}
   ${S.example ? '<p class="sub">Je gebruikt een voorbeeldprofiel. Pas het aan of wis het bij Profiel.</p>' : ''}</section>`;
 }
+
+/* ===== Home als bento-grid: grote tegel voor vandaag, kleinere tegels voor de rest ===== */
+function vHomeBento() {
+  const p = S.profile, t = targets(), d = today(), sess = sessionsOn(d), st = S.steps[d];
+  const hr = new Date().getHours(), greet = hr < 12 ? 'Goedemorgen' : hr < 18 ? 'Goedemiddag' : 'Goedenavond';
+  const fd = S.food[d] || { items: [] }, eaten = sumNut(fd.items.filter(i => i.eaten));
+  const coach = coachProposal(), stepsGoal = S.stepsGoal || { laag: 7000, licht: 8000, matig: 9000, hoog: 10000 }[p.activity] || 8000;
+  const wk = Array.from({ length: 7 }, (_, i) => addDays(addDays(d, -wdOf(d)), i));
+  const strip = `<div class="weekstrip">${wk.map(x => { const ss = sessionsOn(x), dn = ss.length && ss.every(s => isDone(s.from, s.key)); return `<button class="day ${x === d ? 'today' : ''}" data-a="gotoTrainDate" data-date="${x}" aria-label="${fmtDate(x)}${ss.length ? ', training' + (dn ? ' gedaan' : '') : ''}"><span>${DAYS[wdOf(x)]}</span><i class="${ss.length ? (dn ? 'done' : 'plan') : ''}"></i></button>`; }).join('')}</div>`;
+  const ms = S.milestone.enabled && S.milestone.date ? diffDays(d, S.milestone.date) : null, na = nextAction(sess, fd), R = rewards(), lv = R.lv;
+  const trainTxt = !sess.length ? `<p class="tile-main">Rustdag</p><p class="sub">Een wandeling of lichte beweging helpt je herstel.</p>` :
+    sess.map(s => { const def = sessionDef(s.key), done = isDone(s.from, s.key); return `<p class="tile-main">${esc(def.name)}</p><p class="sub">${sessionMeta(def, s.key)}${s.moved ? ' · verplaatst' : ''}${done ? ' · gedaan' : ''}</p>`; }).join('');
+  const pts = weightPts(28), wl = pts.length ? pts[pts.length - 1].weight : null, sl = pts.length >= 3 ? slope(pts) : null;
+  const food = (!t || t.missing) ? `<p class="sub">Stel je gegevens in bij Profiel.</p>` : `<div class="mini">${miniRing(eaten.kcal, t.kcal, 'var(--pg)', '', '')}<div class="mnums"><b>${n0(eaten.kcal)}<small>/${t.kcal}</small></b><span class="msub">kcal</span></div></div>${t.p ? `<span class="mac"><i style="--mc:#B48CFF">E ${n0(eaten.p)}/${t.p}</i></span>` : ''}`;
+  return `<section class="home bento"><div class="bhead"><div class="hd-txt"><span class="eyebrow">${fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' })}</span><h1>${p.name ? `${greet}, ${esc(p.name)}` : greet}</h1></div></div>
+  <div class="bgrid">
+   <div class="bt b-hero"><span class="eyebrow">Vandaag</span>${trainTxt}${strip}<p class="sub">${esc(weekLine())}${ms != null && ms >= 0 ? ` · <a href="#mijn-doel"><b>${ms}</b> dagen tot ${esc(S.milestone.name)}</a>` : ''}</p>
+    ${na ? `<button class="btn big" data-a="${na.a}" ${na.data}>${esc(na.label)}</button>` : '<p class="heroOk">Alles voor vandaag staat op schema.</p>'}</div>
+   <button class="bt b-food" data-a="gotoFood" aria-label="Voeding"><h3>Voeding</h3>${food}</button>
+   <a class="bt b-streak" href="#beloningen" aria-label="${R.m.streak} dagen op rij"><h3>Streak</h3>${rwOrbit(R, true, 120)}<span class="sub">${R.m.streak === 1 ? 'dag' : 'dagen'} op rij${R.freezes ? ` · 🧊×${R.freezes}` : ''}</span></a>
+   <button class="bt b-steps" data-a="stepsAsk" aria-label="Stappen"><h3>Stappen</h3><div class="mini">${miniRing(st || 0, stepsGoal, '#5CC8FF', '', '')}<div class="mnums"><b>${st != null ? (st >= 10000 ? (st / 1000).toFixed(1).replace('.', ',') + 'k' : st.toLocaleString('nl-NL')) : '–'}<small>/${(stepsGoal / 1000).toFixed(stepsGoal % 1000 ? 1 : 0)}k</small></b></div></div></button>
+   <button class="bt b-wt" data-a="pfTo" data-r="voortgang" data-k="progTab" data-t="lichaam" aria-label="Gewichtstrend"><h3>Gewicht</h3><p class="tile-main">${wl != null ? n1(wl) : '–'}<small> kg</small></p><span class="sub ${sl != null && sl !== 0 ? '' : ''}">${sl == null ? 'Weeg je om de trend te zien' : (sl > 0 ? '▲ ' : sl < 0 ? '▼ ' : '') + n1(Math.abs(sl)) + ' kg per week'}</span></button>
+   <a class="bt b-lv" href="#beloningen" aria-label="Level ${lv.n}"><h3>Level</h3><div class="mini">${hexBadge(lv.n, 'lvl')}<div class="mnums"><b>${esc(lv.title)}</b><span class="msub">${lv.into}/${lv.need} XP${R.todayXp ? ` · +${R.todayXp}` : ''}</span></div></div><div class="xpbar"><i style="width:${(lv.into / lv.need * 100).toFixed(1)}%"></i></div></a>
+  </div>${rwHomeCard()}${coachCard(coach)}${rwWeekCard()}${compHomeCard()}
+  ${S.example ? '<p class="sub">Je gebruikt een voorbeeldprofiel. Pas het aan of wis het bij Profiel.</p>' : ''}
+  <p class="center"><button class="link" data-a="homeLayout">Klassieke weergave</button></p></section>`;
+}
+A.homeLayout = () => { S.homeClassic = !S.homeClassic; save(); render(); };
 const scale = (cur, [lo, hi]) => `<option value="">–</option>` + [1, 2, 3, 4, 5].map(i => `<option value="${i}" ${cur === i ? 'selected' : ''}>${i}${i === 1 ? ' (' + lo + ')' : i === 5 ? ' (' + hi + ')' : ''}</option>`).join('');
 function coachCard(c) {
   if (!c) return '';
