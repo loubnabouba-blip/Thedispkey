@@ -787,7 +787,8 @@ main p b,main p strong,.dialog p b,.dialog p strong,.note b,.note strong,ol.step
   .bar{transform-box:fill-box;transform-origin:bottom;animation:growy .9s var(--ease) .1s both}
 }
 @media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  :root:not([data-motion=on]) *,:root:not([data-motion=on]) *::before,:root:not([data-motion=on]) *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  :root[data-motion=on] :is(.orr,.orc,.orp,.orb *){animation-duration:revert-layer}
   .btn:hover,.rcard:hover,.exrow:hover{transform:none}
 }
 
@@ -1157,7 +1158,7 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .orleg{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;font-size:11px;color:var(--ink2)}
 .orleg span{display:flex;align-items:center;gap:5px}.orleg i{width:8px;height:8px;border-radius:50%;display:inline-block}
 .orsub{text-align:center;margin:var(--s1) 0 var(--s2)}
-@media (prefers-reduced-motion:reduce){.orr,.orc{animation:none}}
+@media (prefers-reduced-motion:reduce){:root:not([data-motion=on]) .orr,:root:not([data-motion=on]) .orc{animation:none}}
 .rdyrow{display:grid;gap:6px;margin:var(--s2) 0}.rdyrow>span{font-weight:700;font-size:14px}
 .rdych{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .rdych .chip{justify-content:center;padding-inline:4px;font-size:12px;min-width:0}
@@ -2023,6 +2024,7 @@ const accKey = d => route + ':' + ((d.querySelector(':scope>summary span') || {}
 document.addEventListener('toggle', e => { const d = e.target; if (d && d.matches && d.matches('details.acc')) ui.open[accKey(d)] = d.open; }, true);
 function render() {
   const main = $('#main');
+  document.documentElement.dataset.motion = S.orbMotion ? 'on' : '';
   document.documentElement.dataset.disc = route === 'disciplines' && ui.disc ? ui.disc : '';
   if (!S.profile || ui.ob) { $('#app').classList.add('ob'); renderOnboarding(); rwHeaderChip(); return; }
   $('#app').classList.remove('ob'); $('#app').classList.toggle('wk', !!ui.workout); nav();
@@ -2636,7 +2638,7 @@ function vRewards() {
    <div><h2 class="disp">${lv.title}</h2><p class="sub">${R.xp.toLocaleString('nl-NL')} XP totaal · nog ${lv.need - lv.into} XP tot level ${lv.n + 1}</p><div class="xpbar big"><i style="width:${(lv.into / lv.need * 100).toFixed(1)}%"></i></div>
    <div class="lvstats"><span><b>${R.m.streak}</b>huidige streak</span><span><b>${R.m.bestStreak}</b>langste streak</span><span><b>${R.m.prs}</b>records</span><span><b>${got}/${R.badges.length}</b>badges</span></div></div></div>
   <div class="card"><h3>Streak</h3>${why('Hoe werkt de streak?', '<p>Een dag telt als gewonnen bij 3 van de 4 dagdoelen. Een geplande rustdag telt als trainingsdoel gehaald. Elke 7 dagen op rij verdien je een streakbeschermer 🧊 (max. 2) die een gemiste dag opvangt.</p>')}
-   <div class="orwrap">${rwOrbit(R, false)}</div>${rwOrbitLegend()}<p class="sub orsub">Elke baan is een dagdoel. Elke stip is een van je laatste 7 dagen. Een gevulde stip betekent dat je het doel haalde.</p>
+   <div class="orwrap">${rwOrbit(R, false)}</div>${rwOrbitLegend()}<p class="center"><button class="link" data-a="orbMotion">${S.orbMotion ? 'Beweging uit de telefooninstelling volgen' : 'Beweegt het niet? Zet beweging aan'}</button></p><p class="sub orsub">Elke baan is een dagdoel. Elke stip is een van je laatste 7 dagen. Een gevulde stip betekent dat je het doel haalde.</p>
    <div class="calgrid">${days}</div><div class="legend"><span><i class="cal won"></i>gewonnen</span><span><i class="cal frozen"></i>beschermd</span><span><i class="cal miss"></i>gemist</span><span><i class="cal open"></i>vandaag</span></div>${R.freezes ? `<p class="sub">Je hebt ${R.freezes} streakbeschermer${R.freezes > 1 ? 's' : ''} 🧊.</p>` : ''}</div>
   <h3 class="sect">Badges</h3><div class="badges">${R.badges.map(b => `<div class="badge ${b.got ? 'got' : ''}" title="${esc(b.d)}"><span class="bx">${hexBadge(b.e, b.got ? 'gold' : 'off')}</span><b>${esc(b.n)}</b><small>${b.got ? esc(b.d) : `${b.cur.toLocaleString('nl-NL')} / ${b.tgt.toLocaleString('nl-NL')}`}</small>${b.got ? '' : `<i class="bprog"><i style="width:${(b.cur / b.tgt * 100).toFixed(0)}%"></i></i>`}</div>`).join('')}</div>
   <h3 class="sect">Krachtrecords</h3>${recs.length ? `<div class="card recs"><p class="sub">Geschatte 1RM per oefening.</p>${recs.map(r => `<div class="rec"><div><b>${esc((EX[r.id] || {}).name || r.id)}</b><small>${r.h.length} keer gelogd</small></div>${spark(r.h)}<span class="rv">${String(+r.v.toFixed(1)).replace('.', ',')}<small> kg</small></span></div>`).join('')}</div>` : '<div class="card"><p class="sub">Log een krachttraining met gewicht en herhalingen. Daarna zie je hier je records groeien.</p></div>'}
@@ -2758,6 +2760,7 @@ function vHomeBento() {
   ${S.example ? '<p class="sub">Je gebruikt een voorbeeldprofiel. Pas het aan of wis het bij Profiel.</p>' : ''}
   <p class="center"><button class="link" data-a="homeLayout">Klassieke weergave</button></p></section>`;
 }
+A.orbMotion = () => { S.orbMotion = !S.orbMotion; save(); render(); };
 A.homeLayout = () => { S.homeClassic = !S.homeClassic; save(); render(); };
 const scale = (cur, [lo, hi]) => `<option value="">–</option>` + [1, 2, 3, 4, 5].map(i => `<option value="${i}" ${cur === i ? 'selected' : ''}>${i}${i === 1 ? ' (' + lo + ')' : i === 5 ? ' (' + hi + ')' : ''}</option>`).join('');
 
