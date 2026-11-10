@@ -1294,20 +1294,20 @@ const CATS = {ontbijt:'Ontbijt',lunch:'Lunch',diner:'Diner',tussendoor:'Tussendo
 // eq: één van deze materialen is genoeg ('bw' = geen materiaal). time = seconden i.p.v. herhalingen.
 const X = (id,name,pattern,eq,type,cue,extra={}) => ({id,name,pattern,eq,type,cue,...extra});
 const EXERCISES = [
- X('goblet','Goblet squat','squat',['dumbbells'],'comp','Dumbbell tegen de borst, knieën over de tenen, borst omhoog.',{inc:2}),
+ X('goblet','Goblet squat','squat',['dumbbells'],'comp','Dumbbell tegen de borst, knieën in de richting van je tenen, borst omhoog. Zak zo diep als je met een rechte rug kunt.',{inc:2}),
  X('legpress','Leg press (machine)','squat',['machines'],'comp','Voeten schouderbreed, rug plat tegen de steun.',{inc:5}),
- X('backsquat','Barbell squat','squat',['barbell'],'comp','Stang laag op de rug, buik aanspannen, diep zakken zolang de rug neutraal blijft.',{inc:2.5}),
+ X('backsquat','Barbell squat','squat',['barbell'],'comp','Stang laag op de rug, buik aanspannen, diep zakken zolang de rug neutraal blijft. Diep squatten traint billen en adductoren beter dan half.',{inc:2.5}),
  X('squatbw','Bodyweight squat','squat',['bw'],'comp','Rustig zakken en krachtig opstaan.',{inc:0}),
- X('rdldb','Romanian deadlift (dumbbells)','hinge',['dumbbells'],'comp','Heupen naar achteren, rug neutraal, dumbbells dicht bij de benen.',{inc:2}),
- X('rdlbb','Romanian deadlift (barbell)','hinge',['barbell'],'comp','Heupen naar achteren, stang langs de benen.',{inc:2.5}),
+ X('rdldb','Romanian deadlift (dumbbells)','hinge',['dumbbells'],'comp','Heupen naar achteren, rug neutraal, dumbbells dicht bij de benen. Zak tot je rek voelt in je hamstrings.',{inc:2}),
+ X('rdlbb','Romanian deadlift (barbell)','hinge',['barbell'],'comp','Heupen naar achteren, stang langs de benen. Zak tot je rek voelt in je hamstrings.',{inc:2.5}),
  X('hipthrust','Barbell hip thrust','hinge',['barbell'],'comp','Schouderbladen op bank, heupen strekken en billen knijpen.',{inc:5}),
  X('bridge','Glute bridge','hinge',['bw'],'iso','Voeten dicht bij billen, heupen strekken en kort vasthouden.',{inc:0}),
  X('split','Bulgarian split squat','lunge',['bw','dumbbells'],'comp','Achterste voet op een bank, voorste knie boven de voet.',{inc:2}),
  X('stepup','Step-up','lunge',['bw','dumbbells'],'comp','Hele voet op de verhoging, rustig terug naar beneden.',{inc:2}),
  X('lungedb','Dumbbell lunge','lunge',['dumbbells'],'comp','Grote stap, romp rechtop.',{inc:2}),
- X('legcurl','Leg curl (machine)','hamcurl',['machines'],'iso','Rustig buigen, langzaam terug.',{inc:2.5}),
+ X('legcurl','Leg curl (machine)','hamcurl',['machines'],'iso','Rustig buigen, langzaam terug. Kies de zittende machine als die er is: die geeft meer spiergroei dan de liggende.',{inc:2.5}),
  X('slrdl','Single-leg Romanian deadlift','hamcurl',['bw','dumbbells'],'iso','Houd je evenwicht, heup naar achteren schuiven.',{inc:2}),
- X('benchdb','Dumbbell bench press','pushH',['dumbbells'],'comp','Schouderbladen samen, ellebogen onder 45–60 graden.',{inc:2}),
+ X('benchdb','Dumbbell bench press','pushH',['dumbbells'],'comp','Schouderbladen samen, ellebogen onder 45–60 graden. Laat de dumbbells diep zakken.',{inc:2}),
  X('chestpress','Chest press (machine)','pushH',['machines'],'comp','Rug tegen de steun, duwen zonder schouders op te trekken.',{inc:2.5}),
  X('benchbb','Barbell bench press','pushH',['barbell'],'comp','Voeten stevig, stang gecontroleerd laten zakken.',{inc:2.5}),
  X('pushup','Push-up','pushH',['bw'],'comp','Lichaam in één lijn, borst bijna tot de grond. Verhoogd op een bank is makkelijker.',{inc:0}),
@@ -1328,7 +1328,7 @@ const EXERCISES = [
  X('lateralcable','Cable lateral raise','lat',['machines'],'iso','Rustig en zonder zwaaien.',{inc:1.25}),
  X('lateralband','Banded lateral raise','lat',['bands'],'iso','Sta op de band en heft zijwaarts.',{inc:0}),
  X('pushdown','Triceps pushdown','tri',['machines'],'iso','Ellebogen langs het lichaam.',{inc:2.5}),
- X('triext','Dumbbell triceps extension','tri',['dumbbells'],'iso','Ellebogen naar voren gericht, boven het hoofd strekken.',{inc:1}),
+ X('triext','Dumbbell triceps extension','tri',['dumbbells'],'iso','Ellebogen naar voren gericht, boven het hoofd strekken. Laat het gewicht ver achter je hoofd zakken voor de rek.',{inc:1}),
  X('dips','Bench dips','tri',['bw'],'iso','Ellebogen naar achteren, schouders laag.',{inc:0}),
  X('curldb','Dumbbell biceps curl','bi',['dumbbells'],'iso','Ellebogen stil, rustig laten zakken.',{inc:1}),
  X('cablecurl','Cable biceps curl','bi',['machines'],'iso','Constante spanning, geen zwaaien.',{inc:2.5}),
@@ -1339,7 +1339,7 @@ const EXERCISES = [
  X('cablecrunch','Cable crunch','core',['machines'],'iso','Rug rond, naar beneden crunchen.',{inc:2.5}),
  X('calfbw','Calf raise','calf',['bw'],'iso','Volledig omhoog, kort vasthouden, langzaam zakken.',{inc:0}),
  X('calfdb','Dumbbell calf raise','calf',['dumbbells'],'iso','Volledig omhoog en langzaam zakken.',{inc:2}),
- X('calfmachine','Calf raise (machine)','calf',['machines'],'iso','Volledig bereik en langzaam zakken.',{inc:5}),
+ X('calfmachine','Calf raise (machine)','calf',['machines'],'iso','Volledig bereik en langzaam zakken. Zak onderaan diep door in de rek.',{inc:5}),
  X('facepull','Face pull','rear',['machines','bands'],'iso','Naar het gezicht trekken, ellebogen hoog.',{inc:1.25}),
  X('reversefly','Dumbbell reverse fly','rear',['dumbbells'],'iso','Romp voorover, armen zijwaarts heffen.',{inc:1})
 ];
@@ -2030,6 +2030,9 @@ const SRC = {
   runst: '<a href="https://doi.org/10.1007/s40279-017-0835-7" target="_blank" rel="noopener">Blagrove e.a. 2018, krachttraining voor hardlopers</a>',
   hyrox: '<a href="https://doi.org/10.3389/fphys.2025.1519240" target="_blank" rel="noopener">Brandt e.a. 2025, eerste onderzoek naar Hyrox</a>',
   pltaper: '<a href="https://doi.org/10.3390/sports8090125" target="_blank" rel="noopener">Travis e.a. 2020, pieken voor powerlifting</a>',
+  maeoT: '<a href="https://doi.org/10.1080/17461391.2022.2100279" target="_blank" rel="noopener">Maeo e.a. 2022, triceps boven het hoofd</a>',
+  maeoH: '<a href="https://doi.org/10.1249/MSS.0000000000002523" target="_blank" rel="noopener">Maeo e.a. 2021, zittende leg curl</a>',
+  kubo: '<a href="https://doi.org/10.1007/s00421-019-04181-y" target="_blank" rel="noopener">Kubo e.a. 2019, diepe en halve squats</a>',
   vc: '<a href="https://www.voedingscentrum.nl/professionals/schijf-van-vijf/onderbouwing-schijf-van-vijf/aanbevolen-hoeveelheden.aspx" target="_blank" rel="noopener">Voedingscentrum, aanbevolen hoeveelheden</a>'
 };
 
@@ -2681,7 +2684,7 @@ function m3Paint() {
 A.b3d = d => {
   m3.mode = M3_MODES.some(x => x[0] === d.m) ? d.m : 'week'; m3.key = d.key || null; m3.sel = null;
   modal(`<div class="b3d"><div class="row"><div><p class="eyebrow">Spierkaart</p><h2>Je lichaam in 3D</h2></div><button class="btn ghost sm" data-a="close">Sluiten</button></div><div id="b3dTabs"></div><div id="b3dSlot"></div><div id="b3dPanel"></div>
-   <small class="b3d-credit">3D-model: BodyParts3D © DBCLS (CC BY-SA 2.1 JP) en Z-Anatomy, G. Kervyn (CC BY-SA 4.0), via BodyExplorer. Vereenvoudigd en gegroepeerd; zelfde licentie.</small></div>`, true);
+   <small class="b3d-credit">Functies volgens de standaard anatomie. Oefenkeuze waar mogelijk op onderzoek naar spiergroei bij lange spierlengte: ${SRC.maeoT}, ${SRC.maeoH}, ${SRC.kubo}.</small><small class="b3d-credit">3D-model: BodyParts3D © DBCLS (CC BY-SA 2.1 JP) en Z-Anatomy, G. Kervyn (CC BY-SA 4.0), via BodyExplorer. Vereenvoudigd en gegroepeerd; zelfde licentie.</small></div>`, true);
   m3C = m3Ctx();
   M3D.mount($('#b3dSlot'), { color: m3Color, picked: m3Picked, pick: hit => { m3.sel = hit; m3Paint(); } });
   m3Paint(); if (m3.mode === 'sess' && m3C.sess) { const r = m3C.roles, back = [...r.main].filter(id => ['rug', 'nek', 'onderrug', 'hamstrings', 'billen', 'kuiten', 'triceps'].includes((m3Muscle(id) || {}).g)).length; if (M3D.muscles().length) M3D.turn(back > r.main.size / 2 ? Math.PI : 0); }
