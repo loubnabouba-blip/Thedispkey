@@ -2033,6 +2033,10 @@ const SRC = {
   maeoT: '<a href="https://doi.org/10.1080/17461391.2022.2100279" target="_blank" rel="noopener">Maeo e.a. 2022, triceps boven het hoofd</a>',
   maeoH: '<a href="https://doi.org/10.1249/MSS.0000000000002523" target="_blank" rel="noopener">Maeo e.a. 2021, zittende leg curl</a>',
   kubo: '<a href="https://doi.org/10.1007/s00421-019-04181-y" target="_blank" rel="noopener">Kubo e.a. 2019, diepe en halve squats</a>',
+  steps: '<a href="https://doi.org/10.1016/S2468-2667(21)00302-9" target="_blank" rel="noopener">Paluch e.a. 2022, stappen en sterfte</a>',
+  sleep: '<a href="https://doi.org/10.5664/jcsm.4950" target="_blank" rel="noopener">Watson e.a. 2015, aanbevolen slaapduur</a>',
+  sleepfat: '<a href="https://doi.org/10.7326/0003-4819-153-7-201010050-00006" target="_blank" rel="noopener">Nedeltcheva e.a. 2010, slaap en afvallen</a>',
+  hrv: '<a href="https://doi.org/10.3390/ijerph181910299" target="_blank" rel="noopener">Manresa-Rocamora e.a. 2021, trainen op HRV</a>',
   vc: '<a href="https://www.voedingscentrum.nl/professionals/schijf-van-vijf/onderbouwing-schijf-van-vijf/aanbevolen-hoeveelheden.aspx" target="_blank" rel="noopener">Voedingscentrum, aanbevolen hoeveelheden</a>'
 };
 
@@ -2190,7 +2194,8 @@ const rwGroupOf = pat => (RW_GROUPS.find(g => g[2].includes(pat)) || [null])[0];
 const RW_TITLES = [[1, 'Starter'], [3, 'Doorzetter'], [5, 'Grinder'], [8, 'Atleet'], [11, 'Krijger'], [15, 'Beest'], [20, 'Elite'], [30, 'Legende']];
 const rwNeed = n => 150 + 50 * n;
 function rwLevel(xp) { let n = 1, rest = xp; while (rest >= rwNeed(n)) { rest -= rwNeed(n); n++; } return { n, into: rest, need: rwNeed(n), title: RW_TITLES.filter(t => n >= t[0]).pop()[1] }; }
-const rwStepsGoal = () => S.stepsGoal || { laag: 7000, licht: 8000, matig: 9000, hoog: 10000 }[S.profile && S.profile.activity] || 8000;
+/* Stappendoel: het sterfterisico daalt tot 8.000-10.000 stappen onder de 60 jaar en tot 6.000-8.000 vanaf 60 jaar (Paluch e.a. 2022). */
+const rwStepsGoal = () => S.stepsGoal || ((S.profile && S.profile.age >= 60) ? 7000 : { laag: 8000, licht: 8000, matig: 9000, hoog: 10000 }[S.profile && S.profile.activity] || 8000);
 const e1rm = (w, r) => w > 0 && r > 0 ? w * (1 + Math.min(r, 12) / 30) : 0;
 const RW_XP = { workout: 100, full: 50, cardio: 80, set: 2, pr: 50, steps: 30, steps10k: 10, protein: 30, kcal: 20, check: 15, weigh: 10, photo: 25, perfect: 50, week: 150 };
 let rwMemo = null;
@@ -2783,7 +2788,7 @@ function vHomeClassic() {
   const p = S.profile, t = targets(), d = today(), sess = sessionsOn(d), rec = S.recovery[d] || {}, st = S.steps[d];
   const hr = new Date().getHours(), greet = hr < 12 ? 'Goedemorgen' : hr < 18 ? 'Goedemiddag' : 'Goedenavond';
   const fd = S.food[d] || { items: [] }, planned = sumNut(fd.items), eaten = sumNut(fd.items.filter(i => i.eaten));
-  const coach = coachProposal(), stepsGoal = S.stepsGoal || { laag: 7000, licht: 8000, matig: 9000, hoog: 10000 }[p.activity] || 8000;
+  const coach = coachProposal(), stepsGoal = rwStepsGoal();
   const wk = Array.from({ length: 7 }, (_, i) => addDays(addDays(d, -wdOf(d)), i));
   const strip = `<div class="weekstrip">${wk.map(x => { const ss = sessionsOn(x), dn = ss.length && ss.every(s => isDone(s.from, s.key)); return `<button class="day ${x === d ? 'today' : ''}" data-a="gotoTrainDate" data-date="${x}" aria-label="${fmtDate(x)}${ss.length ? ', training' + (dn ? ' gedaan' : '') : ''}"><span>${DAYS[wdOf(x)]}</span><i class="${ss.length ? (dn ? 'done' : 'plan') : ''}"></i></button>`; }).join('')}</div>`;
   const ms = S.milestone.enabled && S.milestone.date ? diffDays(d, S.milestone.date) : null, na = nextAction(sess, fd);
@@ -2812,7 +2817,7 @@ function vHomeBento() {
   const p = S.profile, t = targets(), d = today(), sess = sessionsOn(d), st = S.steps[d];
   const hr = new Date().getHours(), greet = hr < 12 ? 'Goedemorgen' : hr < 18 ? 'Goedemiddag' : 'Goedenavond';
   const fd = S.food[d] || { items: [] }, eaten = sumNut(fd.items.filter(i => i.eaten));
-  const coach = coachProposal(), stepsGoal = S.stepsGoal || { laag: 7000, licht: 8000, matig: 9000, hoog: 10000 }[p.activity] || 8000;
+  const coach = coachProposal(), stepsGoal = rwStepsGoal();
   const wk = Array.from({ length: 7 }, (_, i) => addDays(addDays(d, -wdOf(d)), i));
   const strip = `<div class="weekstrip">${wk.map(x => { const ss = sessionsOn(x), dn = ss.length && ss.every(s => isDone(s.from, s.key)); return `<button class="day ${x === d ? 'today' : ''}" data-a="gotoTrainDate" data-date="${x}" aria-label="${fmtDate(x)}${ss.length ? ', training' + (dn ? ' gedaan' : '') : ''}"><span>${DAYS[wdOf(x)]}</span><i class="${ss.length ? (dn ? 'done' : 'plan') : ''}"></i></button>`; }).join('')}</div>`;
   const ms = S.milestone.enabled && S.milestone.date ? diffDays(d, S.milestone.date) : null, na = nextAction(sess, fd), R = rewards(), lv = R.lv;
@@ -2842,6 +2847,9 @@ function nextStep() {
   const T = today(), dis = S.nsDismiss || {}, ok = id => dis[id] !== T, hr = new Date().getHours(), p = S.profile || {};
   const r = S.recovery[T] || {}, lastW = S.body.filter(b => b.weight && !b.demo).map(b => b.date).sort().pop(), lastPh = S.photos.filter(x => !x.demo).map(x => x.date).sort().pop();
   if (ok('check') && hr >= 6 && !(r.energy || r.recovery)) return { id: 'check', title: 'Doe je herstelcheck', why: 'Dat kost 20 seconden. Daarmee past de app je training aan op hoe je je voelt.', a: 'checkAsk', label: 'Check-in doen' };
+  const sl = []; for (let i = 0; i < 7; i++) { const x = S.recovery[addDays(T, -i)]; if (x && x.sleep >= 2 && x.sleep <= 14) sl.push(+x.sleep); }
+  const slAvg = sl.length >= 4 ? sl.reduce((a, b) => a + b, 0) / sl.length : null;
+  if (ok('sleep') && slAvg != null && slAvg < 7) return { id: 'sleep', title: 'Je slaapt te kort', why: `Je sliep de afgelopen week gemiddeld ${n1(slAvg)} uur. Het advies voor volwassenen is minstens 7 uur.${['vet', 'combi'].includes(p.goal) ? ' In een klein onderzoek verloren mensen die afvielen met weinig slaap minder vet en meer spiermassa.' : ' Te weinig slaap remt je herstel en je trainingsprestaties.'} Ga deze week een half uur eerder naar bed.`, a: 'nsDismiss', data: 'data-id="sleep"', label: 'Begrepen' };
   if (ok('weigh') && ['vet', 'spier', 'combi'].includes(p.goal) && (!lastW || diffDays(lastW, T) >= 7)) return { id: 'weigh', title: 'Tijd om te wegen', why: lastW ? `Je laatste weging was ${diffDays(lastW, T)} dagen geleden. Voor een betrouwbare trend heb je meerdere metingen per week nodig.` : 'Zonder wegingen kan de coach je voeding niet bijsturen.', a: 'pfTo', data: 'data-r="voortgang" data-k="progTab" data-t="lichaam"', label: 'Gewicht invullen' };
   if (ok('photo') && S.planStart && diffDays(S.planStart, T) >= 14 && (!lastPh || diffDays(lastPh, T) >= 28)) return { id: 'photo', title: 'Tijd voor een voortgangsfoto', why: lastPh ? `Je laatste foto is ${diffDays(lastPh, T)} dagen oud. Een foto per vier weken laat zien wat de weegschaal niet toont.` : 'Een startfoto maakt je voortgang later zichtbaar.', a: 'pfTo', data: 'data-r="voortgang" data-k="progTab" data-t="fotos"', label: 'Foto maken' };
   return null;
@@ -2849,7 +2857,7 @@ function nextStep() {
 A.nsDismiss = d => { (S.nsDismiss = S.nsDismiss || {})[d.id] = today(); save(); render(); };
 function nextStepCard() {
   const n = nextStep(); if (!n) return '';
-  return `<div class="card coach quiet nstep"><span class="eyebrow">Volgende stap</span><h3>${esc(n.title)}</h3><p>${esc(n.why)}</p><div class="btns"><button class="btn sm" data-a="${n.a}" ${n.data || ''}>${esc(n.label)}</button><button class="btn ghost sm" data-a="nsDismiss" data-id="${n.id}">Nu niet</button></div></div>`;
+  return `<div class="card coach quiet nstep"><span class="eyebrow">Volgende stap</span><h3>${esc(n.title)}</h3><p>${esc(n.why)}</p><div class="btns"><button class="btn sm" data-a="${n.a}" ${n.data || ''}>${esc(n.label)}</button>${n.a === 'nsDismiss' ? '' : `<button class="btn ghost sm" data-a="nsDismiss" data-id="${n.id}">Nu niet</button>`}</div></div>`;
 }
 function coachCard(c) {
   if (!c) return nextStepCard();
@@ -4607,13 +4615,13 @@ function pOverview() {
   const ws = weekStats(8), cur = ws[ws.length - 1], lbl = ws.map(w => new Date(w.mon + 'T12:00:00').getDate() + '/' + (new Date(w.mon + 'T12:00:00').getMonth() + 1));
   const days7 = Array.from({ length: 7 }, (_, i) => addDays(today(), i - 6)), rv = days7.map(d => S.recovery[d]).filter(Boolean);
   const avg = k => { const v = rv.map(r => r[k]).filter(x => x != null); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
-  const stepsGoal = S.stepsGoal || { laag: 7000, licht: 8000, matig: 9000, hoog: 10000 }[S.profile.activity] || 8000;
+  const stepsGoal = rwStepsGoal();
   const ad = [3, 2, 1, 0].map(i => ws[ws.length - 1 - i]).filter(Boolean);
   const stepsAvg = days7.map(d => S.steps[d]).filter(x => x != null);
   return `<div class="card"><h3>Beweging deze week</h3>
    <div class="mrow"><span>Cardio en wandelen</span><b>${cur.cardioMin}</b><small>van 150 min</small></div>${meter(cur.cardioMin, 150, 'Minuten cardio')}
    <div class="mrow"><span>Krachtdagen</span><b>${cur.strengthDays}</b><small>van minstens 2</small></div>${meter(cur.strengthDays, 2, 'Krachtdagen')}
-   ${why('Waar komen deze richtwaarden vandaan?', '<p>De WHO adviseert volwassenen 150–300 minuten matige activiteit per week en spierversterkende activiteit op minstens 2 dagen (' + SRC.who + ').</p>')}</div>
+   ${why('Waar komen deze richtwaarden vandaan?', '<p><b>Bewegen:</b> de WHO adviseert volwassenen 150–300 minuten matige activiteit per week en spierversterkende activiteit op minstens 2 dagen. <b>Stappen:</b> meer stappen hangt samen met een lager sterfterisico, tot ongeveer 8.000–10.000 per dag onder de 60 jaar en 6.000–8.000 vanaf 60 jaar. Daarboven is geen extra winst gevonden. Je stappendoel volgt dat. <b>Slaap:</b> het advies is minstens 7 uur per nacht. In een klein onderzoek (10 deelnemers) verloren mensen met 5,5 uur slaap in een dieet minder vet en meer spiermassa dan met 8,5 uur. <b>HRV en rusthartslag:</b> trainen op geleide van HRV werkt in onderzoek hooguit iets beter dan een vast schema. De app gebruikt het daarom alleen als waarschuwing, op basis van een gemiddelde over meerdere dagen, en past je training er niet automatisch op aan. De drempel van 12% is een eigen keuze.</p><p class="sub">Bronnen: ' + [SRC.who, SRC.steps, SRC.sleep, SRC.sleepfat, SRC.hrv].join(', ') + '.</p>')}</div>
   ${acc('Trainingen en volume', `${cur.n} deze week`, `<h4>Trainingen per week</h4>${bars(ws.map(w => w.n), lbl, { aria: 'Aantal trainingen per week, laatste 8 weken', max: Math.max(4, ...ws.map(w => w.n)) })}<h4>Volume per week</h4>${bars(ws.map(w => w.vol / 1000), lbl, { aria: 'Trainingsvolume in ton per week', fmt: v => n1(v) })}<small>Volume is gewicht × herhalingen in ton (1 ton = 1000 kg). Alleen geregistreerde sets tellen mee.</small>`, true)}
   ${acc('Voeding', ad.some(w => w.pl) ? n0(ad[ad.length - 1].pl ? ad[ad.length - 1].ea / ad[ad.length - 1].pl * 100 : 0) + '% deze week gegeten' : 'Nog geen data', ad.some(w => w.pl) ? bars(ad.map(w => w.pl ? w.ea / w.pl * 100 : 0), ad.map(w => new Date(w.mon + 'T12:00:00').getDate() + '/' + (new Date(w.mon + 'T12:00:00').getMonth() + 1)), { max: 100, aria: 'Percentage geplande maaltijden dat is gegeten, per week', fmt: v => Math.round(v) + '%' }) : '<p class="sub">Plan maaltijden en vink af wat je eet. Dan zie je hier hoeveel van je planning je hebt geregistreerd.</p>')}
   ${acc('Stappen', stepsAvg.length ? 'gem. ' + n0(stepsAvg.reduce((a, b) => a + b, 0) / stepsAvg.length).toLocaleString('nl-NL') : 'Nog geen data', bars(days7.map(d => S.steps[d] || 0), days7.map(d => DAYS[wdOf(d)]), { ref: stepsGoal, refLabel: 'richtwaarde', max: Math.max(stepsGoal * 1.2, ...days7.map(d => S.steps[d] || 0)), aria: 'Stappen per dag', fmt: v => (v / 1000).toFixed(1).replace('.', ',') + 'k' }) + '<small>Stappen voer je zelf in op Home. De app kan ze in deze weergave niet automatisch tellen.</small>')}
