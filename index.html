@@ -1158,6 +1158,13 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .orleg span{display:flex;align-items:center;gap:5px}.orleg i{width:8px;height:8px;border-radius:50%;display:inline-block}
 .orsub{text-align:center;margin:var(--s1) 0 var(--s2)}
 @media (prefers-reduced-motion:reduce){.orr,.orc{animation:none}}
+.rdyrow{display:grid;gap:6px;margin:var(--s2) 0}.rdyrow>span{font-weight:700;font-size:14px}
+.rdych{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.rdych .chip{justify-content:center;padding-inline:4px;font-size:12px;min-width:0}
+.rdy .chip.on{background:color-mix(in srgb,var(--lc,var(--pg)) 28%,transparent);border-color:var(--lc,var(--pg));color:var(--ink)}
+.rdy .row .chip.on{--lc:var(--pg)}
+.rdy .row .chip{white-space:nowrap;flex:none}
+.rdyn{margin:6px 0 0;font-size:13px;color:var(--warn);font-weight:600}
 </style>
 <div id="app">
  <header class="top"><div class="logo"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21M17 12v3M20 12v2"/></svg></i><span>The Discipline Key</span></div><div class="topbtns"><a id="rwchip" class="rwchip" href="#beloningen" aria-label="Beloningen" hidden></a><button id="profbtn" class="themebtn" type="button" data-a="go" data-r="mijn-plan" aria-label="Profiel en plan" title="Profiel en plan"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/></svg></button><button id="themebtn" class="themebtn" type="button" data-a="theme" aria-label="Kleurthema wisselen"></button></div></header>
@@ -1819,7 +1826,9 @@ function rx(exId, key) {
   sets = Math.max(2, sets + (heavy ? b.setsD : (b.deload ? -1 : 0)));
   const exs = sessionExs(key), g = muscleOf(exId), idx = exs.indexOf(exId), first = exs.findIndex(i => muscleOf(i) === g) === idx, adj = (S.volAdj && S.volAdj[g]) || 0;
   if (!b.deload && adj) sets = clamp(sets + (first ? adj : adj <= -2 ? -1 : adj >= 2 ? 1 : 0), 2, 7);
-  const out = { sets, reps, lo, hi, rest: heavy ? '90–150 sec' : '60–90 sec', rpe: b.rpe, light: b.deload, label: b.label };
+  let rdy = '';
+  if (!b.deload && typeof ui !== 'undefined' && ui.workout && ui.workout.key === key && ui.workout.date === today()) { const ra = rdyAdj(g), dd = first ? ra.d : ra.d <= -2 ? -1 : 0; const nw = Math.max(2, sets + dd); if (dd && nw < sets) { rdy = `${nw - sets} set vanwege ${ra.why.join(' en ')}`; sets = nw; } }
+  const out = { sets, reps, lo, hi, rest: heavy ? '90–150 sec' : '60–90 sec', rpe: b.rpe, light: b.deload, label: b.label, rdy };
   if (S.profile.program === 'powerbuilding' && e.type === 'comp' && idx >= 0 && idx < 2) Object.assign(out, { main: true, sets: b.deload ? 3 : 4, reps: '3–6', lo: 3, hi: 6, rest: '150–210 sec', rpe: b.deload ? '6' : '8' });
   return out;
 }
@@ -1857,9 +1866,10 @@ function adherence(days = 14) {
   let pl = 0, ea = 0; for (let i = 0; i < days; i++) (S.food[addDays(today(), -i)]?.items || []).forEach(it => { pl++; if (it.eaten) ea++; });
   return { pl, ea, ratio: pl ? ea / pl : 0 };
 }
+const stiffCount = d => Object.values((S.musCheck || {})[d] || {}).filter(v => v <= 1).length;
 function recoveryFlag() {
   const ds = Object.keys(S.recovery).filter(d => diffDays(d, today()) <= 7 && diffDays(d, today()) >= 0); if (ds.length < 4) return false;
-  return ds.filter(d => { const r = S.recovery[d]; return (r.energy && r.energy <= 2) || (r.recovery && r.recovery <= 2); }).length >= 4;
+  return ds.filter(d => { const r = S.recovery[d]; return (r.energy && r.energy <= 2) || (r.recovery && r.recovery <= 2) || stiffCount(d) >= 5; }).length >= 4;
 }
 function coachProposal() {
   if (S.comp && S.comp.active) return null;
@@ -3130,7 +3140,7 @@ function vWorkout() {
     return `<div class="card ex" data-idx="${idx}"><div class="exhead">${exMedia(it.ex)}<div class="extxt"><button class="link title" data-a="exInfo" data-id="${it.ex}">${esc(e.name)}</button></div><div class="exrx"><b>${r.sets} × ${r.reps}</b><small>sets × herh. · RPE ${r.rpe}</small></div></div>
      <div class="exchips"><button class="chipb" data-a="restNow" data-idx="${idx}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>${esc(r.rest)} rust</button><button class="chipb" data-a="exHist" data-id="${it.ex}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5-5 4 4 8-8M15 8h5v5"/></svg>Historie</button><button class="chipb" data-a="swapAsk" data-idx="${idx}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4L3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></svg>Vervang</button></div>
      ${sg ? `<div class="sugg"><span>${esc(sg.text)}</span>${sg.w != null && sg.kind === 'up' ? `<button class="btn ghost sm" data-a="applySugg" data-idx="${idx}" data-w="${sg.w}">Gebruik ${n1(sg.w)} kg</button>` : ''}</div>` : `<p class="sub">Eerste keer: kies een gewicht of tempo waarbij je netjes ${time ? '30 seconden' : e.type === 'dist' ? 'de afstand' : r.lo + ' herhalingen'} haalt en 2 à 3 herhalingen over houdt.</p>`}
-     ${r.note && !r.tw ? '<p class="sub"><b>' + esc(r.note) + '</b></p>' : ''}${r.main ? '<p class="sub"><b>Hoofdoefening.</b> Laatste set: zoveel herhalingen als je netjes haalt, met 1 herhaling in reserve.</p>' : ''}<details class="why"><summary>Uitvoering en video</summary><div>${exPics(e.id)}${esc(e.cue)}<div class="btns">${exLinks(e)}</div></div></details>
+     ${r.rdy ? `<p class="rdyn">Slim volume: ${esc(r.rdy)}.</p>` : ''}${r.note && !r.tw ? '<p class="sub"><b>' + esc(r.note) + '</b></p>' : ''}${r.main ? '<p class="sub"><b>Hoofdoefening.</b> Laatste set: zoveel herhalingen als je netjes haalt, met 1 herhaling in reserve.</p>' : ''}<details class="why"><summary>Uitvoering en video</summary><div>${exPics(e.id)}${esc(e.cue)}<div class="btns">${exLinks(e)}</div></div></details>
      <div class="sets">${it.sets.map((s, i) => { const gh = wkGhost(it, i); return `<div class="set ${s.done ? 'done' : ''} ${s.pr ? 'pr' : ''} ${time ? 'notw' : ''}" data-idx="${idx}" data-i="${i}"><span class="snum">${s.pr ? '🏆' : s.done ? '✓' : s.t === 'warm' ? 'W' : s.t === 'myo' ? 'M' : s.t === 'down' ? 'D' : i + 1 - it.sets.slice(0, i).filter(x => x.t === 'warm').length}</span>${time ? '' : `<label class="fl"><input aria-label="Gewicht set ${i + 1} (kg)" data-c="set" data-idx="${idx}" data-i="${i}" data-k="w" type="number" inputmode="decimal" step="0.5" min="0" placeholder="${gh.w !== '' ? n1(gh.w).replace(',', '.') : '–'}" value="${s.w}"><em>kg</em></label>`}<label class="fl"><input aria-label="${unit} set ${i + 1}" data-c="set" data-idx="${idx}" data-i="${i}" data-k="r" type="number" inputmode="numeric" min="0" placeholder="${gh.r !== '' ? gh.r : '–'}" value="${s.r}"><em>${unit}${s.t ? ' · ' + ({ warm: 'opwarmen', myo: 'myo-rep', down: 'down set' })[s.t] : ''}</em></label><button class="setchk" data-a="setDone" data-idx="${idx}" data-i="${i}" aria-label="Set ${i + 1} ${s.done ? 'niet meer' : ''} als gedaan markeren" aria-pressed="${!!s.done}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><details class="menu smenu"><summary aria-label="Setmenu set ${i + 1}">⋯</summary><div class="menubox"><b class="sm-h">Settype</b>${[['', 'Regulier'], ['warm', 'Opwarmen'], ['myo', 'Myo-rep'], ['down', 'Down set']].map(([k, l]) => `<button class="link ${(s.t || '') === k ? 'cur' : ''}" data-a="setType" data-idx="${idx}" data-i="${i}" data-t="${k}">${(s.t || '') === k ? '✓ ' : ''}${l}</button>`).join('')}<hr><button class="link" data-a="setBelow" data-idx="${idx}" data-i="${i}">Set eronder toevoegen</button><button class="link" data-a="setDel" data-idx="${idx}" data-i="${i}">Set verwijderen</button></div></details></div>`; }).join('')}</div>
      <div class="btns"><label class="f inl">RPE<select data-c="rpe" data-idx="${idx}"><option value="">–</option>${[6, 7, 8, 9, 10].map(n => `<option ${+it.rpe === n ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
       <button class="btn ghost sm" data-a="addSet" data-idx="${idx}">+ set</button><button class="btn ghost sm" data-a="logAll" data-idx="${idx}">Alle sets loggen</button>
@@ -3140,13 +3150,13 @@ function vWorkout() {
   if (!S.listView && dr.items.length) {
     const n = dr.items.length, k = clamp(ui.wkIdx || 0, 0, n - 1), cur = dr.items[k], done = it => it.sets.some(s => num(s.r) > 0), last = k === n - 1;
     return `<section class="focus"><div class="fhead"><button class="btn ghost sm" data-a="wkClose">‹ Terug</button><span class="eyebrow">${esc(def.name)}</span><button class="link" data-a="listView">Toon lijst</button></div>
-    ${wkProg(dr)}<div class="wkdots" role="tablist" aria-label="Oefeningen">${dr.items.map((it, i) => `<button class="${i === k ? 'on' : ''} ${done(it) ? 'done' : ''}" data-a="wkGo" data-i="${i}" aria-label="Oefening ${i + 1}: ${esc(EX[it.ex].name)}${done(it) ? ', ingevuld' : ''}"></button>`).join('')}</div>
+    ${wkProg(dr)}${rdyCard()}<div class="wkdots" role="tablist" aria-label="Oefeningen">${dr.items.map((it, i) => `<button class="${i === k ? 'on' : ''} ${done(it) ? 'done' : ''}" data-a="wkGo" data-i="${i}" aria-label="Oefening ${i + 1}: ${esc(EX[it.ex].name)}${done(it) ? ', ingevuld' : ''}"></button>`).join('')}</div>
     <p class="fcount">Oefening ${k + 1} van ${n} · ${esc(b.label)}: RPE ${b.rpe}</p>${exCard(cur, k).replace('class="card ex"', 'class="card ex focuscard"')}
     <div class="btns sticky fnav">${k > 0 ? '<button class="btn ghost" data-a="wkPrev">‹ Vorige</button>' : ''}${last ? '<button class="btn" data-a="wkFinish">Training afronden</button>' : '<button class="btn" data-a="wkNext">Volgende ›</button>'}</div>
     <div class="btns tight"><button class="link" data-a="b3d" data-m="sess" data-key="${wk.key}">Spieren in 3D</button><label class="chip"><input type="checkbox" data-c="restToggle" ${S.restOff ? '' : 'checked'}><span>Rusttimer</span></label>${last ? '' : '<button class="link" data-a="wkFinish">Nu afronden</button>'}<button class="link" data-a="wkDiscard">Verwerpen</button></div></section>`;
   }
 
-  return `<section>${head}<p class="lead">${esc(b.label)}: RPE ${b.rpe}. Vul in wat je doet. Afronden kan altijd, ook als niet alles is ingevuld.</p>
+  return `<section>${head}<p class="lead">${esc(b.label)}: RPE ${b.rpe}. Vul in wat je doet. Afronden kan altijd, ook als niet alles is ingevuld.</p>${rdyCard()}
   <div class="btns tight"><button class="link" data-a="listView">Toon per oefening</button><button class="link" data-a="b3d" data-m="sess" data-key="${wk.key}">Spieren in 3D</button><label class="chip"><input type="checkbox" data-c="short" data-key="${wk.key}" ${S.short[wk.key] ? 'checked' : ''}><span>Kortere versie</span></label><label class="chip"><input type="checkbox" data-c="restToggle" ${S.restOff ? '' : 'checked'}><span>Rusttimer</span></label></div>${items || '<div class="card"><p>Met jouw materiaal en voorkeuren zijn er geen oefeningen gevonden. Pas je materiaal aan in je profiel.</p></div>'}
   <div class="btns sticky"><button class="btn" data-a="wkFinish">Training afronden</button><button class="btn ghost" data-a="wkDiscard">Verwerpen</button></div></section>`;
 }
@@ -3849,7 +3859,7 @@ function afterFinish(lg) {
   const chipRow = (n, label, opts) => `<fieldset class="fbset"><legend>${label}</legend><div class="chips">${opts.map(([v, l]) => `<label class="chip"><input type="radio" name="${n}" value="${v}"><span>${l}</span></label>`).join('')}</div></fieldset>`;
   modal(`<h3>Hoe voelde het?</h3>${prBox}<p class="sub">Tik per spiergroep wat past. Je antwoorden passen het volume voor je volgende training aan. Overslaan kan altijd.</p>
    <form data-submit="volFb">${groups.map((g, i) => `<div class="card slim"><b>${g}</b>
-    ${chipRow('sore' + i, 'Hoe was de spierpijn toen je begon?', [[4, 'Nooit last gehad'], [3, 'Lang geleden hersteld'], [2, 'Net op tijd hersteld'], [1, 'Nog steeds pijn']])}
+    ${rdyLevel(g, lg.date) != null ? `<p class="sub">Spierpijn bij de start: ${M3_LV[rdyLevel(g, lg.date)][0].toLowerCase()} (uit je check-in).</p>` : chipRow('sore' + i, 'Hoe was de spierpijn toen je begon?', [[4, 'Nooit last gehad'], [3, 'Lang geleden hersteld'], [2, 'Net op tijd hersteld'], [1, 'Nog steeds pijn']])}
     ${chipRow('pump' + i, 'Hoe was de pomp?', [[1, 'Weinig'], [2, 'Matig'], [3, 'Geweldig']])}
     ${chipRow('vol' + i, 'Hoe was het volume?', [[1, 'Te weinig'], [2, 'Precies goed'], [3, 'Op mijn grens'], [4, 'Te veel']])}</div>`).join('')}
    <div class="btns end"><button class="btn">Opslaan</button><button type="button" class="btn ghost" data-a="close">Overslaan</button></div></form>`, true);
@@ -3857,13 +3867,53 @@ function afterFinish(lg) {
 F.volFb = (f, fd) => {
   const fb = ui.fb, lg = fb && S.logs.find(l => l.id === fb.id); if (!lg) { closeModal(); return; }
   const mon = mondayOfD(lg.date), out = [], res = {};
-  fb.groups.forEach((g, i) => { const pump = +fd.get('pump' + i) || 2, sr = +fd.get('sore' + i) || 3, vol = +fd.get('vol' + i) || 2, sore = sr === 1 ? 1 : sr === 2 ? 2 : 3; res[g] = { pump, sore: sr, vol };
+  fb.groups.forEach((g, i) => { const ck = rdyLevel(g, lg.date), pump = +fd.get('pump' + i) || 2, sr = ck != null ? (ck <= 1 ? 1 : ck) : (+fd.get('sore' + i) || 3), vol = +fd.get('vol' + i) || 2, sore = sr === 1 ? 1 : sr === 2 ? 2 : 3; res[g] = { pump, sore: sr, vol };
     let add = 0; if (vol === 4) add -= 2; if (vol === 1) add++; if (sore === 1) add--; if (pump === 3 && sore === 1) add--; if (pump === 1 && sore >= 2) add++; if (sr === 4 && pump < 3 && vol < 3) add++;
+    if (perfDrop(g, lg)) add--;
     let step = add > 0 ? 1 : add < 0 ? -1 : 0; const lm = lmFor(g), wk = weekVolume(mon)[g];
     if (step > 0 && lm && wk && wk.plan >= lm[2]) step = 0;
     const old = S.volAdj[g] || 0, nw = clamp(old + step, -2, 2); S.volAdj[g] = nw; if (nw !== old) out.push(`${g} ${nw > old ? '+1 set' : '−1 set'}`); });
   lg.fb = res; save(); closeModal(); render(); toast(out.length ? 'Volgende keer: ' + out.join(', ') + '.' : 'Opgeslagen. Je volume blijft gelijk.');
 };
+
+
+/* ===== Slim volume: spiercheck-in + herstel + prestatie sturen je sets ===== */
+const RDY_MAP = { 'Borst': ['borst'], 'Rug': ['rug', 'onderrug'], 'Schouders': ['schouders'], 'Biceps': ['biceps'], 'Triceps': ['triceps'], 'Quadriceps': ['quadriceps'], 'Hamstrings en billen': ['hamstrings', 'billen'], 'Kuiten': ['kuiten'], 'Core': ['buik'] };
+function rdyLevel(g, d) { const c = m3Check(d || today()), v = (RDY_MAP[g] || []).map(k => c[k]).filter(x => x != null); return v.length ? Math.min(...v) : null; }
+// Alleen terugschroeven op de dag zelf. Meer volume komt pas via de weekfeedback.
+function rdyAdj(g) {
+  if (S.autoReg === false) return { d: 0, why: [] };
+  const lv = rdyLevel(g), r = S.recovery[today()] || {}; let d = 0; const why = [];
+  if (lv === 0) { d -= 2; why.push('erg stijve ' + g.toLowerCase()); } else if (lv === 1) { d -= 1; why.push('stijve ' + g.toLowerCase()); }
+  if (r.energy && r.energy <= 2 && r.recovery && r.recovery <= 2) { d -= 1; why.push('laag herstel'); }
+  return { d: Math.max(-2, d), why };
+}
+// Prestaties van de hoofdoefeningen in deze groep duidelijk (>=5%) onder de vorige keer
+function perfDrop(g, lg) {
+  const prior = S.logs.filter(l => l.id !== lg.id && l.type === 'kracht' && l.date < lg.date); let n = 0, down = 0;
+  lg.items.filter(it => muscleOf(it.ex) === g).forEach(it => { const now = Math.max(0, ...it.sets.filter(s => s.t !== 'warm').map(s => e1(s.w, s.r)));
+    let pb = 0; for (let i = prior.length - 1; i >= 0 && !pb; i--) { const x = prior[i].items.find(y => y.ex === it.ex); if (x) pb = Math.max(0, ...x.sets.filter(s => s.t !== 'warm').map(s => e1(s.w, s.r))); }
+    if (now && pb) { n++; if (now < pb * .95) down++; } });
+  return n > 0 && down === n;
+}
+function rdyResize() {
+  const dr = S.draft, wk = ui.workout; if (!dr || !wk) return;
+  dr.items.forEach(it => { if (it.sets.some(s => s.done || s.w !== '' || s.r !== '')) return; const n = rx(it.ex, wk.key).sets; if (it.sets.length !== n) it.sets = Array.from({ length: n }, () => ({ w: '', r: '' })); });
+}
+function rdyCard() {
+  const wk = ui.workout, dr = S.draft; if (!wk || wk.date !== today() || !dr) return '';
+  if (dr.items.some(it => it.sets.some(s => s.done || num(s.r) > 0))) return '';
+  const gs = [...new Set(sessionExs(wk.key).map(muscleOf))].filter(g => MUSCLES.includes(g)); if (!gs.length || blkOf(wk.key).deload) return '';
+  const eff = gs.map(g => { const a = rdyAdj(g); return a.d ? `${g.toLowerCase()}: ${a.d <= -2 ? 'tot 2 sets minder' : '1 set minder'} (${a.why.join(', ')})` : null; }).filter(Boolean), on = S.autoReg !== false;
+  return `<div class="card rdy"><div class="row"><h3>Hoe voelen je spieren?</h3><button class="chip btnchip ${on ? 'on' : ''}" data-a="rdyAuto" aria-pressed="${on}">Slim: ${on ? 'aan' : 'uit'}</button></div>
+   <p class="sub">Tik per spiergroep. Is een groep stijf, dan krijgt die vandaag minder sets. Meer sets komen alleen via je weekfeedback.</p>
+   ${gs.map(g => { const lv = rdyLevel(g); return `<div class="rdyrow"><span>${esc(g)}</span><div class="rdych">${M3_LV.map((l, i) => `<button class="chip btnchip ${lv === i ? 'on' : ''}" style="--lc:${l[1]}" data-a="rdy" data-g="${esc(g)}" data-l="${i}" aria-pressed="${lv === i}">${l[0]}</button>`).join('')}</div></div>`; }).join('')}
+   ${on ? (eff.length ? `<p class="note"><b>Vandaag:</b> ${esc(eff.join(' · '))}. Begin ook met extra warming-up.</p>` : '<p class="sub">Geen aanpassing nodig. Je schema blijft zoals gepland.</p>') : ''}
+   <details class="why"><summary>Waarom werkt dit zo?</summary><div><p>De app combineert drie signalen: hoe stijf een spiergroep is, je algemene herstel (energie en herstel van vandaag) en of je prestaties zakken. Onderzoek naar autoregulatie (aanpassen aan hoe je je voelt) laat zien dat het kracht zeker niet slechter maakt dan een vast schema. Voor spiergroei is het bewijs nog beperkt. Spierpijn zegt weinig over hoeveel een spier groeit. Daarom gebruikt de app spierpijn alleen om vandaag iets terug te schroeven, nooit om vandaag extra te doen. Een set erbij volgt pas na een week met goed herstel en goede prestaties, binnen de richtbereiken. Bij meerdere zware dagen achter elkaar stelt de coach een herstelweek voor.</p><p class="sub">Dit is geen medisch advies. Heb je pijn in een gewricht of pees, sla de oefening dan over.</p></div></details>
+   <div class="btns tight"><button class="link" data-a="b3d" data-m="checkin">Per spier in 3D aangeven</button></div></div>`;
+}
+A.rdy = d => { const ks = RDY_MAP[d.g] || [], day = (S.musCheck = S.musCheck || {}), c = day[today()] = day[today()] || {}; const l = +d.l; if (rdyLevel(d.g) === l) ks.forEach(k => delete c[k]); else ks.forEach(k => c[k] = l); if (!Object.keys(c).length) delete day[today()]; rdyResize(); save(); render(); };
+A.rdyAuto = () => { S.autoReg = S.autoReg === false; rdyResize(); save(); render(); toast(S.autoReg === false ? 'Slim volume staat uit.' : 'Slim volume staat aan.'); };
 
 /* --- volume en records --- */
 function tVolume() {
