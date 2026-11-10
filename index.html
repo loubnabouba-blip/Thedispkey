@@ -1188,6 +1188,10 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .b-streak{grid-row:span 2;align-items:center;justify-content:center;text-align:center;background:radial-gradient(90% 70% at 50% 40%,color-mix(in srgb,var(--pg) 18%,transparent),transparent 70%),var(--surface);box-shadow:0 0 30px -14px color-mix(in srgb,var(--pg) 70%,transparent)}
 .b-streak h3{align-self:flex-start}.b-streak .orb.mini{margin:10px auto 0}
 .b-lv .mini{flex-direction:column;align-items:flex-start;gap:6px}.b-lv .xpbar{margin-top:2px}.b-lv .mnums{min-width:0}.b-lv .mnums b{font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}.b-wt .tile-main small{font:500 14px var(--fb)}
+.vo2grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s2);margin:var(--s2) 0}
+.vo2grid>div{padding:var(--s3);border-radius:18px;background:var(--bg2,var(--surface2));border:1px solid var(--line);display:grid;gap:4px}
+.vo2grid b{font:900 34px/1 var(--fd);font-stretch:80%}.vo2grid .good b{color:var(--pg);text-shadow:0 0 18px color-mix(in srgb,var(--pg) 45%,transparent)}
+.vo2grid span{font-weight:700;font-size:13px;overflow-wrap:normal}.vo2grid>div{padding:var(--s2) !important;min-width:0}.vo2grid small{display:block;font-weight:400;font-size:12px;color:var(--ink2)}
 </style>
 <div id="app">
  <header class="top"><div class="logo"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21M17 12v3M20 12v2"/></svg></i><span>The Discipline Key</span></div><div class="topbtns"><a id="rwchip" class="rwchip" href="#beloningen" aria-label="Beloningen" hidden></a><button id="profbtn" class="themebtn" type="button" data-a="go" data-r="mijn-plan" aria-label="Profiel en plan" title="Profiel en plan"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/></svg></button><button id="themebtn" class="themebtn" type="button" data-a="theme" aria-label="Kleurthema wisselen"></button></div></header>
@@ -2327,6 +2331,49 @@ function hap(k) {
   }, { passive: true });
 })();
 
+
+/* ===== VO2max en fitnessleeftijd =====
+   Bronnen: gemeten schatting van Apple Watch (via Gezondheid); 12-minutentest (Cooper 1968: VO2max = (meters - 504,9) / 44,73);
+   schatting zonder test (Nes e.a. 2011, HUNT, BMI-model). Fitnessleeftijd: de leeftijd waarbij jouw VO2max het gemiddelde is
+   in het HUNT-onderzoek (NTNU/CERG, gemiddelden per leeftijdsgroep). */
+const VO2_REF = { m: [54, 49, 47, 42, 39, 34], v: [43, 40, 38, 34, 31, 27] }, VO2_AGE = [25, 35, 45, 55, 65, 75];
+const fitData = () => (S.fit = Object.assign({ tests: [], pa: null, rhr: null }, S.fit));
+function vo2Ref(sex, age) { const r = sex === 'm' ? VO2_REF.m : sex === 'v' ? VO2_REF.v : VO2_REF.m.map((x, i) => (x + VO2_REF.v[i]) / 2);
+  if (age <= 25) return r[0]; if (age >= 75) return r[5]; const i = Math.min(4, Math.floor((age - 25) / 10)), f = (age - VO2_AGE[i]) / 10; return r[i] + (r[i + 1] - r[i]) * f; }
+function fitAge(sex, vo2) { const r = sex === 'm' ? VO2_REF.m : sex === 'v' ? VO2_REF.v : VO2_REF.m.map((x, i) => (x + VO2_REF.v[i]) / 2);
+  if (vo2 >= r[0]) return clamp(Math.round(25 - (vo2 - r[0]) / ((r[0] - r[1]) / 10)), 20, 25);
+  for (let i = 0; i < 5; i++) if (vo2 >= r[i + 1]) return Math.round(VO2_AGE[i] + (r[i] - vo2) / (r[i] - r[i + 1]) * 10);
+  return clamp(Math.round(75 + (r[5] - vo2) / ((r[4] - r[5]) / 10)), 75, 90); }
+function restHr() { const F = fitData(); for (let i = 0; i < 14; i++) { const r = S.recovery[addDays(today(), -i)]; if (r && r.rhr) return { v: r.rhr, src: 'Apple Gezondheid' }; } return F.rhr ? { v: F.rhr, src: 'zelf ingevuld' } : null; }
+function vo2Nes() { const p = S.profile || {}, F = fitData(), rh = restHr(); if (!p.age || !p.height || !p.weight || !rh || !F.pa || !['m', 'v'].includes(p.sex)) return null;
+  const w = (weightPts(28).pop() || {}).weight || p.weight, bmi = w / Math.pow(p.height / 100, 2), pa = F.pa.f + F.pa.i + F.pa.d;
+  const v = p.sex === 'm' ? 92.05 - .327 * p.age - .933 * bmi - .167 * rh.v + .257 * pa : 70.77 - .244 * p.age - .749 * bmi - .107 * rh.v + .213 * pa; return v > 10 && v < 90 ? +v.toFixed(1) : null; }
+function vo2Now() { const F = fitData(), T = today(), fresh = (src, days) => F.tests.filter(x => x.src === src && diffDays(x.date, T) <= days).sort((a, b) => a.date < b.date ? 1 : -1)[0];
+  const w = fresh('watch', 120); if (w) return { v: w.v, src: 'Apple Watch', date: w.date, err: null };
+  const c = fresh('cooper', 180); if (c) return { v: c.v, src: '12-minutentest', date: c.date, err: null };
+  const n = vo2Nes(); if (n) return { v: n, src: 'Schatting zonder test', date: T, err: (S.profile || {}).sex === 'm' ? 5.8 : 5.1 }; return null; }
+function vo2Card() {
+  const p = S.profile || {}, x = vo2Now(), F = fitData();
+  const srcTxt = '<p><b>Apple Watch:</b> als je er een draagt, neemt de app de VO2max-schatting uit Apple Gezondheid over. <b>12-minutentest (Cooper):</b> loop 12 minuten zo ver als je kunt op een vlakke baan. VO2max = (meters − 504,9) / 44,73. <b>Schatting zonder test:</b> formule uit het Noorse HUNT-onderzoek (Nes e.a., 2011) op basis van leeftijd, BMI, rusthartslag en hoe vaak, hoe lang en hoe zwaar je traint. Die schatting kan ongeveer 5 à 6 ml/kg/min afwijken.</p><p><b>Fitnessleeftijd:</b> de leeftijd waarbij jouw VO2max het gemiddelde is in het HUNT-onderzoek (gezonde Noorse volwassenen). Het is een vergelijking met leeftijdsgenoten, geen medische uitslag.</p>';
+  const btns = `<div class="btns tight"><button class="btn ghost sm" data-a="vo2Cooper">12-minutentest invoeren</button><button class="btn ghost sm" data-a="vo2Est">${F.pa ? 'Gegevens schatting aanpassen' : 'Schatten zonder test'}</button></div>`;
+  if (!x) return `<div class="card vo2"><h3>VO2max en fitnessleeftijd</h3><p class="sub">VO2max is hoeveel zuurstof je lichaam bij maximale inspanning kan gebruiken. Het is een van de sterkste maten voor conditie en gezondheid.</p>${btns}${acc('Hoe wordt dit bepaald?', '', srcTxt)}</div>`;
+  const hasAge = !!p.age, ref = hasAge ? vo2Ref(p.sex, p.age) : null, fa = fitAge(p.sex, x.v), dif = hasAge ? fa - p.age : null, pct = ref ? Math.round((x.v / ref - 1) * 100) : null;
+  return `<div class="card vo2"><h3>VO2max en fitnessleeftijd</h3>
+   <div class="vo2grid"><div><b>${n1(x.v)}</b><span>VO2max<small>ml/kg/min${x.err ? ' · ± ' + String(x.err).replace('.', ',') : ''}</small></span></div><div class="${dif != null && dif < 0 ? 'good' : ''}"><b>${fa}</b><span>Fitnessleeftijd<small>${hasAge ? (dif === 0 ? 'gelijk aan je leeftijd' : Math.abs(dif) + ' jaar ' + (dif < 0 ? 'jonger' : 'ouder') + ' dan je leeftijd') : 'vul je leeftijd in bij Profiel'}</small></span></div></div>
+   ${pct != null ? `<p class="sub">${pct === 0 ? 'Gelijk aan' : Math.abs(pct) + '% ' + (pct > 0 ? 'boven' : 'onder')} het gemiddelde voor ${p.sex === 'm' ? 'mannen' : p.sex === 'v' ? 'vrouwen' : 'mensen'} van jouw leeftijd (${n0(ref)}).</p>` : ''}
+   <p class="sub">Bron: ${esc(x.src)}${x.date !== today() ? ', ' + fmtDate(x.date) : ''}.</p>${btns}${acc('Hoe wordt dit bepaald?', '', srcTxt)}</div>`;
+}
+A.vo2Cooper = () => modal(`<h2>12-minutentest (Cooper)</h2><p class="sub">Loop na een warming-up 12 minuten zo ver als je kunt op een vlakke baan of een loopband zonder helling. Doe dit alleen als je gezond bent en gewend bent aan hardlopen.</p><form data-submit="vo2Cooper"><label class="f">Afstand in meters<input name="m" type="number" inputmode="numeric" min="800" max="4500" step="10" required></label><label class="f">Datum<input name="date" type="date" value="${today()}" max="${today()}"></label><div class="btns"><button class="btn">Opslaan</button><button type="button" class="btn ghost" data-a="close">Annuleren</button></div></form>`);
+F.vo2Cooper = (f, fd) => { const m = num(fd.get('m')); if (!m || m < 800 || m > 4500) { toast('Vul een afstand in tussen 800 en 4500 meter.'); return; } const v = +((m - 504.9) / 44.73).toFixed(1), F2 = fitData(); F2.tests.push({ date: fd.get('date') || today(), v, src: 'cooper', m }); save(); closeModal(); render(); toast('VO2max: ' + n1(v) + ' ml/kg/min.'); };
+A.vo2Est = () => { const F2 = fitData(), pa = F2.pa || {}, rh = restHr(), ch = (name, lab, opts, cur) => `<fieldset class="scl"><legend>${lab}</legend><div class="chips">${opts.map(([v, t]) => `<label class="chip"><input type="radio" name="${name}" value="${v}" ${String(cur) === String(v) ? 'checked' : ''} required><span>${t}</span></label>`).join('')}</div></fieldset>`;
+  modal(`<h2>VO2max schatten</h2><p class="sub">Drie vragen uit het HUNT-onderzoek en je rusthartslag. ${(S.profile || {}).sex === 'm' || (S.profile || {}).sex === 'v' ? '' : '<b>Vul eerst je geslacht in bij Profiel: de formule bestaat alleen voor mannen en vrouwen.</b>'}</p><form data-submit="vo2Est">
+   ${ch('f', 'Hoe vaak train je?', [[0, 'Nooit of minder dan 1× per week'], [1, '1× per week'], [2, '2–3× per week'], [3, 'Bijna elke dag']], pa.f)}
+   ${ch('i', 'Hoe zwaar train je meestal?', [[0, 'Rustig, zonder zweten of hijgen'], [5, 'Ik zweet en hijg'], [10, 'Tot ik bijna uitgeput ben']], pa.i)}
+   ${ch('d', 'Hoe lang duurt een training?', [[1, 'Korter dan 30 minuten'], [1.5, '30 minuten of langer']], pa.d)}
+   <label class="f">Rusthartslag (slagen per minuut)<input name="rhr" type="number" inputmode="numeric" min="30" max="120" value="${rh ? rh.v : ''}" required><small>${rh && rh.src === 'Apple Gezondheid' ? 'Overgenomen uit Apple Gezondheid.' : 'Meet ’s ochtends in rust: tel je hartslag 60 seconden.'}</small></label>
+   <div class="btns"><button class="btn">Opslaan</button><button type="button" class="btn ghost" data-a="close">Annuleren</button></div></form>`); };
+F.vo2Est = (f, fd) => { const F2 = fitData(), r = num(fd.get('rhr')); if (!r || r < 30 || r > 120) { toast('Vul een rusthartslag in tussen 30 en 120.'); return; } F2.pa = { f: +fd.get('f'), i: +fd.get('i'), d: +fd.get('d') }; F2.rhr = Math.round(r); save(); closeModal(); render(); if (!vo2Nes()) toast('Vul bij Profiel je leeftijd, lengte, gewicht en geslacht in voor de schatting.'); };
+
 /* ===== Spinweb: je Discipline Key in 5 assen (laatste 14 dagen tegenover de 14 dagen daarvoor) ===== */
 function radarVals(to, n) {
   const days = Array.from({ length: n }, (_, i) => addDays(to, i - n + 1)), R = rewards();
@@ -2813,7 +2860,7 @@ const StepSensor = (() => {
     const h = healthPlugin(); if (!h) return null;
     return {
       isAvailable: async () => { const r = await h.isAvailable(); return r && r.available !== false; },
-      requestPermission: async () => { try { await h.requestAuthorization({ read: ['steps', 'weight', 'sleep', 'restingHeartRate', 'heartRateVariability'], write: [] }); } catch (e) { try { await h.requestAuthorization({ read: ['steps', 'weight', 'sleep'], write: [] }); return true; } catch (e2) {} await h.requestAuthorization({ read: ['steps'], write: [] }); } return true; },
+      requestPermission: async () => { try { await h.requestAuthorization({ read: ['steps', 'weight', 'sleep', 'restingHeartRate', 'heartRateVariability', 'vo2Max'], write: [] }); } catch (e) { try { await h.requestAuthorization({ read: ['steps', 'weight', 'sleep'], write: [] }); return true; } catch (e2) {} await h.requestAuthorization({ read: ['steps'], write: [] }); } return true; },
       getWeight: async d => {
         const r = await h.readSamples(Object.assign({ dataType: 'weight', limit: 5, ascending: false }, dayRange(d)));
         const x = ((r && (r.samples || r.data)) || [])[0]; if (!x) return null; let v = +x.value; if (/lb/i.test(x.unit || '')) v *= 0.4536; else if (/^g$/i.test(x.unit || '')) v /= 1000; return v > 20 && v < 400 ? +v.toFixed(1) : null;
@@ -2829,6 +2876,11 @@ const StepSensor = (() => {
         const avg = async t => { const r = await h.queryAggregated(Object.assign({ dataType: t, bucket: 'day', aggregation: 'average' }, dayRange(d))); const x = ((r && (r.samples || r.data)) || [])[0]; const v = x && +(x.value != null ? x.value : x.values && x.values.average); return v > 0 ? v : null; };
         const hrv = await avg('heartRateVariability').catch(() => null), rhr = await avg('restingHeartRate').catch(() => null);
         return { hrv: hrv && hrv < 300 ? +hrv.toFixed(0) : null, rhr: rhr && rhr > 25 && rhr < 130 ? +rhr.toFixed(0) : null };
+      },
+      getVo2: async () => {
+        const a = new Date(); a.setDate(a.getDate() - 120);
+        const r = await h.readSamples({ dataType: 'vo2Max', startDate: a.toISOString(), endDate: new Date().toISOString(), limit: 1, ascending: false });
+        const x = ((r && (r.samples || r.data)) || [])[0]; const v = x && +x.value; return v > 10 && v < 100 ? { v: +v.toFixed(1), date: String(x.startDate || '').slice(0, 10) || today() } : null;
       },
       getSteps: async d => {
         const r = await h.queryAggregated(Object.assign({ dataType: 'steps', bucket: 'day', aggregation: 'sum' }, dayRange(d)));
@@ -2908,7 +2960,8 @@ const StepSensor = (() => {
     st.busy = true; let changed = false, ok = false;
     try {
       const a = adapter(), m = meta(), t = today(); let total = 0;
-      if (!m.perm2) { try { await withTimeout(a.requestPermission()); } catch (e) {} m.perm2 = true; save(); }
+      if (m.perm !== 3) { try { await withTimeout(a.requestPermission()); } catch (e) {} m.perm = 3; save(); }
+      if (a.getVo2) try { const vo = await withTimeout(a.getVo2()); if (vo) { const F = fitData(), e = F.tests.find(x => x.src === 'watch'); if (!e || e.v !== vo.v || e.date !== vo.date) { F.tests = F.tests.filter(x => x.src !== 'watch'); F.tests.push({ date: vo.date, v: vo.v, src: 'watch' }); changed = true; } } } catch (e) {}
       for (let i = 0; i < 7; i++) {
         const d = addDays(t, -i); if (m.manual[d]) continue;
         const v = Math.round(+(await withTimeout(a.getSteps(d)))); if (!isFinite(v) || v < 0) continue;
@@ -4515,7 +4568,7 @@ const MEAS = [['waist', 'Taille'], ['chest', 'Borst'], ['hips', 'Heupen'], ['arm
 ui.cmp = { a: null, b: null, mode: 'overlay', op: 50, wipe: 50, sel: 'b', pa: { sc: 100, dx: 0, dy: 0, rot: 0 }, pb: { sc: 100, dx: 0, dy: 0, rot: 0 } }; ui.progTab = 'overzicht';
 function vProgress() {
   const t = ['overzicht', 'lichaam', 'fotos'].includes(ui.progTab) ? ui.progTab : 'overzicht';
-  return `<section><h1>Voortgang</h1>${tabs(t, [['overzicht', 'Overzicht'], ['lichaam', 'Lichaam'], ['fotos', 'Foto’s']], 'progTab')}${({ overzicht: () => radarCard() + pOverview(), lichaam: pBody, fotos: pPhotos })[t]()}</section>`;
+  return `<section><h1>Voortgang</h1>${tabs(t, [['overzicht', 'Overzicht'], ['lichaam', 'Lichaam'], ['fotos', 'Foto’s']], 'progTab')}${({ overzicht: () => radarCard() + vo2Card() + pOverview(), lichaam: pBody, fotos: pPhotos })[t]()}</section>`;
 }
 A.progTab = d => { ui.progTab = d.t; render(); };
 function pOverview() {
