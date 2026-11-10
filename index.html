@@ -1295,18 +1295,18 @@ const CATS = {ontbijt:'Ontbijt',lunch:'Lunch',diner:'Diner',tussendoor:'Tussendo
 const X = (id,name,pattern,eq,type,cue,extra={}) => ({id,name,pattern,eq,type,cue,...extra});
 const EXERCISES = [
  X('goblet','Goblet squat','squat',['dumbbells'],'comp','Dumbbell tegen de borst, knieën in de richting van je tenen, borst omhoog. Zak zo diep als je met een rechte rug kunt.',{inc:2}),
- X('legpress','Leg press (machine)','squat',['machines'],'comp','Voeten schouderbreed, rug plat tegen de steun.',{inc:5}),
+ X('legpress','Leg press (machine)','squat',['machines'],'comp','Voeten schouderbreed, rug plat tegen de steun. Zak niet zo diep dat je bekken van de steun loskomt en laat je knieën niet naar binnen zakken.',{inc:5}),
  X('backsquat','Barbell squat','squat',['barbell'],'comp','Stang laag op de rug, buik aanspannen, diep zakken zolang de rug neutraal blijft. Diep squatten traint billen en adductoren beter dan half.',{inc:2.5}),
  X('squatbw','Bodyweight squat','squat',['bw'],'comp','Rustig zakken en krachtig opstaan.',{inc:0}),
  X('rdldb','Romanian deadlift (dumbbells)','hinge',['dumbbells'],'comp','Heupen naar achteren, rug neutraal, dumbbells dicht bij de benen. Zak tot je rek voelt in je hamstrings.',{inc:2}),
  X('rdlbb','Romanian deadlift (barbell)','hinge',['barbell'],'comp','Heupen naar achteren, stang langs de benen. Zak tot je rek voelt in je hamstrings.',{inc:2.5}),
- X('hipthrust','Barbell hip thrust','hinge',['barbell'],'comp','Schouderbladen op bank, heupen strekken en billen knijpen.',{inc:5}),
+ X('hipthrust','Barbell hip thrust','hinge',['barbell'],'comp','Schouderbladen op bank, kin naar de borst. Strek je heupen en knijp je billen boven in samen, zonder je onderrug hol te trekken.',{inc:5}),
  X('bridge','Glute bridge','hinge',['bw'],'iso','Voeten dicht bij billen, heupen strekken en kort vasthouden.',{inc:0}),
  X('split','Bulgarian split squat','lunge',['bw','dumbbells'],'comp','Achterste voet op een bank, voorste knie boven de voet.',{inc:2}),
  X('stepup','Step-up','lunge',['bw','dumbbells'],'comp','Hele voet op de verhoging, rustig terug naar beneden.',{inc:2}),
  X('lungedb','Dumbbell lunge','lunge',['dumbbells'],'comp','Grote stap, romp rechtop.',{inc:2}),
  X('legcurl','Leg curl (machine)','hamcurl',['machines'],'iso','Rustig buigen, langzaam terug. Kies de zittende machine als die er is: die geeft meer spiergroei dan de liggende.',{inc:2.5}),
- X('slrdl','Single-leg Romanian deadlift','hamcurl',['bw','dumbbells'],'iso','Houd je evenwicht, heup naar achteren schuiven.',{inc:2}),
+ X('slrdl','Single-leg Romanian deadlift','hinge',['bw','dumbbells'],'iso','Houd je evenwicht, schuif je heup naar achteren en houd je heupen recht naar voren gericht. Je achterste been blijft in één lijn met je romp.',{inc:2}),
  X('benchdb','Dumbbell bench press','pushH',['dumbbells'],'comp','Schouderbladen samen, ellebogen onder 45–60 graden. Laat de dumbbells diep zakken.',{inc:2}),
  X('chestpress','Chest press (machine)','pushH',['machines'],'comp','Rug tegen de steun, duwen zonder schouders op te trekken.',{inc:2.5}),
  X('benchbb','Barbell bench press','pushH',['barbell'],'comp','Voeten stevig, stang gecontroleerd laten zakken.',{inc:2.5}),
@@ -1329,7 +1329,7 @@ const EXERCISES = [
  X('lateralband','Banded lateral raise','lat',['bands'],'iso','Sta op de band en heft zijwaarts.',{inc:0}),
  X('pushdown','Triceps pushdown','tri',['machines'],'iso','Ellebogen langs het lichaam.',{inc:2.5}),
  X('triext','Dumbbell triceps extension','tri',['dumbbells'],'iso','Ellebogen naar voren gericht, boven het hoofd strekken. Laat het gewicht ver achter je hoofd zakken voor de rek.',{inc:1}),
- X('dips','Bench dips','tri',['bw'],'iso','Ellebogen naar achteren, schouders laag.',{inc:0}),
+ X('dips','Bench dips','tri',['bw'],'iso','Ellebogen naar achteren, schouders laag. Zak niet dieper dan een hoek van 90 graden in je elleboog. Geeft dit pijn voorin je schouder, kies dan de triceps pushdown.',{inc:0}),
  X('curldb','Dumbbell biceps curl','bi',['dumbbells'],'iso','Ellebogen stil, rustig laten zakken.',{inc:1}),
  X('cablecurl','Cable biceps curl','bi',['machines'],'iso','Constante spanning, geen zwaaien.',{inc:2.5}),
  X('bandcurl','Banded biceps curl','bi',['bands'],'iso','Sta op de band en buig.',{inc:0}),
@@ -2687,7 +2687,17 @@ function m3Ctx() {
   return c;
 }
 let m3C = null;
+/* Onderarmen, adductoren en scheenspieren hebben geen eigen weekdoel: er is geen onderzoek dat een aantal sets noemt en de app heeft er geen directe oefening voor. We tonen alleen hoeveel sets ze indirect meedoen (hulpspier in M3_PAT). */
+const M3_IND = ['onderarmen', 'adductoren'];
+function m3Indirect(g) {
+  const d = today(), w0 = addDays(d, -wdOf(d)), r = { plan: 0, done: 0 };
+  const helps = ex => { const e = EX[ex], pm = e && M3_PAT[e.pattern]; return !!pm && [...pm[0], ...pm[1]].some(id => (m3Muscle(id) || {}).g === g); };
+  for (let i = 0; i < 7; i++) sessionsOn(addDays(w0, i)).forEach(s => { try { sessionExs(s.key).forEach(id => { if (helps(id)) r.plan += (rx(id, s.key) || {}).sets || 3; }); } catch (e) {} });
+  S.logs.filter(l => l.type === 'kracht' && l.date >= w0 && l.date <= addDays(w0, 6)).forEach(l => (l.items || []).forEach(it => { if (helps(it.ex)) r.done += it.sets.filter(x => x.t !== 'warm').length; }));
+  return r;
+}
 function m3Color(g, id) {
+  if (m3.mode === 'week' && M3_IND.includes(g)) { const r = m3Indirect(g); return r.done > 0 ? '#5CC8FF' : null; }
   if (m3.mode === 'week') { const m = m3C.week[M3_MUS[g]]; return !m || m.p <= 0 ? null : m.p < 1 ? '#FFD166' : '#C9F24D'; }
   if (m3.mode === 'sess') return id && m3C.roles.main.has(id) ? '#C9F24D' : id && m3C.roles.help.has(id) ? '#5CC8FF' : null;
   if (m3.mode === 'spieren') return m3.sel && m3.sel.g === g && m3.sel.m === id ? '#C9F24D' : null;
@@ -2703,6 +2713,10 @@ function m3Panel() {
   const sel = m3.sel, mu = sel && sel.m ? m3Muscle(sel.m) : null, leg = (...xs) => `<div class="mulegend">${xs.map(([c, t]) => `<span><i style="background:${c}"></i>${t}</span>`).join('')}</div>`;
   const muHead = mu ? `<h3 class="b3d-la">${esc(mu.la)}</h3><p class="sub">${esc(mu.nl)} · ${M3_LABELS[mu.g]}</p>` : sel ? `<h3>${M3_LABELS[sel.g]}</h3>` : '';
   if (m3.mode === 'week') {
+    if (sel && (M3_IND.includes(sel.g) || sel.g === 'schenen')) {
+      const r = M3_IND.includes(sel.g) ? m3Indirect(sel.g) : null;
+      return leg(['#743631', 'nog niet'], ['#FFD166', 'bezig'], ['#C9F24D', 'target gehaald'], ['#5CC8FF', 'doet indirect mee']) + `<h3>${M3_LABELS[sel.g]}</h3><p class="sub">${r ? (r.done > 0 ? `Deze week deed deze spier indirect mee in ${r.done} sets van andere oefeningen${r.plan ? ' (gepland: ' + r.plan + ')' : ''}.` : r.plan > 0 ? `Gepland: deze spier doet indirect mee in ${r.plan} sets. Je hebt er deze week nog geen gedaan.` : 'Deze week doet deze spier niet mee in je schema.') : 'Geen enkele oefening in de app traint deze spier direct, dus er is geen weekdoel.'}</p><p class="sub">Voor deze spier bestaat geen onderzoek dat een aantal sets per week noemt. Daarom heeft de app er geen target voor en kleurt hij alleen als de spier meedoet.</p>`;
+    }
     const m = sel && m3C.week[M3_MUS[sel.g]];
     return leg(['#743631', 'nog niet'], ['#FFD166', 'bezig'], ['#C9F24D', 'target gehaald']) + (sel ? `<h3>${M3_LABELS[sel.g]}</h3><p class="sub">${!m || (m.plan <= 0 && !m.done) ? 'Geen target in je schema deze week.' : m.extra ? n1(m.done) + ' sets extra deze week (geen target in je schema).' : n1(m.done) + ' van ' + m.plan + ' sets deze week' + (m.done >= m.plan ? ' · target gehaald.' : '.')}</p>` : '<p class="sub">Tik op een spiergroep voor je sets van deze week.</p>');
   }
