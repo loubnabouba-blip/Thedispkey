@@ -517,6 +517,7 @@ section.hero,.hero:not(.card){position:relative;overflow:hidden;display:grid;gap
 .wl{display:grid;gap:1px;justify-items:center;min-width:0;padding:var(--s1) 2px;text-align:center;border-radius:var(--r-s);background:color-mix(in srgb,var(--tc) 14%,var(--surface));border:1px solid color-mix(in srgb,var(--tc) 45%,transparent)}
 .wl.t0{border-color:var(--line)}
 .wl.today{outline:2px solid var(--ink);outline-offset:1px}
+button.wl{font:inherit;color:inherit;width:100%}button.wl:disabled{cursor:default}
 .wl b{font:700 12px var(--fb)}
 .wl em{font:800 20px var(--fd);font-style:normal}
 .wl small{display:block;max-width:100%;max-height:24px;overflow:hidden;font-size:10px;line-height:1.15}
@@ -2027,15 +2028,15 @@ function sessionExs(key) {
   return l;
 }
 function sessionsOn(date) {
-  if (!S.plan) return [];
-  const out = [], live = S.planStart && date >= S.planStart;
+  const out = [], live = !!S.plan && S.planStart && date >= S.planStart;
   if (live) {
     S.plan.schedule.filter(s => s.wd === wdOf(date) && !S.moves.some(m => m.from === date && m.key === s.key)).forEach(s => out.push({ key: s.key, from: date }));
-    S.moves.filter(m => m.to === date).forEach(m => out.push({ key: m.key, from: m.from, moved: true }));
+    S.moves.filter(m => m.to === date && !String(m.key).startsWith('d:')).forEach(m => out.push({ key: m.key, from: m.from, moved: true }));
     S.cardioWeek.filter(c => c.wd === wdOf(date)).forEach(c => out.push({ key: 'w-' + c.id, from: date, weekly: c.id }));
   }
   S.extras.filter(e => e.date === date).forEach(e => out.push({ key: e.key, from: date, extra: e.id }));
   discSessionsOn(date).forEach(x => out.push(x));
+  S.moves.filter(m => m.to === date && String(m.key).startsWith('d:')).forEach(m => out.push({ key: m.key, from: m.from, moved: true, disc: m.key.split(':')[1] }));
   return out;
 }
 const logsOn = d => S.logs.filter(l => l.date === d);
@@ -3575,7 +3576,7 @@ function tPlanner() {
   if (!ss.length) day += '<div class="card"><p class="sub">Niets gepland. Rust, een wandeling of lichte beweging helpt je herstel.</p></div>';
   ss.forEach(s => { const def = sessionDef(s.key), done = isDone(s.from, s.key);
     day += `<div class="card"><div class="row"><div><b>${esc(def.name)}</b><small>${sessionMeta(def, s.key)}${s.moved ? ' · verplaatst' : ''}${s.extra ? ' · extra' : ''}${s.weekly ? ' · vast weekschema' : ''}</small></div>${done ? '<span class="pill ok">Gedaan</span>' : ''}</div>
-     <div class="btns"><button class="btn sm ${done ? 'ghost' : ''}" data-a="gotoTrainDate" data-date="${sel}">Open in week</button>${!done && !s.extra && !s.weekly && !String(s.key).startsWith('d:') ? `<button class="btn ghost sm" data-a="moveAsk" data-key="${s.key}" data-from="${s.from}">Verplaats</button>` : ''}</div></div>`; });
+     <div class="btns"><button class="btn sm ${done ? 'ghost' : ''}" data-a="gotoTrainDate" data-date="${sel}">Open in week</button>${!done && !s.extra && !s.weekly ? `<button class="btn ghost sm" data-a="moveAsk" data-key="${s.key}" data-from="${s.from}">Verplaats</button>` : ''}</div></div>`; });
   const nxt = ms && ms.date >= td ? Math.round((new Date(ms.date + 'T12:00:00') - new Date(td + 'T12:00:00')) / 864e5) : null;
   return `<div class="card pl"><div class="plhead"><button class="nav-arrow" data-a="plMonth" data-n="-1" aria-label="Vorige maand">‹</button><h3>${esc(title)}</h3><button class="nav-arrow" data-a="plMonth" data-n="1" aria-label="Volgende maand">›</button></div>
    <div class="pweek" aria-hidden="true">${DAYS.map(d => `<span>${d}</span>`).join('')}</div><div class="plgrid">${grid}</div>
@@ -3650,9 +3651,46 @@ A.hxSim = () => { ui.workout = { key: 'hxSim', date: today(), from: today() }; d
 C.hxDiv = el => { S.hx.div = el.value; save(); render(); };
 F.hxPace = (f, fd) => { S.hx.target = num(fd.get('t')); save(); render(); };
 F.hxDate = (f, fd) => { const d = fd.get('d'); S.milestone.date = d || null; if (d) { S.milestone.enabled = true; if (S.profile.program === 'hyrox' && /fotoshoot|mijn doel/i.test(S.milestone.name)) S.milestone.name = 'Hyrox-wedstrijd'; } save(); render(); toast('Wedstrijddatum opgeslagen.'); };
-A.moveAsk = d => modal(`<h3>Training verplaatsen</h3><p>Naar welke dag verplaats je <b>${esc(sessionDef(d.key).name)}</b>?</p><form data-submit="move" class="grid2"><input type="hidden" name="key" value="${d.key}"><input type="hidden" name="from" value="${d.from}"><label class="f">Nieuwe datum<input name="to" type="date" value="${addDays(today(), 1)}" min="${today()}"></label><div class="btns end"><button type="button" class="btn ghost" data-a="close">Annuleren</button><button class="btn">Verplaats</button></div></form>`);
-F.move = (f, fd) => { const to = fd.get('to'); if (!to) return; S.moves = S.moves.filter(m => !(m.key === fd.get('key') && m.from === fd.get('from')));
-  S.moves.push({ key: fd.get('key'), from: fd.get('from'), to }); save(); closeModal(); ui.tDate = to; render(); toast('Training verplaatst naar ' + fmtDate(to) + '.'); };
+/* Verplaatsen: kies een dag in de week; de app waarschuwt als dat herstel of opbouw in de weg zit. */
+const sessShort = key => sessionDef(key).name.replace(/^[^:]+: /, '');
+const discOf = key => String(key).startsWith('d:') ? key.split(':')[1] : null;
+function moveRisks(key, from, to) {
+  const out = [], hard = isHard(key), dsc = discOf(key), def = sessionDef(key);
+  const on = d => sessionsOn(d).filter(x => !(x.key === key && x.from === from));
+  const same = on(to);
+  if (hard) { const h = same.find(x => isHard(x.key)); if (h) out.push(`Op die dag staat al een zware training (${sessShort(h.key)}). Twee zware sessies op één dag geeft je lichaam te weinig herstel.`); }
+  if (same.length >= 2) out.push(`Er staan dan ${same.length + 1} trainingen op één dag.`);
+  [[-1, 'ervoor'], [1, 'erna']].forEach(([n, w]) => { const nb = on(addDays(to, n));
+    const sd = nb.find(x => (dsc && discOf(x.key) === dsc) || (!dsc && !discOf(x.key) && def.type === 'kracht' && sessionDef(x.key).type === 'kracht'));
+    const hh = hard && nb.find(x => isHard(x.key));
+    if (sd) out.push(`De dag ${w} staat al „${sessShort(sd.key)}”. Twee dagen achter elkaar hetzelfde soort training: houd liever een rustdag ertussen.`);
+    else if (hh) out.push(`De dag ${w} staat een zware training (${sessShort(hh.key)}). Zonder hersteldag ertussen herstel je minder goed.`); });
+  const wk = d => addDays(d, -wdOf(d));
+  if (wk(to) !== wk(from)) out.push('Deze training hoort bij een andere week. Daardoor klopt de opbouw van je schema niet meer: de ene week wordt zwaarder, de andere lichter.');
+  return out;
+}
+A.moveAsk = d => {
+  const def = sessionDef(d.key), cur = (S.moves.find(m => m.key === d.key && m.from === d.from) || {}).to || d.from, mon = addDays(cur, -wdOf(cur));
+  const cells = Array.from({ length: 7 }, (_, i) => addDays(mon, i)).map(x => { const past = x < today(), here = x === cur, r = past || here ? [] : moveRisks(d.key, d.from, x), n = sessionsOn(x).filter(y => !(y.key === d.key && y.from === d.from)).length;
+    return `<button class="wl ${here ? 't0' : past ? 't0' : r.length ? 't3' : 't5'} ${here ? 'today' : ''}" ${past || here ? 'disabled' : ''} data-a="moveTo" data-key="${d.key}" data-from="${d.from}" data-to="${x}" aria-label="${DAYS_LONG[wdOf(x)]} ${fmtDate(x, { day: 'numeric', month: 'long' })}${r.length ? ', met waarschuwing' : ''}" style="${past ? 'opacity:.4' : ''}"><b>${DAYS[wdOf(x)]}</b><em>${+x.slice(8)}</em><small>${here ? 'nu' : past ? '' : n ? n + ' gepland' : 'vrij'}</small></button>`; }).join('');
+  modal(`<h3>Training verplaatsen</h3><p>Naar welke dag verplaats je <b>${esc(def.name)}</b>?</p><div class="wload">${cells}</div><p class="sub">Groen past goed. Bij geel krijg je eerst uitleg waarom het minder verstandig is.</p>
+   <form data-submit="move" class="grid2"><input type="hidden" name="key" value="${d.key}"><input type="hidden" name="from" value="${d.from}"><label class="f">Of kies een andere datum<input name="to" type="date" value="${addDays(cur, 1) < today() ? today() : addDays(cur, 1)}" min="${today()}"></label><div class="btns end">${cur !== d.from ? `<button type="button" class="btn ghost" data-a="moveTo" data-key="${d.key}" data-from="${d.from}" data-to="${d.from}">Terug naar ${DAYS_LONG[wdOf(d.from)]}</button>` : ''}<button type="button" class="btn ghost" data-a="close">Annuleren</button><button class="btn">Verplaats</button></div></form>`);
+};
+function moveDo(key, from, to) {
+  S.moves = S.moves.filter(m => !(m.key === key && m.from === from));
+  if (to !== from) S.moves.push({ key, from, to });
+  save(); closeModal(); ui.tDate = to; render(); toast((to === from ? 'Training staat weer op ' : 'Training verplaatst naar ') + DAYS_LONG[wdOf(to)] + ' ' + fmtDate(to, { day: 'numeric', month: 'long' }) + '.');
+}
+function moveTry(key, from, to) {
+  if (to < today()) { toast('Kies vandaag of een dag in de toekomst.'); return; }
+  const r = to === from ? [] : moveRisks(key, from, to);
+  if (!r.length) { moveDo(key, from, to); return; }
+  ui.moveAck = { key, from, to };
+  modal(`<h3>Niet zo verstandig</h3><p>Je verplaatst <b>${esc(sessionDef(key).name)}</b> naar ${DAYS_LONG[wdOf(to)]} ${fmtDate(to, { day: 'numeric', month: 'long' })}.</p><div class="note warn"><ul>${r.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div><p class="sub">Je kunt het toch doen, maar kies als het kan een andere dag.</p><div class="btns end"><button class="btn ghost" data-a="moveAsk" data-key="${key}" data-from="${from}">Andere dag kiezen</button><button class="btn" data-a="moveForce">Toch verplaatsen</button></div>`);
+}
+A.moveTo = d => moveTry(d.key, d.from, d.to);
+A.moveForce = () => { const m = ui.moveAck; if (!m) return; ui.moveAck = null; moveDo(m.key, m.from, m.to); };
+F.move = (f, fd) => { const to = fd.get('to'); if (!to) return; moveTry(fd.get('key'), fd.get('from'), to); };
 A.close = () => closeModal();
 A.closebg = (d, el, e) => { if (e.target === el) closeModal(); };
 function tHistory() {
@@ -4877,14 +4915,17 @@ function dOverview(dc, w) {
   const a = discAdh(dc), ss = w >= 1 && w <= dc.weeks ? discSess(dc, w) : [], left = dc.date ? Math.ceil(diffDays(today(), dc.date)) : null, label = ss[0] ? ss[0].label : '';
   const end = w > dc.weeks ? `<div class="card coach"><h3>Dit schema is afgerond</h3><p>Goed gedaan. Je volgde ${a.pct == null ? 0 : a.pct}% van de geplande sessies. Wil je verder? Start een nieuw schema onder Instellingen.</p></div>` : '';
   const head = w <= dc.weeks ? `<div class="card hero"><div class="stats"><div><b>${Math.max(1, w)}</b><span>van ${dc.weeks} weken</span></div>${left != null ? `<div><b>${Math.max(0, left)}</b><span>dagen tot ${dc.id === 'run' ? 'je wedstrijd' : dc.id === 'pl' ? 'de wedstrijd' : 'de wedstrijd'}</span></div>` : ''}${a.pct != null ? `<div><b>${a.pct}%</b><span>sessies gedaan</span></div>` : ''}</div><p><b>${esc(label)}</b>${dc.short ? '. Je wedstrijd is over minder weken dan aanbevolen voor dit doel. Houd de belasting daarom rustig.' : ''}</p>${a.pl ? meter(a.dn, a.pl, 'Gedane sessies') : ''}</div>` : '';
-  const list = ss.map((s, i) => { const x = sessLine(dc, w, i, s), wd = wdOf(x.date); return `<div class="card"><div class="row"><div><b>${esc(s.n)}</b><small>${DAYS_LONG[wd]} ${fmtDate(x.date, { day: 'numeric', month: 'long' })} · ${esc(s.sum || '')}</small></div>${x.done ? '<span class="pill ok">Gedaan</span>' : ''}</div>${s.info ? `<p class="sub">${esc(s.info)}</p>` : ''}${s.rx && s.exs ? `<p class="sub">${esc(s.sum)}</p>` : ''}<div class="btns"><button class="btn sm ${x.done ? 'ghost' : ''}" data-a="discDo" data-key="${x.key}" data-date="${x.date}">${x.done ? 'Nog een keer loggen' : x.date > today() ? 'Alvast bekijken' : 'Start training'}</button></div></div>`; }).join('');
+  const rows = ss.map((s, i) => { const x = sessLine(dc, w, i, s), mv = S.moves.find(m => m.key === x.key && m.from === x.date); return { s, x, at: mv ? mv.to : x.date, moved: !!mv }; }).sort((a, b) => a.at.localeCompare(b.at));
+  const list = rows.map(({ s, x, at, moved }) => `<div class="card"><div class="row"><div><b>${esc(s.n)}</b><small>${DAYS_LONG[wdOf(at)]} ${fmtDate(at, { day: 'numeric', month: 'long' })} · ${esc(s.sum || '')}${moved ? ' · verplaatst' : ''}</small></div>${x.done ? '<span class="pill ok">Gedaan</span>' : ''}</div>${s.info ? `<p class="sub">${esc(s.info)}</p>` : ''}${s.rx && s.exs ? `<p class="sub">${esc(s.sum)}</p>` : ''}<div class="btns"><button class="btn sm ${x.done ? 'ghost' : ''}" data-a="discDo" data-key="${x.key}" data-date="${at}" data-from="${x.date}">${x.done ? 'Nog een keer loggen' : at > today() ? 'Alvast bekijken' : 'Start training'}</button>${x.done ? '' : `<button class="btn ghost sm" data-a="moveAsk" data-key="${x.key}" data-from="${x.date}">Verplaats</button>`}</div></div>`).join('');
+  const wmon = addDays(dMon(dc), (w - 1) * 7), strip = rows.length ? `<div class="wload">${Array.from({ length: 7 }, (_, i) => addDays(wmon, i)).map(d => { const r = rows.filter(y => y.at === d), done = r.length && r.every(y => y.x.done);
+    return `<div class="wl ${r.length ? (done ? 't5' : 't3') : 't0'} ${d === today() ? 'today' : ''}"><b>${DAYS[wdOf(d)]}</b><em>${+d.slice(8)}</em><small>${r.length ? (done ? 'gedaan' : esc(r.map(y => y.s.n.replace(/^[^:]+: /, '')).join(', '))) : 'rust'}</small></div>`; }).join('')}</div>` : '';
   const extra = dc.id === 'run' ? hzCard() + acc('Zo bepaal je de inspanning', '', '<p><b>Praattest:</b> bij een rustige duurloop kun je volledige zinnen zeggen. Bij tempo nog korte zinnen. Bij intervallen lukt alleen een paar woorden.</p><p><b>RPE</b> is je gevoel van inspanning op een schaal van 1 tot 10: 3 tot 4 is rustig, 6 tot 7 is pittig, 8 is stevig.</p><p>Elke vierde week is lichter om te herstellen. Pijn die erger wordt tijdens het lopen, of pijn op de borst of duizeligheid: stop en overleg met je huisarts.</p>') + acc('Waar is dit schema op gebaseerd?', '', `<p><b>Verdeling:</b> het grootste deel van je kilometers loop je rustig en één training per week is echt zwaar. In onderzoek bij getrainde duursporters gaf die verdeling betere tijden dan veel trainen op middelhoge intensiteit. Het aantal studies is klein. <b>Afbouw:</b> de laatste ${['k10', 'hm', 'm'].includes(dc.goal) && dc.weeks >= 10 ? 'twee weken' : 'week'} loop je 40 tot 55% minder, met behoud van tempo en aantal trainingen. Dat gaf in een meta-analyse de beste wedstrijdprestaties. <b>Kracht:</b> twee tot drie krachttrainingen per week verbeteren je loopefficiëntie met 2 tot 8%, zonder dat je zwaarder wordt. Combineer dit schema dus met krachttraining. <b>Herstelweek en opbouw:</b> de lichtere vierde week en het tempo van opbouwen zijn gangbare praktijk, niet apart onderzocht.</p><p class="sub">Bronnen: ${SRC.pol}, ${SRC.taper}, ${SRC.runst}.</p>`)
    : dc.id === 'hx' ? `<button class="btn ghost" data-a="fxGen">Genereer een functional workout</button>` + acc('Waar is dit schema op gebaseerd?', '', `<p>In het eerste onderzoek naar Hyrox duurde het lopen samen langer dan alle stations samen (ongeveer 51 tegenover 33 minuten). Snellere deelnemers hadden een hogere VO2max, meer uren duurtraining en een lager vetpercentage. Maximale kracht bleek minder bepalend. De wall balls aan het eind waren het zwaarst. Het schema legt de nadruk daarom op lopen: intervallen of tempo, een rustige duurloop en lopen gecombineerd met stations. Het onderzoek had 11 deelnemers, dus de conclusies zijn voorlopig. <b>Afbouw:</b> de laatste twee weken train je minder, met behoud van tempo.</p><p class="sub">Bronnen: ${SRC.hyrox}, ${SRC.taper}.</p>`)
    : dc.id === 'pl' ? acc('Waar is dit schema op gebaseerd?', '', `<p><b>Zware gewichten:</b> voor maximale kracht werken zware gewichten beter dan lichte. <b>Frequentie:</b> vaker per week dezelfde lift trainen geeft meer krachtwinst, met afnemende meeropbrengst. Daarom komen squat en bankdrukken meerdere keren per week terug. <b>Inspanning:</b> voor kracht hoef je niet tot falen te gaan. De sets houden 1 tot 3 herhalingen in reserve. <b>Afbouw:</b> hoe je het best piekt voor een wedstrijd is voor krachtsporters nog niet goed onderzocht. De twee lichtere weken met behoud van zware gewichten zijn gangbare praktijk. Dat geldt ook voor de indeling in blokken en de lichtere vierde week.</p><p class="sub">Bronnen: ${SRC.load}, ${SRC.vol2}, ${SRC.rir}, ${SRC.pltaper}.</p>`)
    : dc.id === 'beg' ? acc('Waar is dit schema op gebaseerd?', '', `<p>De beweegrichtlijn van de WHO: minstens 150 minuten matig intensief bewegen per week en twee keer per week spierversterkende oefeningen. Het schema bouwt daar in stappen naartoe, met wandelen en korte krachttrainingen voor het hele lichaam.</p><p class="sub">Bron: ${SRC.who}.</p>`) : '';
-  return `${end}${head}<h3 class="sect">Deze week</h3>${list || '<div class="card"><p>Deze week staan er geen sessies.</p></div>'}${extra}<button class="btn ghost" data-a="go" data-r="training">Naar je weekplan</button>`;
+  return `${end}${head}<h3 class="sect">Deze week</h3>${strip}${list || '<div class="card"><p>Deze week staan er geen sessies.</p></div>'}${extra}<button class="btn ghost" data-a="go" data-r="training">Naar je weekplan</button>`;
 }
-A.discDo = d => { ui.workout = { key: d.key, date: d.date, from: d.date }; ui.wkIdx = 0; ui.tDate = d.date; ui.trainTab = 'week'; draftEnsure(); if (location.hash.slice(1) === 'training') render(); else location.hash = 'training'; window.scrollTo(0, 0); };
+A.discDo = d => { ui.workout = { key: d.key, date: d.date, from: d.from || d.date }; ui.wkIdx = 0; ui.tDate = d.date; ui.trainTab = 'week'; draftEnsure(); if (location.hash.slice(1) === 'training') render(); else location.hash = 'training'; window.scrollTo(0, 0); };
 function dSchema(dc, w) {
   return `<p class="sub">Alle ${dc.weeks} weken. De huidige week staat open.</p>` + Array.from({ length: dc.weeks }, (_, k) => k + 1).map(k => { const ss = discSess(dc, k), dd = dSorted(dc), tot = ss.reduce((a, s) => a + (s.min || 0), 0);
     return acc(`Week ${k}`, `${esc(ss[0] ? ss[0].label : '')}${tot ? ' · ' + tot + ' min' : ''}`, `<ul class="plain lst">${ss.map((s, i) => `<li><span><b>${DAYS[dd[i]]}</b> ${esc(s.n.replace(/^[^:]+: /, ''))}</span><small>${esc(s.sum || '')}</small></li>`).join('')}</ul>`, k === w); }).join('');
