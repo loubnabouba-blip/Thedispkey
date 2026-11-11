@@ -1283,7 +1283,7 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .vday .vh .eyebrow{margin:0;font-size:14px;font-weight:800}
 .vday .vh h1{margin:2px 0 0;font-size:clamp(44px,13vw,56px);line-height:1}
 .vday .vh p{margin:4px 0 0;font-size:17px;font-weight:600;color:var(--ink2)}
-.vhero{padding:var(--s3) var(--s1) var(--s2);border-radius:26px;background:var(--surface);border:1px solid var(--line);margin:0 0 var(--s2);overflow:hidden;display:flex;justify-content:center}
+.vhero{padding:var(--s3) var(--s1) var(--s2);border-radius:26px;background:var(--surface);border:1px solid var(--line);margin:0 0 var(--s2);overflow:hidden;display:flex;justify-content:center;align-items:center}
 .vhero .orc b{font-size:clamp(34px,11vw,46px)}.vhero .orc small{font-size:13px}
 .vgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 var(--s2)}
 .vt{display:flex;flex-direction:column;gap:2px;min-width:0;padding:14px 16px;border-radius:20px;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--c);color:var(--ink);text-align:left;font:inherit;appearance:none;cursor:pointer;min-height:88px}
@@ -1300,7 +1300,7 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .orb:not(.mini) .orr.hit{animation-name:orspin,orflash;animation-timing-function:linear,ease-out;animation-iteration-count:infinite,infinite;animation-delay:0s,var(--fd,0s)}
 .orb:not(.mini) .od.td.on::after{content:"";position:absolute;left:0;top:0;right:0;bottom:0;border-radius:50%;border:2px solid var(--c);animation:orrip 7s ease-out infinite;animation-delay:var(--fd,0s)}
 /* animatie 2: dag afgerond, sleutel draait om */
-.orkey{position:absolute;left:50%;top:50%;width:34px;margin:-30px 0 0 -17px;opacity:0;pointer-events:none;z-index:3}
+.orkey{position:absolute;left:50%;top:50%;width:34px;margin:-35px 0 0 -17px;opacity:0;pointer-events:none;z-index:3}
 @keyframes orkeyin{0%{opacity:0;transform:translateY(60px) rotate(0)}12%{opacity:1;transform:translateY(8px) rotate(0)}20%{opacity:1;transform:translateY(0) rotate(0)}34%,44%{opacity:1;transform:translateY(0) rotate(90deg)}56%{opacity:0;transform:translateY(-14px) rotate(90deg)}100%{opacity:0}}
 @keyframes orcasc{0%,36%{box-shadow:none}44%{border-color:var(--c);box-shadow:0 0 28px var(--c)}70%,100%{box-shadow:0 0 12px color-mix(in srgb,var(--c) 35%,transparent)}}
 @keyframes orboom{0%,36%{box-shadow:0 0 34px color-mix(in srgb,var(--pg) 45%,transparent)}42%{box-shadow:0 0 80px 22px color-mix(in srgb,var(--pg) 90%,transparent)}70%,100%{box-shadow:0 0 34px color-mix(in srgb,var(--pg) 45%,transparent)}}
@@ -1344,7 +1344,7 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .vo2grid span{font-weight:700;font-size:13px;overflow-wrap:normal}.vo2grid>div{padding:var(--s2) !important;min-width:0}.vo2grid small{display:block;font-weight:400;font-size:12px;color:var(--ink2)}
 </style>
 <div id="app">
- <header class="top"><div class="logo"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21M17 12v3M20 12v2"/></svg></i><span>The Discipline Key</span></div><div class="topbtns"><a id="rwchip" class="rwchip" href="#beloningen" aria-label="Beloningen" hidden></a><button id="profbtn" class="themebtn" type="button" data-a="go" data-r="mijn-plan" aria-label="Profiel en plan" title="Profiel en plan"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/></svg></button><button id="themebtn" class="themebtn" type="button" data-a="theme" aria-label="Kleurthema wisselen"></button></div></header>
+ <header class="top"><div class="logo"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21M17 12v3M20 12v2"/></svg></i><span>The Discipline Key</span></div><div class="topbtns"><a id="rwchip" class="rwchip" href="#beloningen" aria-label="Beloningen" hidden></a><button id="themebtn" class="themebtn" type="button" data-a="theme" aria-label="Kleurthema wisselen"></button></div></header>
  <div id="savewarn" role="alert" hidden style="grid-column:1/-1">Opslaan in deze browser lukt niet. Je laatste invoer gaat verloren als je de pagina sluit. Maak een export onder Voortgang.</div>
  <nav id="nav" aria-label="Hoofdnavigatie"></nav>
  <main id="main"></main>
@@ -1974,9 +1974,11 @@ const CARDIO_TYPES = [
   ['other', 'Andere cardio', 'Anders', 'Kies zelf de vorm, duur en afstand.']
 ];
 const cardioDef = (o, key) => ({ key, type: 'cardio', name: o.name, kind: o.kind, info: o.info, custom: true });
+const freeDef = (o, key) => ({ key, type: 'vrij', name: o.name, info: o.info || 'Losse training, eigen invulling.', custom: true });
 function sessionDef(key) {
   if (String(key).startsWith('d:')) return discDef(key);
   const p = S.plan && S.plan.sessions.find(s => s.key === key); if (p) return p;
+  const f = S.extras.find(e => e.free && e.key === key); if (f) return freeDef(f, key);
   const x = S.extras.find(e => e.cardio && e.key === key) || S.cardioWeek.find(e => 'w-' + e.id === key); if (x) return cardioDef(x, key);
   return STATIC_DEFS[key];
 }
@@ -2156,9 +2158,10 @@ const ICONS = {
   disciplines: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4"/>',
   'mijn-doel': '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4"/>',
   plan: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',
-  jij: '<circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/>'
+  jij: '<circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/>',
+  mindful: '<path d="M12 3c-3 3-4 6-4 9a4 4 0 0 0 8 0c0-3-1-6-4-9z"/><path d="M12 15v6M9 21h6"/>'
 };
-const ROUTES = [['home', 'Home'], ['mijn-plan', 'Mijn plan'], ['training', 'Training'], ['voeding', 'Voeding'], ['disciplines', 'Doelen'], ['sport', 'Disciplines'], ['voortgang', 'Voortgang'], ['mijn-doel', 'Mijn doel'], ['beloningen', 'Beloningen']];
+const ROUTES = [['home', 'Home'], ['mijn-plan', 'Mijn plan'], ['training', 'Training'], ['voeding', 'Voeding'], ['disciplines', 'Doelen'], ['sport', 'Disciplines'], ['voortgang', 'Voortgang'], ['mijn-doel', 'Mijn doel'], ['beloningen', 'Beloningen'], ['mindful', 'Mindful']];
 const ico = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
 const GOALS = { kracht: 'Sterker worden', spier: 'Spiermassa opbouwen', vet: 'Vet verliezen', conditie: 'Conditie verbeteren', bewegen: 'Meer bewegen', combi: 'Spier opbouwen en vet verliezen' };
 const ACTS = { laag: 'Laag (zittend werk, weinig lopen)', licht: 'Licht (af en toe lopen of fietsen)', matig: 'Matig (veel staan of fietsen)', hoog: 'Hoog (fysiek werk of veel sport)' };
@@ -2214,11 +2217,10 @@ let toastT; function toast(m) { const t = $('#toast'); t.textContent = m; t.clas
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('#modal-root .overlay')) closeModal(); });
 
 /* --- schaal --- */
-const NAVG = [['home', 'Vandaag', 'home', ['home']], ['plan', 'Plan', 'plan', ['training', 'voeding', 'disciplines']], ['sport', 'Disciplines', 'sport', ['sport']], ['jij', 'Jij', 'jij', ['voortgang', 'beloningen', 'mijn-plan']]];
+const NAVG = [['home', 'Vandaag', 'home', ['home']], ['plan', 'Plan', 'plan', ['training', 'voeding', 'disciplines']], ['sport', 'Disciplines', 'sport', ['sport']], ['mindful', 'Mindful', 'mindful', ['mindful']], ['jij', 'Jij', 'jij', ['voortgang', 'beloningen', 'mijn-plan']]];
 const SUBN = { plan: [['training', 'Training'], ['voeding', 'Voeding'], ['disciplines', 'Doelen']], jij: [['voortgang', 'Voortgang'], ['beloningen', 'Beloningen'], ['mijn-plan', 'Profiel']] };
 const grpOf = r => { const g = NAVG.find(x => x[3].includes(r === 'mijn-doel' ? 'disciplines' : r)); return g ? g[0] : 'home'; };
 function nav() {
-  const pb = $('#profbtn'); if (pb) { pb.classList.toggle('on', route === 'mijn-plan'); if (route === 'mijn-plan') pb.setAttribute('aria-current', 'page'); else pb.removeAttribute('aria-current'); }
   const cur = grpOf(route); ui.last = ui.last || {}; if (cur !== 'home') ui.last[cur] = route === 'mijn-doel' ? 'disciplines' : route;
   $('#nav').innerHTML = NAVG.map(([id, l, ic, rs]) => { const to = id === 'home' ? 'home' : (ui.last[id] || rs[0]); return `<a href="#${to}" class="${cur === id ? 'on' : ''}" ${cur === id ? 'aria-current="page"' : ''}>${ico(ic)}<span>${l}</span></a>`; }).join('');
 }
@@ -2235,7 +2237,7 @@ function render() {
   document.documentElement.dataset.disc = route === 'sport' && ui.disc ? ui.disc : '';
   if (!S.profile || ui.ob) { $('#app').classList.add('ob'); renderOnboarding(); rwHeaderChip(); return; }
   $('#app').classList.remove('ob'); $('#app').classList.toggle('wk', !!ui.workout); nav();
-  const V = { home: vHome, 'mijn-plan': vPlan, training: vTraining, voeding: vFood, voortgang: vProgress, disciplines: goalsPage, sport: vDisc, 'mijn-doel': vMilestone, beloningen: vRewards };
+  const V = { home: vHome, 'mijn-plan': vPlan, training: vTraining, voeding: vFood, voortgang: vProgress, disciplines: goalsPage, sport: vDisc, 'mijn-doel': vMilestone, beloningen: vRewards, mindful: vMindful };
   const entering = route !== ui._lr; ui._lr = route; main.classList.toggle('enter', entering); document.documentElement.dataset.route = route;
   main.innerHTML = subnav() + (V[route] || vHome)();
   $$('details.acc', main).forEach(d => { const k = accKey(d); if (k in ui.open) d.open = ui.open[k]; });
@@ -2365,6 +2367,12 @@ function stepSrcNote() {
   if (m === 'ready') return `<p class="sub">Koppel je telefoon om stappen automatisch te laden. Handmatig invullen kan ook.</p>`;
   return `<p class="sub">Richtwaarde, een schatting</p>`;
 }
+/* ===== MINDFUL: placeholder, later uit te bouwen ===== */
+function vMindful() {
+  return `<section class="home"><div class="vh"><span class="eyebrow">Mindful</span><h1>Mindful</h1><p>Hier komen ademhaling, rust en mindset. Binnenkort meer.</p></div>
+  <div class="card"><h3>Binnenkort</h3><p class="sub">Deze sectie bouwen we later uit met ademhalingsoefeningen, reflectie en slaap/herstel-tips.</p></div></section>`;
+}
+
 /* ===== BELONINGEN: XP, levels, streak, dagdoelen, badges, records ===== */
 const RW_GROUPS = [['push', 'Duwen', ['pushH', 'pushV', 'tri', 'lat']], ['pull', 'Trekken', ['pullV', 'pullH', 'bi', 'rear']], ['legs', 'Benen', ['squat', 'hinge', 'lunge', 'hamcurl', 'calf']], ['core', 'Core', ['core']]];
 const rwGroupOf = pat => (RW_GROUPS.find(g => g[2].includes(pat)) || [null])[0];
@@ -2399,7 +2407,7 @@ function rewards() {
   const logs = [...S.logs].sort((a, b) => a.date.localeCompare(b.date)), best = {}, prs = [], hist = {};
   let sets = 0, vol = 0, workouts = 0, cardio = 0;
   logs.forEach(l => {
-    if (l.type === 'cardio' || l.type === 'segments') { cardio++; add(RW_XP.cardio, 'Cardio: ' + l.name, l.date); return; }
+    if (l.type === 'cardio' || l.type === 'segments' || l.type === 'vrij') { cardio++; add(RW_XP.cardio, 'Training: ' + l.name, l.date); return; }
     workouts++; add(RW_XP.workout + (l.partial ? 0 : RW_XP.full), 'Training: ' + l.name, l.date);
     (l.items || []).forEach(it => {
       let top = 0;
@@ -3038,7 +3046,7 @@ function vHomeClassic() {
   <div class="dash">
    <button class="tile dmini" data-a="gotoFood" aria-label="Voeding: ${(!t || t.missing) ? 'nog niet ingesteld' : n0(eaten.kcal) + ' van ' + t.kcal + ' kcal'}"><h3>Voeding</h3>${food}</button>
    <button class="tile dmini" data-a="stepsAsk" aria-label="Stappen: ${st || 0} van ${stepsGoal}"><h3>Stappen</h3><div class="mini">${miniRing(st || 0, stepsGoal, '#5CC8FF', '', '')}<div class="mnums"><b>${st != null ? (st >= 10000 ? (st / 1000).toFixed(1).replace('.', ',') + 'k' : st.toLocaleString('nl-NL')) : '–'}<small>/${(stepsGoal / 1000).toFixed(stepsGoal % 1000 ? 1 : 0)}k</small></b><span class="msub">${StepSensor.st.mode === 'auto' ? 'automatisch' : StepSensor.st.mode === 'ready' ? 'tik om te koppelen' : 'tik om in te vullen'}</span></div></div></button>
-  </div>${coachCard(coach)}
+  </div>${scheduleLagCard()}${coachCard(coach)}
   ${rwWeekCard()}
   ${compHomeCard()}
   ${S.example ? '<p class="sub">Je gebruikt een voorbeeldprofiel. Pas het aan of wis het bij Profiel.</p>' : ''}</section>`;
@@ -3061,7 +3069,7 @@ function vHomeBento() {
   return `<section class="home vday"><div class="vh"><span class="eyebrow">${fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' })}</span><h1>Vandaag</h1><p>${p.name ? `${greet}, ${esc(p.name)}. ` : ''}${esc(weekLine())}</p></div>
   <a class="vhero" href="#beloningen" aria-label="Streak en beloningen">${rwOrbit(R, false, 330)}</a>
   <div class="vgrid">${tile('t', trainOk, '#C9F24D', 'Training', trainTxt, 'gotoTraining')}${tile('s', stepsOk, '#5CC8FF', 'Stappen', stTxt, 'stepsAsk')}${tile('e', protOk, '#B48CFF', 'Eiwit', prTxt, 'gotoFood')}${tile('c', checkOk, '#FF9F5A', 'Check-in', checkOk ? 'Gedaan' : 'Nog open', 'checkAsk')}</div>
-  ${nextCard}${coachCard(coach)}${rwWeekCard()}${compHomeCard()}
+  ${nextCard}${scheduleLagCard()}${coachCard(coach)}${rwWeekCard()}${compHomeCard()}
   ${S.example ? '<p class="sub">Je gebruikt een voorbeeldprofiel. Pas het aan of wis het bij Profiel.</p>' : ''}
   <p class="center"><button class="link" data-a="homeLayout">Klassieke weergave</button></p></section>`;
 }
@@ -3069,6 +3077,25 @@ A.orbMotion = () => { S.orbMotion = !S.orbMotion; save(); render(); };
 A.homeLayout = () => { S.homeClassic = !S.homeClassic; save(); render(); };
 const scale = (cur, [lo, hi]) => `<option value="">–</option>` + [1, 2, 3, 4, 5].map(i => `<option value="${i}" ${cur === i ? 'selected' : ''}>${i}${i === 1 ? ' (' + lo + ')' : i === 5 ? ' (' + hi + ')' : ''}</option>`).join('');
 
+/* ===== Achterstand op schema: melding + optie om te pauzeren ===== */
+function scheduleLag() {
+  if (!S.plan || !S.planStart) return null;
+  const T = today(); if (S.planStart > T) return null;
+  const dis = S.nsDismiss || {}; if (dis.schedlag === T) return null;
+  const since = addDays(T, -13), start = since < S.planStart ? S.planStart : since;
+  let planned = 0, done = 0;
+  for (let d = start; d < T; d = addDays(d, 1)) {
+    sessionsOn(d).filter(s => !String(s.key).startsWith('d:')).forEach(s => { planned++; if (isDone(s.from, s.key)) done++; });
+  }
+  if (planned < 4) return null;
+  const missed = planned - done;
+  if (missed >= 3 && missed / planned >= 0.4) return { missed, planned };
+  return null;
+}
+function scheduleLagCard() {
+  const lag = scheduleLag(); if (!lag) return '';
+  return `<div class="card"><h3>Je loopt achter op schema</h3><p class="note warn">Je hebt ${lag.missed} van de ${lag.planned} geplande trainingen van de afgelopen periode gemist. Dat kan gebeuren; je kunt je schema een week pauzeren zodat de planning meeschuift in plaats van zich op te stapelen.</p><div class="btns"><button class="btn sm" data-a="pauseWeek">Pauzeer een week</button><button class="btn ghost sm" data-a="nsDismiss" data-id="schedlag">Niet nu</button></div></div>`;
+}
 /* ===== Volgende stap: een kaart die zichzelf aandient (check-in, weging, foto, herstel) ===== */
 function nextStep() {
   const T = today(), dis = S.nsDismiss || {}, ok = id => dis[id] !== T, hr = new Date().getHours(), p = S.profile || {};
@@ -3455,7 +3482,17 @@ A.addTrainAsk = d => { const date = d.date, ks = S.plan.sessions.filter(s => s.t
    <h4>Cardio</h4><label class="chip"><input type="checkbox" id="addrep"><span>Herhaal elke ${DAYS_LONG[wdOf(date)].toLowerCase()}</span></label>
    ${CARDIO_TYPES.map(c => `<button class="opt" data-a="addCardio" data-t="${c[0]}" data-date="${date}"><b>${c[1]}</b><small>${c[3]}</small></button>`).join('')}
    <h4>Training uit je schema</h4>${ks.map(s => `<button class="opt" data-a="addKracht" data-key="${s.key}" data-date="${date}"><b>${esc(s.name)}</b><small>${sessionMeta(s, s.key)}</small></button>`).join('')}
+   <h4>Eigen training</h4><button class="opt" data-a="addFreeAsk" data-date="${date}"><b>+ Losse training inplannen</b><small>Eigen naam, buiten je schema om</small></button>
    <div class="btns end"><button class="btn ghost" data-a="close">Sluiten</button></div>`, true); };
+A.addFreeAsk = d => { const date = d.date;
+  modal(`<h3>Losse training inplannen</h3><p class="sub">${fmtDate(date, { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+   <form data-submit="addFreeSave"><input type="hidden" name="date" value="${date}"><label class="f">Naam<input name="name" maxlength="40" placeholder="Bijv. Boksles, wandeling, extra rug" required autofocus></label>
+   <label class="f">Toelichting (optioneel)<input name="info" maxlength="60" placeholder="Bijv. 45 min, los tempo"></label>
+   <div class="btns end"><button type="button" class="btn ghost" data-a="addTrainAsk" data-date="${date}">Terug</button><button class="btn">Toevoegen</button></div></form>`, true);
+  setTimeout(() => { const el = $('.dialog input[name=name]'); el && el.focus(); }, 0); };
+F.addFreeSave = (f, fd) => { const date = fd.get('date'), name = (fd.get('name') || '').trim(); if (!name) return;
+  const id = uid(); S.extras.push({ id, date, key: 'x-' + id, name, info: (fd.get('info') || '').trim() || undefined, free: true });
+  ui.tDate = date; save(); closeModal(); render(); toast('Losse training ingepland.'); };
 A.addCardio = d => { const c = CARDIO_TYPES.find(x => x[0] === d.t), rep = $('#addrep') && $('#addrep').checked, id = uid(), o = { id, name: c[1], kind: c[2], info: c[3], cardio: true };
   if (rep) { o.wd = wdOf(d.date); S.cardioWeek.push(o); } else { o.date = d.date; o.key = 'x-' + id; S.extras.push(o); }
   ui.tDate = d.date; save(); closeModal(); render(); toast(rep ? 'Toegevoegd aan je vaste weekschema.' : 'Toegevoegd aan je agenda.'); };
@@ -3584,7 +3621,7 @@ A.exInfo = d => {
 A.openWorkout = d => { ui.workout = { key: d.key, date: d.date, from: d.from }; ui.wkIdx = 0; draftEnsure(); if (route !== 'training') go('training'); else render(); window.scrollTo(0, 0); };
 function draftEnsure() {
   const wk = ui.workout, def = sessionDef(wk.key); let dr = S.draft;
-  if (!dr || dr.key !== wk.key || dr.date !== wk.date) { dr = S.draft = { key: wk.key, date: wk.date, from: wk.from, startedAt: Date.now(), items: [], segs: [], cardio: { kind: def.kind || 'Wandelen', min: def.min || '', km: '', rpe: '' } }; }
+  if (!dr || dr.key !== wk.key || dr.date !== wk.date) { dr = S.draft = { key: wk.key, date: wk.date, from: wk.from, startedAt: Date.now(), items: [], segs: [], cardio: { kind: def.kind || 'Wandelen', min: def.min || '', km: '', rpe: '' }, free: { min: '', rpe: '', note: '' } }; }
   if (def.type === 'kracht') {
     const old = Object.fromEntries(dr.items.map(i => [i.ex, i]));
     dr.items = sessionExs(wk.key).map(id => old[id] || { ex: id, sets: Array.from({ length: rx(id, wk.key).sets }, () => ({ w: '', r: '' })), rpe: '' });
@@ -3597,6 +3634,14 @@ function vWorkout() {
   const head = `<button class="btn ghost sm" data-a="wkClose">‹ Terug</button><p class="eyebrow">${fmtDate(wk.date, { weekday: 'long', day: 'numeric', month: 'long' })}</p><h1>${esc(def.name)}</h1>`;
   if (def.type === 'segments') return `<section>${head}<div class="card"><p class="sub">${esc(def.info)}</p>${dr.segs.map((v, i) => `<div class="seg-row"><span>${esc(def.segs[i])}</span><input data-c="seg" data-i="${i}" placeholder="m:ss" inputmode="numeric" aria-label="Tijd ${esc(def.segs[i])}" value="${esc(v)}"></div>`).join('')}
    <div class="btns sticky"><button class="btn" data-a="wkFinish">Afronden</button><button class="btn ghost" data-a="wkDiscard">Verwerpen</button></div></div></section>`;
+  if (def.type === 'vrij') {
+    const fr = dr.free;
+    return `<section>${head}<div class="card"><p class="sub">${esc(def.info)}</p>
+    <div class="grid2"><label class="f">Duur (minuten, optioneel)<input data-c="free" data-k="min" type="number" inputmode="numeric" min="0" value="${fr.min}"></label>
+    <label class="f">Ervaren inspanning (1–10, optioneel)<input data-c="free" data-k="rpe" type="number" inputmode="numeric" min="1" max="10" value="${fr.rpe}"></label></div>
+    <label class="f">Notitie (optioneel)<input data-c="free" data-k="note" value="${esc(fr.note || '')}"></label>
+    <div class="btns"><button class="btn" data-a="wkFinish">Afronden</button><button class="btn ghost" data-a="wkDiscard">Verwerpen</button></div></div></section>`;
+  }
   if (def.type === 'cardio') {
     const c = dr.cardio;
     return `<section>${head}<div class="card">${def.info ? `<p>${esc(def.info)}</p>` : ''}<p class="sub">Alleen wat je invult wordt opgeslagen. Rustige duurtraining voelt als praten kunnen; bij intervallen wissel je korte inspanningen af met rust.</p>
@@ -3707,6 +3752,7 @@ A.restSkip = () => stopRest();
 setInterval(() => { if (restEnd || restDone) paintRest(); else if ($('#rest') && !$('#rest').hidden) paintRest(); }, 250);
 C.rpe = el => { S.draft.items[+el.dataset.idx].rpe = el.value; save(); };
 C.cardio = el => { S.draft.cardio[el.dataset.k] = el.value; save(); };
+C.free = el => { S.draft.free[el.dataset.k] = el.value; save(); };
 C.seg = el => { S.draft.segs[+el.dataset.i] = el.value; save(); };
 A.setType = d => { S.draft.items[+d.idx].sets[+d.i].t = d.t; save(); render(); };
 A.setBelow = d => { const sets = S.draft.items[+d.idx].sets, o = sets[+d.i]; sets.splice(+d.i + 1, 0, { w: o.w, r: '', t: o.t === 'warm' ? '' : o.t }); save(); render(); };
@@ -3724,13 +3770,16 @@ A.wkFinish = () => { hap('ok');
   } else if (def.type === 'cardio') {
     const c = dr.cardio, mn = num(c.min) || 0;
     S.logs.push({ id: uid(), date: wk.date, planDate: wk.from, key: wk.key, name: def.name, type: 'cardio', items: [], cardio: { kind: c.kind, min: mn, km: num(c.km, 1), rpe: num(c.rpe) }, min: mn, partial: !mn });
+  } else if (def.type === 'vrij') {
+    const fr = dr.free, mn = num(fr.min) || 0;
+    S.logs.push({ id: uid(), date: wk.date, planDate: wk.from, key: wk.key, name: def.name, type: 'vrij', items: [], free: { min: mn, rpe: num(fr.rpe), note: (fr.note || '').trim() }, min: mn, partial: false });
   } else {
     const items = dr.items.map(it => ({ ex: it.ex, name: EX[it.ex].name, rpe: it.rpe ? +it.rpe : null, sets: it.sets.filter(s => num(s.r) > 0).map(s => ({ w: num(s.w, 1) || 0, r: +s.r, ...(s.t ? { t: s.t } : {}) })), planned: it.sets.length })).filter(it => it.sets.length);
     const partial = items.length < dr.items.length || items.some(i => i.sets.length < i.planned);
     const min = clamp(Math.round((Date.now() - dr.startedAt) / 60000), 5, 180);
     S.logs.push({ id: uid(), date: wk.date, planDate: wk.from, key: wk.key, name: def.name, type: 'kracht', items, partial, min });
   }
-  const empty = (def.type === 'kracht' && !S.logs[S.logs.length - 1].items.length) || (def.type === 'segments' && !S.logs[S.logs.length - 1].segs.length) || (def.type === 'cardio' && !S.logs[S.logs.length - 1].min);
+  const empty = (def.type === 'kracht' && !S.logs[S.logs.length - 1].items.length) || (def.type === 'segments' && !S.logs[S.logs.length - 1].segs.length) || (def.type === 'cardio' && !S.logs[S.logs.length - 1].min) || (def.type === 'vrij' && !S.logs[S.logs.length - 1].min && !S.logs[S.logs.length - 1].free.note);
   const lg = S.logs[S.logs.length - 1];
   stopRest(); S.draft = null; ui.workout = null; save(); render(); toast(empty ? 'Training afgerond zonder ingevulde gegevens.' : 'Training opgeslagen. Mooi werk.');
   if (lg.type === 'kracht' && lg.items.length) afterFinish(lg);
@@ -4870,7 +4919,26 @@ function measCard() {
   const k = MEAS.some(m => m[0] === ui.measSel) ? ui.measSel : 'arm', m = MEAS.find(x => x[0] === k), h = measHist(k), last = h[h.length - 1], first = h[0];
   const line = ([key, , c]) => { const [y, , x1, x2] = MPOS[key], on = key === k; return `<line x1="${x1}" x2="${x2}" y1="${y}" y2="${y}" stroke="${c}" stroke-width="${on ? 6 : 3}" stroke-linecap="round" opacity="${on ? 1 : .75}"/>`; };
   const pill = ([key, l, c]) => { const [y, side] = MPOS[key], has = measHist(key).length > 0; return `<button type="button" class="mpill ${key === k ? 'on' : ''} ${has ? 'has' : ''}" style="--c:${c};top:calc(${(y / 320 * 100).toFixed(1)}% - 17px);${side === 'l' ? 'left:0' : 'right:0'}" data-a="measSel" data-k="${key}" aria-pressed="${key === k}">${l}</button>`; };
-  const fig = `<svg class="mfig" viewBox="0 0 200 320" aria-hidden="true"><g fill="none" stroke="rgba(148,163,184,.22)" stroke-linecap="round" stroke-linejoin="round"><circle cx="100" cy="26" r="17" fill="rgba(148,163,184,.22)" stroke="none"/><path d="M44 62Q44 54 56 54L144 54Q156 54 156 62L148 120Q146 140 140 150L146 178L54 178L60 150Q54 140 52 120Z" fill="rgba(148,163,184,.22)" stroke="none"/><path d="M38 70L28 150L24 215M162 70L172 150L176 215" stroke-width="18"/><path d="M78 180L72 255L70 305M122 180L128 255L130 305" stroke-width="30"/></g>${MEAS.map(line).join('')}</svg>`;
+  const fig = `<svg class="mfig" viewBox="0 0 200 320" aria-hidden="true"><g fill="rgba(148,163,184,.3)" transform="scale(2 1.52381)">
+   <ellipse cx="50" cy="14" rx="9" ry="11"/>
+   <path d="M45 24 L55 24 L56 31 L44 31 Z"/>
+   <path d="M37 33 Q27 31 24 40 Q24 46 29 47 Q33 40 38 37 Z"/>
+   <path d="M63 33 Q73 31 76 40 Q76 46 71 47 Q67 40 62 37 Z"/>
+   <path d="M49 34 L39 35 Q33 39 34 48 Q41 54 49 52 Z"/>
+   <path d="M51 34 L61 35 Q67 39 66 48 Q59 54 51 52 Z"/>
+   <path d="M25 48 Q22 56 24 64 Q28 66 31 63 Q32 55 30 48 Z"/>
+   <path d="M75 48 Q78 56 76 64 Q72 66 69 63 Q68 55 70 48 Z"/>
+   <path d="M23 66 Q19 78 21 90 L25 90 Q29 78 30 66 Z"/>
+   <path d="M77 66 Q81 78 79 90 L75 90 Q71 78 70 66 Z"/>
+   <path d="M42 55 Q50 52 58 55 L57 90 Q50 95 43 90 Z"/>
+   <path d="M35 52 Q34 70 38 88 L42 90 L41 56 Z"/>
+   <path d="M65 52 Q66 70 62 88 L58 90 L59 56 Z"/>
+   <path d="M38 92 Q50 99 62 92 L60 100 Q50 104 40 100 Z"/>
+   <path d="M38 96 Q31 112 33 140 Q38 148 45 144 Q49 120 48 98 Z"/>
+   <path d="M62 96 Q69 112 67 140 Q62 148 55 144 Q51 120 52 98 Z"/>
+   <path d="M35 150 Q33 168 36 190 L42 190 Q45 170 44 150 Z"/>
+   <path d="M65 150 Q67 168 64 190 L58 190 Q55 170 56 150 Z"/>
+  </g>${MEAS.map(line).join('')}</svg>`;
   const val = last ? n1(last[k]).replace('.', ',') : '–', d = last && first && h.length > 1 ? last[k] - first[k] : null;
   const sub = !h.length ? 'Nog niet gemeten.' : h.length === 1 ? 'Eén meting. Vanaf de tweede zie je het verschil.' : `Eerst ${n1(first[k])} cm · ${d > 0 ? '+' : ''}${n1(d)} cm sinds ${fmtDate(first.date, { day: 'numeric', month: 'short' })}`;
   return `<div class="card mcard"><div class="mhead"><h3>Omtrek</h3><small>tik een lint</small></div><div class="mwrap">${fig}${MEAS.map(pill).join('')}</div>
