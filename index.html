@@ -2294,7 +2294,7 @@ function routeFrom(h) {
   return ROUTES.some(r => r[0] === h) ? h : 'home';
 }
 function go(r) { if (location.hash.slice(1) === r) { render(); } else location.hash = r; }
-window.addEventListener('hashchange', () => { try { closeModal(); } catch (e) {} try { stopSpeak(); } catch (e) {} ui.readingGuide = null; route = routeFrom(location.hash.slice(1)); ui.workout = (route === 'training' && ui.workout) ? ui.workout : null; render(); window.scrollTo(0, 0); });
+window.addEventListener('hashchange', () => { try { closeModal(); } catch (e) {} route = routeFrom(location.hash.slice(1)); ui.workout = (route === 'training' && ui.workout) ? ui.workout : null; render(); window.scrollTo(0, 0); });
 
 /* --- onboarding --- */
 const DIETS = [['omni', 'Alles eten'], ['nopork', 'Geen varkensvlees'], ['halal', 'Halal'], ['pesc', 'Pescotarisch (geen vlees, wel vis)'], ['veg', 'Vegetarisch'], ['vegan', 'Veganistisch']];
@@ -2434,28 +2434,6 @@ const MIND_AUDIO = [
   { name: 'Insight Timer', desc: 'De grootste gratis bibliotheek met begeleide meditaties en ademhalingssessies ter wereld, ook in het Nederlands; geen YouTube nodig.', url: 'https://insighttimer.com' },
   { name: 'Spotify', desc: 'Gratis (met reclame) te beluisteren mindfulness- en ontspanningspodcasts en -playlists, bijvoorbeeld bodyscans en slaapmeditaties.', url: 'https://open.spotify.com/search/mindfulness%20ademhaling' }
 ];
-function pickVoice() {
-  try { const vs = window.speechSynthesis ? speechSynthesis.getVoices() : []; return vs.find(v => v.lang && v.lang.toLowerCase().startsWith('nl')) || vs[0] || null; } catch (e) { return null; }
-}
-function speak(text, onend) {
-  if (!('speechSynthesis' in window)) { if (onend) onend(); return; }
-  try {
-    const u = new SpeechSynthesisUtterance(text), v = pickVoice();
-    if (v) u.voice = v; u.lang = (v && v.lang) || 'nl-NL'; u.rate = .95;
-    if (onend) u.onend = onend;
-    speechSynthesis.speak(u);
-  } catch (e) { if (onend) onend(); }
-}
-function stopSpeak() { try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch (e) {} }
-function speakSteps(id, steps, i) {
-  if (ui.readingGuide !== id) return;
-  if (i >= steps.length) { ui.readingGuide = null; render(); return; }
-  speak(steps[i], () => speakSteps(id, steps, i + 1));
-}
-A.relaxSpeak = d => {
-  if (ui.readingGuide === d.id) { stopSpeak(); ui.readingGuide = null; render(); return; }
-  stopSpeak(); ui.readingGuide = d.id; render(); speakSteps(d.id, RELAX_GUIDES[d.id].steps, 0);
-};
 function mindLog() { S.mindful = S.mindful || { log: [] }; return S.mindful.log; }
 function logMindful(type, name, sec) {
   const l = mindLog(); l.push({ date: today(), type, name, sec }); if (l.length > 300) S.mindful.log = l.slice(-300); save();
@@ -2473,7 +2451,6 @@ function breathState(b) {
   while (idx < p.phases.length - 1 && t >= p.phases[idx][1]) { t -= p.phases[idx][1]; idx++; }
   return { p, idx, left: Math.max(0, Math.ceil(p.phases[idx][1] - t)), cycles, elapsed: el };
 }
-let _breathSpokenIdx = -1;
 function paintBreath() {
   const b = ui.breath; if (!b) return; const wrap = $('#bwrap'); if (!wrap) return;
   const st = breathState(b), ring = $('#bcircle', wrap);
@@ -2481,39 +2458,34 @@ function paintBreath() {
   const ph = $('#bphase', wrap); if (ph) ph.textContent = b.running ? st.p.phases[st.idx][0] + ' · ' + st.left : 'Klaar om te starten';
   const cy = $('#bcycles', wrap); if (cy) cy.textContent = st.cycles;
   const min = $('#bmin', wrap); if (min && b.running) min.textContent = Math.max(0, Math.ceil(b.minutes - st.elapsed / 60));
-  if (b.running && b.voice !== false && st.idx !== _breathSpokenIdx) { _breathSpokenIdx = st.idx; speak(st.p.phases[st.idx][0]); }
   if (b.running && b.minutes && st.elapsed >= b.minutes * 60) { breathStop(true); render(); }
 }
 setInterval(() => { if (ui.breath && $('#bwrap')) paintBreath(); }, 500);
 function breathStop(doLog) {
   const b = ui.breath; if (!b || !b.running) return;
-  const sec = Math.round((Date.now() - b.startedAt) / 1000); b.running = false; stopSpeak();
+  const sec = Math.round((Date.now() - b.startedAt) / 1000); b.running = false;
   if (doLog && sec >= 20) { logMindful('ademhaling', BREATH_PATTERNS[b.pattern].name, sec); toast('Mooi gedaan. ' + Math.max(1, Math.round(sec / 60)) + ' min ademhaling gelogd.'); }
 }
-A.mindTab = d => { stopSpeak(); ui.readingGuide = null; ui.mTab = d.t; render(); };
+A.mindTab = d => { ui.mTab = d.t; render(); };
 A.breathPattern = d => { const b = ui.breath; if (b.running) breathStop(false); b.pattern = d.id; render(); };
 A.breathMin = d => { ui.breath.minutes = +d.m; render(); };
-A.breathToggle = () => { const b = ui.breath; if (b.running) breathStop(true); else { b.startedAt = Date.now(); b.running = true; _breathSpokenIdx = -1; } render(); };
-A.breathVoice = () => { const b = ui.breath; b.voice = b.voice === false; if (b.voice === false) stopSpeak(); render(); };
-A.relaxDone = d => { const g = RELAX_GUIDES[d.id]; if (ui.readingGuide === d.id) { stopSpeak(); ui.readingGuide = null; } logMindful('ontspanning', g.name, 0); toast(g.name + ' gelogd. Goed gedaan.'); render(); };
+A.breathToggle = () => { const b = ui.breath; if (b.running) breathStop(true); else { b.startedAt = Date.now(); b.running = true; } render(); };
+A.relaxDone = d => { const g = RELAX_GUIDES[d.id]; logMindful('ontspanning', g.name, 0); toast(g.name + ' gelogd. Goed gedaan.'); render(); };
 function vBreathTab() {
-  if (!ui.breath) ui.breath = { pattern: '478', minutes: 3, running: false, startedAt: 0, voice: true };
-  const b = ui.breath, p = BREATH_PATTERNS[b.pattern], st = breathState(b), voiceOn = b.voice !== false;
-  const hasSpeech = ('speechSynthesis' in window);
+  if (!ui.breath) ui.breath = { pattern: '478', minutes: 3, running: false, startedAt: 0 };
+  const b = ui.breath, p = BREATH_PATTERNS[b.pattern], st = breathState(b);
   const pats = Object.values(BREATH_PATTERNS).map(x => `<button class="bpat ${b.pattern === x.id ? 'on' : ''}" data-a="breathPattern" data-id="${x.id}" ${b.running ? 'disabled' : ''}><span><b>${esc(x.name)}</b><small>${esc(x.blurb)}</small></span>${b.pattern === x.id ? '✓' : ''}</button>`).join('');
   const mins = [2, 3, 5, 10].map(m => `<button class="chipb ${b.minutes === m ? 'on' : ''}" data-a="breathMin" data-m="${m}" ${b.running ? 'disabled' : ''}>${m} min</button>`).join('');
   return `<div class="card breathwrap" id="bwrap">
    <div class="bcircle ${p.cls} ${b.running ? 'running' : ''}" id="bcircle"><span id="bphase">${b.running ? st.p.phases[st.idx][0] + ' · ' + st.left : 'Klaar om te starten'}</span></div>
    <div class="bmeta"><div><b id="bcycles">${st.cycles}</b><small>ademhalingen</small></div><div><b id="bmin">${b.minutes}</b><small>min te gaan</small></div></div>
    <button class="btn lg" data-a="breathToggle">${b.running ? 'Stop' : 'Start ' + p.name}</button>
-   ${hasSpeech ? `<button class="btn ghost sm" data-a="breathVoice">${voiceOn ? '🔊 Gesproken fases aan' : '🔇 Gesproken fases uit'}</button>` : ''}
   </div>
   <div class="card"><h3>Patroon</h3><div class="bpats">${pats}</div><h3>Duur</h3><div class="chips">${mins}</div></div>
   <small class="fine">Ademhalingsoefeningen zijn geen vervanging voor medische zorg. Voel je duizelig of benauwd, stop dan en adem gewoon normaal door.</small>`;
 }
 function vRelaxTab() {
-  const hasSpeech = ('speechSynthesis' in window);
-  const cards = Object.entries(RELAX_GUIDES).map(([id, g]) => `<div class="card"><h3>${esc(g.name)} <small class="fine">· ${esc(g.dur)}</small></h3><p class="sub">${esc(g.desc)}</p>${acc('Stap voor stap', g.steps.length + ' stappen', `<ol class="steps-l">${g.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>`)}<div class="chips">${hasSpeech ? `<button class="btn ghost sm" data-a="relaxSpeak" data-id="${id}">${ui.readingGuide === id ? '⏹ Stop voorlezen' : '🔊 Lees voor'}</button>` : ''}<button class="btn sm" data-a="relaxDone" data-id="${id}">Markeer als gedaan</button></div></div>`).join('');
+  const cards = Object.entries(RELAX_GUIDES).map(([id, g]) => `<div class="card"><h3>${esc(g.name)} <small class="fine">· ${esc(g.dur)}</small></h3><p class="sub">${esc(g.desc)}</p>${acc('Stap voor stap', g.steps.length + ' stappen', `<ol class="steps-l">${g.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>`)}<button class="btn sm" data-a="relaxDone" data-id="${id}">Markeer als gedaan</button></div>`).join('');
   return cards;
 }
 function vMindVideos() {
