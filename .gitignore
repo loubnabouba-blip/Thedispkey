@@ -1,0 +1,18 @@
+.DS_Store
+node_modules/
+.backup-before-health-removal/
+
+# Gegenereerd: kopie van de site voor de iOS-app (npm run prepare-web)
+/www/
+/ios/App/App/public/
+/ios/App/App/capacitor.config.json
+/ios/App/App/config.xml
+
+# Xcode-buildresultaten en gebruikersinstellingen
+/ios/DerivedData/
+xcuserdata/
+
+# Tweede iOS-project (Discipline Key): alleen de al gevolgde scripts blijven in git
+/ios-app/ios/
+/ios-app/www/
+/ios-app/package-lock.json

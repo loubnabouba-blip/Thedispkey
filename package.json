@@ -1,0 +1,28 @@
+{
+  "name": "thedispkey",
+  "version": "1.0.0",
+  "description": "",
+  "main": "sw.js",
+  "scripts": {
+    "prepare-web": "node scripts/prepare-web.mjs",
+    "ios": "node scripts/prepare-web.mjs && npx cap sync ios",
+    "iphone": "sh scripts/iphone.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loubnabouba-blip/Thedispkey.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/loubnabouba-blip/Thedispkey/issues"
+  },
+  "homepage": "https://github.com/loubnabouba-blip/Thedispkey#readme",
+  "dependencies": {
+    "@capacitor/cli": "^8.6.0",
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/ios": "^8.6.0"
+  }
+}
