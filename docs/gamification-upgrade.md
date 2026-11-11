@@ -179,7 +179,15 @@ update public.game_config set value = jsonb_set(value, '{drop,base}', '0.10') wh
 
 ## 7. Migratie en synchronisatie
 
-1. Inloggen gaat met een e-mailcode (`signInWithOtp` + `verifyOtp`). Dat werkt in de iOS-app zonder deep links.
+1. **Registratie via Supabase Auth** (migratie `20261111130000_auth_profiles.sql`):
+   - **Registreren:** naam, e-mail en wachtwoord (minimaal 8 tekens) via `signUp`. De naam gaat als metadata mee, en een trigger maakt direct een rij in `profiles` (1-op-1 met `auth.users.id`: `display_name`, `avatar_url`, `onboarding_status`).
+   - **Bevestigen is verplicht:** met de 6-cijferige code uit de mail (`verifyOtp`, type `signup`) of via de link. Een onbevestigd account kan niet inloggen. Daarnaast weigert de server zelf alle `gm_*`-RPC's (`gm:email_unverified`) en cloud-sync (RLS).
+   - **Inloggen:** met e-mail en wachtwoord. Wie nog niet bevestigd is, komt terug in de bevestigstap, met een knop om de mail opnieuw te sturen.
+   - **Wachtwoord vergeten:** een code per mail (`resetPasswordForEmail` → `verifyOtp` type `recovery` → `updateUser`).
+   - **Met code (zonder wachtwoord):** een code plus magic link per mail. Dat bevestigt het adres meteen.
+   - Alle stappen werken met codes, dus ook in de iOS-app zonder deep links.
+   - **Profiel:** na inloggen wordt `onboarding_status` op `klaar` gezet als het lokale profiel al bestaat. De naam wordt aangevuld vanuit de app als die nog leeg is. Clients mogen alleen `display_name`, `avatar_url` en `onboarding_status` wijzigen (kolomrechten). De avatar moet een https-adres zijn.
+   - **Wegwerp-adressen:** verplichte bevestiging maakt misbruik lastiger, maar blokkeert geen wegwerpdiensten. Doe dat zo nodig met een Auth-hook (*Before User Created*) of CAPTCHA (Auth → Attack Protection).
 2. Bij de **eerste login** berekent de client de oude lokale stand (streak, record, totaal, beschermers, laatste gewonnen dag) en roept `gm_migrate_local` aan:
    - De reeks telt alleen als de laatste gewonnen dag vandaag of gisteren was. Waarden worden begrensd (reeks ≤ 400, beschermers ≤ cap).
    - De app-state gaat naar `user_state`. Bestaande cloud-data (van een ander toestel) wordt nooit overschreven.
@@ -209,11 +217,13 @@ Schaars en nooit schuldgevoel-gedreven:
 ## 10. Uitrol
 
 1. **Supabase-project "Discipline" hervatten.** Het staat op *paused*.
-2. Migratie draaien: `supabase db push` of de SQL in de SQL-editor plakken.
-3. **Auth → Email Templates → Magic Link:** zet `{{ .Token }}` in de mail, zodat gebruikers een 6-cijferige code krijgen.
-4. **Auth → URL/Rate limits:** controleer de OTP-limieten (standaard 1 mail per 60 s).
-5. `gm/config.js`: vul de **publishable key** in (nooit de service_role key).
-6. Testen: `supabase/tests/README.md`.
+2. Migraties draaien, in volgorde: `supabase db push`, of beide bestanden uit `supabase/migrations/` in de SQL-editor plakken.
+3. **Auth → Providers → Email:** zet *Confirm email* aan, en zet de minimale wachtwoordlengte op 8.
+4. **Auth → Email Templates:** zet `{{ .Token }}` in *Confirm signup*, *Magic Link* en *Reset Password*, zodat gebruikers de code kunnen invullen. De link mag blijven staan.
+5. **Auth → SMTP:** stel een eigen SMTP-dienst in (de ingebouwde verzending is beperkt tot een paar mails per uur) en controleer de rate limits.
+6. **Auth → URL Configuration:** *Site URL* = het adres van de web-app, zodat de bevestigingslink daar uitkomt.
+7. `gm/config.js`: vul de **publishable key** in (nooit de service_role key).
+8. Testen: `supabase/tests/README.md`.
 
 ## 11. Meten
 

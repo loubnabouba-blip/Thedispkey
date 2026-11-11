@@ -181,6 +181,23 @@ header.top{position:relative}
 .gm-ctahead{display:grid;grid-template-columns:auto 1fr;gap:var(--s3);align-items:center}
 .gm-ctahead h3{margin:0}
 .gm-ctahead .gm-coinstack{width:56px;height:56px;font-size:28px}
+/* account: registreren, inloggen, bevestigen */
+.gm-acc{display:grid;gap:var(--s2)}
+.gm-acc h3{margin:0}
+.gm-authtabs{margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.gm-authtabs button{padding:0 6px}
+.gm-authf{gap:var(--s2)!important}
+.gm-authf .f{margin:0}
+.gm-pwrow{position:relative;display:block}
+.gm-pwrow input{width:100%;padding-right:52px}
+.gm-eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:44px;height:44px;border:0;background:none;font-size:18px;cursor:pointer;opacity:.7;border-radius:12px}
+.gm-eye:focus-visible{outline:2px solid var(--pg)}
+.gm-verify{display:grid;justify-items:center;text-align:center;gap:6px}
+.gm-mailic{font-size:42px;line-height:1;animation:gm-pop .6s var(--gm-spring) both}
+.gm-authmsg{margin:0;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--gm-risk) 12%,var(--surface2));color:var(--head);font-size:15px;animation:gm-rise .35s var(--ease) both}
+.gm-authmsg.ok{background:color-mix(in srgb,var(--pg) 14%,var(--surface2))}
+.btn.gm-loading{position:relative;color:transparent!important}
+.btn.gm-loading::after{content:"";position:absolute;inset:0;margin:auto;width:20px;height:20px;border-radius:50%;border:2.5px solid currentColor;border-color:#0B1220 transparent #0B1220 transparent;animation:gm-spin .8s linear infinite}
 
 /* =====================================================================
    App-brede micro-interacties
