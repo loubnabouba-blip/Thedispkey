@@ -5,7 +5,8 @@
   "main": "sw.js",
   "scripts": {
     "prepare-web": "node scripts/prepare-web.mjs",
-    "ios": "node scripts/prepare-web.mjs && npx cap sync ios"
+    "ios": "node scripts/prepare-web.mjs && npx cap sync ios",
+    "iphone": "sh scripts/iphone.sh"
   },
   "repository": {
     "type": "git",
