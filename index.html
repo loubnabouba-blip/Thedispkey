@@ -1008,7 +1008,7 @@ button,.btn,.chip,.seg button,#nav a,.dcard,.rwcard,summary{-webkit-user-select:
 .mtab .mh span:not(:first-child),.mtab .mr span:not(:first-child){text-align:right;font-variant-numeric:tabular-nums}
 .mtab .mr small{display:block;color:var(--ink2);font-size:11px;line-height:1.2}.mtab .mr .none{grid-column:2/-1;color:var(--ink2)}
 .cutctl .chips{margin:var(--s1) 0}.cutctl small{display:block;color:var(--ink2)}
-.steps{margin:0 0 var(--s3);padding-left:20px;display:grid;gap:var(--s1)}
+
 .compnav .btn{flex:1 1 140px}
 .upd{position:fixed;left:16px;right:16px;bottom:calc(112px + env(safe-area-inset-bottom,0px));z-index:80;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:10px 12px 10px 16px;border-radius:16px;background:var(--surface2);border:1px solid var(--line);box-shadow:0 8px 28px rgba(0,0,0,.4)}.upd .btn{min-height:44px}
 .card,.tile,.dialog,section{overflow-wrap:break-word;min-width:0}
@@ -1563,7 +1563,7 @@ function rpSettings() {
   const has = RP.hasKey(), cnt = RP.count(), tot = RECIPES.length, st = RP.status(), bad = /niet geaccepteerd/i.test(st);
   const keyForm = (label) => `<form data-submit="rpkey" class="stack"><label class="f">Access Key<input name="key" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Plak hier je Access Key"></label><button class="btn">${label}</button></form>`;
   if (!has) return `<p class="sub">Foto’s bij je recepten halen kan gratis via Unsplash. Je hebt daarvoor één keer een sleutel nodig. Dit werkt in de losse app, niet in het Artifact.</p>
-   <ol class="steps"><li>Maak een gratis account op <a href="https://unsplash.com/developers" target="_blank" rel="noopener">unsplash.com/developers</a> en kies “New Application”.</li><li>Kopieer de <b>Access Key</b> van je applicatie.</li><li>Plak de sleutel hieronder. De foto’s worden daarna vanzelf opgehaald.</li></ol>
+   <ol class="steps-l"><li>Maak een gratis account op <a href="https://unsplash.com/developers" target="_blank" rel="noopener">unsplash.com/developers</a> en kies “New Application”.</li><li>Kopieer de <b>Access Key</b> van je applicatie.</li><li>Plak de sleutel hieronder. De foto’s worden daarna vanzelf opgehaald.</li></ol>
    ${keyForm('Opslaan en foto’s ophalen')}<small>De sleutel en foto’s blijven op dit apparaat en zitten niet in je export.</small>`;
   return `<p><b>${cnt} van ${tot}</b> recepten hebben een foto.</p>${meter(cnt, tot, 'Foto’s')}
    ${bad ? '<div class="note warn"><b>De sleutel werkt niet.</b> Controleer of je de Access Key hebt gekopieerd en niet de Secret Key. Vervang de sleutel hieronder bij “Meer”.</div>' : `<p class="sub" id="rpstat">${esc(st)}</p>`}
