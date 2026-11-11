@@ -214,7 +214,7 @@ main{min-width:0;padding-top:var(--s3)}
 body:has(#app.ob) #app{padding-bottom:var(--s5)}
 
 #nav{position:fixed;left:max(14px,env(safe-area-inset-left,0px));right:max(14px,env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:40;
-  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:6px;border-radius:var(--r);
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;padding:6px;border-radius:var(--r);
   background:var(--glass);-webkit-backdrop-filter:saturate(1.6) blur(20px);backdrop-filter:saturate(1.6) blur(20px);border:1px solid var(--line2);box-shadow:0 24px 48px -20px rgba(0,0,0,.45)}
 #nav a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:56px;padding:6px 2px;border-radius:var(--r-s);
   color:var(--ink2);text-decoration:none;text-align:center;font-size:11px;font-weight:600;line-height:1.15;transition:var(--t)}
@@ -1906,7 +1906,7 @@ function weekLine() {
   const w = planWeek(), t = planTotal();
   if (t && w > t) return `Je geplande periode van ${t} weken is voorbij. Verleng hem bij Profiel of stel een nieuw doel.`;
   const first = S.plan.sessions.find(x => x.type === 'kracht'), b = blockOf(w, first && first.key), hx = hxPhase();
-  const lab = (S.period === 'golvend' && !b.deload) ? 'Golvend' : b.label;
+  const lab = (S.period === 'golvend' && !b.deload) ? `Golvend: ${b.label.toLowerCase()}` : b.label;
   const cp = phaseOn(today());
   return `Week ${w}${t ? ' van ' + t : ''} · ${lab}${hx ? ' · Hyrox: ' + hx.label.toLowerCase() : ''}${cp ? ' · ' + cp.name : ''}`;
 }
@@ -3067,7 +3067,7 @@ function vHomeBento() {
   const tile = (cls, ok, c, title, txt, a, data = '') => `<button class="vt ${ok ? 'ok' : ''}" style="--c:${c}" data-a="${a}" ${data}><b>${title}</b><span>${txt}</span></button>`;
   const nextCard = na ? `<div class="vnext"><div><small>Hierna</small><b>${esc(na.label)}</b></div><button class="btn big" data-a="${na.a}" ${na.data}>Start</button></div>` : `<div class="vnext"><div><small>Hierna</small><b>${checkOk ? 'Alles staat op schema' : 'Doe je check-in'}</b></div>${checkOk ? '' : '<button class="btn big" data-a="checkAsk">Check-in</button>'}</div>`;
   return `<section class="home vday"><div class="vh"><span class="eyebrow">${fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' })}</span><h1>Vandaag</h1><p>${p.name ? `${greet}, ${esc(p.name)}. ` : ''}${esc(weekLine())}</p></div>
-  <a class="vhero" href="#beloningen" aria-label="Streak en beloningen">${rwOrbit(R, false, 330)}</a>
+  <a class="vhero" href="#beloningen" aria-label="Streak en beloningen" style="margin-top:var(--s3)">${rwOrbit(R, false, 330)}</a>
   <div class="vgrid">${tile('t', trainOk, '#C9F24D', 'Training', trainTxt, 'gotoTraining')}${tile('s', stepsOk, '#5CC8FF', 'Stappen', stTxt, 'stepsAsk')}${tile('e', protOk, '#B48CFF', 'Eiwit', prTxt, 'gotoFood')}${tile('c', checkOk, '#FF9F5A', 'Check-in', checkOk ? 'Gedaan' : 'Nog open', 'checkAsk')}</div>
   ${nextCard}${scheduleLagCard()}${coachCard(coach)}${rwWeekCard()}${compHomeCard()}
   ${S.example ? '<p class="sub">Je gebruikt een voorbeeldprofiel. Pas het aan of wis het bij Profiel.</p>' : ''}
@@ -3338,7 +3338,7 @@ function planParts() {
    ${acc('Planning verschuiven', '', `<div class="btns"><button class="btn ghost sm" data-a="repeatWeek">Herhaal deze week</button><button class="btn ghost sm" data-a="pauseWeek">Pauzeer een week</button></div><form data-submit="startdate" class="inline"><label class="f">Startdatum<input name="d" type="date" value="${S.planStart || ''}"></label><button class="btn ghost sm">Verschuif</button></form>`)}`;
   const perBody = `<p class="sub">Periodisering is het bewust variëren van belasting en volume, zodat je kunt opbouwen en herstellen. Kies een model; je kunt het altijd wisselen.</p>
    ${Object.entries(PERIODS).map(([k, v]) => `<button class="opt ${per === k ? 'cur' : ''}" data-a="setPeriod" data-m="${k}"><b>${v.name}</b><small>${v.desc}</small></button>`).join('')}
-   <h4>Komende weken</h4><div class="chips weeks">${Array.from({ length: 8 }, (_, i) => { const wk = Math.max(1, w) + i, b = blockOf(wk, firstK), lab = (per === 'golvend' && !b.deload) ? 'Golvend' : b.label; return `<span class="wk ${b.deload ? 'dl' : ''} ${i === 0 ? 'now' : ''}"><b>Wk ${wk}</b>${lab}</span>`; }).join('')}</div>
+   <h4>Komende weken</h4><div class="chips weeks">${Array.from({ length: 8 }, (_, i) => { const wk = Math.max(1, w) + i, b = blockOf(wk, firstK), lab = (per === 'golvend' && !b.deload) ? `Golvend: ${b.label.toLowerCase()}` : b.label; return `<span class="wk ${b.deload ? 'dl' : ''} ${i === 0 ? 'now' : ''}"><b>Wk ${wk}</b>${lab}</span>`; }).join('')}</div>
    <div class="btns"><button class="btn ghost sm" data-a="lightWeekBtn">${S.lightWeeks.includes(w) ? 'Herstelweek nu uitzetten' : 'Maak deze week een herstelweek'}</button></div>
    <small>Een herstelweek is een hulpmiddel en geen verplichting. Bij aanhoudende vermoeidheid kun je hem eerder inplannen. Vaste herstelweken zijn spaarzaam gepland: een week volledige rust gaf in één onderzoek geen extra spiergroei. Een lichtere week is niet apart onderzocht. Bronnen: ${SRC.deload}, ${SRC.delphi}, ${SRC.acsm}.</small>`;
   const progBody = `<p class="sub">${PROGRAMS[p.program || 'auto'].desc}</p>
@@ -4941,7 +4941,7 @@ function measCard() {
   </g>${MEAS.map(line).join('')}</svg>`;
   const val = last ? n1(last[k]).replace('.', ',') : '–', d = last && first && h.length > 1 ? last[k] - first[k] : null;
   const sub = !h.length ? 'Nog niet gemeten.' : h.length === 1 ? 'Eén meting. Vanaf de tweede zie je het verschil.' : `Eerst ${n1(first[k])} cm · ${d > 0 ? '+' : ''}${n1(d)} cm sinds ${fmtDate(first.date, { day: 'numeric', month: 'short' })}`;
-  return `<div class="card mcard"><div class="mhead"><h3>Omtrek</h3><small>tik een lint</small></div><div class="mwrap">${fig}${MEAS.map(pill).join('')}</div>
+  return `<div class="card mcard"><div class="mhead"><h3>Omtrek</h3></div><div class="mwrap">${fig}${MEAS.map(pill).join('')}</div>
    <div class="mdet" style="--c:${m[2]}"><small>${m[1]}</small><b class="mval">${val}<i> cm</i></b><span class="msub">${sub}</span></div>
    <form data-submit="measure1" class="mform"><input type="hidden" name="k" value="${k}"><label class="f">Datum<input name="date" type="date" value="${today()}" max="${today()}"></label><label class="f">Nieuwe meting (cm)<input name="v" type="number" step="0.5" min="10" max="250" inputmode="decimal" placeholder="${last ? n1(last[k]).replace('.', ',') : 'cm'}"></label><button class="btn">Opslaan</button></form>
    ${h.length ? `<ul class="plain lst">${h.slice(-4).reverse().map(b => `<li><span>${fmtDate(b.date)}</span><b>${n1(b[k])} cm</b><button class="link" data-a="delMeas" data-id="${b.id}" data-k="${k}">Verwijder</button></li>`).join('')}</ul>` : ''}
