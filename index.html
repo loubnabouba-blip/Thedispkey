@@ -219,7 +219,7 @@ body:has(#app.ob) #app{padding-bottom:var(--s5)}
   background:var(--glass);-webkit-backdrop-filter:saturate(1.6) blur(20px);backdrop-filter:saturate(1.6) blur(20px);border:1px solid var(--line2);box-shadow:0 24px 48px -20px rgba(0,0,0,.45)}
 #nav a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:56px;padding:6px 2px;border-radius:var(--r-s);
   color:var(--ink2);text-decoration:none;text-align:center;font-size:11px;font-weight:600;line-height:1.15;transition:var(--t)}
-#nav a span{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+#nav a span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #nav a .ic{width:24px;height:24px;stroke-width:1.7;transition:var(--t)}
 @media (hover:hover){#nav a:hover{color:var(--ink)}}
 #nav a:active{transform:scale(.96)}
@@ -2252,7 +2252,7 @@ let toastT; function toast(m) { const t = $('#toast'); t.textContent = m; t.clas
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('#modal-root .overlay')) closeModal(); });
 
 /* --- schaal --- */
-const NAVG = [['home', 'Vandaag', 'home', ['home']], ['plan', 'Plan', 'plan', ['training', 'voeding', 'disciplines']], ['sport', 'Disciplines', 'sport', ['sport']], ['mindful', 'Mindful', 'mindful', ['mindful']], ['jij', 'Jij', 'jij', ['voortgang', 'beloningen', 'mijn-plan']]];
+const NAVG = [['home', 'Vandaag', 'home', ['home']], ['plan', 'Plan', 'plan', ['training', 'voeding', 'disciplines']], ['sport', 'Sport', 'sport', ['sport']], ['mindful', 'Mindful', 'mindful', ['mindful']], ['jij', 'Jij', 'jij', ['voortgang', 'beloningen', 'mijn-plan']]];
 const SUBN = { plan: [['training', 'Training'], ['voeding', 'Voeding'], ['disciplines', 'Doelen']], jij: [['voortgang', 'Voortgang'], ['beloningen', 'Beloningen'], ['mijn-plan', 'Profiel']] };
 const grpOf = r => { const g = NAVG.find(x => x[3].includes(r === 'mijn-doel' ? 'disciplines' : r)); return g ? g[0] : 'home'; };
 function nav() {
