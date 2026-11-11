@@ -582,6 +582,11 @@ button.wl{font:inherit;color:inherit;width:100%}button.wl:disabled{cursor:defaul
 @media (hover:hover){.heart:hover{background:var(--surface2)}}
 .heart:active{transform:scale(.92)}
 .heart.on{color:var(--accent)}
+.cartbtn{top:68px}.cartbtn i{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--accent);color:#111;font:800 12px/20px var(--fb);font-style:normal}
+.rnum{position:absolute;left:10px;top:10px;z-index:2;padding:3px 9px;border-radius:999px;background:var(--glass);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid var(--line2);color:var(--ink);font:700 13px var(--fb)}
+.cartbar{display:flex;align-items:center;gap:var(--s2);width:100%;margin:var(--s2) 0;padding:var(--s2);border:1px solid var(--accent);border-radius:var(--r);background:color-mix(in srgb,var(--accent) 12%,var(--surface));color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.cartbar span{display:grid;flex:1}.cartbar small{color:var(--ink2)}.cartbar em{font-style:normal;font-size:22px}
+.cartcard h3{display:flex;align-items:center;gap:8px;margin:0}.cartlist li{display:flex;align-items:center;justify-content:space-between;gap:var(--s1);padding:6px 0;border-bottom:1px solid var(--line)}
 
 /* ---------- 9. Oefeningen ---------- */
 ul.exl{display:grid;gap:var(--s2);margin:0;padding:0;list-style:none}
@@ -1646,6 +1651,9 @@ RECIPES.push(
 const RX = Object.fromEntries(RECIPES.map(r => [r.id, r]));
 /* n5 was een dubbel van l4 (zelfde gerecht). Uit de lijst en het weekmenu, maar via RX nog vindbaar voor eerder geplande of gelogde maaltijden. */
 RECIPES.splice(RECIPES.findIndex(r => r.id === 'n5'), 1);
+/* Vast receptnummer: volgorde in de lijst. Nieuwe recepten komen achteraan, zodat bestaande nummers gelijk blijven. */
+const RNUM = Object.fromEntries(RECIPES.map((r, i) => [r.id, i + 1]));
+const rnum = id => RNUM[id] ? '#' + RNUM[id] : '';
 /* ===== Receptfoto's via de officiële Unsplash-API =====
    Werkt alleen waar de pagina externe afbeeldingen en verbindingen mag laden (de losse app). In een Artifact blokkeert het platform dat.
    De Access Key en de gevonden foto's staan alleen in deze browser (niet in je export). Zonder sleutel of foto blijft de illustratie staan. */
@@ -1765,7 +1773,7 @@ let S = null, saveOK = true, memCopy = null;
 function defaultState() {
   return { v: 1, profile: null, plan: null, macroOverride: null, planStart: null, weekShift: 0, pauseWeeks: 0, lightWeeks: [], extras: [], cardioWeek: [], comp: null, restOff: false, volAdj: {}, disc: {},
     stepsGoal: null, logs: [], draft: null, food: {}, custom: [], recipePhotos: {}, body: [], recovery: {}, steps: {}, stepSync: { manual: {}, off: false, last: null }, photos: [],
-    milestone: { enabled: true, name: 'Mijn doel', type: 'eigen', date: null, note: '', items: null, checks: {} }, shop: {}, avoid: [], swaps: {}, short: {}, moves: [],
+    milestone: { enabled: true, name: 'Mijn doel', type: 'eigen', date: null, note: '', items: null, checks: {} }, shop: {}, cart: {}, cartShop: {}, avoid: [], swaps: {}, short: {}, moves: [],
     coachLog: [], coachCheck: null, theme: null, example: false, period: null, planLength: { mode: 'auto', weeks: 12 }, hx: { div: 'open-m', target: 90 }, progTab: 'overzicht', mindful: { log: [] } };
 }
 function loadState() {
@@ -4072,7 +4080,7 @@ A.pickCustom = d => addItem({ id: uid(), type: 'c', ref: d.id, f: 1, eaten: fals
 function recipeModal(id, f = 1, itemId) {
   const r = RX[id], n = recBase(r), fl = recFlags(r), photo = S.recipePhotos[id];
   modal(`<div class="mback"><button class="btn ghost sm" data-a="close" aria-label="Terug naar recepten">‹ Terug</button></div><div class="rec-art">${recArtFull(r, (photo ? 'Eigen foto van ' : 'Voorbeeldfoto van ') + r.name)}</div>${rpCredit(id)}
-  <p class="eyebrow">${NL[r.cat]} · ${r.min} minuten${dietTag(r) ? ' · ' + dietTag(r) : ''}${POPULAR.includes(r.id) ? ' · Klassieker' : ''}</p><h2>${esc(r.name)}</h2><button class="btn ghost xs" data-a="recFavM" data-id="${id}" data-f="${f}" data-item="${itemId || ''}">${isFav(id) ? '♥ In favorieten' : '♡ Favoriet'}</button><p>${esc(r.desc)}</p>
+  <p class="eyebrow">Nr. ${RNUM[r.id] || '–'} · ${NL[r.cat]} · ${r.min} minuten${dietTag(r) ? ' · ' + dietTag(r) : ''}${POPULAR.includes(r.id) ? ' · Klassieker' : ''}</p><h2>${esc(r.name)}</h2><div class="btns tight"><button class="btn ghost xs" data-a="recFavM" data-id="${id}" data-f="${f}" data-item="${itemId || ''}">${isFav(id) ? '♥ In favorieten' : '♡ Favoriet'}</button><button class="btn ghost xs" data-a="cartAddM" data-id="${id}" data-f="${f}" data-item="${itemId || ''}">${inCart(id) ? '🛒 In karretje (' + inCart(id) + ' ' + (inCart(id) === 1 ? 'portie' : 'porties') + ') · +1' : '🛒 In boodschappenkarretje'}</button></div><p>${esc(r.desc)}</p>
   <div class="stats"><div><b>${kc(n.kcal * f)}</b><span>kcal</span></div><div><b>${n0(n.p * f)}</b><span>g eiwit</span></div><div><b>${n0(n.c * f)}</b><span>g koolh.</span></div><div><b>${n0(n.f * f)}</b><span>g vet</span></div><div><b>${n0(n.fib * f)}</b><span>g vezels</span></div></div>
   <div class="btns"><div class="step"><button data-a="recPortion" data-id="${id}" data-f="${f}" data-d="-0.25" data-item="${itemId || ''}" aria-label="Kleinere portie">−</button><span>portie ×${n1(f).replace(',0', '')}</span><button data-a="recPortion" data-id="${id}" data-f="${f}" data-d="0.25" data-item="${itemId || ''}" aria-label="Grotere portie">+</button></div></div>
   <h4>Ingrediënten</h4><ul class="plain">${r.ings.map(([i, g]) => `<li>${esc(ingText(i, g * f))}</li>`).join('')}</ul>
@@ -4106,7 +4114,8 @@ function recFit(r) {
 function recList() {
   const cat = ui.recCat, q = ui.recQ.trim().toLowerCase(), F = ui.recF;
   let list = RECIPES.filter(r => (cat === 'alle' || r.cat === cat) && (ui.recAll || recipeOK(r, S.profile))).map(r => ({ r, x: recFit(r) }));
-  if (q) list = list.filter(({ r }) => (r.name + ' ' + r.desc + ' ' + r.ings.map(i => ING[i[0]][0]).join(' ')).toLowerCase().includes(q));
+  if (/^#?\d+$/.test(q)) list = list.filter(({ r }) => RNUM[r.id] === +q.replace('#', ''));
+  else if (q) list = list.filter(({ r }) => (r.name + ' ' + r.desc + ' ' + r.ings.map(i => ING[i[0]][0]).join(' ')).toLowerCase().includes(q));
   if (F.fav) list = list.filter(({ r }) => isFav(r.id));
   if (F.hp) list = list.filter(({ r }) => recBase(r).p >= 40);
   if (F.lc) list = list.filter(({ r }) => recBase(r).kcal <= 500);
@@ -4117,22 +4126,23 @@ function recList() {
   list.sort((a, b) => (so === 'prot' ? rb(b.r).p - rb(a.r).p : so === 'ratio' ? rb(b.r).p / rb(b.r).kcal - rb(a.r).p / rb(a.r).kcal : so === 'kcal' ? rb(a.r).kcal - rb(b.r).kcal : so === 'min' ? a.r.min - b.r.min : (b.x.score ?? 0) - (a.x.score ?? 0)) || a.r.name.localeCompare(b.r.name, 'nl'));
   if (!list.length) return '<div class="card"><p>Geen recepten gevonden. Haal een filter weg of pas je zoekopdracht aan.</p></div>';
   return `<p class="sub">${list.length} recept${list.length === 1 ? '' : 'en'}</p><div class="recgrid">${list.map(({ r, x }) => { const n = recBase(r);
-    return `<div class="rwrap"><button class="rcard" data-a="recipeOpen" data-id="${r.id}"><div class="rec-art">${recArtFull(r)}</div><b>${esc(r.name)}</b>
+    return `<div class="rwrap"><button class="rcard" data-a="recipeOpen" data-id="${r.id}"><div class="rec-art">${recArtFull(r)}<span class="rnum">${rnum(r.id)}</span></div><b>${esc(r.name)}</b>
      <small>${NL[r.cat]} · ${r.min} min${dietTag(r) ? ' · ' + dietTag(r) : ''}${POPULAR.includes(r.id) ? ' · Klassieker' : ''}</small>
      <small class="mac"><span><b>${n0(n.p)}</b> g eiwit</span><span><b>${n0(n.c)}</b> kh</span><span><b>${n0(n.f)}</b> vet</span><span><b>${kc(n.kcal)}</b> kcal</span></small>
      ${x.score != null ? `<small class="fit ${x.score >= 85 ? 'hi' : ''}">${x.score}% match${x.f !== 1 ? ' · portie ×' + n1(x.f).replace(',0', '') : ''}</small>` : ''}</button>
-     <button class="heart ${isFav(r.id) ? 'on' : ''}" data-a="recFav" data-id="${r.id}" aria-pressed="${isFav(r.id)}" aria-label="${isFav(r.id) ? 'Verwijder uit favorieten' : 'Voeg toe aan favorieten'}">${isFav(r.id) ? '♥' : '♡'}</button></div>`; }).join('')}</div>`;
+     <button class="heart ${isFav(r.id) ? 'on' : ''}" data-a="recFav" data-id="${r.id}" aria-pressed="${isFav(r.id)}" aria-label="${isFav(r.id) ? 'Verwijder uit favorieten' : 'Voeg toe aan favorieten'}">${isFav(r.id) ? '♥' : '♡'}</button>
+     <button class="heart cartbtn ${inCart(r.id) ? 'on' : ''}" data-a="cartToggle" data-id="${r.id}" aria-pressed="${!!inCart(r.id)}" aria-label="${inCart(r.id) ? 'Haal uit boodschappenkarretje' : 'Zet in boodschappenkarretje'}">${CART_SVG}${inCart(r.id) ? `<i>${inCart(r.id)}</i>` : ''}</button></div>`; }).join('')}</div>`;
 }
 function fRecipes() {
   const cat = ui.recCat, F = ui.recF, hidden = RECIPES.length - RECIPES.filter(r => recipeOK(r, S.profile)).length, t = targets();
   const prefs = acc('Eetpatroon en allergenen', ((DIETS.find(x => x[0] === (S.profile.diet || 'omni')) || [0, ''])[1]) + ((S.profile.allergens || []).length ? ' · ' + S.profile.allergens.length + ' allergenen' : ''), `<label class="f">Ik eet<select data-c="diet">${DIETS.map(([k, l]) => `<option value="${k}" ${(S.profile.diet || 'omni') === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>${S.profile.diet === 'halal' ? '<p class="sub">Er staat geen varkensvlees in de recepten. Kies zelf halal-gecertificeerd vlees.</p>' : ''}<div class="f"><span>Allergenen vermijden</span><div class="chips">${Object.entries(ALLERGENS).map(([k, l]) => `<label class="chip"><input type="checkbox" data-c="allerg" value="${k}" ${(S.profile.allergens || []).includes(k) ? 'checked' : ''}><span>${l}</span></label>`).join('')}</div></div>`);
-  return prefs + `<label class="f recsearch"><span class="sr">Zoek een recept</span><input type="search" data-rq placeholder="Zoek op gerecht of ingrediënt" value="${esc(ui.recQ)}" autocomplete="off"></label>
+  return prefs + `<label class="f recsearch"><span class="sr">Zoek een recept</span><input type="search" data-rq placeholder="Zoek op gerecht, ingrediënt of nummer" value="${esc(ui.recQ)}" autocomplete="off"></label>
   <div class="chips sc">${['alle', 'ontbijt', 'lunch', 'diner', 'tussendoor'].map(c => `<button class="chip btnchip ${cat === c ? 'on' : ''}" data-a="recCat" data-cat="${c}">${NL[c]}</button>`).join('')}</div>
   <div class="chips sc">${REC_F.map(([k, l]) => `<button class="chip btnchip ${F[k] ? 'on' : ''}" data-a="recF" data-k="${k}" aria-pressed="${!!F[k]}">${l}</button>`).join('')}</div>
   <label class="f inl recsort">Sorteer op<select data-c="recSort">${REC_SORT.map(([k, l]) => `<option value="${k}" ${ui.recSort === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
   ${hidden ? `<label class="chip"><input type="checkbox" data-c="recAll" ${ui.recAll ? 'checked' : ''}><span>Ook recepten tonen die niet bij mijn voorkeuren passen (${hidden})</span></label>` : ''}
   <p class="sub">${RECIPES.length} recepten met minstens 30 g eiwit per standaardportie.${t && !t.missing ? ' De match laat zien hoe goed een recept bij het bijbehorende eetmoment in jouw dagdoel past, met de portie die je dan eet.' : ''} Voedingswaarden zijn berekende richtwaarden. De afbeeldingen zijn ter illustratie en geen bron voor voedingswaarden.</p>
-  <div id="reclist">${recList()}</div>`;
+  ${cartBar()}<div id="reclist">${recList()}</div>`;
 }
 document.addEventListener('input', e => { const t = e.target.closest('[data-rq]'); if (!t) return; ui.recQ = t.value; const l = $('#reclist'); if (l) l.innerHTML = recList(); });
 A.recF = d => { ui.recF[d.k] = !ui.recF[d.k]; render(); };
@@ -4168,18 +4178,53 @@ A.weekPlanDo = d => {
 function fPrep() {
   const mon = addDays(ui.foodDate, -wdOf(ui.foodDate)), pp = prepPlan(mon);
   const nav = `<div class="datenav"><button data-a="fDate" data-n="-7" aria-label="Vorige week">‹</button><div><b>Week van ${fmtDate(mon, { day: 'numeric', month: 'long' })}</b><small>Mealprep en boodschappen</small></div><button data-a="fDate" data-n="7" aria-label="Volgende week">›</button></div>`;
-  if (!pp.recipes.length) return nav + '<div class="card"><p>Nog geen maaltijden gepland deze week. Plan ze bij Week, dan zie je hier wat je moet maken en kopen.</p><button class="btn sm" data-a="weekPlanAsk">Maak weekplanning</button></div>';
+  if (!pp.recipes.length) return cartCard(pp) + nav + '<div class="card"><p>Nog geen maaltijden gepland deze week. Plan ze bij Week, dan zie je hier wat je moet maken en kopen.</p><button class="btn sm" data-a="weekPlanAsk">Maak weekplanning</button></div>';
   const groups = {}; Object.entries(pp.total).forEach(([id, g]) => (groups[ingGroup(id)] = groups[ingGroup(id)] || []).push({ id, g }));
   const shopTotal = Object.keys(pp.total).length, shopDone = Object.keys(pp.total).filter(id => S.shop[mon + ':' + id]).length;
-  return nav + `<p class="sub">${pp.meals} maaltijden uit ${pp.recipes.length} recepten. Hoeveelheden zijn afgerond op 5 g.</p>` +
+  return cartCard(pp) + nav + `<p class="sub">${pp.meals} maaltijden uit ${pp.recipes.length} recepten. Hoeveelheden zijn afgerond op 5 g.</p>` +
    acc('Boodschappenlijst', `${shopDone} van ${shopTotal} afgevinkt`, ING_GROUPS.map(([gn]) => groups[gn] ? `<h4>${gn}</h4><ul class="shop">${groups[gn].sort((a, b) => ING[a.id][0].localeCompare(ING[b.id][0], 'nl')).map(x => `<li><label class="tick wide"><input type="checkbox" data-c="shop" data-k="${mon}:${x.id}" ${S.shop[mon + ':' + x.id] ? 'checked' : ''}><span></span><em>${esc(ING[x.id][0])}</em><b>${x.g >= 20 ? Math.round(x.g / 5) * 5 : Math.round(x.g)} g</b></label></li>`).join('')}</ul>` : '').join(''), true) +
    '<h3 class="sect">Per maaltijd</h3>' + pp.recipes.map(o => { const r = o.r, po = Math.round(o.portions * 10) / 10;
-    return `<div class="card prep"><div class="prephead"><div class="thumb big">${S.recipePhotos[r.id] ? `<img src="${S.recipePhotos[r.id]}" alt="">` : recipeArt(r)}</div><div><b>${esc(r.name)}</b><small>${NL[r.cat]} · ${r.min} minuten</small><span class="pill ${r.prep ? 'ok' : ''}">${r.prep ? 'Goed voor mealprep' : 'Liever vers'}</span></div></div>
+    return `<div class="card prep"><div class="prephead"><div class="thumb big">${S.recipePhotos[r.id] ? `<img src="${S.recipePhotos[r.id]}" alt="">` : recipeArt(r)}</div><div><b>${esc(r.name)}</b><small>${rnum(r.id)} · ${NL[r.cat]} · ${r.min} minuten</small><span class="pill ${r.prep ? 'ok' : ''}">${r.prep ? 'Goed voor mealprep' : 'Liever vers'}</span></div></div>
      <p class="prepcount"><b>${n1(po).replace(',0', '')}</b> ${po === 1 ? 'portie' : 'porties'} <span>op ${o.days.sort().map(d => DAYS[wdOf(d)].toLowerCase() + ' ' + new Date(d + 'T12:00:00').getDate()).join(', ')}</span></p>
      ${r.prep ? `<p class="sub">Maak alles in één keer en verdeel over ${Math.max(1, Math.round(po))} bakjes.</p>` : ''}
      <details class="why"><summary>Ingrediënten voor alle porties</summary><div><ul class="plain">${Object.entries(o.ings).map(([id, g]) => `<li>${esc(ingText(id, g))}</li>`).join('')}</ul></div></details>
      <details class="why"><summary>Bereiding en bewaren</summary><div><ol class="steps-l">${r.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol><p>${esc(TIPS[r.tip])}</p></div></details></div>`; }).join('');
 }
+/* --- boodschappenkarretje: recepten verzamelen tot één mealprep-boodschappenlijst --- */
+const CART_SVG = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></svg>';
+const cartOf = () => (S.cart = S.cart || {}), inCart = id => cartOf()[id] || 0;
+const cartIds = () => Object.keys(cartOf()).filter(id => RX[id] && S.cart[id] > 0).sort((a, b) => (RNUM[a] || 999) - (RNUM[b] || 999));
+const cartPortions = () => cartIds().reduce((a, id) => a + S.cart[id], 0);
+function cartIngs() { const t = {}; cartIds().forEach(id => RX[id].ings.forEach(([i, g]) => t[i] = (t[i] || 0) + g * S.cart[id])); return t; }
+const cartBar = () => cartIds().length ? `<button class="cartbar" data-a="cartOpen">${CART_SVG}<span><b>${cartIds().length} recept${cartIds().length === 1 ? '' : 'en'} · ${cartPortions()} porties</b><small>Bekijk je boodschappenlijst</small></span><em>›</em></button>` : '';
+function cartCard(pp) {
+  const ids = cartIds(), S2 = S.cartShop = S.cartShop || {};
+  const fromWeek = pp && pp.recipes.length ? `<button class="btn ghost sm" data-a="cartFromWeek">Weekplanning toevoegen</button>` : '';
+  if (!ids.length) return `<div class="card cartcard"><div class="row"><h3>${CART_SVG} Boodschappenkarretje</h3></div><p class="sub">Leeg. Tik bij Recepten op het karretje van een recept om het toe te voegen. Kies daarna hier hoeveel porties je maakt; de app telt alle ingrediënten bij elkaar op tot één boodschappenlijst.</p><div class="btns"><button class="btn sm" data-a="foodTab" data-t="recepten">Naar recepten</button>${fromWeek}</div></div>`;
+  const tot = cartIngs(), groups = {}; Object.entries(tot).forEach(([id, g]) => (groups[ingGroup(id)] = groups[ingGroup(id)] || []).push({ id, g }));
+  const n = Object.keys(tot).length, done = Object.keys(tot).filter(id => S2[id]).length;
+  return `<div class="card cartcard"><div class="row"><h3>${CART_SVG} Boodschappenkarretje</h3><span class="pill">${cartPortions()} porties</span></div>
+   <ul class="plain cartlist">${ids.map(id => `<li><span><b>${rnum(id)}</b> ${esc(RX[id].name)}</span><span class="step"><button data-a="cartQty" data-id="${id}" data-d="-1" aria-label="Eén portie minder">−</button><span>${S.cart[id]}×</span><button data-a="cartQty" data-id="${id}" data-d="1" aria-label="Eén portie meer">+</button></span></li>`).join('')}</ul>
+   <div class="btns">${fromWeek}<button class="btn ghost sm" data-a="foodTab" data-t="recepten">Recept toevoegen</button></div>
+   ${acc('Boodschappenlijst', `${done} van ${n} afgevinkt`, ING_GROUPS.map(([gn]) => groups[gn] ? `<h4>${gn}</h4><ul class="shop">${groups[gn].sort((a, b) => ING[a.id][0].localeCompare(ING[b.id][0], 'nl')).map(x => `<li><label class="tick wide"><input type="checkbox" data-c="cartShop" data-k="${x.id}" ${S2[x.id] ? 'checked' : ''}><span></span><em>${esc(ING[x.id][0])}</em><b>${x.g >= 20 ? Math.round(x.g / 5) * 5 : Math.round(x.g)} g</b></label></li>`).join('')}</ul>` : '').join('') +
+     `<div class="btns"><button class="btn sm" data-a="cartShare">Deel of kopieer lijst</button>${done ? '<button class="btn ghost sm" data-a="cartUntick">Vinkjes weghalen</button>' : ''}<button class="btn ghost sm" data-a="cartClear">Karretje leegmaken</button></div>`, true)}</div>`;
+}
+A.cartToggle = d => { const c = cartOf(); if (c[d.id]) { delete c[d.id]; toast('Uit je karretje gehaald.'); } else { c[d.id] = 1; toast(rnum(d.id) + ' in je karretje. Bekijk de lijst bij Mealprep.'); } save(); const l = $('#reclist'); if (l) { render(); } };
+A.cartAddM = d => { const c = cartOf(); c[d.id] = (c[d.id] || 0) + 1; save(); toast(rnum(d.id) + ': ' + c[d.id] + (c[d.id] === 1 ? ' portie' : ' porties') + ' in je karretje.'); recipeModal(d.id, +d.f || 1, d.item || ''); render(); };
+A.cartQty = d => { const c = cartOf(); c[d.id] = (c[d.id] || 0) + +d.d; if (c[d.id] <= 0) delete c[d.id]; save(); render(); };
+A.cartOpen = () => { ui.foodTab = 'prep'; render(); window.scrollTo(0, 0); };
+A.cartFromWeek = () => { const mon = addDays(ui.foodDate, -wdOf(ui.foodDate)), c = cartOf(); let n = 0; prepPlan(mon).recipes.forEach(o => { c[o.r.id] = (c[o.r.id] || 0) + Math.max(1, Math.round(o.portions)); n++; }); save(); render(); toast(n + ' recepten uit je weekplanning toegevoegd.'); };
+A.cartClear = () => modal(`<h3>Karretje leegmaken?</h3><p>Alle recepten en vinkjes gaan uit je boodschappenkarretje.</p><div class="btns end"><button class="btn ghost" data-a="close">Annuleren</button><button class="btn" data-a="cartClearDo">Leegmaken</button></div>`);
+A.cartClearDo = () => { S.cart = {}; S.cartShop = {}; save(); closeModal(); render(); toast('Karretje is leeg.'); };
+A.cartUntick = () => { S.cartShop = {}; save(); render(); };
+C.cartShop = el => { (S.cartShop = S.cartShop || {})[el.dataset.k] = el.checked; save(); render(); };
+A.cartShare = () => {
+  const tot = cartIngs(), lines = ['Boodschappenlijst mealprep', '', 'Recepten:'].concat(cartIds().map(id => `${rnum(id)} ${RX[id].name} (${S.cart[id]}×)`), ['']);
+  ING_GROUPS.forEach(([gn]) => { const xs = Object.keys(tot).filter(id => ingGroup(id) === gn && !(S.cartShop || {})[id]).sort((a, b) => ING[a][0].localeCompare(ING[b][0], 'nl')); if (xs.length) lines.push(gn + ':', ...xs.map(id => '- ' + ingText(id, tot[id])), ''); });
+  const text = lines.join('\n').trim();
+  if (navigator.share) { navigator.share({ title: 'Boodschappenlijst', text }).catch(() => {}); return; }
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => toast('Lijst gekopieerd. Plak hem in je notities of een appje.'), () => toast('Kopiëren lukte niet.')); else toast('Kopiëren wordt niet ondersteund.');
+};
 C.shop = el => { S.shop[el.dataset.k] = el.checked; save(); const s = el.closest('details.acc')?.querySelector('summary em'); render(); };
 A.fOpenDay = d => { ui.foodDate = d.date; ui.foodTab = 'dag'; render(); };
 
