@@ -8,6 +8,7 @@
 :root[data-route=disciplines]{--pg:#9A8CFF}
 :root[data-route=voortgang]{--pg:#2DD4BF}
 :root[data-route=mijn-plan]{--pg:#5BA8FF}
+:root[data-route=mindful]{--pg:#6FE3C8}
 :root[data-theme=light]{--pgm:40%;--pg-soft:color-mix(in srgb,var(--pg) 22%,transparent);--fx:radial-gradient(70% 42% at 0% -6%,color-mix(in srgb,var(--pg) 30%,transparent),transparent 70%),radial-gradient(60% 40% at 100% 0%,rgba(110,130,255,.2),transparent 70%),radial-gradient(60% 30% at 50% 100%,color-mix(in srgb,var(--pg) 12%,transparent),transparent 70%)}
 @media (prefers-color-scheme:light){:root:not([data-theme]){--pgm:40%;--pg-soft:color-mix(in srgb,var(--pg) 22%,transparent);--fx:radial-gradient(70% 42% at 0% -6%,color-mix(in srgb,var(--pg) 30%,transparent),transparent 70%),radial-gradient(60% 40% at 100% 0%,rgba(110,130,255,.2),transparent 70%),radial-gradient(60% 30% at 50% 100%,color-mix(in srgb,var(--pg) 12%,transparent),transparent 70%)}}
 .eyebrow,.tile h3{color:var(--pg-ink)}
@@ -1287,6 +1288,26 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .rtbtns{display:grid;gap:6px;flex:none}
 .rtb{min-height:38px;padding:0 12px;border-radius:12px;border:1px solid var(--pg);background:var(--pg);color:#10130a;font:800 14px/1 var(--fb);cursor:pointer;white-space:nowrap}
 .rtb.ghost{background:transparent;color:var(--ink);border-color:var(--line2)}
+/* ===== Mindful: ademhalingscirkel ===== */
+.breathwrap{display:grid;justify-items:center;gap:var(--s3);padding:var(--s3) 0}
+.bcircle{width:min(62vw,220px);height:min(62vw,220px);border-radius:50%;display:grid;align-items:center;justify-content:center;transform:scale(.55);background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--pg) 55%,#fff),color-mix(in srgb,var(--pg) 70%,transparent) 60%,transparent 72%);border:1px solid color-mix(in srgb,var(--pg) 45%,var(--line));box-shadow:0 0 40px color-mix(in srgb,var(--pg) 25%,transparent)}
+.bcircle span{font:900 15px/1.2 var(--fb);text-transform:uppercase;letter-spacing:.08em;color:var(--head);text-align:center}
+.bcircle.running.p-478{animation:b478 19s ease-in-out infinite}
+.bcircle.running.p-box{animation:bbox 16s ease-in-out infinite}
+.bcircle.running.p-coherent{animation:bcoh 10s ease-in-out infinite}
+.bcircle.running.p-deep{animation:bdeep 10s ease-in-out infinite}
+@keyframes b478{0%{transform:scale(.55)}21%{transform:scale(1)}58%{transform:scale(1)}100%{transform:scale(.55)}}
+@keyframes bbox{0%{transform:scale(.55)}25%{transform:scale(1)}50%{transform:scale(1)}75%{transform:scale(.55)}100%{transform:scale(.55)}}
+@keyframes bcoh{0%{transform:scale(.55)}50%{transform:scale(1)}100%{transform:scale(.55)}}
+@keyframes bdeep{0%{transform:scale(.55)}40%{transform:scale(1)}100%{transform:scale(.55)}}
+.bmeta{display:flex;gap:var(--s4);text-align:center}
+.bmeta b{display:block;font:900 20px/1 var(--fd);color:var(--head)}
+.bmeta small{color:var(--ink2)}
+.bpats{display:grid;gap:6px;margin:0 0 var(--s3)}
+.bpat{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface2);cursor:pointer;text-align:left}
+.bpat.on{border-color:var(--pg);background:var(--pg-soft)}
+.bpat b{display:block;font-size:14px}
+.bpat small{color:var(--ink2)}
 /* ===== Nieuw Vandaag-scherm, 3 tabs, grotere letters ===== */
 #nav a{font-size:14px;font-weight:800;letter-spacing:0}
 #nav a .ic{width:26px;height:26px;stroke-width:2}
@@ -1594,7 +1615,7 @@ Object.assign(ING,{
   mozz:['Geraspte kaas 30+',270,28,0,17,0,'melk'], kokos:['Kokosmelk light',70,0.7,2,6.5,0,''], noedels:['Rijstnoedels (rauw)',360,6,80,0.6,2,''],
   mais:['Mais (gekookt)',96,3.4,21,1.5,2.4,''], kidney:['Kidneybonen (gekookt)',127,8.7,22.8,0.5,6.4,''], whey:['Eiwitpoeder (whey)',385,80,7,5,0,'melk'], honing:['Honing',304,0.3,82,0,0.2,'']
 });
-const POPULAR = ['n1','n2','n3','n4','n6','n8','n10','n13','n16','n20','n24','d1'];
+const POPULAR = ['n1','n2','n3','n4','n6','n8','n10','n13','n16','n20','d1'];
 RECIPES.push(
  R('n1','diner','Chili con carne met rijst','Klassieke chili met mager rundergehakt en bonen.',35,[['rund',130],['kidney',100],['passata',150],['paprika',80],['ui',50],['rijst',50],['olie',5]],['Bak de ui en het gehakt rul in de olie.','Voeg paprika, bonen en passata toe, kruid met paprikapoeder, komijn en peper.','Laat 20 minuten zachtjes pruttelen.','Serveer met gekookte rijst.'],'vlees',true),
  R('n2','diner','Kipcurry met rijst','Romige curry met light kokosmelk en spinazie.',30,[['kip',170],['kokos',100],['rijst',60],['paprika',80],['ui',50],['spinazie',60],['olie',5]],['Bak de ui en kip in blokjes in de olie met currypasta of kerriepoeder.','Voeg paprika en kokosmelk toe en laat 12 minuten pruttelen.','Roer de spinazie erdoor tot hij slinkt.','Serveer met rijst.'],'vlees',true),
@@ -1618,14 +1639,7 @@ RECIPES.push(
  R('n20','lunch','Griekse kipbowl','Kip, couscous, feta en yoghurtsaus.',20,[['kip',160],['couscous',50],['komkommer',80],['tomaat',80],['feta',30],['gryog',50],['sla',40],['olie',6]],['Bak de kip met oregano gaar en snijd in plakken.','Maak de couscous met kokend water.','Verdeel alles in een kom en top met feta en yoghurt.'],'vlees',true),
  R('n21','diner','Tempeh-roerbak met noedels','Plantaardig en stevig.',20,[['tempeh',150],['noedels',60],['broccoli',120],['paprika',80],['wortel',60],['sojasaus',15],['olie',5]],['Week de noedels.','Bak de tempeh in blokjes goudbruin en voeg de groenten toe.','Voeg noedels en sojasaus toe en roerbak 2 minuten.'],'vega',false),
  R('n22','tussendoor','Hüttenkäse met appel en walnoot','Snel en vullend.',3,[['cottage',300],['appel',100],['walnoot',10]],['Doe de hüttenkäse in een kom.','Snijd de appel in blokjes erbij.','Strooi gehakte walnoot erover.'],'zuivel',false),
- R('n23','tussendoor','Eiwitshake met banaan en havermout','Voor onderweg of na de training.',3,[['whey',35],['banaan',100],['havermout',30],['pindakaas',10]],['Doe alles in een blender met 250 ml water of melk naar keuze.','Mix tot een gladde shake.'],'zuivel',false),
- // Mealprep-hype: invriezen en voorraad
- R('n24','diner','Vries-burrito\'s met kip, bonen en kaas','De bekende "freezer burrito"-hype: in één keer een voorraad rollen, invriezen en opwarmen wanneer je wilt.',45,[['kip',180],['bonen',150],['rijst',60],['mais',60],['mozz',40],['wrap',210],['paprika',60]],['Kook de rijst gaar en bak de kip met paprikapoeder en komijn gaar; snijd in kleine blokjes.','Mix kip, bonen, mais, rijst en paprika in een kom.','Verdeel het mengsel en de kaas over de wraps, rol strak op en wikkel elke burrito in bakpapier of aluminiumfolie.','Vries de burrito\'s plat in. Ontdooi een nacht in de koelkast en warm op in de oven, airfryer of pan tot de kaas gesmolten is.'],'vlees',true),
- R('n25','diner','Vries-burrito\'s vegetarisch met bonen en tofu','Plantaardige variant van de vriezer-burrito, net zo goed voor te bereiden.',45,[['tofu',220],['bonen',200],['rijst',60],['mais',60],['mozz',40],['wrap',210],['paprika',60]],['Kook de rijst gaar en bak de verkruimelde tofu met paprikapoeder en komijn goudbruin.','Mix tofu, bonen, mais, rijst en paprika in een kom.','Verdeel het mengsel en de kaas over de wraps, rol strak op en wikkel elke burrito in bakpapier of folie.','Vries plat in; ontdooi een nacht in de koelkast en warm op in de oven, airfryer of pan.'],'vega',true),
- R('n26','ontbijt','Eiermuffins met kalkoen en spinazie','Bak in één keer een bakje vol; ideaal om er de hele week eentje uit de koelkast te pakken.',30,[['ei',300],['kalkoenbeleg',80],['spinazie',60],['paprika',50]],['Verwarm de oven voor op 180 °C en vet een muffinvorm in (of gebruik papieren vormpjes).','Klop de eieren los en verdeel kalkoen, spinazie en paprika over de vormpjes.','Giet het eimengsel erbij tot elk vormpje bijna vol is.','Bak 18 à 20 minuten tot de muffins gestold en lichtbruin zijn; laat afkoelen voor je ze bewaart of invriest.'],'ei',true),
- R('n27','lunch','Linzensoep met kip (vriesklaar)','Stevige soep die je in losse porties kunt invriezen voor een snelle lunch.',35,[['kip',150],['linzen',200],['wortel',80],['ui',50],['passata',100],['olie',5]],['Fruit de ui en wortel in de olie.','Voeg linzen, passata en 600 ml water of bouillon toe en laat 15 minuten zachtjes koken.','Voeg de kipblokjes toe en laat nog 5 minuten gaar worden.','Laat afkoelen en vries in losse porties in.'],'vlees',true),
- R('n28','lunch','Mexicaanse quinoa-bowl met kidneybonen en mais','Koude bowl die je dagen vooruit kunt maken; voeg de avocado pas vlak voor het eten toe.',20,[['quinoa',60],['kidney',150],['mais',80],['avocado',50],['tomaat',80],['sla',40],['komkommer',50]],['Kook de quinoa gaar en laat afkoelen.','Meng de quinoa met kidneybonen, mais, tomaat en komkommer.','Verdeel in bakjes en bewaar de avocado apart.','Snijd de avocado er pas bij het eten doorheen.'],'vega',true),
- R('n29','diner','Gehakt-zoete-aardappelschotel uit de oven','Vullende ovenschotel die je in porties kunt invriezen voor een drukke week.',45,[['rund',150],['zoete',300],['wortel',60],['ui',50],['passata',100],['mozz',30]],['Kook de zoete aardappel gaar en prak hem.','Bak de ui, wortel en het gehakt rul en voeg de passata en kruiden (paprikapoeder, komijn) toe.','Verdeel het gehaktmengsel in een ovenschaal en bedek met de zoete-aardappelpuree en de kaas.','Bak 20 minuten op 200 °C tot de bovenkant goudbruin is; verdeel in porties om in te vriezen.'],'vlees',true)
+ R('n23','tussendoor','Eiwitshake met banaan en havermout','Voor onderweg of na de training.',3,[['whey',35],['banaan',100],['havermout',30],['pindakaas',10]],['Doe alles in een blender met 250 ml water of melk naar keuze.','Mix tot een gladde shake.'],'zuivel',false)
 );
 const RX = Object.fromEntries(RECIPES.map(r => [r.id, r]));
 /* ===== Receptfoto's via de officiële Unsplash-API =====
@@ -1744,7 +1758,7 @@ function defaultState() {
   return { v: 1, profile: null, plan: null, macroOverride: null, planStart: null, weekShift: 0, pauseWeeks: 0, lightWeeks: [], extras: [], cardioWeek: [], comp: null, restOff: false, volAdj: {}, disc: {},
     stepsGoal: null, logs: [], draft: null, food: {}, custom: [], recipePhotos: {}, body: [], recovery: {}, steps: {}, stepSync: { manual: {}, off: false, last: null }, photos: [],
     milestone: { enabled: true, name: 'Mijn doel', type: 'eigen', date: null, note: '', items: null, checks: {} }, shop: {}, avoid: [], swaps: {}, short: {}, moves: [],
-    coachLog: [], coachCheck: null, theme: null, example: false, period: null, planLength: { mode: 'auto', weeks: 12 }, hx: { div: 'open-m', target: 90 }, progTab: 'overzicht' };
+    coachLog: [], coachCheck: null, theme: null, example: false, period: null, planLength: { mode: 'auto', weeks: 12 }, hx: { div: 'open-m', target: 90 }, progTab: 'overzicht', mindful: { log: [] } };
 }
 function loadState() {
   try { const t = localStorage.getItem(KEY); if (t) return Object.assign(defaultState(), JSON.parse(t)); } catch (e) {}
@@ -2388,10 +2402,94 @@ function stepSrcNote() {
   if (m === 'ready') return `<p class="sub">Koppel je telefoon om stappen automatisch te laden. Handmatig invullen kan ook.</p>`;
   return `<p class="sub">Richtwaarde, een schatting</p>`;
 }
-/* ===== MINDFUL: placeholder, later uit te bouwen ===== */
+/* ===== MINDFUL: ademhaling, ontspanning, video's ===== */
+const BREATH_PATTERNS = {
+  '478': { id: '478', cls: 'p-478', name: '4-7-8 ademhaling', total: 19, blurb: 'Voor ontspanning en inslapen.', phases: [['Adem in', 4], ['Houd vast', 7], ['Adem uit', 8]] },
+  box: { id: 'box', cls: 'p-box', name: 'Vierkant ademhalen', total: 16, blurb: '4-4-4-4, voor kalmte en focus.', phases: [['Adem in', 4], ['Houd vast', 4], ['Adem uit', 4], ['Houd leeg', 4]] },
+  coherent: { id: 'coherent', cls: 'p-coherent', name: 'Coherente ademhaling', total: 10, blurb: '5-5, voor een rustig hartritme.', phases: [['Adem in', 5], ['Adem uit', 5]] },
+  deep: { id: 'deep', cls: 'p-deep', name: 'Diepe buikademhaling', total: 10, blurb: '4-6, een snelle stressreset.', phases: [['Adem in', 4], ['Adem uit', 6]] }
+};
+const RELAX_GUIDES = {
+  bodyscan: { name: 'Bodyscan', dur: '10–15 min', desc: 'Je aandacht rustig door je hele lichaam laten gaan, van je voeten tot je hoofd, zonder iets te veranderen, alleen opmerken.', steps: ['Ga liggen of zit comfortabel. Sluit je ogen of richt je blik zacht naar beneden. Adem een paar keer rustig in en uit.', 'Richt je aandacht op je voeten. Voel hoe ze de grond of het bed raken, en merk warmte, druk of tintelingen op.', 'Beweeg je aandacht langzaam omhoog naar je onderbenen en knieën.', 'Ga verder naar je bovenbenen en bekken.', 'Merk je buik en onderrug op, en de beweging van je ademhaling daar.', 'Richt je aandacht op je borst en bovenrug.', 'Voel je handen, armen en schouders. Laat spanning los bij het uitademen.', 'Merk je nek en keel op.', 'Breng je aandacht naar je gezicht: kaak, mond, ogen, voorhoofd.', 'Voel je hele lichaam even als geheel. Adem een paar keer rustig in en uit voordat je je ogen weer opent.'] },
+  pmr: { name: 'Progressieve spierrelaxatie', dur: '10–15 min', desc: 'Spiergroepen kort aanspannen en daarna bewust loslaten, zodat je het verschil tussen spanning en ontspanning leert voelen.', steps: ['Bal beide handen tot vuisten, span ze 5 seconden aan en laat dan los. Voel het verschil 10 seconden.', 'Buig je polsen naar je lichaam om je onderarmen aan te spannen. Houd vast, laat los.', 'Buig je ellebogen zoals bij een biceps curl om je bovenarmen aan te spannen. Houd vast, laat los.', 'Trek je schouders op naar je oren. Houd vast, laat los.', 'Trek je wenkbrauwen samen en knijp je ogen dicht. Houd vast, laat los.', 'Klem je kaken op elkaar. Houd vast, laat los.', 'Span je buikspieren aan alsof je een stomp opvangt. Houd vast, laat los.', 'Trek je schouderbladen naar elkaar om je rug aan te spannen. Houd vast, laat los.', 'Span je bilspieren aan. Houd vast, laat los.', 'Span je bovenbenen aan. Houd vast, laat los.', 'Trek je tenen omhoog om je onderbenen aan te spannen. Houd vast, laat los.', 'Krul je tenen om om je voeten aan te spannen. Houd vast, laat los.', 'Voel je hele lichaam een paar momenten helemaal slap en zwaar worden.'] },
+  grounding: { name: '5-4-3-2-1 grounding', dur: '3–5 min', desc: 'Een snelle oefening om uit je hoofd en terug in het moment te komen, bijvoorbeeld bij piekeren of onrust.', steps: ['Noem voor jezelf 5 dingen die je kunt zien.', 'Noem 4 dingen die je kunt voelen, zoals de stoel onder je of je kleding.', 'Noem 3 dingen die je kunt horen.', 'Noem 2 dingen die je kunt ruiken.', 'Noem 1 ding dat je kunt proeven, of waar je op dit moment dankbaar voor bent.'] }
+};
+const MIND_VIDEOS = [
+  { name: 'Headspace', desc: 'Korte, laagdrempelige meditaties en ademhalingsoefeningen; het gratis YouTube-kanaal van de bekende meditatie-app.', url: 'https://www.youtube.com/@Headspace' },
+  { name: 'Calm', desc: 'Dagelijkse rustmomenten, ademhalingsoefeningen en slaapverhalen; het gratis YouTube-kanaal van de Calm-app.', url: 'https://www.youtube.com/@calm' },
+  { name: 'The Honest Guys', desc: 'Een van de meest bekeken gratis kanalen voor begeleide meditatie, bodyscan en ontspanning (Engels).', url: 'https://www.youtube.com/@TheHonestGuys' },
+  { name: 'Great Meditation', desc: 'Groot gratis aanbod aan meditaties op lengte, gevoel en thema, van slaap tot stressvermindering.', url: 'https://www.youtube.com/@GreatMeditation' },
+  { name: 'Yoga With Adriene', desc: 'Gratis yoga- en yoga nidra-video’s voor ontspanning en herstel, ook fijn na een zware trainingsweek.', url: 'https://www.youtube.com/@yogawithadriene' },
+  { name: 'UCLA Mindful', desc: 'Wetenschappelijk onderbouwde, gratis geleide meditaties van een universitair onderzoekscentrum.', url: 'https://www.youtube.com/@UCLAMindful' }
+];
+function mindLog() { S.mindful = S.mindful || { log: [] }; return S.mindful.log; }
+function logMindful(type, name, sec) {
+  const l = mindLog(); l.push({ date: today(), type, name, sec }); if (l.length > 300) S.mindful.log = l.slice(-300); save();
+}
+function mindWeekStats() {
+  const l = mindLog(), cut = addDays(today(), -6);
+  const wk = l.filter(x => x.date >= cut);
+  return { n: wk.length, min: Math.round(wk.reduce((a, x) => a + x.sec, 0) / 60) };
+}
+function breathState(b) {
+  const p = BREATH_PATTERNS[b.pattern];
+  if (!b.running) return { p, idx: 0, left: p.phases[0][1], cycles: 0 };
+  const el = (Date.now() - b.startedAt) / 1000, cycles = Math.floor(el / p.total);
+  let t = el - cycles * p.total, idx = 0;
+  while (idx < p.phases.length - 1 && t >= p.phases[idx][1]) { t -= p.phases[idx][1]; idx++; }
+  return { p, idx, left: Math.max(0, Math.ceil(p.phases[idx][1] - t)), cycles, elapsed: el };
+}
+function paintBreath() {
+  const b = ui.breath; if (!b) return; const wrap = $('#bwrap'); if (!wrap) return;
+  const st = breathState(b), ring = $('#bcircle', wrap);
+  if (ring) ring.classList.toggle('running', !!b.running);
+  const ph = $('#bphase', wrap); if (ph) ph.textContent = b.running ? st.p.phases[st.idx][0] + ' · ' + st.left : 'Klaar om te starten';
+  const cy = $('#bcycles', wrap); if (cy) cy.textContent = st.cycles;
+  const min = $('#bmin', wrap); if (min && b.running) min.textContent = Math.max(0, Math.ceil(b.minutes - st.elapsed / 60));
+  if (b.running && b.minutes && st.elapsed >= b.minutes * 60) { breathStop(true); render(); }
+}
+setInterval(() => { if (ui.breath && $('#bwrap')) paintBreath(); }, 500);
+function breathStop(doLog) {
+  const b = ui.breath; if (!b || !b.running) return;
+  const sec = Math.round((Date.now() - b.startedAt) / 1000); b.running = false;
+  if (doLog && sec >= 20) { logMindful('ademhaling', BREATH_PATTERNS[b.pattern].name, sec); toast('Mooi gedaan. ' + Math.max(1, Math.round(sec / 60)) + ' min ademhaling gelogd.'); }
+}
+A.mindTab = d => { ui.mTab = d.t; render(); };
+A.breathPattern = d => { const b = ui.breath; if (b.running) breathStop(false); b.pattern = d.id; render(); };
+A.breathMin = d => { ui.breath.minutes = +d.m; render(); };
+A.breathToggle = () => { const b = ui.breath; if (b.running) breathStop(true); else { b.startedAt = Date.now(); b.running = true; } render(); };
+A.relaxDone = d => { const g = RELAX_GUIDES[d.id]; logMindful('ontspanning', g.name, 0); toast(g.name + ' gelogd. Goed gedaan.'); render(); };
+function vBreathTab() {
+  if (!ui.breath) ui.breath = { pattern: '478', minutes: 3, running: false, startedAt: 0 };
+  const b = ui.breath, p = BREATH_PATTERNS[b.pattern], st = breathState(b);
+  const pats = Object.values(BREATH_PATTERNS).map(x => `<button class="bpat ${b.pattern === x.id ? 'on' : ''}" data-a="breathPattern" data-id="${x.id}" ${b.running ? 'disabled' : ''}><span><b>${esc(x.name)}</b><small>${esc(x.blurb)}</small></span>${b.pattern === x.id ? '✓' : ''}</button>`).join('');
+  const mins = [2, 3, 5, 10].map(m => `<button class="chipb ${b.minutes === m ? 'on' : ''}" data-a="breathMin" data-m="${m}" ${b.running ? 'disabled' : ''}>${m} min</button>`).join('');
+  return `<div class="card breathwrap" id="bwrap">
+   <div class="bcircle ${p.cls} ${b.running ? 'running' : ''}" id="bcircle"><span id="bphase">${b.running ? st.p.phases[st.idx][0] + ' · ' + st.left : 'Klaar om te starten'}</span></div>
+   <div class="bmeta"><div><b id="bcycles">${st.cycles}</b><small>ademhalingen</small></div><div><b id="bmin">${b.minutes}</b><small>min te gaan</small></div></div>
+   <button class="btn lg" data-a="breathToggle">${b.running ? 'Stop' : 'Start ' + p.name}</button>
+  </div>
+  <div class="card"><h3>Patroon</h3><div class="bpats">${pats}</div><h3>Duur</h3><div class="chips">${mins}</div></div>
+  <small class="fine">Ademhalingsoefeningen zijn geen vervanging voor medische zorg. Voel je duizelig of benauwd, stop dan en adem gewoon normaal door.</small>`;
+}
+function vRelaxTab() {
+  const cards = Object.entries(RELAX_GUIDES).map(([id, g]) => `<div class="card"><h3>${esc(g.name)} <small class="fine">· ${esc(g.dur)}</small></h3><p class="sub">${esc(g.desc)}</p>${acc('Stap voor stap', g.steps.length + ' stappen', `<ol class="steps-l">${g.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>`)}<button class="btn sm" data-a="relaxDone" data-id="${id}">Markeer als gedaan</button></div>`).join('');
+  return cards;
+}
+function vMindVideos() {
+  const cards = MIND_VIDEOS.map(v => `<div class="card"><h3>${esc(v.name)}</h3><p class="sub">${esc(v.desc)}</p><a class="btn sm" href="${v.url}" target="_blank" rel="noopener">Bekijk gratis op YouTube</a></div>`).join('');
+  return `<div class="dcards">${cards}</div>
+  <div class="card quiet"><h3>Liever Nederlands?</h3><p class="sub">Zoek gratis Nederlandstalige mindfulness- en ademhalingsvideo’s, of kijk bij apps als VGZ Mindfulness Coach of Insight Timer, die een groot gratis aanbod hebben.</p><a class="btn ghost sm" href="https://www.youtube.com/results?search_query=${encodeURIComponent('gratis mindfulness ademhaling meditatie Nederlands')}" target="_blank" rel="noopener">Zoek Nederlandse video’s</a></div>
+  <small class="fine">Deze video’s en kanalen komen van externe sites (YouTube) en openen in een nieuw tabblad. Inhoud en beschikbaarheid kunnen veranderen; dit is geen medisch advies.</small>`;
+}
 function vMindful() {
-  return `<section class="home"><div class="vh"><span class="eyebrow">Mindful</span><h1>Mindful</h1><p>Hier komen ademhaling, rust en mindset. Binnenkort meer.</p></div>
-  <div class="card"><h3>Binnenkort</h3><p class="sub">Deze sectie bouwen we later uit met ademhalingsoefeningen, reflectie en slaap/herstel-tips.</p></div></section>`;
+  if (!ui.mTab) ui.mTab = 'ademhaling';
+  const ws = mindWeekStats();
+  const tb = tabs(ui.mTab, [['ademhaling', 'Ademhaling'], ['ontspanning', 'Ontspanning'], ['videos', 'Video’s']], 'mindTab');
+  const body = ui.mTab === 'ademhaling' ? vBreathTab() : ui.mTab === 'ontspanning' ? vRelaxTab() : vMindVideos();
+  return `<section class="home"><div class="vh"><span class="eyebrow">Mindful</span><h1>Mindful</h1><p>Ademhaling, ontspanning en rust als vast onderdeel van je coaching.</p></div>
+  ${ws.n ? `<div class="note">Deze week: ${ws.n} ${ws.n === 1 ? 'moment' : 'momenten'} van rust, ${ws.min} min totaal.</div>` : ''}
+  ${tb}${body}</section>`;
 }
 
 /* ===== BELONINGEN: XP, levels, streak, dagdoelen, badges, records ===== */
