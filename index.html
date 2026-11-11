@@ -1191,6 +1191,88 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .chk2 .tile5 span{transition:transform .15s,background .2s,box-shadow .2s}
 .chkbtns{display:grid;gap:8px;justify-items:center;margin-top:var(--s2)}
 .chkbtns .btn{width:100%}
+
+/* ===== Vandaag: leesbare Hierna-kaart ===== */
+.vnext,.vnext small,.vnext b{color:#10130a}
+.vnext .btn{color:var(--pg);background:#0B1220;border-color:#0B1220}
+/* ===== Vergrendelscherm ===== */
+#lock{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;background:radial-gradient(120% 70% at 50% 30%,#16264A 0%,#0B1220 70%);color:#F4F7FB;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);overflow:auto;transition:opacity .45s ease 1.7s}
+#lock.go{opacity:0;pointer-events:none}
+.lkin{width:min(420px,100%);padding:20px 24px 28px;display:flex;flex-direction:column;align-items:flex-start;box-sizing:border-box;min-height:100%}
+.lkcap{font:800 16px/1 var(--fd);letter-spacing:.02em;color:#fff}
+.lkscene{width:min(240px,62vw);align-self:center;margin:12px 0 0;overflow:visible}
+#lock h1{margin:6px 0 8px;font:900 clamp(32px,9.4vw,44px)/1.05 var(--fd);color:#fff;text-transform:uppercase;letter-spacing:-.01em;font-stretch:100%;max-width:100%;overflow-wrap:anywhere}
+#lock p{margin:0 0 18px;font:600 18px/1.45 var(--fb);color:#B9C5DA}
+.lkgo{width:100%;min-height:60px;font-size:22px;margin-top:auto;background:#C9F24D;color:#10130a;border-color:#C9F24D}
+.lkpin{display:flex;gap:14px;align-self:center;margin:4px 0 14px}
+.lkpin i{width:16px;height:16px;border-radius:50%;border:2px solid #C9F24D;transition:background .15s,transform .15s}
+.lkpin i.on{background:#C9F24D;transform:scale(1.15)}
+.lkpin.bad{animation:lkshake .35s}
+@keyframes lkshake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.lkpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;margin-top:auto}
+.lkk{min-height:60px;border-radius:18px;border:1px solid #2A3857;background:#141E33;color:#fff;font:800 26px var(--fd);cursor:pointer}
+.lkk:active{background:#C9F24D;color:#10130a}
+@keyframes lkfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.lkt{animation:lkfloat 3s ease-in-out infinite}
+@keyframes lkin{to{transform:translateY(-68px)}}
+@keyframes lkturn{to{transform:rotate(90deg)}}
+@keyframes lkshl{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(-20px) rotate(-24deg)}}
+@keyframes lkbur{0%{opacity:.9;transform:scale(.6)}100%{opacity:0;transform:scale(2.6)}}
+@keyframes lkbody{0%,100%{filter:none}50%{filter:drop-shadow(0 0 22px #C9F24D)}}
+.lkr{transform-origin:120px 232px}
+.lkshackle{transform-origin:86px 104px}
+.lkburst{opacity:0;transform-origin:120px 152px}
+#lock.go .lkt{animation:lkin .6s cubic-bezier(.5,0,.2,1) forwards}
+#lock.go .lkr{animation:lkturn .5s ease-in-out .65s forwards}
+#lock.go .lkshackle{animation:lkshl .45s ease-out 1.15s forwards}
+#lock.go .lkburst{animation:lkbur .7s ease-out 1.15s forwards}
+#lock.go .lkbody{animation:lkbody .8s ease-in-out 1.15s}
+@media (prefers-reduced-motion:reduce){.lkt{animation:none}#lock{transition:none}}
+/* ===== Metingen: silhouet met linten ===== */
+.mcard .mhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:var(--s1)}
+.mcard .mhead h3{margin:0;font:900 24px/1.1 var(--fd);text-transform:uppercase;letter-spacing:-.01em}
+.mcard .mhead small{color:var(--ink2);font-weight:600}
+.mwrap{position:relative;height:310px;max-width:340px;margin:var(--s1) auto var(--s2)}
+.mfig{position:absolute;left:50%;top:0;height:100%;transform:translateX(-50%)}
+.mpill{position:absolute;min-height:34px;padding:0 12px;border-radius:99px;border:1px solid var(--line2);background:var(--surface2);color:var(--head);font:800 14px/1 var(--fb);cursor:pointer;white-space:nowrap;z-index:2}
+.mpill.has::after{content:" ✓"}
+.mpill.on{background:var(--c);border-color:var(--c);color:#10130a;box-shadow:0 6px 18px -6px var(--c)}
+.mdet{display:grid;gap:2px;margin:0 0 var(--s2);padding:12px 14px;border-radius:18px;background:var(--surface2);border-left:6px solid var(--c)}
+.mdet small{font:800 13px/1.3 var(--fb);letter-spacing:.12em;text-transform:uppercase;color:var(--c)}
+.mdet .mval{font:900 44px/1 var(--fd);color:var(--head)}.mdet .mval i{font:700 18px var(--fb);font-style:normal;color:var(--ink2)}
+.mdet .msub{font:600 15px/1.4 var(--fb);color:var(--ink2)}
+.mform{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end;margin:0 0 var(--s2)}
+.mform .btn{grid-column:1/-1}
+/* ===== Loggen: grotere tegels, snelknoppen ===== */
+.set{grid-template-columns:36px minmax(0,1fr) minmax(0,1fr) 56px 34px!important;gap:8px!important;padding:8px!important;border-radius:20px!important;background:var(--surface2);border:1px solid var(--line)!important}
+.set.notw{grid-template-columns:36px minmax(0,1fr) 56px 34px!important}
+.set .snum{width:36px;height:36px;font-size:16px}
+.set .fl input{min-height:68px!important;padding-top:18px!important;border-radius:16px!important;font:800 28px/1 var(--fd)!important}
+.set .fl em{top:7px;font-size:11px;font-weight:800;letter-spacing:.08em}
+.setchk{width:56px;height:56px;border-width:2px}
+.setchk svg{width:28px;height:28px}
+.set.done{border-color:color-mix(in srgb,var(--pg) 45%,transparent)!important}
+.qstep{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:var(--s1) 0 0}
+.qstep>span{font:800 13px var(--fb);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin-right:2px}
+.qb{min-height:40px;padding:0 12px;border-radius:12px;border:1px solid var(--line2);background:var(--surface2);color:var(--head);font:800 14px/1 var(--fb);cursor:pointer}
+.qb:active{background:var(--pg);color:#10130a}
+/* ===== Rusttimer: ring met volgende set ===== */
+#rest{padding:10px 12px;border-radius:24px}
+.rtc{display:flex;align-items:center;gap:12px}
+.rtring{position:relative;width:68px;height:68px;flex:none}
+.rtring svg{width:100%;height:100%}
+.rtring circle{fill:none;stroke-width:6}
+.rtring .bg{stroke:var(--line2)}
+.rtring .fg{stroke:var(--pg);stroke-linecap:round;transition:stroke-dashoffset .25s linear}
+.rtring b{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;font:900 20px/1 var(--fd);font-variant-numeric:tabular-nums;color:var(--head)}
+.rtc.go .rtring .fg{stroke:#C9F24D;stroke-dashoffset:0!important;animation:rtp 1s ease-in-out infinite}
+@keyframes rtp{50%{opacity:.45}}
+.rtinfo{flex:1;min-width:0;display:grid;gap:2px}
+.rtinfo .rtl{font:800 12px/1.2 var(--fb);letter-spacing:.12em;text-transform:uppercase;color:var(--pg)}
+.rtinfo .rtn{font:800 15px/1.3 var(--fb);color:var(--head);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rtbtns{display:grid;gap:6px;flex:none}
+.rtb{min-height:38px;padding:0 12px;border-radius:12px;border:1px solid var(--pg);background:var(--pg);color:#10130a;font:800 14px/1 var(--fb);cursor:pointer;white-space:nowrap}
+.rtb.ghost{background:transparent;color:var(--ink);border-color:var(--line2)}
 /* ===== Nieuw Vandaag-scherm, 3 tabs, grotere letters ===== */
 #nav a{font-size:14px;font-weight:800;letter-spacing:0}
 #nav a .ic{width:26px;height:26px;stroke-width:2}
@@ -2971,7 +3053,7 @@ function vHomeBento() {
   const x = R.dayInfo[d], pp = (x && x.p) || {}, r = S.recovery[d] || {};
   const trainOk = !!(pp.train || pp.rest), stepsOk = !!pp.steps, protOk = !!pp.protein, checkOk = !!(pp.check || r.energy || r.recovery);
   const def = sess[0] ? sessionDef(sess[0].key) : null;
-  const trainTxt = !sess.length ? (trainOk ? 'Rustdag ✓' : 'Rustdag') : trainOk ? 'Gedaan' : esc(def.name);
+  const trainTxt = !sess.length ? ('Rustdag') : trainOk ? 'Gedaan' : esc(def.name);
   const stTxt = st != null ? st.toLocaleString('nl-NL') + ' / ' + stepsGoal.toLocaleString('nl-NL') : 'Nog niet ingevuld';
   const prTxt = (!t || t.missing || !t.p) ? 'Stel je gegevens in' : n0(eaten.p) + ' / ' + t.p + ' g';
   const tile = (cls, ok, c, title, txt, a, data = '') => `<button class="vt ${ok ? 'ok' : ''}" style="--c:${c}" data-a="${a}" ${data}><b>${title}</b><span>${txt}</span></button>`;
@@ -2979,7 +3061,7 @@ function vHomeBento() {
   return `<section class="home vday"><div class="vh"><span class="eyebrow">${fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' })}</span><h1>Vandaag</h1><p>${p.name ? `${greet}, ${esc(p.name)}. ` : ''}${esc(weekLine())}</p></div>
   <a class="vhero" href="#beloningen" aria-label="Streak en beloningen">${rwOrbit(R, false, 330)}</a>
   <div class="vgrid">${tile('t', trainOk, '#C9F24D', 'Training', trainTxt, 'gotoTraining')}${tile('s', stepsOk, '#5CC8FF', 'Stappen', stTxt, 'stepsAsk')}${tile('e', protOk, '#B48CFF', 'Eiwit', prTxt, 'gotoFood')}${tile('c', checkOk, '#FF9F5A', 'Check-in', checkOk ? 'Gedaan' : 'Nog open', 'checkAsk')}</div>
-  ${nextCard}${rwHomeCard()}${coachCard(coach)}${rwWeekCard()}${compHomeCard()}
+  ${nextCard}${coachCard(coach)}${rwWeekCard()}${compHomeCard()}
   ${S.example ? '<p class="sub">Je gebruikt een voorbeeldprofiel. Pas het aan of wis het bij Profiel.</p>' : ''}
   <p class="center"><button class="link" data-a="homeLayout">Klassieke weergave</button></p></section>`;
 }
@@ -3284,6 +3366,7 @@ function vPlan() {
   ${acc('Receptfoto’s', RP.hasKey() ? RP.count() + ' van ' + RECIPES.length : 'Uit', rpSettings())}
   ${x.as.length ? acc('Aannames', x.as.length + '', `<ul class="plain">${x.as.map(a => `<li>${esc(a)}</li>`).join('')}</ul><small>Vul je profiel aan om aannames te vervangen door je eigen gegevens.</small>`) : ''}
   ${acc('Je gegevens', 'Export en wissen', pData())}
+  ${lockCard()}
   <div class="card slim"><div class="row"><div><b>App bijwerken</b><small id="appv">Versie wordt opgehaald…</small></div><button class="btn ghost sm" data-a="hardRefresh">Nu bijwerken</button></div></div>
   </section>`;
 }
@@ -3529,6 +3612,7 @@ function vWorkout() {
      <div class="exchips"><button class="chipb" data-a="restNow" data-idx="${idx}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>${esc(r.rest)} rust</button><button class="chipb" data-a="exHist" data-id="${it.ex}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5-5 4 4 8-8M15 8h5v5"/></svg>Historie</button><button class="chipb" data-a="swapAsk" data-idx="${idx}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4L3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></svg>Vervang</button></div>
      ${sg ? `<div class="sugg"><span>${esc(sg.text)}</span>${sg.w != null && sg.kind === 'up' ? `<button class="btn ghost sm" data-a="applySugg" data-idx="${idx}" data-w="${sg.w}">Gebruik ${n1(sg.w)} kg</button>` : ''}</div>` : `<p class="sub">Eerste keer: kies een gewicht of tempo waarbij je netjes ${time ? '30 seconden' : e.type === 'dist' ? 'de afstand' : r.lo + ' herhalingen'} haalt en 2 à 3 herhalingen over houdt.</p>`}
      ${r.rdy ? `<p class="rdyn">Slim volume: ${esc(r.rdy)}.</p>` : ''}${r.note && !r.tw ? '<p class="sub"><b>' + esc(r.note) + '</b></p>' : ''}${r.main ? '<p class="sub"><b>Hoofdoefening.</b> Laatste set: zoveel herhalingen als je netjes haalt, met 1 herhaling in reserve.</p>' : ''}<details class="why"><summary>Uitvoering en video</summary><div>${exPics(e.id)}${esc(e.cue)}<div class="btns">${exLinks(e)}</div></div></details>
+     ${(() => { const qi = it.sets.findIndex(x => !x.done); return qi < 0 ? '' : `<div class="qstep" aria-label="Snel aanpassen set ${qi + 1}"><span>Set ${qi + 1}</span>${time ? '' : `<button class="qb" data-a="qAdj" data-idx="${idx}" data-k="w" data-d="-2.5">−2,5</button><button class="qb" data-a="qAdj" data-idx="${idx}" data-k="w" data-d="2.5">+2,5 kg</button>`}<button class="qb" data-a="qAdj" data-idx="${idx}" data-k="r" data-d="-1">−1</button><button class="qb" data-a="qAdj" data-idx="${idx}" data-k="r" data-d="1">+1 ${unit}</button></div>`; })()}
      <div class="sets">${it.sets.map((s, i) => { const gh = wkGhost(it, i); return `<div class="set ${s.done ? 'done' : ''} ${s.pr ? 'pr' : ''} ${time ? 'notw' : ''}" data-swipe data-sw-${s.done ? 'l' : 'r'}="setDone" data-idx="${idx}" data-i="${i}"><span class="snum">${s.pr ? '🏆' : s.done ? '✓' : s.t === 'warm' ? 'W' : s.t === 'myo' ? 'M' : s.t === 'down' ? 'D' : i + 1 - it.sets.slice(0, i).filter(x => x.t === 'warm').length}</span>${time ? '' : `<label class="fl"><input aria-label="Gewicht set ${i + 1} (kg)" data-c="set" data-idx="${idx}" data-i="${i}" data-k="w" type="number" inputmode="decimal" step="0.5" min="0" placeholder="${gh.w !== '' ? n1(gh.w).replace(',', '.') : '–'}" value="${s.w}"><em>kg</em></label>`}<label class="fl"><input aria-label="${unit} set ${i + 1}" data-c="set" data-idx="${idx}" data-i="${i}" data-k="r" type="number" inputmode="numeric" min="0" placeholder="${gh.r !== '' ? gh.r : '–'}" value="${s.r}"><em>${unit}${s.t ? ' · ' + ({ warm: 'opwarmen', myo: 'myo-rep', down: 'down set' })[s.t] : ''}</em></label><button class="setchk" data-a="setDone" data-idx="${idx}" data-i="${i}" aria-label="Set ${i + 1} ${s.done ? 'niet meer' : ''} als gedaan markeren" aria-pressed="${!!s.done}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><details class="menu smenu"><summary aria-label="Setmenu set ${i + 1}">⋯</summary><div class="menubox"><b class="sm-h">Settype</b>${[['', 'Regulier'], ['warm', 'Opwarmen'], ['myo', 'Myo-rep'], ['down', 'Down set']].map(([k, l]) => `<button class="link ${(s.t || '') === k ? 'cur' : ''}" data-a="setType" data-idx="${idx}" data-i="${i}" data-t="${k}">${(s.t || '') === k ? '✓ ' : ''}${l}</button>`).join('')}<hr><button class="link" data-a="setBelow" data-idx="${idx}" data-i="${i}">Set eronder toevoegen</button><button class="link" data-a="setDel" data-idx="${idx}" data-i="${i}">Set verwijderen</button></div></details></div>`; }).join('')}</div>
      <div class="btns"><label class="f inl">RPE<select data-c="rpe" data-idx="${idx}"><option value="">–</option>${[6, 7, 8, 9, 10].map(n => `<option ${+it.rpe === n ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
       <button class="btn ghost sm" data-a="addSet" data-idx="${idx}">+ set</button><button class="btn ghost sm" data-a="logAll" data-idx="${idx}">Alle sets loggen</button>
@@ -3571,6 +3655,7 @@ function prCheck(it, st, announce) {
 }
 function setDoneFx(it, st, announce) {
   st.done = true; const pr = prCheck(it, st, announce);
+  { const nx = it.sets[it.sets.indexOf(st) + 1]; if (nx && !nx.done && nx.w === '' && nx.r === '') { nx.w = st.w; nx.r = st.r; } }
   if (!pr && announce) rwFly('+' + RW_XP.set + ' XP');
   if (announce && !S.restOff && ui.workout) startRest(restSecs(it.ex, ui.workout.key));
 }
@@ -3580,6 +3665,7 @@ function paintSetRow(idx, i) {
   const b = $('.setchk', row); if (b) b.setAttribute('aria-pressed', !!st.done); const pg = $('.wkprog'); if (pg) pg.outerHTML = wkProg(S.draft);
 }
 function wkProg(dr) { const all = dr.items.reduce((a, it) => a + it.sets.length, 0), dn = dr.items.reduce((a, it) => a + it.sets.filter(x => x.done || num(x.r) > 0).length, 0); return `<div class="wkprog" aria-label="${dn} van ${all} sets gedaan"><div class="xpbar"><i style="width:${all ? (dn / all * 100).toFixed(0) : 0}%"></i></div><small>${dn}/${all} sets</small></div>`; }
+A.qAdj = d => { const it = S.draft.items[+d.idx], i = it.sets.findIndex(x => !x.done); if (i < 0) return; const st = it.sets[i], gh = wkGhost(it, i), k = d.k, base = num(st[k], 1) || num(gh[k], 1) || 0, nv = Math.max(0, Math.round((base + +d.d) * 4) / 4); st[k] = String(nv); save(); render(); };
 A.setDone = d => { const it = S.draft.items[+d.idx], st = it.sets[+d.i];
   if (st.done) { st.done = false; st.pr = false; save(); render(); return; }
   const gh = wkGhost(it, +d.i); if (!(num(st.r) > 0)) { if (gh.r === '') { toast('Vul eerst het aantal herhalingen in.'); return; } st.r = String(gh.r); } if (st.w === '' && gh.w !== '') st.w = String(gh.w);
@@ -3598,14 +3684,23 @@ let restEnd = 0, restTotal = 0, restDone = 0;
 function beep() { try { const a = new (window.AudioContext || window.webkitAudioContext)(), o = a.createOscillator(), g = a.createGain(); o.frequency.value = 880; g.gain.value = .15; o.connect(g); g.connect(a.destination); o.start(); setTimeout(() => { o.stop(); a.close(); }, 350); } catch (e) {} }
 function startRest(s) { restEnd = Date.now() + s * 1000; restTotal = s; restDone = 0; paintRest(); }
 function stopRest() { restEnd = 0; restDone = 0; paintRest(); }
+function restNext() {
+  const dr = S.draft; if (!dr || !dr.items.length) return '';
+  const n = dr.items.length; let k = clamp(ui.wkIdx || 0, 0, n - 1);
+  for (let c = 0; c < n; c++, k = (k + 1) % n) { const it = dr.items[k], i = it.sets.findIndex(x => !x.done); if (i < 0) continue; const gh = wkGhost(it, i), st = it.sets[i], w = st.w !== '' ? st.w : gh.w, r = st.r !== '' ? st.r : gh.r;
+    return 'Hierna: ' + ((EX[it.ex] || {}).name || '') + ' · set ' + (i + 1) + (w !== '' || r !== '' ? ' · ' + (w !== '' ? n1(num(w, 1)).replace('.', ',') + ' kg' : '') + (w !== '' && r !== '' ? ' × ' : '') + (r !== '' ? r : '') : ''); }
+  return 'Alles gedaan. Rond je training af.';
+}
 function paintRest() {
   let el = $('#rest'); if (!el) { el = document.createElement('div'); el.id = 'rest'; el.setAttribute('role', 'timer'); document.body.appendChild(el); }
   if (!ui.workout || (!restEnd && !restDone)) { el.hidden = true; return; }
   el.hidden = false; const left = Math.ceil((restEnd - Date.now()) / 1000);
-  if (restEnd && left <= 0) { restEnd = 0; restDone = Date.now() + 6000; beep(); }
+  if (restEnd && left <= 0) { restEnd = 0; restDone = Date.now() + 8000; beep(); try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch (e) {} }
   if (!restEnd && restDone && Date.now() > restDone) { restDone = 0; el.hidden = true; return; }
-  const pct = restEnd ? clamp(100 - left / restTotal * 100, 0, 100) : 100;
-  el.innerHTML = `<div class="rtbar"><i style="width:${pct}%"></i></div><div class="rtrow"><span class="rtl">${restEnd ? 'Rust' : 'Klaar voor de volgende set'}</span>${restEnd ? `<b>${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}</b><button class="btn ghost xs" data-a="restAdd">+15 sec</button>` : ''}<button class="btn ghost xs" data-a="restSkip">${restEnd ? 'Sla over' : 'Sluiten'}</button></div>`;
+  const rem = restEnd ? clamp((restEnd - Date.now()) / 1000 / restTotal, 0, 1) : 0, C = 2 * Math.PI * 26, mm = Math.floor(left / 60), ss = String(left % 60).padStart(2, '0');
+  el.innerHTML = `<div class="rtc ${restEnd ? '' : 'go'}"><div class="rtring"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="26" class="bg"/><circle cx="32" cy="32" r="26" class="fg" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - rem)).toFixed(1)}" transform="rotate(-90 32 32)"/></svg><b>${restEnd ? mm + ':' + ss : '✓'}</b></div>
+   <div class="rtinfo"><span class="rtl">${restEnd ? 'Rust' : 'Door met de volgende set'}</span><span class="rtn">${esc(restNext())}</span></div>
+   <div class="rtbtns">${restEnd ? '<button class="rtb" data-a="restAdd">+15 sec</button>' : ''}<button class="rtb ghost" data-a="restSkip">${restEnd ? 'Sla over' : 'Sluiten'}</button></div></div>`;
 }
 A.restAdd = () => { restEnd += 15000; restTotal += 15; paintRest(); };
 A.restSkip = () => stopRest();
@@ -4768,7 +4863,25 @@ function weekStats(n) {
     out.push({ mon, n: ls.length, vol: ls.reduce((a, l) => a + sessionVolume(l), 0), cardioMin: ls.filter(l => l.type === 'cardio').reduce((a, l) => a + (l.cardio ? l.cardio.min : 0), 0), strengthDays: new Set(ls.filter(l => l.type === 'kracht').map(l => l.date)).size, pl, ea }); }
   return out;
 }
-const MEAS = [['waist', 'Taille'], ['chest', 'Borst'], ['hips', 'Heupen'], ['arm', 'Bovenarm'], ['thigh', 'Bovenbeen']];
+const MEAS = [['shoulders', 'Schouders', '#C9F24D'], ['chest', 'Borst', '#5CC8FF'], ['waist', 'Taille', '#FF9F5A'], ['hips', 'Heupen', '#B48CFF'], ['arm', 'Bovenarm', '#5EE08A'], ['thigh', 'Bovenbeen', '#FFD166'], ['calf', 'Kuit', '#FF6FB5']];
+const MPOS = { shoulders: [60, 'l', 40, 160], chest: [90, 'r', 48, 152], waist: [135, 'r', 58, 142], hips: [172, 'r', 52, 148], arm: [105, 'l', 20, 50], thigh: [218, 'l', 54, 98], calf: [275, 'r', 116, 142] };
+const measHist = k => S.body.filter(b => b[k]).sort((a, b) => a.date.localeCompare(b.date));
+function measCard() {
+  const k = MEAS.some(m => m[0] === ui.measSel) ? ui.measSel : 'arm', m = MEAS.find(x => x[0] === k), h = measHist(k), last = h[h.length - 1], first = h[0];
+  const line = ([key, , c]) => { const [y, , x1, x2] = MPOS[key], on = key === k; return `<line x1="${x1}" x2="${x2}" y1="${y}" y2="${y}" stroke="${c}" stroke-width="${on ? 6 : 3}" stroke-linecap="round" opacity="${on ? 1 : .75}"/>`; };
+  const pill = ([key, l, c]) => { const [y, side] = MPOS[key], has = measHist(key).length > 0; return `<button type="button" class="mpill ${key === k ? 'on' : ''} ${has ? 'has' : ''}" style="--c:${c};top:calc(${(y / 320 * 100).toFixed(1)}% - 17px);${side === 'l' ? 'left:0' : 'right:0'}" data-a="measSel" data-k="${key}" aria-pressed="${key === k}">${l}</button>`; };
+  const fig = `<svg class="mfig" viewBox="0 0 200 320" aria-hidden="true"><g fill="none" stroke="rgba(148,163,184,.22)" stroke-linecap="round" stroke-linejoin="round"><circle cx="100" cy="26" r="17" fill="rgba(148,163,184,.22)" stroke="none"/><path d="M44 62Q44 54 56 54L144 54Q156 54 156 62L148 120Q146 140 140 150L146 178L54 178L60 150Q54 140 52 120Z" fill="rgba(148,163,184,.22)" stroke="none"/><path d="M38 70L28 150L24 215M162 70L172 150L176 215" stroke-width="18"/><path d="M78 180L72 255L70 305M122 180L128 255L130 305" stroke-width="30"/></g>${MEAS.map(line).join('')}</svg>`;
+  const val = last ? n1(last[k]).replace('.', ',') : '–', d = last && first && h.length > 1 ? last[k] - first[k] : null;
+  const sub = !h.length ? 'Nog niet gemeten.' : h.length === 1 ? 'Eén meting. Vanaf de tweede zie je het verschil.' : `Eerst ${n1(first[k])} cm · ${d > 0 ? '+' : ''}${n1(d)} cm sinds ${fmtDate(first.date, { day: 'numeric', month: 'short' })}`;
+  return `<div class="card mcard"><div class="mhead"><h3>Omtrek</h3><small>tik een lint</small></div><div class="mwrap">${fig}${MEAS.map(pill).join('')}</div>
+   <div class="mdet" style="--c:${m[2]}"><small>${m[1]}</small><b class="mval">${val}<i> cm</i></b><span class="msub">${sub}</span></div>
+   <form data-submit="measure1" class="mform"><input type="hidden" name="k" value="${k}"><label class="f">Datum<input name="date" type="date" value="${today()}" max="${today()}"></label><label class="f">Nieuwe meting (cm)<input name="v" type="number" step="0.5" min="10" max="250" inputmode="decimal" placeholder="${last ? n1(last[k]).replace('.', ',') : 'cm'}"></label><button class="btn">Opslaan</button></form>
+   ${h.length ? `<ul class="plain lst">${h.slice(-4).reverse().map(b => `<li><span>${fmtDate(b.date)}</span><b>${n1(b[k])} cm</b><button class="link" data-a="delMeas" data-id="${b.id}" data-k="${k}">Verwijder</button></li>`).join('')}</ul>` : ''}
+   <small class="fine">Meet op dezelfde plek, op dezelfde tijd van de dag, ontspannen en zonder aan te spannen.</small></div>`;
+}
+A.measSel = d => { ui.measSel = d.k; render(); };
+A.delMeas = d => { const b = S.body.find(x => x.id === d.id); if (!b) return; delete b[d.k]; if (!b.weight && !MEAS.some(([k]) => b[k])) S.body = S.body.filter(x => x !== b); save(); render(); };
+F.measure1 = (f, fd) => { const v = num(fd.get('v'), 1), k = fd.get('k'); if (!v || v < 10 || v > 250) { toast('Vul een meting in centimeters in.'); return; } S.body.push({ id: uid(), date: fd.get('date'), [k]: v }); save(); render(); toast('Meting opgeslagen.'); };
 ui.cmp = { a: null, b: null, mode: 'overlay', op: 50, wipe: 50, sel: 'b', pa: { sc: 100, dx: 0, dy: 0, rot: 0 }, pb: { sc: 100, dx: 0, dy: 0, rot: 0 } }; ui.progTab = 'overzicht';
 function vProgress() {
   const t = ['overzicht', 'lichaam', 'fotos'].includes(ui.progTab) ? ui.progTab : 'overzicht';
@@ -4793,12 +4906,10 @@ function pOverview() {
 }
 function pBody() {
   const wl = S.body.filter(b => b.weight).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 6);
-  const ml = S.body.filter(b => MEAS.some(([k]) => b[k])).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4);
   return `${weightSummary()}<div class="card"><h3>Gewicht</h3>${weightChart()}${trendText()}
    <form data-submit="weight" class="inline"><label class="f">Datum<input name="date" type="date" value="${today()}" max="${today()}"></label><div class="f"><span>Gewicht (kg)</span>${wInput('pw', lastW(), true)}</div><button class="btn sm">Toevoegen</button></form>
    ${wl.length ? `<ul class="plain lst">${wl.map(b => `<li><span>${fmtDate(b.date)}</span><b>${n1(b.weight)} kg</b><button class="link" data-a="delBody" data-id="${b.id}">Verwijder</button></li>`).join('')}</ul>` : ''}</div>
-  ${acc('Lichaamsmetingen', ml.length ? 'Laatste: ' + fmtDate(ml[0].date) : 'Optioneel', `<form data-submit="measure" class="grid3"><label class="f">Datum<input name="date" type="date" value="${today()}" max="${today()}"></label>${MEAS.map(([k, l]) => `<label class="f">${l} (cm)<input name="${k}" type="number" step="0.5" min="10" max="250" inputmode="decimal"></label>`).join('')}<button class="btn sm span3">Opslaan</button></form>
-   ${ml.length ? `<div class="scrollx"><table class="tbl"><thead><tr><th>Datum</th>${MEAS.map(([, l]) => `<th>${l}</th>`).join('')}<th></th></tr></thead><tbody>${ml.map(b => `<tr><td>${fmtDate(b.date)}</td>${MEAS.map(([k]) => `<td>${b[k] ? n1(b[k]) : '–'}</td>`).join('')}<td><button class="link" data-a="delBody" data-id="${b.id}">Verwijder</button></td></tr>`).join('')}</tbody></table></div>` : ''}`)}`;
+  ${measCard()}`;
 }
 function demoPhoto(o) {
   const c = document.createElement('canvas'); c.width = 360; c.height = 480; const x = c.getContext('2d');
@@ -5088,8 +5199,47 @@ applyTheme();
 (function () { const b = document.createElement('button'); b.id = 'totop'; b.type = 'button'; b.setAttribute('aria-label', 'Naar boven'); b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>'; document.body.appendChild(b);
   const upd = () => b.classList.toggle('on', window.scrollY > 500); window.addEventListener('scroll', upd, { passive: true }); upd();
   b.addEventListener('click', () => { const rm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; window.scrollTo({ top: 0, behavior: rm ? 'auto' : 'smooth' }); }); })();
+
+/* ===== Vergrendelscherm met sleutel-animatie ===== */
+const lockCfg = () => S.lock || (S.lock = { on: false, pin: '' });
+async function lockHash(t) { try { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('dk:' + t)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); } catch (e) { return 'p:' + t; } }
+let lockHiddenAt = 0, lockPinBuf = '';
+const LOCK_SCENE = `<svg class="lkscene" viewBox="0 0 240 310" aria-hidden="true">
+  <g class="lkshackle"><path d="M86 104V76a34 34 0 0 1 68 0v28" fill="none" stroke="#A9B6CC" stroke-width="14" stroke-linecap="round"/></g>
+  <rect class="lkbody" x="58" y="100" width="124" height="104" rx="20" fill="#141E33" stroke="#C9F24D" stroke-width="6"/>
+  <circle cx="120" cy="140" r="12" fill="#C9F24D"/><rect x="116" y="144" width="8" height="24" rx="3" fill="#C9F24D"/>
+  <circle class="lkburst" cx="120" cy="152" r="40" fill="none" stroke="#C9F24D" stroke-width="3"/>
+  <g class="lkt"><g class="lkr"><rect x="116" y="222" width="8" height="58" rx="3" fill="#C9F24D"/><rect x="124" y="228" width="11" height="7" rx="2" fill="#C9F24D"/><rect x="124" y="242" width="8" height="7" rx="2" fill="#C9F24D"/><circle cx="120" cy="288" r="17" fill="#C9F24D"/><circle cx="120" cy="288" r="6" fill="#0B1220"/></g></g></svg>`;
+function lockShow() {
+  if (!S.lock || !S.lock.on || !S.profile || $('#lock')) return;
+  const el = document.createElement('div'); el.id = 'lock'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Vergrendeld');
+  const pin = !!S.lock.pin; lockPinBuf = '';
+  const pad = pin ? `<div class="lkpin" aria-live="polite"><i></i><i></i><i></i><i></i></div><div class="lkpad">${[1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, '⌫'].map(k => k === '' ? '<span></span>' : `<button type="button" class="lkk" data-lk="${k}" aria-label="${k === '⌫' ? 'Wis' : k}">${k}</button>`).join('')}</div>` : `<button type="button" class="btn big lkgo" data-lk="go">Ontgrendel</button>`;
+  el.innerHTML = `<div class="lkin"><div class="lktop"><span class="lkcap">The Discipline Key</span></div>${LOCK_SCENE}<h1>Vergrendeld</h1><p>Je gegevens, foto’s en metingen zijn afgeschermd.${pin ? ' Voer je pincode in.' : ' Tik op Ontgrendel om verder te gaan.'}</p>${pad}</div>`;
+  el.addEventListener('click', e => { const b = e.target.closest('[data-lk]'); if (!b) return; const k = b.dataset.lk; if (k === 'go') return lockOpen(el); if (!pin) return; if (k === '⌫') lockPinBuf = lockPinBuf.slice(0, -1); else if (lockPinBuf.length < 4) lockPinBuf += k; lockDots(el); if (lockPinBuf.length === 4) lockCheck(el); });
+  document.body.appendChild(el); document.body.classList.add('noscroll'); lockDots(el);
+}
+function lockDots(el) { $$('.lkpin i', el).forEach((d, i) => d.classList.toggle('on', i < lockPinBuf.length)); }
+async function lockCheck(el) { const h = await lockHash(lockPinBuf); if (h === S.lock.pin) { lockOpen(el); } else { lockPinBuf = ''; const pn = $('.lkpin', el); if (pn) { pn.classList.remove('bad'); void pn.offsetWidth; pn.classList.add('bad'); } try { navigator.vibrate && navigator.vibrate(200); } catch (e) {} setTimeout(() => lockDots(el), 350); } }
+function lockOpen(el) {
+  if (el.classList.contains('go')) return; el.classList.add('go'); try { navigator.vibrate && navigator.vibrate([30, 40, 60]); } catch (e) {}
+  const fast = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  setTimeout(() => { el.remove(); document.body.classList.remove('noscroll'); }, fast ? 50 : 2100);
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') lockHiddenAt = Date.now(); else if (S.lock && S.lock.on && lockHiddenAt && Date.now() - lockHiddenAt > 60000) lockShow(); });
+A.lockToggle = () => { const c = lockCfg(); c.on = !c.on; save(); render(); toast(c.on ? 'Vergrendeling staat aan.' : 'Vergrendeling staat uit.'); };
+A.lockNow = () => lockShow();
+A.lockPinClear = () => { lockCfg().pin = ''; save(); render(); toast('Pincode gewist.'); };
+F.lockPin = async (f, fd) => { const v = String(fd.get('pin') || '').trim(); if (!/^\d{4}$/.test(v)) { toast('Kies precies 4 cijfers.'); return; } lockCfg().pin = await lockHash(v); save(); render(); toast('Pincode opgeslagen.'); };
+function lockCard() {
+  const c = S.lock || {}, on = !!c.on;
+  return `<div class="card slim lockc"><div class="row"><div><b>Vergrendelen</b><small>${on ? (c.pin ? 'Aan, met pincode' : 'Aan, zonder pincode') : 'Uit'}</small></div><button class="btn ghost sm" data-a="lockToggle">${on ? 'Uitzetten' : 'Aanzetten'}</button></div>
+  ${on ? `<form data-submit="lockPin" class="nameform"><label class="f">Pincode (4 cijfers, optioneel)<input name="pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" placeholder="••••"></label><button class="btn sm">Opslaan</button></form><div class="btns tight">${c.pin ? '<button class="link" data-a="lockPinClear">Pincode wissen</button>' : ''}<button class="link" data-a="lockNow">Nu vergrendelen</button></div>` : ''}
+  <small class="fine">Dit scherm houdt nieuwsgierige blikken weg. Het is geen versleuteling: je gegevens blijven op dit toestel staan.</small></div>`;
+}
 route = routeFrom(location.hash.slice(1));
 render();
+lockShow();
 RP.start();
 StepSensor.detect().then(m => { if (m !== 'manual') { render(); StepSensor.sync(); } });
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') StepSensor.sync(); });
