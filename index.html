@@ -1380,6 +1380,7 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .vo2grid b{font:900 34px/1 var(--fd);font-stretch:80%}.vo2grid .good b{color:var(--pg);text-shadow:0 0 18px color-mix(in srgb,var(--pg) 45%,transparent)}
 .vo2grid span{font-weight:700;font-size:15px;overflow-wrap:normal}.vo2grid>div{padding:var(--s2) !important;min-width:0}.vo2grid small{display:block;font-weight:400;font-size:14px;color:var(--ink2)}
 </style>
+<link rel="stylesheet" href="gm/gamify.css">
 <div id="app">
  <header class="top"><div class="logo"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21M17 12v3M20 12v2"/></svg></i><span>The Discipline Key</span></div><div class="topbtns"><a id="rwchip" class="rwchip" href="#beloningen" aria-label="Beloningen" hidden></a><a id="profilebtn" class="themebtn" href="#mijn-plan" aria-label="Jij"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/></svg></a><button id="themebtn" class="themebtn" type="button" data-a="theme" aria-label="Kleurthema wisselen"></button></div></header>
  <div id="savewarn" role="alert" hidden style="grid-column:1/-1">Opslaan in deze browser lukt niet. Je laatste invoer gaat verloren als je de pagina sluit. Maak een export onder Voortgang.</div>
@@ -1388,6 +1389,7 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 </div>
 <div id="modal-root"></div>
 <div id="toast" role="status" aria-live="polite"></div>
+<script src="gm/config.js"></script>
 <script>
 /* ===== DATA: ingrediënten, recepten, oefeningen ===== */
 // [naam, kcal, eiwit, koolh, vet, vezels, vlaggen]  per 100 g (richtwaarden, nog niet tegen NEVO gecontroleerd)
@@ -1776,6 +1778,7 @@ function save() {
   try { localStorage.setItem(KEY, JSON.stringify(S)); saveOK = true; memCopy = null; }
   catch (e) { saveOK = false; memCopy = S; }
   const b = $('#savewarn'); if (b) b.hidden = saveOK;
+  if (typeof gmAfterSave === 'function') gmAfterSave();
 }
 
 /* --- voeding: berekening --- */
@@ -2287,6 +2290,7 @@ function render() {
   if (route === 'voortgang') afterProgress && afterProgress();
   if (route === 'home') { const ob = main.querySelector('.orb[data-full="1"]'); if (ob && S.keyDay !== today()) { S.keyDay = today(); save(); setTimeout(() => ob.classList.add('cel'), 700); } }
   rwHeaderChip(); clearTimeout(window._rwT); window._rwT = setTimeout(rwCheck, 400);
+  if (typeof gmAfterRender === 'function') gmAfterRender();
 }
 function routeFrom(h) {
   if (h === 'fotoshoot' || h === 'mijn-doel') { ui.disc = ui.goalTab === 'wedstrijd' && h === 'mijn-doel' ? 'bb' : null; ui.dTop = ui.disc ? 'disc' : 'goal'; return ui.disc ? 'sport' : 'disciplines'; }
@@ -2517,6 +2521,9 @@ const rwStepsGoal = () => S.stepsGoal || ((S.profile && S.profile.age >= 60) ? 7
 const e1rm = (w, r) => w > 0 && r > 0 ? w * (1 + Math.min(r, 12) / 30) : 0;
 const RW_XP = { workout: 100, full: 50, cardio: 80, set: 2, pr: 50, steps: 30, steps10k: 10, protein: 30, kcal: 20, check: 15, weigh: 10, photo: 25, perfect: 50, week: 150 };
 let rwMemo = null;
+/* Vanaf deze datum: sets leveren XP op tot een plafond per training en 10.000 stappen geeft geen extra XP meer.
+   Beloon consistentie, niet volume. Oudere dagen houden hun XP, zodat niemand een level kwijtraakt. */
+const RW_V2_FROM = '2026-11-11', RW_SET_CAP = 30;
 
 function rwPillars(d) {
   const sg = rwStepsGoal(), ls = S.logs.filter(l => l.date === d), sess = sessionsOn(d), rest = !sess.length;
@@ -2542,10 +2549,11 @@ function rewards() {
   logs.forEach(l => {
     if (l.type === 'cardio' || l.type === 'segments' || l.type === 'vrij') { cardio++; add(RW_XP.cardio, 'Training: ' + l.name, l.date); return; }
     workouts++; add(RW_XP.workout + (l.partial ? 0 : RW_XP.full), 'Training: ' + l.name, l.date);
+    let setsIn = 0;
     (l.items || []).forEach(it => {
       let top = 0;
       it.sets.forEach(s => { sets++; vol += (s.w || 0) * s.r; top = Math.max(top, e1rm(s.w, s.r)); });
-      if (it.sets.length) add(RW_XP.set * it.sets.length, 'Sets', l.date);
+      if (it.sets.length) { const cnt = l.date >= RW_V2_FROM ? Math.max(0, Math.min(it.sets.length, RW_SET_CAP - setsIn)) : it.sets.length; setsIn += it.sets.length; if (cnt) add(RW_XP.set * cnt, 'Sets', l.date); }
       if (top > 0) {
         (hist[it.ex] = hist[it.ex] || []).push({ d: l.date, v: +top.toFixed(1) });
         if (best[it.ex] != null && top > best[it.ex] + 0.05) { prs.push({ ex: it.ex, name: (EX[it.ex] || {}).name || it.name, v: +top.toFixed(1), prev: +best[it.ex].toFixed(1), d: l.date, log: l.id }); add(RW_XP.pr, 'Record: ' + it.name, l.date); }
@@ -2561,7 +2569,7 @@ function rewards() {
   for (let d = first; d <= T; d = addDays(d, 1)) {
     const p = rwPillars(d), sc = rwScore(p);
     if (p.steps) { stepDays++; add(RW_XP.steps, 'Stappendoel', d); }
-    if (p.stepsV >= 10000) { steps10k++; add(RW_XP.steps10k, '10.000 stappen', d); }
+    if (p.stepsV >= 10000) { steps10k++; if (d < RW_V2_FROM) add(RW_XP.steps10k, '10.000 stappen', d); }
     if (p.protein) { proteinDays++; add(RW_XP.protein, 'Eiwitdoel', d); pStreak++; bestP = Math.max(bestP, pStreak); } else if (d !== T) pStreak = 0;
     if (p.kcalOk) add(RW_XP.kcal, 'Calorieën op doel', d);
     if (p.check) { checks++; add(RW_XP.check, 'Herstelcheck', d); cStreak++; bestC = Math.max(bestC, cStreak); } else if (d !== T) cStreak = 0;
@@ -2582,6 +2590,7 @@ function rewards() {
     let n = 0, done = 0; for (let i = 0; i < 7; i++) { const dd = addDays(w, i); sessionsOn(dd).forEach(s => { n++; if (isDone(s.from, s.key)) done++; }); }
     if (n && done >= n) { fullWeeks++; add(RW_XP.week, 'Hele week afgerond', addDays(w, 6)); }
   }
+  if (typeof gmOverlay === 'function') { const o = gmOverlay(dayInfo); if (o) { cur = o.current; bestStreak = Math.max(bestStreak, o.best); freezes = o.freezes; } }
   const xp = xpLog.reduce((a, x) => a + x.n, 0), lv = rwLevel(xp);
   const m = { workouts, cardio, sets, vol, prs: prs.length, streak: cur, bestStreak, perfect, stepDays, steps10k, proteinDays, bestP, checks, bestC, weighs: weighDays.size, photos, fullWeeks, level: lv.n };
   const badges = RW_BADGES.map(b => { const [c, t] = b.p(m); return { ...b, cur: Math.min(c, t), tgt: t, got: c >= t }; });
@@ -2652,7 +2661,7 @@ function rwOrbit(R, mini, sz0) {
     const dots = days.map((d, i) => { const x = R.dayInfo[d], p = x && x.p, ok = p && (g[0] === 'train' ? (p.train || p.rest) : p[g[0]]); return `<i class="od ${ok ? 'on' : ''} ${i === 6 ? 'td' : ''}" style="--a:${(i * 360 / 7).toFixed(1)}deg;--c:${g[1]}" title="${g[2]} · ${fmtDate(d)}"></i>`; }).join('');
     return `<div class="orr ${hit ? 'hit' : ''}" style="--d:${D}px;--c:${g[1]};--dur:${dur}s;--cd:${((3 - k) * .25).toFixed(2)}s;--fd:${(k * 1.1).toFixed(1)}s;animation-duration:var(--dur),var(--d2,7s);animation-direction:${k % 2 ? 'reverse' : 'normal'},normal">${dots}</div>`;
   }).join('');
-  return `<div class="orb ${mini ? 'mini' : ''}" ${!mini && todayN === 4 ? 'data-full="1"' : ''} style="--sz:${sz}px" role="img" aria-label="${flame} dagen op rij, ${todayN} van 4 doelen vandaag gehaald"><div class="orp">${rings}</div><div class="orc ${flame || todayN ? 'on' : ''} ${!flame && todayN ? 'part' : ''}" style="--tp:${todayN / 4}"><b>${flame}</b><small>${flame === 1 ? 'dag' : 'dagen'}</small></div>${mini ? '' : '<svg class="orkey" viewBox="0 0 34 70" aria-hidden="true"><circle cx="17" cy="54" r="12" fill="#0B1220"/><circle cx="17" cy="54" r="5" fill="#E9FFA8"/><rect x="14" y="8" width="6" height="42" rx="3" fill="#0B1220"/><rect x="20" y="10" width="9" height="6" rx="2" fill="#0B1220"/><rect x="20" y="22" width="6" height="6" rx="2" fill="#0B1220"/></svg>'}</div>`;
+  return `<div class="orb ${mini ? 'mini' : ''} heat-${typeof gmHeat === 'function' ? gmHeat(flame) : 0}" ${!mini && todayN === 4 ? 'data-full="1"' : ''} style="--sz:${sz}px" role="img" aria-label="${flame} dagen op rij, ${todayN} van 4 doelen vandaag gehaald"><div class="orp">${rings}</div><div class="orc ${flame || todayN ? 'on' : ''} ${!flame && todayN ? 'part' : ''}" style="--tp:${todayN / 4}"><b>${flame}</b><small>${flame === 1 ? 'dag' : 'dagen'}</small></div>${mini ? '' : '<svg class="orkey" viewBox="0 0 34 70" aria-hidden="true"><circle cx="17" cy="54" r="12" fill="#0B1220"/><circle cx="17" cy="54" r="5" fill="#E9FFA8"/><rect x="14" y="8" width="6" height="42" rx="3" fill="#0B1220"/><rect x="20" y="10" width="9" height="6" rx="2" fill="#0B1220"/><rect x="20" y="22" width="6" height="6" rx="2" fill="#0B1220"/></svg>'}</div>`;
 }
 function rwOrbitLegend() { return `<div class="orleg"><span><i style="background:#C9F24D"></i>Training</span><span><i style="background:#5CC8FF"></i>Stappen</span><span><i style="background:#B48CFF"></i>Eiwit</span><span><i style="background:#FF9F5A"></i>Check-in</span></div>`; }
 
@@ -3082,17 +3091,18 @@ function vRewards() {
   const days = Array.from({ length: 35 }, (_, i) => addDays(today(), i - 34)).map(d => { const x = R.dayInfo[d]; return `<i class="cal ${x ? x.st : 'none'}" title="${fmtDate(d)}${x ? ' · ' + x.sc + '/4' : ''}"></i>`; }).join('');
   const recs = Object.keys(R.best).map(id => ({ id, v: R.best[id], h: R.hist[id] })).sort((a, b) => b.v - a.v).slice(0, 12);
   const spark = h => { if (!h || h.length < 2) return ''; const v = h.map(x => x.v), mn = Math.min(...v), mx = Math.max(...v), rg = mx - mn || 1; return `<svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="var(--pg)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="${v.map((y, i) => (i / (v.length - 1) * 100).toFixed(1) + ',' + (27 - (y - mn) / rg * 24).toFixed(1)).join(' ')}"/></svg>`; };
-  const earn = [['Training afgerond', RW_XP.workout + RW_XP.full], ['Cardio of segmenten', RW_XP.cardio], ['Per gelogde set', RW_XP.set], ['Persoonlijk record', RW_XP.pr], ['Stappendoel', RW_XP.steps], ['Eiwitdoel', RW_XP.protein], ['Calorieën binnen 10%', RW_XP.kcal], ['Herstelcheck', RW_XP.check], ['Weging', RW_XP.weigh], ['Voortgangsfoto', RW_XP.photo], ['Perfecte dag (4/4)', RW_XP.perfect], ['Hele week afgerond', RW_XP.week], ['Elke 7 dagen op rij', '15 × dagen']];
+  const earn = [['Training afgerond', RW_XP.workout + RW_XP.full], ['Cardio of segmenten', RW_XP.cardio], ['Per gelogde set (max. ' + RW_SET_CAP + ' per training)', RW_XP.set], ['Persoonlijk record', RW_XP.pr], ['Stappendoel', RW_XP.steps], ['Eiwitdoel', RW_XP.protein], ['Calorieën binnen 10%', RW_XP.kcal], ['Herstelcheck', RW_XP.check], ['Weging', RW_XP.weigh], ['Voortgangsfoto', RW_XP.photo], ['Perfecte dag (4/4)', RW_XP.perfect], ['Hele week afgerond', RW_XP.week], ['Elke 7 dagen op rij', '15 × dagen']];
   return `<section class="rwpage"><h1>Beloningen</h1>
   <div class="card lvcard">${hexRing(lv.into / lv.need, 150, 'Level ' + lv.n, `<text x="75" y="70" text-anchor="middle" class="hexlv">${lv.n}</text><text x="75" y="98" text-anchor="middle" class="hexlbl">LEVEL</text>`, 'lv')}
    <div><h2 class="disp">${lv.title}</h2><p class="sub">${R.xp.toLocaleString('nl-NL')} XP totaal · nog ${lv.need - lv.into} XP tot level ${lv.n + 1}</p><div class="xpbar big"><i style="width:${(lv.into / lv.need * 100).toFixed(1)}%"></i></div>
    <div class="lvstats"><span><b>${R.m.streak}</b>huidige streak</span><span><b>${R.m.bestStreak}</b>langste streak</span><span><b>${R.m.prs}</b>records</span><span><b>${got}/${R.badges.length}</b>badges</span></div></div></div>
-  <div class="card"><h3>Streak</h3>${why('Hoe werkt de streak?', '<p>Een dag telt als gewonnen bij 3 van de 4 dagdoelen. Een geplande rustdag telt als trainingsdoel gehaald. Elke 7 dagen op rij verdien je een streakbeschermer 🧊 (max. 2) die een gemiste dag opvangt.</p>')}
+  ${typeof gmRewardsSection === 'function' ? gmRewardsSection() : ''}
+  <div class="card"><h3>Streak</h3>${why('Hoe werkt de streak?', '<p>Een dag telt als gewonnen bij 3 van de 4 dagdoelen. Een geplande rustdag telt als trainingsdoel gehaald. Je eerste streakbeschermer 🧊 krijg je op dag 1, daarna één per 7 dagen op rij. Een beschermer vangt een gemiste dag op en wordt alleen gebruikt als hij je reeks echt redt.</p><p>Breekt een reeks van 3 dagen of meer, dan heb je 72 uur voor een herstel-quest: win 2 dagen en je reeks komt terug. Met een account kun je ook direct herstellen met Sparks.</p>')}
    <div class="orwrap">${rwOrbit(R, false)}</div>${rwOrbitLegend()}<p class="center"><button class="link" data-a="orbMotion">${S.orbMotion ? 'Beweging uit de telefooninstelling volgen' : 'Beweegt het niet? Zet beweging aan'}</button></p><p class="sub orsub">Elke baan is een dagdoel. Elke stip is een van je laatste 7 dagen. Een gevulde stip betekent dat je het doel haalde.</p>
    <div class="calgrid">${days}</div><div class="legend"><span><i class="cal won"></i>gewonnen</span><span><i class="cal frozen"></i>beschermd</span><span><i class="cal miss"></i>gemist</span><span><i class="cal open"></i>vandaag</span></div>${R.freezes ? `<p class="sub">Je hebt ${R.freezes} streakbeschermer${R.freezes > 1 ? 's' : ''} 🧊.</p>` : ''}</div>
   <h3 class="sect">Badges</h3><div class="badges">${R.badges.map(b => `<div class="badge ${b.got ? 'got' : ''}" title="${esc(b.d)}"><span class="bx">${hexBadge(b.e, b.got ? 'gold' : 'off')}</span><b>${esc(b.n)}</b><small>${b.got ? esc(b.d) : `${b.cur.toLocaleString('nl-NL')} / ${b.tgt.toLocaleString('nl-NL')}`}</small>${b.got ? '' : `<i class="bprog"><i style="width:${(b.cur / b.tgt * 100).toFixed(0)}%"></i></i>`}</div>`).join('')}</div>
   <h3 class="sect">Krachtrecords</h3>${recs.length ? `<div class="card recs"><p class="sub">Geschatte 1RM per oefening.</p>${recs.map(r => `<div class="rec"><div><b>${esc((EX[r.id] || {}).name || r.id)}</b><small>${r.h.length} keer gelogd</small></div>${spark(r.h)}<span class="rv">${String(+r.v.toFixed(1)).replace('.', ',')}<small> kg</small></span></div>`).join('')}</div>` : '<div class="card"><p class="sub">Log een krachttraining met gewicht en herhalingen. Daarna zie je hier je records groeien.</p></div>'}
-  ${acc('Zo verdien je XP', '', `<div class="earn">${earn.map(e => `<span>${e[0]}</span><b>+${e[1]}</b>`).join('')}</div><p class="sub">Levels worden steeds iets groter. Alles wordt berekend uit wat je logt, ook met terugwerkende kracht.</p>`)}
+  ${acc('Zo verdien je XP', '', `<div class="earn">${earn.map(e => `<span>${e[0]}</span><b>+${e[1]}</b>`).join('')}</div><p class="sub">Levels worden steeds iets groter. Alles wordt berekend uit wat je logt, ook met terugwerkende kracht. XP beloont dat je je doelen haalt, niet dat je er ver overheen gaat: meer sets of stappen dan nodig levert geen extra XP op.</p>`)}
   </section>`;
 }
 
@@ -3137,7 +3147,7 @@ function rwConfetti() {
 }
 function rwHeaderChip() {
   const el = $('#rwchip'); if (!el) return; if (!S || !S.profile || ui.ob) { el.hidden = true; return; }
-  try { const R = rewards(); el.hidden = route === 'home'; el.innerHTML = `<span class="pill"><span>🔥${R.m.streak}</span><span class="lvn">Lv${R.lv.n}</span></span>`; el.classList.toggle('on', route === 'beloningen'); } catch (e) { el.hidden = true; }
+  try { const R = rewards(); el.hidden = route === 'home'; el.innerHTML = typeof gmChip === 'function' ? gmChip() : `<span class="pill"><span>🔥${R.m.streak}</span><span class="lvn">Lv${R.lv.n}</span></span>`; el.classList.toggle('on', route === 'beloningen'); } catch (e) { el.hidden = true; }
 }
 A.rwGo = () => { closeModal(); go('beloningen'); };
 
@@ -3167,7 +3177,7 @@ function vHomeClassic() {
   const ms = S.milestone.enabled && S.milestone.date ? diffDays(d, S.milestone.date) : null, na = nextAction(sess, fd);
   const R = rewards(), lv = R.lv;
   const hero = `<div class="hdash"><div class="hd-top"><div class="hd-txt"><span class="eyebrow">${fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' })}</span><h1>${p.name ? `<span style="white-space:nowrap">${greet},</span> ${esc(p.name)}` : greet}</h1></div>
-    <a class="hd-streak ${R.m.streak ? 'on' : ''}" href="#beloningen" aria-label="${R.m.streak} dagen op rij"><span class="fl">🔥</span><b>${R.m.streak}</b></a></div>
+    <a class="hd-streak ${R.m.streak ? 'on' : ''} ${typeof gmDay === 'function' && gmDay().state === 'risk' ? 'gm-risk' : ''}" href="#beloningen" aria-label="${R.m.streak} dagen op rij"><span class="fl gm-fl heat-${typeof gmHeat === 'function' ? gmHeat(R.m.streak) : 1}">🔥</span><b>${R.m.streak}</b></a></div>
    <a class="hd-lv" href="#beloningen" aria-label="Level ${lv.n}, ${lv.into} van ${lv.need} XP">${hexBadge(lv.n, 'lvl')}<div><span><b>${esc(lv.title)}</b><small>${lv.into}/${lv.need} XP${R.todayXp ? ` · <em>+${R.todayXp} vandaag</em>` : ''}</small></span><div class="xpbar"><i style="width:${(lv.into / lv.need * 100).toFixed(1)}%"></i></div></div></a>
    <p class="hd-line">${esc(weekLine())}${ms != null && ms >= 0 ? ` · <a href="#mijn-doel"><b>${ms}</b> dagen tot ${esc(S.milestone.name)}</a>` : ''}</p>
    ${na ? `<button class="btn big" data-a="${na.a}" ${na.data}>${esc(na.label)}</button>` : '<p class="heroOk">Alles voor vandaag staat op schema.</p>'}</div>`;
@@ -3175,7 +3185,7 @@ function vHomeClassic() {
     sess.map(s => { const def = sessionDef(s.key), done = isDone(s.from, s.key); return `<p class="tile-main">${esc(def.name)}</p><p class="sub">${sessionMeta(def, s.key)}${s.moved ? ' · verplaatst' : ''}${done ? ' · gedaan' : ''}</p>`; }).join('');
   const food = (!t || t.missing) ? `<p class="sub">Stel je gegevens in bij Profiel.</p>` :
     `<div class="mini">${miniRing(eaten.kcal, t.kcal, 'var(--pg)', n0(eaten.kcal), 'kcal')}<div class="mnums"><b>${n0(eaten.kcal)}<small>/${t.kcal}</small></b><span class="mac"><i style="--mc:#B48CFF">E ${n0(eaten.p)}/${t.p}</i><i style="--mc:#5CC8FF">K ${n0(eaten.c)}/${t.c}</i><i style="--mc:#FFD166">V ${n0(eaten.f)}/${t.f}</i></span></div></div>`;
-  return `<section class="home">${hero}${rwHomeCard()}
+  return `<section class="home">${hero}${typeof gmStreakBanner === 'function' ? gmStreakBanner() : ''}${rwHomeCard()}
   <div class="dash">
    <button class="tile dmini" data-a="gotoFood" aria-label="Voeding: ${(!t || t.missing) ? 'nog niet ingesteld' : n0(eaten.kcal) + ' van ' + t.kcal + ' kcal'}"><h3>Voeding</h3>${food}</button>
    <button class="tile dmini" data-a="stepsAsk" aria-label="Stappen: ${st || 0} van ${stepsGoal}"><h3>Stappen</h3><div class="mini">${miniRing(st || 0, stepsGoal, '#5CC8FF', '', '')}<div class="mnums"><b>${st != null ? (st >= 10000 ? (st / 1000).toFixed(1).replace('.', ',') + 'k' : st.toLocaleString('nl-NL')) : '–'}<small>/${(stepsGoal / 1000).toFixed(stepsGoal % 1000 ? 1 : 0)}k</small></b><span class="msub">${StepSensor.st.mode === 'auto' ? 'automatisch' : StepSensor.st.mode === 'ready' ? 'tik om te koppelen' : 'tik om in te vullen'}</span></div></div></button>
@@ -3201,6 +3211,7 @@ function vHomeBento() {
   const nextCard = na ? `<div class="vnext"><div><small>Hierna</small><b>${esc(na.label)}</b></div><button class="btn big" data-a="${na.a}" ${na.data}>Start</button></div>` : `<div class="vnext"><div><small>Hierna</small><b>${checkOk ? 'Alles staat op schema' : 'Doe je check-in'}</b></div>${checkOk ? '' : '<button class="btn big" data-a="checkAsk">Check-in</button>'}</div>`;
   return `<section class="home vday"><div class="vh"><span class="eyebrow">${fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' })}</span><h1>Vandaag</h1><p>${p.name ? `${greet}, ${esc(p.name)}. ` : ''}${esc(weekLine())}</p></div>
   <a class="vhero" href="#beloningen" aria-label="Streak en beloningen" style="margin-top:var(--s3)">${rwOrbit(R, false, 330)}</a>
+  ${typeof gmStreakBanner === 'function' ? gmStreakBanner() : ''}
   <div class="vgrid">${tile('t', trainOk, '#C9F24D', 'Training', trainTxt, 'gotoTraining')}${tile('s', stepsOk, '#5CC8FF', 'Stappen', stTxt, 'stepsAsk')}${tile('e', protOk, '#B48CFF', 'Eiwit', prTxt, 'gotoFood')}${tile('c', checkOk, '#FF9F5A', 'Check-in', checkOk ? 'Gedaan' : 'Nog open', 'checkAsk')}</div>
   ${nextCard}${scheduleLagCard()}${coachCard(coach)}${rwWeekCard()}${compHomeCard()}
   ${S.example ? '<p class="sub">Je gebruikt een voorbeeldprofiel. Pas het aan of wis het bij Profiel.</p>' : ''}
@@ -3526,7 +3537,7 @@ function vPlan() {
 
   ${x.as.length ? acc('Aannames', x.as.length + '', `<ul class="plain">${x.as.map(a => `<li>${esc(a)}</li>`).join('')}</ul><small>Vul je profiel aan om aannames te vervangen door je eigen gegevens.</small>`) : ''}
   ${acc('Je gegevens', 'Export en wissen', pData())}
-  ${lockCard()}
+  ${typeof gmAccountCard === 'function' ? gmAccountCard(false) : ''}${lockCard()}
   <div class="card slim"><div class="row"><div><b>App bijwerken</b><small id="appv">Versie wordt opgehaald…</small></div><button class="btn ghost sm" data-a="hardRefresh">Nu bijwerken</button></div></div>
   </section>`;
 }
@@ -5499,5 +5510,7 @@ try { if ('serviceWorker' in navigator && /^(https:|http:)$/.test(location.proto
     });
   }).catch(() => {}); }); } catch (e) {}
 </script>
+<!-- gamificatie v2: na het hoofdscript, start zichzelf (GM.init) -->
+<script src="gm/gamify.js"></script>
 
 </body></html>

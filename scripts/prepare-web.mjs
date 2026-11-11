@@ -17,7 +17,7 @@ html = html.replace(/<script>[^<]*serviceWorker\.register[\s\S]*?<\/script>/g, '
 writeFileSync(join(out, 'index.html'), html);
 
 for (const f of readdirSync(root)) if (f.endsWith('.webp')) cpSync(join(root, f), join(out, f));
-for (const dir of ['icons', 'ex', 'm3d', 'food']) {
+for (const dir of ['icons', 'ex', 'm3d', 'food', 'gm']) {
   if (existsSync(join(root, dir))) cpSync(join(root, dir), join(out, dir), { recursive: true });
 }
 console.log('www klaar');
