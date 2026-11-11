@@ -13,4 +13,5 @@ for (const f of readdirSync(root)) if (f.endsWith('.webp')) cpSync(join(root, f)
 cpSync(join(root, 'icons'), join(out, 'icons'), { recursive: true });
 try { cpSync(join(root, 'ex'), join(out, 'ex'), { recursive: true }); } catch (e) {}
 cpSync(join(root, 'm3d'), join(out, 'm3d'), { recursive: true }); // 3D-spierkaart (model + three.js)
+cpSync(join(root, 'food'), join(out, 'food'), { recursive: true }); // receptfoto's
 console.log('www klaar');

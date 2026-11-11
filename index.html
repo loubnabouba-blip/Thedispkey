@@ -1728,11 +1728,15 @@ const RP = (() => {
     start() { if (key) setTimeout(run, 1500); }
   };
 })();
+/* Receptfoto's: één vaste set in eigen huisstijl die met de app meekomt (map food/). Een eigen foto gaat voor. */
+const FOOD_PHOTOS = new Set(["d1", "d10", "d11", "d12", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "l1", "l10", "l11", "l12", "l2", "l3", "l4", "l5", "l6", "l7", "l8", "l9", "n1", "n10", "n11", "n12", "n13", "n14", "n15", "n16", "n17", "n18", "n19", "n2", "n20", "n21", "n22", "n23", "n3", "n4", "n5", "n6", "n7", "n8", "n9", "o1", "o10", "o11", "o12", "o2", "o3", "o4", "o5", "o6", "o7", "o8", "o9", "t1", "t10", "t11", "t12", "t2", "t3", "t4", "t5", "t6", "t7", "t8", "t9"]);
+const foodSrc = id => FOOD_PHOTOS.has(id) ? 'food/' + id + '.webp' : null;
 function recArtFull(r, alt) {
-  const own = S.recipePhotos[r.id], c = RP.get(r.id), src = own || (c && c.url);
-  return recipeArt(r) + (src ? `<img class="rimg" src="${esc(src)}" alt="${esc(alt || '')}" loading="lazy" decoding="async" referrerpolicy="no-referrer">` : '') + (!own && c && c.name ? `<span class="rcredit">Foto: ${esc(c.name)} · Unsplash</span>` : '');
+  const own = S.recipePhotos[r.id], src = own || foodSrc(r.id);
+  return recipeArt(r) + (src ? `<img class="rimg" src="${esc(src)}" alt="${esc(alt || '')}" loading="lazy" decoding="async">` : '');
 }
 function rpCredit(id) {
+  return '';
   const c = RP.get(id); if (!c || S.recipePhotos[id]) return '';
   return `<small class="rp-credit">Foto: <a href="${esc(c.link)}" target="_blank" rel="noopener">${esc(c.name)}</a> op <a href="https://unsplash.com/?utm_source=discipline_key&amp;utm_medium=referral" target="_blank" rel="noopener">Unsplash</a>${c.generic ? '. Algemene afbeelding, geen exacte match.' : ''}</small>`;
 }
@@ -3547,7 +3551,7 @@ function vPlan() {
    <p class="sub">${[p.age ? p.age + ' jaar' : '', p.height ? p.height + ' cm' : '', p.weight ? String(p.weight).replace('.', ',') + ' kg' : ''].filter(Boolean).join(' · ') || 'Nog geen gegevens ingevuld.'}</p><button class="btn ghost sm" data-a="editProfile" data-s="1">Gegevens aanpassen</button></div>
   ${linkCard()}
   ${acc('Duur en planning', planTxt, x.lenBody)}
-  ${acc('Receptfoto’s', RP.hasKey() ? RP.count() + ' van ' + RECIPES.length : 'Uit', rpSettings())}
+
   ${x.as.length ? acc('Aannames', x.as.length + '', `<ul class="plain">${x.as.map(a => `<li>${esc(a)}</li>`).join('')}</ul><small>Vul je profiel aan om aannames te vervangen door je eigen gegevens.</small>`) : ''}
   ${acc('Je gegevens', 'Export en wissen', pData())}
   ${lockCard()}
@@ -4031,7 +4035,7 @@ function slotsHtml(d, slots) {
   return h;
 }
 function mealThumb(it) {
-  if (it.type === 'r') { const p = S.recipePhotos[it.ref]; return p ? `<img src="${p}" alt="">` : recipeArt(RX[it.ref]); }
+  if (it.type === 'r') { const p = S.recipePhotos[it.ref] || foodSrc(it.ref); return p ? `<img src="${p}" alt="" loading="lazy" decoding="async">` : recipeArt(RX[it.ref]); }
   const c = S.custom.find(x => x.id === it.ref); return c && c.photo ? `<img src="${c.photo}" alt="">` : '<div class="nothumb">Eigen</div>';
 }
 function itemCard(it) {
@@ -5506,7 +5510,7 @@ function lockCard() {
 route = routeFrom(location.hash.slice(1));
 render();
 lockShow();
-RP.start();
+
 StepSensor.detect().then(m => { if (m !== 'manual') { render(); StepSensor.sync(); } });
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') StepSensor.sync(); });
 
