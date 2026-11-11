@@ -1172,6 +1172,42 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .orleg span{display:flex;align-items:center;gap:5px}.orleg i{width:8px;height:8px;border-radius:50%;display:inline-block}
 .orsub{text-align:center;margin:var(--s1) 0 var(--s2)}
 @media (prefers-reduced-motion:reduce){:root:not([data-motion=on]) .orr,:root:not([data-motion=on]) .orc{animation:none}}
+/* ===== Nieuw Vandaag-scherm, 3 tabs, grotere letters ===== */
+#nav a{font-size:14px;font-weight:800;letter-spacing:0}
+#nav a .ic{width:26px;height:26px;stroke-width:2}
+.subnav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:var(--s2) 0 var(--s2)}
+.subnav a{display:flex;align-items:center;justify-content:center;min-height:44px;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:var(--ink2);font:800 16px/1.1 var(--fb);text-decoration:none;text-align:center}
+.subnav a.on{background:var(--pg);border-color:var(--pg);color:#10130a}
+.vday{margin:0}.vday .vh{margin:0 0 var(--s2)}
+.vday .vh .eyebrow{margin:0;font-size:14px;font-weight:800}
+.vday .vh h1{margin:2px 0 0;font-size:clamp(44px,13vw,56px);line-height:1}
+.vday .vh p{margin:4px 0 0;font-size:17px;font-weight:600;color:var(--ink2)}
+.vhero{padding:var(--s3) var(--s1) var(--s2);border-radius:26px;background:var(--surface);border:1px solid var(--line);margin:0 0 var(--s2);overflow:hidden;display:flex;justify-content:center}
+.vhero .orc b{font-size:clamp(34px,11vw,46px)}.vhero .orc small{font-size:13px}
+.vgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 var(--s2)}
+.vt{display:flex;flex-direction:column;gap:2px;min-width:0;padding:14px 16px;border-radius:20px;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--c);color:var(--ink);text-align:left;font:inherit;appearance:none;cursor:pointer;min-height:88px}
+.vt b{font:800 clamp(22px,6.4vw,26px)/1.1 var(--fd);color:var(--head)}
+.vt span{font:800 18px/1.2 var(--fb);color:var(--c);overflow-wrap:anywhere}
+.vt.ok span::before{content:"✓ "}
+.vnext{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;border-radius:20px;background:var(--pg);color:var(--pg-ink,#10130a);margin:0 0 var(--s2)}
+.vnext small{display:block;font:800 13px/1.3 var(--fb);text-transform:uppercase;letter-spacing:.08em}
+.vnext b{display:block;font:800 clamp(24px,7vw,30px)/1.05 var(--fd)}
+.vnext .btn{background:#0B1220;color:var(--pg);border-color:#0B1220;flex:none}
+/* animatie 1: doel gehaald */
+@keyframes orflash{0%,66%{box-shadow:0 0 12px color-mix(in srgb,var(--c) 35%,transparent)}74%{border-color:var(--c);box-shadow:0 0 30px var(--c)}100%{box-shadow:0 0 12px color-mix(in srgb,var(--c) 35%,transparent)}}
+@keyframes orrip{0%,68%{transform:scale(1);opacity:0}72%{opacity:.9}100%{transform:scale(4.5);opacity:0}}
+.orb:not(.mini) .orr.hit{animation-name:orspin,orflash;animation-timing-function:linear,ease-out;animation-iteration-count:infinite,infinite;animation-delay:0s,var(--fd,0s)}
+.orb:not(.mini) .od.td.on::after{content:"";position:absolute;left:0;top:0;right:0;bottom:0;border-radius:50%;border:2px solid var(--c);animation:orrip 7s ease-out infinite;animation-delay:var(--fd,0s)}
+/* animatie 2: dag afgerond, sleutel draait om */
+.orkey{position:absolute;left:50%;top:50%;width:34px;margin:-30px 0 0 -17px;opacity:0;pointer-events:none;z-index:3}
+@keyframes orkeyin{0%{opacity:0;transform:translateY(60px) rotate(0)}12%{opacity:1;transform:translateY(8px) rotate(0)}20%{opacity:1;transform:translateY(0) rotate(0)}34%,44%{opacity:1;transform:translateY(0) rotate(90deg)}56%{opacity:0;transform:translateY(-14px) rotate(90deg)}100%{opacity:0}}
+@keyframes orcasc{0%,36%{box-shadow:none}44%{border-color:var(--c);box-shadow:0 0 28px var(--c)}70%,100%{box-shadow:0 0 12px color-mix(in srgb,var(--c) 35%,transparent)}}
+@keyframes orboom{0%,36%{box-shadow:0 0 34px color-mix(in srgb,var(--pg) 45%,transparent)}42%{box-shadow:0 0 80px 22px color-mix(in srgb,var(--pg) 90%,transparent)}70%,100%{box-shadow:0 0 34px color-mix(in srgb,var(--pg) 45%,transparent)}}
+.orb.cel .orkey{animation:orkeyin 3.6s ease-in-out both}
+.orb.cel:not(.mini) .orr{--d2:3.6s;animation-name:orspin,orcasc;animation-timing-function:linear,ease-out;animation-iteration-count:infinite,1;animation-delay:0s,var(--cd,0s)}
+.orb.cel .orc{animation:orpulse 3s ease-in-out infinite,orboom 3.6s ease-out 1}
+@media (prefers-reduced-motion:reduce){:root:not([data-motion=on]) .orkey{display:none}}
+
 .rdyrow{display:grid;gap:6px;margin:var(--s2) 0}.rdyrow>span{font-weight:700;font-size:14px}
 .rdych{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .rdych .chip{justify-content:center;padding-inline:4px;font-size:12px;min-width:0}
@@ -2016,7 +2052,9 @@ const ICONS = {
   voeding: '<path d="M6 3v7a2 2 0 0 0 4 0V3M8 12v9M17 21V3c-2.5 1.5-4 4.5-4 9h4"/>',
   voortgang: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
   disciplines: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4"/>',
-  'mijn-doel': '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4"/>'
+  'mijn-doel': '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4"/>',
+  plan: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  jij: '<circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/>'
 };
 const ROUTES = [['home', 'Home'], ['mijn-plan', 'Mijn plan'], ['training', 'Training'], ['voeding', 'Voeding'], ['disciplines', 'Doelen'], ['voortgang', 'Voortgang'], ['mijn-doel', 'Mijn doel'], ['beloningen', 'Beloningen']];
 const ico = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
@@ -2074,9 +2112,18 @@ let toastT; function toast(m) { const t = $('#toast'); t.textContent = m; t.clas
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('#modal-root .overlay')) closeModal(); });
 
 /* --- schaal --- */
+const NAVG = [['home', 'Vandaag', 'home', ['home']], ['plan', 'Plan', 'plan', ['training', 'voeding', 'disciplines']], ['jij', 'Jij', 'jij', ['voortgang', 'beloningen', 'mijn-plan']]];
+const SUBN = { plan: [['training', 'Training'], ['voeding', 'Voeding'], ['disciplines', 'Doelen']], jij: [['voortgang', 'Voortgang'], ['beloningen', 'Beloningen'], ['mijn-plan', 'Profiel']] };
+const grpOf = r => { const g = NAVG.find(x => x[3].includes(r === 'mijn-doel' ? 'disciplines' : r)); return g ? g[0] : 'home'; };
 function nav() {
   const pb = $('#profbtn'); if (pb) { pb.classList.toggle('on', route === 'mijn-plan'); if (route === 'mijn-plan') pb.setAttribute('aria-current', 'page'); else pb.removeAttribute('aria-current'); }
-  $('#nav').innerHTML = ROUTES.filter(r => !['mijn-plan', 'mijn-doel', 'beloningen'].includes(r[0])).map(([id, l]) => `<a href="#${id}" class="${route === id ? 'on' : ''}" ${route === id ? 'aria-current="page"' : ''}>${ico(id)}<span>${l}</span></a>`).join('');
+  const cur = grpOf(route); ui.last = ui.last || {}; if (cur !== 'home') ui.last[cur] = route === 'mijn-doel' ? 'disciplines' : route;
+  $('#nav').innerHTML = NAVG.map(([id, l, ic, rs]) => { const to = id === 'home' ? 'home' : (ui.last[id] || rs[0]); return `<a href="#${to}" class="${cur === id ? 'on' : ''}" ${cur === id ? 'aria-current="page"' : ''}>${ico(ic)}<span>${l}</span></a>`; }).join('');
+}
+function subnav() {
+  const g = grpOf(route), L = SUBN[g]; if (!L || ui.workout) return '';
+  const rt = route === 'mijn-doel' ? 'disciplines' : route;
+  return `<nav class="subnav" aria-label="${g === 'plan' ? 'Plan' : 'Jij'}">${L.map(([id, l]) => `<a href="#${id}" class="${rt === id ? 'on' : ''}" ${rt === id ? 'aria-current="page"' : ''}>${l}</a>`).join('')}</nav>`;
 }
 const accKey = d => route + ':' + ((d.querySelector(':scope>summary span') || {}).textContent || '');
 document.addEventListener('toggle', e => { const d = e.target; if (d && d.matches && d.matches('details.acc')) ui.open[accKey(d)] = d.open; }, true);
@@ -2088,9 +2135,10 @@ function render() {
   $('#app').classList.remove('ob'); $('#app').classList.toggle('wk', !!ui.workout); nav();
   const V = { home: vHome, 'mijn-plan': vPlan, training: vTraining, voeding: vFood, voortgang: vProgress, disciplines: vDisc, 'mijn-doel': vMilestone, beloningen: vRewards };
   const entering = route !== ui._lr; ui._lr = route; main.classList.toggle('enter', entering); document.documentElement.dataset.route = route;
-  main.innerHTML = (V[route] || vHome)();
+  main.innerHTML = subnav() + (V[route] || vHome)();
   $$('details.acc', main).forEach(d => { const k = accKey(d); if (k in ui.open) d.open = ui.open[k]; });
   if (route === 'voortgang') afterProgress && afterProgress();
+  if (route === 'home') { const ob = main.querySelector('.orb[data-full="1"]'); if (ob && S.keyDay !== today()) { S.keyDay = today(); save(); setTimeout(() => ob.classList.add('cel'), 700); } }
   rwHeaderChip(); clearTimeout(window._rwT); window._rwT = setTimeout(rwCheck, 400);
 }
 function routeFrom(h) {
@@ -2358,9 +2406,9 @@ function rwOrbit(R, mini, sz0) {
   const rings = G.map((g, k) => {
     const D = d0 - k * step * 2 * (mini ? .9 : 1), dur = 22 - k * 3.5, hit = okOn(T, g);
     const dots = days.map((d, i) => { const x = R.dayInfo[d], p = x && x.p, ok = p && (g[0] === 'train' ? (p.train || p.rest) : p[g[0]]); return `<i class="od ${ok ? 'on' : ''} ${i === 6 ? 'td' : ''}" style="--a:${(i * 360 / 7).toFixed(1)}deg;--c:${g[1]}" title="${g[2]} · ${fmtDate(d)}"></i>`; }).join('');
-    return `<div class="orr ${hit ? 'hit' : ''}" style="--d:${D}px;--c:${g[1]};animation-duration:${dur}s;${k % 2 ? 'animation-direction:reverse' : ''}">${dots}</div>`;
+    return `<div class="orr ${hit ? 'hit' : ''}" style="--d:${D}px;--c:${g[1]};--dur:${dur}s;--cd:${((3 - k) * .25).toFixed(2)}s;--fd:${(k * 1.1).toFixed(1)}s;animation-duration:var(--dur),var(--d2,7s);animation-direction:${k % 2 ? 'reverse' : 'normal'},normal">${dots}</div>`;
   }).join('');
-  return `<div class="orb ${mini ? 'mini' : ''}" style="--sz:${sz}px" role="img" aria-label="${flame} dagen op rij, ${todayN} van 4 doelen vandaag gehaald"><div class="orp">${rings}</div><div class="orc ${flame || todayN ? 'on' : ''} ${!flame && todayN ? 'part' : ''}" style="--tp:${todayN / 4}"><b>${flame}</b><small>${flame === 1 ? 'dag' : 'dagen'}</small></div></div>`;
+  return `<div class="orb ${mini ? 'mini' : ''}" ${!mini && todayN === 4 ? 'data-full="1"' : ''} style="--sz:${sz}px" role="img" aria-label="${flame} dagen op rij, ${todayN} van 4 doelen vandaag gehaald"><div class="orp">${rings}</div><div class="orc ${flame || todayN ? 'on' : ''} ${!flame && todayN ? 'part' : ''}" style="--tp:${todayN / 4}"><b>${flame}</b><small>${flame === 1 ? 'dag' : 'dagen'}</small></div>${mini ? '' : '<svg class="orkey" viewBox="0 0 34 70" aria-hidden="true"><circle cx="17" cy="54" r="12" fill="#0B1220"/><circle cx="17" cy="54" r="5" fill="#E9FFA8"/><rect x="14" y="8" width="6" height="42" rx="3" fill="#0B1220"/><rect x="20" y="10" width="9" height="6" rx="2" fill="#0B1220"/><rect x="20" y="22" width="6" height="6" rx="2" fill="#0B1220"/></svg>'}</div>`;
 }
 function rwOrbitLegend() { return `<div class="orleg"><span><i style="background:#C9F24D"></i>Training</span><span><i style="background:#5CC8FF"></i>Stappen</span><span><i style="background:#B48CFF"></i>Eiwit</span><span><i style="background:#FF9F5A"></i>Check-in</span></div>`; }
 
@@ -2897,24 +2945,19 @@ function vHomeBento() {
   const p = S.profile, t = targets(), d = today(), sess = sessionsOn(d), st = S.steps[d];
   const hr = new Date().getHours(), greet = hr < 12 ? 'Goedemorgen' : hr < 18 ? 'Goedemiddag' : 'Goedenavond';
   const fd = S.food[d] || { items: [] }, eaten = sumNut(fd.items.filter(i => i.eaten));
-  const coach = coachProposal(), stepsGoal = rwStepsGoal();
-  const wk = Array.from({ length: 7 }, (_, i) => addDays(addDays(d, -wdOf(d)), i));
-  const strip = `<div class="weekstrip">${wk.map(x => { const ss = sessionsOn(x), dn = ss.length && ss.every(s => isDone(s.from, s.key)); return `<button class="day ${x === d ? 'today' : ''}" data-a="gotoTrainDate" data-date="${x}" aria-label="${fmtDate(x)}${ss.length ? ', training' + (dn ? ' gedaan' : '') : ''}"><span>${DAYS[wdOf(x)]}</span><i class="${ss.length ? (dn ? 'done' : 'plan') : ''}"></i></button>`; }).join('')}</div>`;
-  const ms = S.milestone.enabled && S.milestone.date ? diffDays(d, S.milestone.date) : null, na = nextAction(sess, fd), R = rewards(), lv = R.lv;
-  const trainTxt = !sess.length ? `<p class="tile-main">Rustdag</p><p class="sub">Een wandeling of lichte beweging helpt je herstel.</p>` :
-    sess.map(s => { const def = sessionDef(s.key), done = isDone(s.from, s.key); return `<p class="tile-main">${esc(def.name)}</p><p class="sub">${sessionMeta(def, s.key)}${s.moved ? ' · verplaatst' : ''}${done ? ' · gedaan' : ''}</p>`; }).join('');
-  const pts = weightPts(28), wl = pts.length ? pts[pts.length - 1].weight : null, sl = pts.length >= 3 ? slope(pts) : null;
-  const food = (!t || t.missing) ? `<p class="sub">Stel je gegevens in bij Profiel.</p>` : `<div class="mini">${miniRing(eaten.kcal, t.kcal, 'var(--pg)', '', '')}<div class="mnums"><b>${n0(eaten.kcal)}<small>/${t.kcal}</small></b><span class="msub">kcal</span></div></div>${t.p ? `<span class="mac"><i style="--mc:#B48CFF">E ${n0(eaten.p)}/${t.p}</i></span>` : ''}`;
-  return `<section class="home bento"><div class="bhead"><div class="hd-txt"><span class="eyebrow">${fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' })}</span><h1>${p.name ? `${greet}, ${esc(p.name)}` : greet}</h1></div></div>
-  <div class="bgrid">
-   <div class="bt b-hero"><span class="eyebrow">Vandaag</span>${trainTxt}${strip}<p class="sub">${esc(weekLine())}${ms != null && ms >= 0 ? ` · <a href="#mijn-doel"><b>${ms}</b> dagen tot ${esc(S.milestone.name)}</a>` : ''}</p>
-    ${na ? `<button class="btn big" data-a="${na.a}" ${na.data}>${esc(na.label)}</button>` : '<p class="heroOk">Alles voor vandaag staat op schema.</p>'}</div>
-   <button class="bt b-food" data-a="gotoFood" aria-label="Voeding"><h3>Voeding</h3>${food}</button>
-   <a class="bt b-streak" href="#beloningen" aria-label="${R.m.streak} dagen op rij"><h3>Streak</h3>${rwOrbit(R, true, 120)}<span class="sub">${R.m.streak === 1 ? 'dag' : 'dagen'} op rij${R.freezes ? ` · 🧊×${R.freezes}` : ''}</span></a>
-   <button class="bt b-steps" data-a="stepsAsk" aria-label="Stappen"><h3>Stappen</h3><div class="mini">${miniRing(st || 0, stepsGoal, '#5CC8FF', '', '')}<div class="mnums"><b>${st != null ? (st >= 10000 ? (st / 1000).toFixed(1).replace('.', ',') + 'k' : st.toLocaleString('nl-NL')) : '–'}<small>/${(stepsGoal / 1000).toFixed(stepsGoal % 1000 ? 1 : 0)}k</small></b></div></div></button>
-   <button class="bt b-wt" data-a="pfTo" data-r="voortgang" data-k="progTab" data-t="lichaam" aria-label="Gewichtstrend"><h3>Gewicht</h3><p class="tile-main">${wl != null ? n1(wl) : '–'}<small> kg</small></p><span class="sub ${sl != null && sl !== 0 ? '' : ''}">${sl == null ? 'Weeg je om de trend te zien' : (sl > 0 ? '▲ ' : sl < 0 ? '▼ ' : '') + n1(Math.abs(sl)) + ' kg per week'}</span></button>
-   <a class="bt b-lv" href="#beloningen" aria-label="Level ${lv.n}"><h3>Level</h3><div class="mini">${hexBadge(lv.n, 'lvl')}<div class="mnums"><b>${esc(lv.title)}</b><span class="msub">${lv.into}/${lv.need} XP${R.todayXp ? ` · +${R.todayXp}` : ''}</span></div></div><div class="xpbar"><i style="width:${(lv.into / lv.need * 100).toFixed(1)}%"></i></div></a>
-  </div>${rwHomeCard()}${coachCard(coach)}${rwWeekCard()}${compHomeCard()}
+  const coach = coachProposal(), stepsGoal = rwStepsGoal(), na = nextAction(sess, fd), R = rewards();
+  const x = R.dayInfo[d], pp = (x && x.p) || {}, r = S.recovery[d] || {};
+  const trainOk = !!(pp.train || pp.rest), stepsOk = !!pp.steps, protOk = !!pp.protein, checkOk = !!(pp.check || r.energy || r.recovery);
+  const def = sess[0] ? sessionDef(sess[0].key) : null;
+  const trainTxt = !sess.length ? (trainOk ? 'Rustdag ✓' : 'Rustdag') : trainOk ? 'Gedaan' : esc(def.name);
+  const stTxt = st != null ? st.toLocaleString('nl-NL') + ' / ' + stepsGoal.toLocaleString('nl-NL') : 'Nog niet ingevuld';
+  const prTxt = (!t || t.missing || !t.p) ? 'Stel je gegevens in' : n0(eaten.p) + ' / ' + t.p + ' g';
+  const tile = (cls, ok, c, title, txt, a, data = '') => `<button class="vt ${ok ? 'ok' : ''}" style="--c:${c}" data-a="${a}" ${data}><b>${title}</b><span>${txt}</span></button>`;
+  const nextCard = na ? `<div class="vnext"><div><small>Hierna</small><b>${esc(na.label)}</b></div><button class="btn big" data-a="${na.a}" ${na.data}>Start</button></div>` : `<div class="vnext"><div><small>Hierna</small><b>${checkOk ? 'Alles staat op schema' : 'Doe je check-in'}</b></div>${checkOk ? '' : '<button class="btn big" data-a="checkAsk">Check-in</button>'}</div>`;
+  return `<section class="home vday"><div class="vh"><span class="eyebrow">${fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' })}</span><h1>Vandaag</h1><p>${p.name ? `${greet}, ${esc(p.name)}. ` : ''}${esc(weekLine())}</p></div>
+  <a class="vhero" href="#beloningen" aria-label="Streak en beloningen">${rwOrbit(R, false, 330)}</a>
+  <div class="vgrid">${tile('t', trainOk, '#C9F24D', 'Training', trainTxt, 'gotoTraining')}${tile('s', stepsOk, '#5CC8FF', 'Stappen', stTxt, 'stepsAsk')}${tile('e', protOk, '#B48CFF', 'Eiwit', prTxt, 'gotoFood')}${tile('c', checkOk, '#FF9F5A', 'Check-in', checkOk ? 'Gedaan' : 'Nog open', 'checkAsk')}</div>
+  ${nextCard}${rwHomeCard()}${coachCard(coach)}${rwWeekCard()}${compHomeCard()}
   ${S.example ? '<p class="sub">Je gebruikt een voorbeeldprofiel. Pas het aan of wis het bij Profiel.</p>' : ''}
   <p class="center"><button class="link" data-a="homeLayout">Klassieke weergave</button></p></section>`;
 }
