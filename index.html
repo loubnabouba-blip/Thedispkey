@@ -5003,7 +5003,7 @@ function goalsPage() {
     <div class="btns"><button class="btn ghost sm" data-a="editProfile" data-s="2">Doel wijzigen</button></div></div>`;
   const form = `<form data-submit="milestone" class="stack"><label class="f">Naam<input name="name" value="${esc(m.name)}" maxlength="40" placeholder="Bijvoorbeeld zomer, fotoshoot of wedstrijd"></label><label class="f">Einddatum<input name="date" type="date" value="${m.date || ''}" min="${today()}"></label><input type="hidden" name="type" value="${esc(m.type || 'eigen')}"><input type="hidden" name="note" value="${esc(m.note || '')}"><input type="hidden" name="enabled" value="1"><button class="btn sm">Opslaan</button></form>`;
   const check = `<ul class="checks">${items.map(i => `<li><label class="tick wide"><input type="checkbox" data-c="msCheck" data-k="${i.id}" ${i.done ? 'checked' : ''}><span></span><em>${esc(i.t)}</em></label><button class="link" data-a="msDel" data-k="${i.id}" aria-label="Verwijder: ${esc(i.t)}">Verwijder</button></li>`).join('')}</ul><form class="inline" data-submit="msAdd"><input name="t" maxlength="120" placeholder="Nieuw punt" aria-label="Nieuw punt"><button class="btn sm">Toevoegen</button></form>`;
-  const c = S.comp && S.comp.active, ids = ['run', 'pl', 'hx'].concat(D().beg ? ['beg'] : []);
+  const c = S.comp && S.comp.active, ids = ['run', 'pl', 'hx', 'beg'];
   const cards = ids.map(id => discCard(id, DISC[id].name, DISC[id].blurb, discStatus(id), !!D()[id], 'discGo')).join('') + discCard('bb', 'Bodybuilding', 'Voorbereiding op een wedstrijd met fases, peak week, check-ins en posing.', c ? 'Actief · ' + Math.max(0, Math.ceil(diffDays(today(), S.comp.date) / 7)) + ' weken tot de show' : 'Niet gestart', !!c, 'discBB');
   return `<section><h1>Doelen</h1>${syncBanner()}${hero}
    ${acc('Einddatum', m.date ? fmtDate(m.date, { day: 'numeric', month: 'short', year: 'numeric' }) : 'Geen', form)}
@@ -5012,7 +5012,7 @@ function goalsPage() {
    <small class="fine">Algemene schema’s, geen persoonlijke begeleiding. Bij klachten eerst naar je huisarts.</small></section>`;
 }
 function sportPage() {
-  const act = activeDisc(), c = S.comp && S.comp.active, ids = ['run', 'pl', 'hx'].concat(D().beg ? ['beg'] : []);
+  const act = activeDisc(), c = S.comp && S.comp.active, ids = ['run', 'pl', 'hx', 'beg'];
   const cards = ids.map(id => discCard(id, DISC[id].name, DISC[id].blurb, discStatus(id), !!D()[id], 'discGo')).join('') + discCard('bb', 'Bodybuilding', 'Voorbereiding op een wedstrijd met fases, peak week, check-ins en posing.', c ? 'Actief · ' + Math.max(0, Math.ceil(diffDays(today(), S.comp.date) / 7)) + ' weken tot de show' : 'Niet gestart', !!c, 'discBB');
   return `<section><h1>Disciplines</h1>${syncBanner()}<p class="sub">Train je voor een sport of wedstrijd? Kies hem hier. Je doel bij Plan blijft je voeding en krachttraining sturen.</p>${act.length || c ? weekLoad() : ''}${hubCompat()}<div class="dcards">${cards}</div>
    <small class="fine">Algemene schema’s, geen persoonlijke begeleiding. Bij klachten eerst naar je huisarts.</small></section>`;
