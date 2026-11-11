@@ -1001,13 +1001,14 @@ button,.btn,.chip,.seg button,#nav a,.dcard,.rwcard,summary{-webkit-user-select:
 .seg::-webkit-scrollbar{display:none;width:0;height:0}
 .seg button{flex:1 1 auto;padding:0 14px}
 .exchips,.qrings{-webkit-overflow-scrolling:touch}
-.btn,button.btn,a.btn{white-space:normal;text-align:center;max-width:100%;padding-block:10px}
+.btn,button.btn,a.btn{white-space:normal;text-align:center;max-width:100%;padding-block:10px;overflow-wrap:normal;word-break:normal;hyphens:none;min-width:min-content}
+.btns{flex-wrap:wrap}
 .nameform{display:flex;gap:var(--s2);align-items:flex-end;margin:0 0 var(--s2)}.nameform .f{flex:1;min-width:0;margin:0}.nameform .btn{flex:none;min-height:56px}
 .mtab .mh,.mtab .mr{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(4,minmax(0,1fr));gap:6px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
 .mtab .mh{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink2)}
 .mtab .mh span:not(:first-child),.mtab .mr span:not(:first-child){text-align:right;font-variant-numeric:tabular-nums}
 .mtab .mr small{display:block;color:var(--ink2);font-size:11px;line-height:1.2}.mtab .mr .none{grid-column:2/-1;color:var(--ink2)}
-.cutctl .chips{margin:var(--s1) 0}.cutctl small{display:block;color:var(--ink2)}
+.cutctl .chips{margin:var(--s1) 0;flex-wrap:nowrap}.cutctl .chip{flex:1 1 0;text-align:center}.cutctl small{display:block;color:var(--ink2)}
 
 .compnav .btn{flex:1 1 140px}
 .upd{position:fixed;left:16px;right:16px;bottom:calc(112px + env(safe-area-inset-bottom,0px));z-index:80;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:10px 12px 10px 16px;border-radius:16px;background:var(--surface2);border:1px solid var(--line);box-shadow:0 8px 28px rgba(0,0,0,.4)}.upd .btn{min-height:44px}
