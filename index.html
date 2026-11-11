@@ -1158,6 +1158,8 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 @keyframes orspin{to{transform:rotateZ(360deg)}}
 .od{position:absolute;top:50%;left:50%;width:9px;height:9px;margin:-4.5px;border-radius:50%;background:color-mix(in srgb,var(--ink2) 45%,transparent);transform:rotate(var(--a)) translateY(calc(var(--d)/-2))}
 .od.on{background:var(--c);box-shadow:0 0 10px var(--c)}
+.orr.hit{border-color:color-mix(in srgb,var(--c) 60%,transparent);box-shadow:0 0 12px color-mix(in srgb,var(--c) 35%,transparent)}
+.orc.part{opacity:calc(.65 + var(--tp)*.35)}
 .od.td{width:13px;height:13px;margin:-6.5px}
 .orb.mini .od{width:6px;height:6px;margin:-3px}.orb.mini .od.td{width:8px;height:8px;margin:-4px}
 .orc{position:absolute;top:50%;left:50%;width:calc(var(--sz)*.3);height:calc(var(--sz)*.3);transform:translate(-50%,-50%);border-radius:50%;display:grid;place-content:center;justify-items:center;line-height:1;background:radial-gradient(circle at 34% 28%,color-mix(in srgb,var(--pg) 40%,#fff),var(--pg) 60%,color-mix(in srgb,var(--pg) 45%,#000));color:#10130a;box-shadow:0 0 34px color-mix(in srgb,var(--pg) 45%,transparent);animation:orpulse 3s ease-in-out infinite}
@@ -2351,12 +2353,14 @@ function rwOrbit(R, mini, sz0) {
   const T = today(), days = Array.from({ length: 7 }, (_, i) => addDays(T, i - 6));
   const G = [['train', '#C9F24D', 'Training'], ['steps', '#5CC8FF', 'Stappen'], ['protein', '#B48CFF', 'Eiwit'], ['check', '#FF9F5A', 'Check-in']];
   const sz = sz0 || (mini ? 104 : 248), step = mini ? (sz0 ? 15 : 11) : 24, d0 = sz - 6, flame = R.m.streak;
+  const okOn = (d, g) => { const x = R.dayInfo[d], p = x && x.p; return !!(p && (g[0] === 'train' ? (p.train || p.rest) : p[g[0]])); };
+  const todayN = G.filter(g => okOn(T, g)).length;
   const rings = G.map((g, k) => {
-    const D = d0 - k * step * 2 * (mini ? .9 : 1), dur = 22 - k * 3.5;
+    const D = d0 - k * step * 2 * (mini ? .9 : 1), dur = 22 - k * 3.5, hit = okOn(T, g);
     const dots = days.map((d, i) => { const x = R.dayInfo[d], p = x && x.p, ok = p && (g[0] === 'train' ? (p.train || p.rest) : p[g[0]]); return `<i class="od ${ok ? 'on' : ''} ${i === 6 ? 'td' : ''}" style="--a:${(i * 360 / 7).toFixed(1)}deg;--c:${g[1]}" title="${g[2]} · ${fmtDate(d)}"></i>`; }).join('');
-    return `<div class="orr" style="--d:${D}px;animation-duration:${dur}s;${k % 2 ? 'animation-direction:reverse' : ''}">${dots}</div>`;
+    return `<div class="orr ${hit ? 'hit' : ''}" style="--d:${D}px;--c:${g[1]};animation-duration:${dur}s;${k % 2 ? 'animation-direction:reverse' : ''}">${dots}</div>`;
   }).join('');
-  return `<div class="orb ${mini ? 'mini' : ''}" style="--sz:${sz}px" role="img" aria-label="${flame} dagen op rij"><div class="orp">${rings}</div><div class="orc ${flame ? 'on' : ''}"><b>${flame}</b><small>${flame === 1 ? 'dag' : 'dagen'}</small></div></div>`;
+  return `<div class="orb ${mini ? 'mini' : ''}" style="--sz:${sz}px" role="img" aria-label="${flame} dagen op rij, ${todayN} van 4 doelen vandaag gehaald"><div class="orp">${rings}</div><div class="orc ${flame || todayN ? 'on' : ''} ${!flame && todayN ? 'part' : ''}" style="--tp:${todayN / 4}"><b>${flame}</b><small>${flame === 1 ? 'dag' : 'dagen'}</small></div></div>`;
 }
 function rwOrbitLegend() { return `<div class="orleg"><span><i style="background:#C9F24D"></i>Training</span><span><i style="background:#5CC8FF"></i>Stappen</span><span><i style="background:#B48CFF"></i>Eiwit</span><span><i style="background:#FF9F5A"></i>Check-in</span></div>`; }
 
