@@ -1644,6 +1644,8 @@ RECIPES.push(
  R('n23','tussendoor','Eiwitshake met banaan en havermout','Voor onderweg of na de training.',3,[['whey',35],['banaan',100],['havermout',30],['pindakaas',10]],['Doe alles in een blender met 250 ml water of melk naar keuze.','Mix tot een gladde shake.'],'zuivel',false)
 );
 const RX = Object.fromEntries(RECIPES.map(r => [r.id, r]));
+/* n5 was een dubbel van l4 (zelfde gerecht). Uit de lijst en het weekmenu, maar via RX nog vindbaar voor eerder geplande of gelogde maaltijden. */
+RECIPES.splice(RECIPES.findIndex(r => r.id === 'n5'), 1);
 /* ===== Receptfoto's via de officiële Unsplash-API =====
    Werkt alleen waar de pagina externe afbeeldingen en verbindingen mag laden (de losse app). In een Artifact blokkeert het platform dat.
    De Access Key en de gevonden foto's staan alleen in deze browser (niet in je export). Zonder sleutel of foto blijft de illustratie staan. */
