@@ -205,6 +205,7 @@ main{min-width:0;padding-top:var(--s3)}
 .logo svg{width:26px;height:26px;fill:none;stroke:var(--head);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .topbtns{display:flex;align-items:center;gap:4px;flex:none;margin-right:-10px}
 .themebtn{appearance:none;display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;padding:0;border:0;border-radius:var(--r);background:transparent;color:var(--text);cursor:pointer;transition:var(--t)}
+a.themebtn.on{color:var(--pg-ink);background:var(--surface2)}
 .themebtn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
 @media (hover:hover){.themebtn:hover{background:var(--surface2);color:var(--head)}}
 .themebtn:active{transform:scale(.92)}
@@ -215,7 +216,7 @@ main{min-width:0;padding-top:var(--s3)}
 body:has(#app.ob) #app{padding-bottom:var(--s5)}
 
 #nav{position:fixed;left:max(14px,env(safe-area-inset-left,0px));right:max(14px,env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:40;
-  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;padding:6px;border-radius:var(--r);
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:6px;border-radius:var(--r);
   background:var(--glass);-webkit-backdrop-filter:saturate(1.6) blur(20px);backdrop-filter:saturate(1.6) blur(20px);border:1px solid var(--line2);box-shadow:0 24px 48px -20px rgba(0,0,0,.45)}
 #nav a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:56px;padding:6px 2px;border-radius:var(--r-s);
   color:var(--ink2);text-decoration:none;text-align:center;font-size:11px;font-weight:600;line-height:1.15;transition:var(--t)}
@@ -1379,7 +1380,7 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .vo2grid span{font-weight:700;font-size:13px;overflow-wrap:normal}.vo2grid>div{padding:var(--s2) !important;min-width:0}.vo2grid small{display:block;font-weight:400;font-size:12px;color:var(--ink2)}
 </style>
 <div id="app">
- <header class="top"><div class="logo"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21M17 12v3M20 12v2"/></svg></i><span>The Discipline Key</span></div><div class="topbtns"><a id="rwchip" class="rwchip" href="#beloningen" aria-label="Beloningen" hidden></a><button id="themebtn" class="themebtn" type="button" data-a="theme" aria-label="Kleurthema wisselen"></button></div></header>
+ <header class="top"><div class="logo"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21M17 12v3M20 12v2"/></svg></i><span>The Discipline Key</span></div><div class="topbtns"><a id="rwchip" class="rwchip" href="#beloningen" aria-label="Beloningen" hidden></a><a id="profilebtn" class="themebtn" href="#mijn-plan" aria-label="Jij"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/></svg></a><button id="themebtn" class="themebtn" type="button" data-a="theme" aria-label="Kleurthema wisselen"></button></div></header>
  <div id="savewarn" role="alert" hidden style="grid-column:1/-1">Opslaan in deze browser lukt niet. Je laatste invoer gaat verloren als je de pagina sluit. Maak een export onder Voortgang.</div>
  <nav id="nav" aria-label="Hoofdnavigatie"></nav>
  <main id="main"></main>
@@ -2252,12 +2253,14 @@ let toastT; function toast(m) { const t = $('#toast'); t.textContent = m; t.clas
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('#modal-root .overlay')) closeModal(); });
 
 /* --- schaal --- */
-const NAVG = [['home', 'Vandaag', 'home', ['home']], ['plan', 'Plan', 'plan', ['training', 'voeding', 'disciplines']], ['sport', 'Sport', 'sport', ['sport']], ['mindful', 'Mindful', 'mindful', ['mindful']], ['jij', 'Jij', 'jij', ['voortgang', 'beloningen', 'mijn-plan']]];
+const NAVG = [['home', 'Vandaag', 'home', ['home']], ['plan', 'Plan', 'plan', ['training', 'voeding', 'disciplines']], ['sport', 'Disciplines', 'sport', ['sport']], ['mindful', 'Mindful', 'mindful', ['mindful']]];
+const JIJG = ['jij', 'Jij', 'jij', ['voortgang', 'beloningen', 'mijn-plan']];
 const SUBN = { plan: [['training', 'Training'], ['voeding', 'Voeding'], ['disciplines', 'Doelen']], jij: [['voortgang', 'Voortgang'], ['beloningen', 'Beloningen'], ['mijn-plan', 'Profiel']] };
-const grpOf = r => { const g = NAVG.find(x => x[3].includes(r === 'mijn-doel' ? 'disciplines' : r)); return g ? g[0] : 'home'; };
+const grpOf = r => { const rr = r === 'mijn-doel' ? 'disciplines' : r; const g = NAVG.find(x => x[3].includes(rr)); if (g) return g[0]; return JIJG[3].includes(rr) ? JIJG[0] : 'home'; };
 function nav() {
   const cur = grpOf(route); ui.last = ui.last || {}; if (cur !== 'home') ui.last[cur] = route === 'mijn-doel' ? 'disciplines' : route;
   $('#nav').innerHTML = NAVG.map(([id, l, ic, rs]) => { const to = id === 'home' ? 'home' : (ui.last[id] || rs[0]); return `<a href="#${to}" class="${cur === id ? 'on' : ''}" ${cur === id ? 'aria-current="page"' : ''}>${ico(ic)}<span>${l}</span></a>`; }).join('');
+  const pb = $('#profilebtn'); if (pb) { pb.href = '#' + (ui.last.jij || JIJG[3][0]); pb.classList.toggle('on', cur === 'jij'); }
 }
 function subnav() {
   const g = grpOf(route), L = SUBN[g]; if (!L || ui.workout) return '';
