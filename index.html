@@ -661,13 +661,27 @@ svg.spark{display:block;width:100%;max-width:280px;height:auto;overflow:visible}
 .tbl{width:100%;max-width:100%;border-collapse:collapse;font-size:14px}
 .tbl th,.tbl td{padding:12px var(--s1);text-align:left;white-space:nowrap;border-bottom:1px solid var(--line)}
 .tbl th{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
-.vrow{padding:var(--s2) 0;border-bottom:1px solid var(--line)}
-.vrow:last-of-type{border-bottom:0}
-.vbar{position:relative;height:10px;margin:var(--s1) 0 4px;overflow:hidden;border-radius:6px;background:var(--surface2)}
+.vlegend{display:flex;gap:var(--s3);flex-wrap:wrap;margin:0 0 var(--s3);padding-bottom:var(--s2);border-bottom:1px solid var(--line)}
+.vlegend .vl-item{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--ink2)}
+.vlegend .sw{width:12px;height:12px;border-radius:4px;display:inline-block;flex:none}
+.vlegend .sw.rng{background:var(--line2)}
+.vlegend .sw.pl{background:var(--surface);border:2px solid var(--ink2);box-sizing:border-box}
+.vlegend .sw.dn{background:var(--pg)}
+.vrow{padding:var(--s3) 0;border-bottom:1px solid var(--line)}
+.vrow:last-of-type{padding-bottom:0;border-bottom:0}
+.vname{display:flex;align-items:center;justify-content:space-between;gap:var(--s2)}
+.vname b{font-size:16px}
+.vstat{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s2);margin:6px 0 8px}
+.vstat .n{font:800 22px/1 var(--fb);letter-spacing:-.01em}
+.vstat .n small{font-size:13px;font-weight:700;color:var(--ink2);margin-left:2px}
+.vstat .goal{font-size:12.5px;color:var(--ink2);text-align:right}
+.vbar{position:relative;height:16px;margin:0 0 4px;overflow:hidden;border-radius:8px;background:var(--surface2)}
 .vbar i{position:absolute;top:0;bottom:0;left:0;display:block}
-.vbar .rng{background:var(--line2)}
-.vbar .pl{z-index:1;padding:0;background:transparent;border:0;border-right:2px solid var(--ink2);box-shadow:none}
-.vbar .dn{top:3px;bottom:3px;z-index:2;border-radius:3px;background:var(--ink)}
+.vbar .rng{background:color-mix(in srgb,var(--pg) 16%,var(--line2))}
+.vbar .pl{z-index:2;top:-1px;bottom:-1px;width:2px!important;padding:0;background:var(--ink);box-shadow:0 0 0 2px var(--surface2)}
+.vbar .dn{top:0;bottom:0;z-index:1;border-radius:8px;background:linear-gradient(90deg,color-mix(in srgb,var(--pg) 75%,transparent),var(--pg))}
+.vadj{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12.5px;color:var(--ink2)}
+.vadj::before{content:"↻";color:var(--pg);font-weight:800}
 em.up{font-size:12px;font-style:normal;color:var(--ok)}
 .tl{display:flex;gap:4px;margin:var(--s3) 0 var(--s1)}
 .tl span{display:grid;gap:0;min-width:48px;padding:var(--s1) 6px;text-align:center;font-size:12px;border-radius:var(--r-s);background:var(--surface2)}
@@ -4458,11 +4472,12 @@ A.rdyAuto = () => { S.autoReg = S.autoReg === false; rdyResize(); save(); render
 function tVolume() {
   const mon = mondayOfD(ui.tDate), v = weekVolume(mon), recs = bestSets(), rl = Object.entries(recs).sort((a, b) => b[1].best - a[1].best).slice(0, 12);
   const rows = MUSCLES.filter(g => v[g]).map(g => { const lm = lmFor(g), x = v[g], mx = Math.max(lm[2] * 1.1, x.plan, x.done, 1), pc = n => Math.min(100, n / mx * 100).toFixed(1), st = x.plan < lm[0] ? ['Laag', ''] : x.plan > lm[2] ? ['Te hoog', 'warn'] : ['In bereik', 'ok'], adj = S.volAdj[g] || 0;
-    return `<div class="vrow"><div class="row"><div><b>${g}</b><small>${n1(x.done)} van ${n1(x.plan)} sets gedaan · richtlijn ${lm[0]} tot ${lm[1]} (max ${lm[2]})</small></div><span class="pill ${st[1]}">${st[0]}</span></div>
-     <div class="vbar" role="img" aria-label="${g}: ${x.done} van ${x.plan} sets"><i class="rng" style="left:${pc(lm[0])}%;width:${(pc(lm[1]) - pc(lm[0])).toFixed(1)}%"></i><i class="pl" style="width:${pc(x.plan)}%"></i><i class="dn" style="width:${pc(x.done)}%"></i></div>
-     ${adj ? `<small>Aanpassing door je feedback: ${adj > 0 ? '+' : '−'}${Math.abs(adj)} set${Math.abs(adj) > 1 ? 's' : ''} op je eerste oefening voor deze spiergroep.</small>` : ''}</div>`; }).join('');
+    return `<div class="vrow"><div class="vname"><b>${g}</b><span class="pill ${st[1]}">${st[0]}</span></div>
+     <div class="vstat"><span class="n">${n1(x.done)}<small>/${n1(x.plan)} sets</small></span><span class="goal">richtlijn ${lm[0]}–${lm[1]}<br>max ${lm[2]}</span></div>
+     <div class="vbar" role="img" aria-label="${g}: ${x.done} van ${x.plan} sets, richtlijn ${lm[0]} tot ${lm[1]}"><i class="rng" style="left:${pc(lm[0])}%;width:${(pc(lm[1]) - pc(lm[0])).toFixed(1)}%"></i><i class="dn" style="width:${pc(x.done)}%"></i><i class="pl" style="left:${pc(x.plan)}%"></i></div>
+     ${adj ? `<p class="vadj">${adj > 0 ? '+' : '−'}${Math.abs(adj)} set${Math.abs(adj) > 1 ? 's' : ''} op je eerste oefening voor deze spiergroep, door je feedback.</p>` : ''}</div>`; }).join('');
   return `<div class="datenav"><button data-a="tShift" data-n="-7" aria-label="Vorige week">‹</button><div><b>Week van ${fmtDate(mon, { day: 'numeric', month: 'long' })}</b><small>Sets per spiergroep</small></div><button data-a="tShift" data-n="7" aria-label="Volgende week">›</button></div>
-  ${mon === mondayOfD(today()) ? `<div class="card">${bodyMap()}</div>` : ''}<div class="card"><p class="sub">Licht: gepland. Vol: gedaan. Gekleurd vak: richtbereik.</p>${rows || '<p>Geen krachttraining gepland deze week.</p>'}
+  ${mon === mondayOfD(today()) ? `<div class="card">${bodyMap()}</div>` : ''}<div class="card"><div class="vlegend"><span class="vl-item"><i class="sw dn"></i>Gedaan</span><span class="vl-item"><i class="sw pl"></i>Gepland</span><span class="vl-item"><i class="sw rng"></i>Richtbereik</span></div>${rows || '<p>Geen krachttraining gepland deze week.</p>'}
    ${Object.values(S.volAdj).some(x => x) ? '<button class="btn ghost sm" data-a="volReset">Aanpassingen terugzetten</button>' : ''}</div>
   ${acc('Hoe werkt het?', '', '<p>Na elke krachttraining geef je per spiergroep aan hoe de pomp was, hoe je spieren aanvoelden toen je begon en hoe je presteerde. Weinig pomp met goed herstel betekent dat er ruimte is voor een extra set. Veel spierpijn of slechtere prestaties betekent een set minder. In een herstelweek verandert er niets.</p>') + acc('Waar is dit op gebaseerd?', '', `<p><b>Volume:</b> meer sets per week geeft meer spiergroei, met afnemende meeropbrengst. Voor kracht vlakt het effect nog sneller af. Een set telt hier volledig voor de hoofdspier en half voor spieren die meehelpen. Dat voorspelt de resultaten het best. De richtbereiken per spiergroep zijn praktijkrichtlijnen van coaches en komen niet rechtstreeks uit een studie. <b>Gewicht en herhalingen:</b> spiergroei is vergelijkbaar bij lichte en zware gewichten, zolang de sets zwaar genoeg zijn. Voor maximale kracht werken zware gewichten beter. <b>Inspanning:</b> dichter bij falen geeft meer spiergroei, maar niet meer kracht. Daarom staan je hulpoefeningen bij spieropbouw op RPE 8–9 en je zware basisoefeningen iets lager. <b>Rust:</b> langer dan 60 seconden rusten helpt iets. Boven de 90 seconden is voor spiergroei geen verschil meer gevonden. Bij zware basisoefeningen houdt de app 2 tot 3 minuten aan. <b>Opbouw:</b> eerst meer herhalingen, dan meer gewicht. <b>Herstelweek:</b> een week volledig niet trainen midden in een blok gaf in één onderzoek geen extra spiergroei en iets minder krachtwinst. Een lichtere week zoals in deze app is niet apart onderzocht. De app plant ze daarom spaarzaam en stelt er vooral een voor als je herstel laag is.</p><p class="sub">Bronnen: ${SRC.vol1}, ${SRC.vol2}, ${SRC.load}, ${SRC.rir}, ${SRC.rest}, ${SRC.prog}, ${SRC.deload}, ${SRC.delphi}, ${SRC.acsm}.</p>`)}`;
 }
