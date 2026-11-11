@@ -216,14 +216,15 @@ Schaars en nooit schuldgevoel-gedreven:
 
 ## 10. Uitrol
 
-1. **Supabase-project "Discipline" hervatten.** Het staat op *paused*.
-2. Migraties draaien, in volgorde: `supabase db push`, of beide bestanden uit `supabase/migrations/` in de SQL-editor plakken.
+1. ~~Supabase-project "Discipline" hervatten~~ (gedaan op 11-11-2026).
+2. ~~Migraties draaien~~: `20261111120000` en `20261111130000` staan live (11-11-2026). `20261111140000_hardening.sql` moet nog in de SQL-editor (twee regels).
 3. **Auth → Providers → Email:** zet *Confirm email* aan, en zet de minimale wachtwoordlengte op 8.
 4. **Auth → Email Templates:** zet `{{ .Token }}` in *Confirm signup*, *Magic Link* en *Reset Password*, zodat gebruikers de code kunnen invullen. De link mag blijven staan.
 5. **Auth → SMTP:** stel een eigen SMTP-dienst in (de ingebouwde verzending is beperkt tot een paar mails per uur) en controleer de rate limits.
 6. **Auth → URL Configuration:** *Site URL* = het adres van de web-app, zodat de bevestigingslink daar uitkomt.
-7. `gm/config.js`: vul de **publishable key** in (nooit de service_role key).
-8. Testen: `supabase/tests/README.md`.
+7. ~~`gm/config.js`: publishable key invullen~~ (gedaan).
+8. Aanrader uit de Supabase-beveiligingscheck: Auth → *Leaked password protection* aanzetten.
+9. Testen: `supabase/tests/README.md`.
 
 ## 11. Meten
 

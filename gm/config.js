@@ -6,5 +6,5 @@
    Zolang key leeg is, draait de app volledig lokaal zoals voorheen. */
 window.DK_SUPABASE = {
   url: 'https://axdbdoinogjfsjejqrox.supabase.co',
-  key: ''
+  key: 'sb_publishable_z_SJVkbceRckZTzrXbelJQ_0knuUECf'
 };
