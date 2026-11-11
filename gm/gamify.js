@@ -22,6 +22,7 @@ const GM_MS = [7, 14, 21, 30];
 const gmReduced = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
 const gmSleep = ms => new Promise(r => setTimeout(r, ms));
 const gmEnabled = () => !!(GM.cfg.url && GM.cfg.key);
+const gmReturnUrl = () => /^https:$/.test(location.protocol) ? location.origin + location.pathname : undefined;
 const gmTz = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Amsterdam'; } catch (e) { return 'Europe/Amsterdam'; } };
 const gmNum = n => Number(n || 0).toLocaleString('nl-NL');
 const gmSpark = '<span class="gm-sp" aria-hidden="true">✦</span>';
@@ -34,7 +35,7 @@ function gmLoadLib() {
 async function gmClient() {
   if (GM.sb) return GM.sb;
   await gmLoadLib();
-  GM.sb = window.supabase.createClient(GM.cfg.url, GM.cfg.key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storageKey: 'dk-auth' } });
+  GM.sb = window.supabase.createClient(GM.cfg.url, GM.cfg.key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: !!GM._urlAuth, storageKey: 'dk-auth' } });
   return GM.sb;
 }
 async function gmRpc(fn, args) {
@@ -43,16 +44,39 @@ async function gmRpc(fn, args) {
   return data;
 }
 
+/* Link uit een Supabase-mail: de app (hash-routing) opent met #access_token=…&type=signup|magiclink|recovery
+   of met #error=…. Sessie oppakken, de hash opruimen en naar de juiste stap gaan. */
+async function gmFromMailLink() {
+  const h = location.hash || '';
+  if (!/access_token=|error_description=/.test(h)) return false;
+  const q = new URLSearchParams(h.slice(1)), type = q.get('type'), err = q.get('error_description') || q.get('error');
+  GM._urlAuth = true;
+  try { history.replaceState(null, '', location.pathname + location.search + '#beloningen'); } catch (e) {}
+  route = 'beloningen';
+  if (err) { ui.gmStep = 'login'; ui.gmMsg = 'Deze link is verlopen of al gebruikt. Log in, of vraag een nieuwe mail aan.'; ui.gmMsgOk = false; render(); return true; }
+  try {
+    const sb = await gmClient(); const { data } = await sb.auth.getSession();
+    const u = data && data.session && data.session.user; if (!u) throw new Error('geen sessie');
+    S.gmHadAccount = true; gmPersist();
+    if (type === 'recovery') { GM.user = u; ui.gmEmail = u.email; ui.gmStep = 'newpass'; ui.gmMsg = ''; render(); return true; }
+    ui.gmStep = null; ui.gmMsg = '';
+    await gmOnLogin(u, true);
+    toast(type === 'signup' ? 'E-mailadres bevestigd. Welkom!' : 'Ingelogd.');
+  } catch (e) { ui.gmStep = 'login'; ui.gmMsg = 'Inloggen via de link lukte niet. Log in met je e-mailadres en wachtwoord.'; render(); }
+  return true;
+}
+
 GM.init = async function () {
   gmFx();
   if (!gmEnabled()) return;
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && GM.on) gmRefresh(); });
+  if (await gmFromMailLink()) return;
   let has = false; try { has = !!localStorage.getItem('dk-auth'); } catch (e) {}
   if (!has) return;                       // geen sessie: bibliotheek pas laden bij inloggen
   try {
     const sb = await gmClient(); const { data } = await sb.auth.getSession();
     if (data && data.session) await gmOnLogin(data.session.user, false);
   } catch (e) { GM.err = e.message; }
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && GM.on) gmRefresh(); });
 };
 
 async function gmOnLogin(user, fresh) {
@@ -437,19 +461,26 @@ function gmAccountCard(cta) {
   let body;
   if (step === 'register') body = `<form data-submit="gmRegister" class="stack gm-authf"><label class="f">Naam<input name="name" autocomplete="given-name" maxlength="60" placeholder="Hoe mogen we je noemen?" value="${esc(ui.gmName || (S.profile && S.profile.name) || '')}"></label>${gmMail()}${gmPw('password', 'new-password', 'Wachtwoord')}<button class="btn">Account maken</button></form><small class="fine">Je krijgt een mail om je adres te bevestigen. Pas daarna is je account actief.</small>`;
   else if (step === 'login') body = `<form data-submit="gmLogin" class="stack gm-authf">${gmMail()}${gmPw('password', 'current-password', 'Wachtwoord')}<button class="btn">Inloggen</button></form><button class="link" data-a="gmAuthStep" data-s="forgot">Wachtwoord vergeten?</button>`;
-  else if (step === 'code') body = ui.gmCodeSent ? `<form data-submit="gmCode" class="stack gm-authf">${gmCodeIn()}<button class="btn">Inloggen</button></form><small class="fine">Gestuurd naar ${em}. Je kunt ook op de link in de mail tikken.</small><button class="link" data-a="gmCodeAgain">Ander e-mailadres</button>`
-    : `<form data-submit="gmEmail" class="stack gm-authf">${gmMail()}<button class="btn">Stuur inlogcode</button></form><small class="fine">Geen wachtwoord nodig: je krijgt een code en een link per mail.</small>`;
-  else if (step === 'verify') body = `<div class="gm-verify"><span class="gm-mailic" aria-hidden="true">✉️</span><h3>Bevestig je e-mailadres</h3><p class="sub">We stuurden een mail naar <b>${em}</b>. Vul de code in, of tik op de link in de mail en log daarna hier in.</p></div>
-      <form data-submit="gmVerify" class="stack gm-authf">${gmCodeIn()}<button class="btn">Bevestigen</button></form>
-      <div class="gm-row"><button class="btn ghost sm" data-a="gmResend">Mail opnieuw sturen</button><button class="btn ghost sm" data-a="gmAuthStep" data-s="login">Ik heb op de link getikt</button></div>`;
-  else if (step === 'forgot') body = `<h3>Wachtwoord vergeten</h3><form data-submit="gmForgot" class="stack gm-authf">${gmMail()}<button class="btn">Stuur herstelcode</button></form><button class="link" data-a="gmAuthStep" data-s="login">Terug naar inloggen</button>`;
-  else body = `<h3>Nieuw wachtwoord</h3><p class="sub">Vul de code uit de mail naar <b>${em}</b> in en kies een nieuw wachtwoord.</p><form data-submit="gmReset" class="stack gm-authf">${gmCodeIn()}${gmPw('password', 'new-password', 'Nieuw wachtwoord')}<button class="btn">Opslaan en inloggen</button></form><button class="link" data-a="gmAuthStep" data-s="login">Terug naar inloggen</button>`;
+  else if (step === 'code') body = ui.gmCodeSent ? `<div class="gm-verify"><span class="gm-mailic" aria-hidden="true">✉️</span><h3>Check je mail</h3><p class="sub">We stuurden een inloglink naar <b>${em}</b>. Tik erop en je bent ingelogd.</p></div>${gmCodeAlt('gmCode', 'Inloggen')}<button class="link" data-a="gmCodeAgain">Ander e-mailadres</button>`
+    : `<form data-submit="gmEmail" class="stack gm-authf">${gmMail()}<button class="btn">Stuur inloglink</button></form><small class="fine">Geen wachtwoord nodig: je krijgt een link per mail.</small>`;
+  else if (step === 'verify') body = `<div class="gm-verify"><span class="gm-mailic" aria-hidden="true">✉️</span><h3>Bevestig je e-mailadres</h3><p class="sub">We stuurden een mail naar <b>${em}</b>. Tik op de knop in die mail. Je komt dan vanzelf ingelogd terug, of je logt daarna hier in.</p></div>
+      <div class="gm-row"><button class="btn sm" data-a="gmAuthStep" data-s="login">Ik heb bevestigd, inloggen</button><button class="btn ghost sm" data-a="gmResend">Mail opnieuw sturen</button></div>
+      ${gmCodeAlt('gmVerify', 'Bevestigen')}<small class="fine">Geen mail? Kijk ook in je spam.</small>`;
+  else if (step === 'forgot') body = `<h3>Wachtwoord vergeten</h3><form data-submit="gmForgot" class="stack gm-authf">${gmMail()}<button class="btn">Stuur herstelmail</button></form><button class="link" data-a="gmAuthStep" data-s="login">Terug naar inloggen</button>`;
+  else if (step === 'newpass') body = `<h3>Kies een nieuw wachtwoord</h3><p class="sub">Voor ${em}.</p><form data-submit="gmNewPass" class="stack gm-authf">${gmPw('password', 'new-password', 'Nieuw wachtwoord')}<button class="btn">Opslaan en inloggen</button></form>`;
+  else body = `<div class="gm-verify"><span class="gm-mailic" aria-hidden="true">✉️</span><h3>Check je mail</h3><p class="sub">We stuurden een herstelmail naar <b>${em}</b>. Tik op de knop in de mail; je komt dan hier terug om een nieuw wachtwoord te kiezen.</p></div>
+      <details class="gm-alt" ${ui.gmAltOpen ? 'open' : ''}><summary>Ik heb een code gekregen</summary><form data-submit="gmReset" class="stack gm-authf">${gmCodeIn()}${gmPw('password', 'new-password', 'Nieuw wachtwoord')}<button class="btn">Opslaan en inloggen</button></form></details>
+      <button class="link" data-a="gmAuthStep" data-s="login">Terug naar inloggen</button>`;
   return `<div class="card gm-acc ${cta ? 'gm-cta' : ''}">${cta ? `<div class="gm-ctahead"><span class="gm-coinstack" aria-hidden="true">✦</span><div><h3>Sparks, kisten en een veilige streak</h3><p class="sub">Maak een account. Je huidige streak en gegevens gaan mee, en bestaande gebruikers krijgen een welkomstbonus.</p></div></div>` : '<h3>Account</h3>'}
     ${tabs}${body}${ui.gmMsg ? `<p class="gm-authmsg ${ui.gmMsgOk ? 'ok' : ''}" role="status">${esc(ui.gmMsg)}</p>` : ''}</div>`;
 }
+/* code als alternatief voor de link (werkt zodra de mailtemplates {{ .Token }} bevatten) */
+function gmCodeAlt(submit, label) { return `<details class="gm-alt" ${ui.gmAltOpen ? 'open' : ''}><summary>Ik heb een code gekregen</summary><form data-submit="${submit}" class="stack gm-authf">${gmCodeIn()}<button class="btn">${label}</button></form></details>`; }
 function gmMsg(m, ok) { ui.gmMsg = m; ui.gmMsgOk = !!ok; render(); }
 function gmBusy(f, on) { const b = f && f.querySelector('button.btn'); if (b) { b.disabled = on; b.classList.toggle('gm-loading', on); } }
-A.gmAuthStep = d => { ui.gmStep = d.s; ui.gmMsg = ''; hap('sel'); render(); };
+A.gmAuthStep = d => { ui.gmStep = d.s; ui.gmMsg = ''; ui.gmAltOpen = false; hap('sel'); render(); };
+/* open/dicht van "Ik heb een code gekregen" onthouden, zodat een foutmelding het veld niet weer inklapt */
+document.addEventListener('toggle', e => { const d = e.target; if (d && d.matches && d.matches('details.gm-alt')) ui.gmAltOpen = d.open; }, true);
 A.gmEye = (d, el) => { const i = el.parentElement.querySelector('input'); i.type = i.type === 'password' ? 'text' : 'password'; el.setAttribute('aria-label', i.type === 'password' ? 'Wachtwoord tonen' : 'Wachtwoord verbergen'); };
 A.gmCodeAgain = () => { ui.gmCodeSent = false; ui.gmMsg = ''; render(); };
 
@@ -460,7 +491,7 @@ F.gmRegister = async (f, fd) => {
   gmBusy(f, true);
   try {
     const sb = await gmClient();
-    const { data, error } = await sb.auth.signUp({ email, password, options: { data: { name } } });
+    const { data, error } = await sb.auth.signUp({ email, password, options: { data: { name }, emailRedirectTo: gmReturnUrl() } });
     if (error) throw error;
     S.gmHadAccount = true; gmPersist();
     if (data.session) { ui.gmStep = null; ui.gmMsg = ''; await gmOnLogin(data.user, true); toast('Account gemaakt.'); return; }
@@ -483,13 +514,13 @@ F.gmLogin = async (f, fd) => {
     S.gmHadAccount = true; ui.gmStep = null; ui.gmMsg = ''; await gmOnLogin(data.user, true); toast('Ingelogd.'); }
   catch (e) {
     gmBusy(f, false); const m = gmAuthErr(e, 'Inloggen lukte niet. Probeer het opnieuw.');
-    if (m === GM_AUTH_ERR.email_not_confirmed) { ui.gmStep = 'verify'; return gmMsg('Je account is nog niet bevestigd. Vul de code uit de mail in of laat hem opnieuw sturen.'); }
+    if (m === GM_AUTH_ERR.email_not_confirmed) { ui.gmStep = 'verify'; return gmMsg('Je account is nog niet bevestigd. Tik op de knop in de bevestigingsmail, of laat hem opnieuw sturen.'); }
     gmMsg(m);
   }
 };
 F.gmForgot = async (f, fd) => {
   const email = String(fd.get('email') || '').trim(); ui.gmEmail = email; gmBusy(f, true);
-  try { const sb = await gmClient(); const { error } = await sb.auth.resetPasswordForEmail(email); if (error) throw error; ui.gmStep = 'reset'; gmMsg(''); }
+  try { const sb = await gmClient(); const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: gmReturnUrl() }); if (error) throw error; ui.gmStep = 'reset'; gmMsg(''); }
   catch (e) { gmBusy(f, false); gmMsg(gmAuthErr(e, 'Versturen lukte niet. Probeer het opnieuw.')); }
 };
 F.gmReset = async (f, fd) => {
@@ -501,10 +532,18 @@ F.gmReset = async (f, fd) => {
     ui.gmStep = null; ui.gmMsg = ''; await gmOnLogin(data.user, true); toast('Nieuw wachtwoord opgeslagen.'); }
   catch (e) { gmBusy(f, false); gmMsg(gmAuthErr(e, 'Opslaan lukte niet. Probeer het opnieuw.')); }
 };
-/* zonder wachtwoord: code (en magic link) per mail; bevestigt het adres meteen */
+/* na een herstellink: nieuw wachtwoord opslaan (de link gaf al een sessie) */
+F.gmNewPass = async (f, fd) => {
+  const password = String(fd.get('password') || ''); if (password.length < 8) return gmMsg(GM_AUTH_ERR.weak_password);
+  gmBusy(f, true);
+  try { const sb = await gmClient(); const up = await sb.auth.updateUser({ password }); if (up.error) throw up.error;
+    const u = (up.data && up.data.user) || GM.user; ui.gmStep = null; ui.gmMsg = ''; await gmOnLogin(u, true); toast('Nieuw wachtwoord opgeslagen.'); }
+  catch (e) { gmBusy(f, false); gmMsg(gmAuthErr(e, 'Opslaan lukte niet. Probeer het opnieuw.')); }
+};
+/* zonder wachtwoord: inloglink (en, met eigen templates, een code) per mail; bevestigt het adres meteen */
 F.gmEmail = async (f, fd) => {
   const email = String(fd.get('email') || '').trim(); if (!email) return; ui.gmEmail = email; gmBusy(f, true);
-  try { const sb = await gmClient(); const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true } }); if (error) throw error; ui.gmCodeSent = true; gmMsg('Check je mail.', true); }
+  try { const sb = await gmClient(); const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: gmReturnUrl() } }); if (error) throw error; ui.gmCodeSent = true; gmMsg(''); }
   catch (e) { gmBusy(f, false); gmMsg(gmAuthErr(e, 'Versturen lukte niet. Controleer je internet en probeer het opnieuw.')); }
 };
 F.gmCode = async (f, fd) => {

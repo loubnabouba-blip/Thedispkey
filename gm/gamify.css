@@ -195,6 +195,9 @@ header.top{position:relative}
 .gm-verify{display:grid;justify-items:center;text-align:center;gap:6px}
 .gm-mailic{font-size:42px;line-height:1;animation:gm-pop .6s var(--gm-spring) both}
 .gm-authmsg{margin:0;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--gm-risk) 12%,var(--surface2));color:var(--head);font-size:15px;animation:gm-rise .35s var(--ease) both}
+.gm-alt{border-top:1px dashed var(--line2);padding-top:var(--s2)}
+.gm-alt summary{cursor:pointer;color:var(--ink2);font-size:15px;font-weight:700;min-height:44px;display:flex;align-items:center}
+.gm-alt[open] summary{margin-bottom:var(--s2)}
 .gm-authmsg.ok{background:color-mix(in srgb,var(--pg) 14%,var(--surface2))}
 .btn.gm-loading{position:relative;color:transparent!important}
 .btn.gm-loading::after{content:"";position:absolute;inset:0;margin:auto;width:20px;height:20px;border-radius:50%;border:2.5px solid currentColor;border-color:#0B1220 transparent #0B1220 transparent;animation:gm-spin .8s linear infinite}

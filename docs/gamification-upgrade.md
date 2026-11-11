@@ -216,15 +216,27 @@ Schaars en nooit schuldgevoel-gedreven:
 
 ## 10. Uitrol
 
-1. ~~Supabase-project "Discipline" hervatten~~ (gedaan op 11-11-2026).
-2. ~~Migraties draaien~~: `20261111120000` en `20261111130000` staan live (11-11-2026). `20261111140000_hardening.sql` moet nog in de SQL-editor (twee regels).
-3. **Auth → Providers → Email:** zet *Confirm email* aan, en zet de minimale wachtwoordlengte op 8.
-4. **Auth → Email Templates:** zet `{{ .Token }}` in *Confirm signup*, *Magic Link* en *Reset Password*, zodat gebruikers de code kunnen invullen. De link mag blijven staan.
-5. **Auth → SMTP:** stel een eigen SMTP-dienst in (de ingebouwde verzending is beperkt tot een paar mails per uur) en controleer de rate limits.
-6. **Auth → URL Configuration:** *Site URL* = het adres van de web-app, zodat de bevestigingslink daar uitkomt.
-7. ~~`gm/config.js`: publishable key invullen~~ (gedaan).
-8. Aanrader uit de Supabase-beveiligingscheck: Auth → *Leaked password protection* aanzetten.
-9. Testen: `supabase/tests/README.md`.
+Stand op 11-11-2026:
+
+| Stap | Status |
+|---|---|
+| Supabase-project "Discipline" hervat | gedaan |
+| Migraties `120000`, `130000` en `140000` | live, gecontroleerd (RLS, rechten, trigger) |
+| Publishable key in `gm/config.js` | gedaan |
+| *Confirm email* | stond al aan |
+| Minimale wachtwoordlengte | 8 (gezet via de Management API) |
+| Codelengte in mails | 6 cijfers |
+| Site URL | `https://disciplineiskey.netlify.app` |
+| Eigen SMTP | **open**: nodig voordat echte gebruikers zich kunnen registreren |
+| Mailtemplates met `{{ .Token }}` | **open**: kan pas als eigen SMTP is ingesteld (beperking van het gratis plan) |
+| Leaked password protection | niet beschikbaar op het gratis plan (Pro-functie) |
+
+**Zonder eigen SMTP** verstuurt Supabase alleen mail naar leden van het eigen Supabase-team, en maximaal 2 per uur. De standaardmails bevatten alleen een link, geen code. De app vangt dat op: een link uit de mail (bevestigen, inloggen, wachtwoord herstellen) komt terug in de web-app, die de sessie oppakt (`gmFromMailLink`). De codevelden staan ingeklapt onder "Ik heb een code gekregen". Een link opent in de browser, niet in de iOS-app. Daar log je na het bevestigen gewoon in met je wachtwoord.
+
+**Eigen SMTP instellen** (bijvoorbeeld Resend, gratis tot 3.000 mails per maand):
+1. Maak een account aan en verifieer je domein, of gebruik het testdomein.
+2. Vul in Supabase onder Authentication → SMTP Settings de host, poort, gebruiker, wachtwoord en het afzenderadres in.
+3. Zet daarna `{{ .Token }}` in de templates *Confirm signup*, *Magic Link* en *Reset Password*.
 
 ## 11. Meten
 
