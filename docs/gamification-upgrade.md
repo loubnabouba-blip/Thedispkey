@@ -227,20 +227,16 @@ Stand op 11-11-2026:
 | Minimale wachtwoordlengte | 8 (gezet via de Management API) |
 | Codelengte in mails | 6 cijfers |
 | Site URL | `https://disciplineiskey.netlify.app` |
-| Eigen SMTP | ingesteld (Brevo, `smtp-relay.brevo.com:587`); login klopt, maar **Brevo blokkeert nog op IP** (zie hieronder) |
+| Eigen SMTP | werkt (Brevo, `smtp-relay.brevo.com:587`); mails komen nog in de spam (zie hieronder) |
 | Mailtemplates met `{{ .Token }}` | gedaan: Nederlandse templates met code en knop (bevestigen, inloggen, nieuw wachtwoord) |
 | Mail-limiet | 30 per uur |
 | Leaked password protection | niet beschikbaar op het gratis plan (Pro-functie) |
 
-### Waar we gebleven zijn (12-11-2026)
+### Stand mail (12-11-2026)
 
-Mails komen nog niet aan. De Auth-log toont `525 5.7.1 Unauthorized IP address`: Brevo staat alleen mail toe vanaf goedgekeurde IP-adressen, en Supabase verstuurt vanaf wisselende servers.
+Mail werkt: Supabase → Brevo → Gmail. Daarvoor is in Brevo de IP-blokkering voor SMTP-keys uitgezet. De mails komen nog **in de spam** terecht, omdat de afzender een `@gmail.com`-adres is dat via Brevo wordt verstuurd (geen DKIM/DMARC voor dat domein).
 
-**Volgende stap:** in Brevo **`app.brevo.com/security/authorised_ips`** openen en de blokkering uitzetten (*Deactivate blocking*). Daarna testen in Supabase: Authentication → Users → eigen gebruiker → **Send magic link**.
-
-Daarna nog te doen:
-- de extra, onbevestigde accounts opruimen die door de *Invite user*-pogingen zijn ontstaan;
-- PR #6 mergen.
+**Volgende stap voor een goede bezorging:** een eigen domein (bijvoorbeeld `noreply@disciplinekey.nl`) toevoegen en verifiëren in Brevo (DKIM, DMARC), en daarna de *Sender email* in Supabase aanpassen. Tot die tijd zegt de app al "Geen mail? Kijk ook in je spam".
 
 **Zonder eigen SMTP** verstuurt Supabase alleen mail naar leden van het eigen Supabase-team, en maximaal 2 per uur. De standaardmails bevatten alleen een link, geen code. De app vangt dat op: een link uit de mail (bevestigen, inloggen, wachtwoord herstellen) komt terug in de web-app, die de sessie oppakt (`gmFromMailLink`). De codevelden staan ingeklapt onder "Ik heb een code gekregen". Een link opent in de browser, niet in de iOS-app. Daar log je na het bevestigen gewoon in met je wachtwoord.
 
