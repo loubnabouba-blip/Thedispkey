@@ -4755,7 +4755,7 @@ A.dwizGo = () => {
   const n = w.days, o = discDefaults(id);
   o.level = w.exp; o.days = suggestDays(n);
   if (id === 'run') o.goal = w.exp === 'new' ? 'c30' : 'k5';
-  ui.dsetup = o; ui.disc = id; ui.dwiz = null;
+  o.wiz = true; ui.dsetup = o; ui.disc = id; ui.dwiz = null;
   if (route !== 'sport') { go('sport'); } else render();
   window.scrollTo(0, 0);
   toast('Op basis van je antwoorden hebben we dit voorgesteld. Pas het gerust aan voor je start.');
@@ -5022,9 +5022,18 @@ function discSetup(id) {
   const rolePick = others.length ? `<div class="f"><span>Rol van deze discipline</span><div class="chips">${[['main', 'Hoofddoel'], ['support', 'Ondersteunend']].map(([k, l]) => `<label class="chip"><input type="radio" name="role" value="${k}" data-c="dsf" ${o.role === k ? 'checked' : ''}><span>${l}</span></label>`).join('')}</div><small>Het hoofddoel is de piek waar je naartoe werkt. Een ondersteunende discipline krijgt een lichter schema: korter, rustiger en minder sets.</small></div>` : '';
   const bmi = id === 'beg' && o.goal === 'afvallen' && S.profile && S.profile.weight && S.profile.height ? S.profile.weight / Math.pow(S.profile.height / 100, 2) : null;
   return `<section><button class="btn ghost sm" data-a="discBack">‹ Disciplines</button><p class="eyebrow">Nieuwe discipline</p><h1>${DISC[id].name}</h1>${intro}
-  ${compatCard(cl, later && later.o)}<form data-submit="discStart" class="card"><h3>Instellingen</h3>${fields}${rolePick}${bmi && bmi < 20 ? '<div class="note warn">Je BMI ligt laag. Afvallen is dan waarschijnlijk niet nodig. Kies liever “Fitter worden”, of bespreek dit met je huisarts of diëtist.</div>' : ''}
+  ${compatCard(cl, later && later.o)}${mainPreview(o, later)}<form data-submit="discStart" class="card"><h3>Instellingen</h3>${fields}${rolePick}${bmi && bmi < 20 ? '<div class="note warn">Je BMI ligt laag. Afvallen is dan waarschijnlijk niet nodig. Kies liever “Fitter worden”, of bespreek dit met je huisarts of diëtist.</div>' : ''}
    <div class="f"><span>Trainingsdagen (${mn} tot ${mx})</span><div class="chips">${DAYS.map((d, i) => `<label class="chip"><input type="checkbox" data-c="dday" value="${i}" ${o.days.includes(i) ? 'checked' : ''}><span>${d}</span></label>`).join('')}</div><small>Voorgesteld op basis van de dagen die nog het rustigst zijn in je weekplan. Pas aan zoals het jou past.</small></div>
    <div class="btns"><button class="btn">${cl.some(x => x.lv >= 2) ? 'Toch starten' : 'Start deze discipline'}</button><button type="button" class="btn ghost" data-a="discBack">Annuleren</button></div></form></section>`;
+}
+/* voorstel tonen vóór de start: wat de hoofddiscipline ook instelt (basisplan + mijlpaal) */
+function mainPreview(o, later) {
+  if ((o.role || 'main') !== 'main' || (later && o.later)) return '';
+  const p = S.profile, g = goalForDisc(o.id, o.goal), m = S.milestone, rows = [];
+  if (p && g) rows.push(p.goal === g ? `<li>Basisplan: blijft op <b>${esc(GOALS[g].toLowerCase())}</b>.</li>` : `<li>Basisplan: van ${esc((GOALS[p.goal] || 'geen doel').toLowerCase())} naar <b>${esc(GOALS[g].toLowerCase())}</b>. Je calorieën en schema volgen dit doel.</li>`);
+  if (o.date) rows.push(!m.date || m.date === o.date || msLinked() || m.enabled === false ? `<li>Mijn doel: telt af naar <b>${esc(msNameFor(o.id, o.goal))}</b> op ${fmtL(o.date)}.</li>` : `<li>Mijn doel: je hebt al “${esc(m.name)}” op ${fmtL(m.date)}. Na de start vraagt de app of je dat wilt koppelen aan deze wedstrijd.</li>`);
+  else rows.push(`<li>Mijn doel: geen wedstrijddatum, dus je doel blijft zoals het is.${o.id === 'beg' ? '' : ' Vul hieronder een datum in om af te tellen.'}</li>`);
+  return `<div class="card quiet"><h3>${ui.dsetup && ui.dsetup.wiz ? 'Voorstel van de app' : 'Dit wordt je hoofddoel'}</h3><ul class="plain">${rows.join('')}</ul><small>Klopt iets niet? Pas het hieronder aan. Er verandert pas iets als je op start drukt.</small></div>`;
 }
 C.dsf = el => { const o = ui.dsetup; if (!o) return; if (el.name.startsWith('orm_')) o.orm[el.name.slice(4)] = el.value; else o[el.name] = el.value; if (['goal', 'level', 'role', 'date'].includes(el.name)) render(); };
 C.dday = el => { const o = ui.dsetup || ui.dedit; if (!o) return; const v = +el.value, i = o.days.indexOf(v); if (el.checked && i < 0) o.days.push(v); if (!el.checked && i >= 0) o.days.splice(i, 1); };
