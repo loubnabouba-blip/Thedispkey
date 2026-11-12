@@ -587,7 +587,22 @@ button.wl{font:inherit;color:inherit;width:100%}button.wl:disabled{cursor:defaul
 .rnum{position:absolute;left:10px;top:10px;z-index:2;padding:3px 9px;border-radius:999px;background:var(--glass);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid var(--line2);color:var(--ink);font:700 13px var(--fb)}
 .cartbar{display:flex;align-items:center;gap:var(--s2);width:100%;margin:var(--s2) 0;padding:var(--s2);border:1px solid var(--accent);border-radius:var(--r);background:color-mix(in srgb,var(--accent) 12%,var(--surface));color:var(--ink);font:inherit;text-align:left;cursor:pointer}
 .cartbar span{display:grid;flex:1}.cartbar small{color:var(--ink2)}.cartbar em{font-style:normal;font-size:22px}
-.cartcard h3{display:flex;align-items:center;gap:8px;margin:0}.cartlist li{display:flex;align-items:center;justify-content:space-between;gap:var(--s1);padding:6px 0;border-bottom:1px solid var(--line)}
+.cartcard{position:relative;overflow:hidden;background:radial-gradient(120% 70% at 100% 0,var(--pg-soft),transparent 60%),var(--card-bg)}
+.cart-hd{display:flex;align-items:center;gap:var(--s2);margin-bottom:var(--s2);min-width:0}.cart-hd>div{min-width:0}.cart-hd h3{margin:0;line-height:1.2}.cart-hd small{display:block;color:var(--ink2)}
+.cart-ic{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--pg);color:#14100A}
+.cart-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}.cart-stats>div{display:grid;gap:2px;padding:10px 12px;border-radius:16px;background:var(--surface2);border:1px solid var(--line);min-width:0}
+.cart-stats b{font:900 26px/1 var(--fd);font-stretch:85%;color:var(--head);white-space:nowrap}.cart-stats b i{font-style:normal;font-size:16px;color:var(--ink2)}.cart-stats small{font-size:13px;color:var(--ink2)}.cart-stats>div:nth-child(2) b{color:var(--pg-ink)}
+.cart-prog{height:6px;border-radius:6px;background:var(--surface2);overflow:hidden;margin-bottom:var(--s2)}.cart-prog span{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--pg),#FF5C8A);transition:width .4s var(--ease)}
+.cartlist li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
+.cname{min-width:0;line-height:1.35}.cname i{display:block;font:800 13px/1.2 var(--fd);font-style:normal;color:var(--pg-ink);letter-spacing:.02em}
+.cstep{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:14px;background:var(--surface2)}.cstep button{appearance:none;width:40px;height:44px;border:0;background:none;color:var(--ink);font-size:20px;cursor:pointer;border-radius:12px}.cstep button:active{transform:scale(.92)}.cstep b{min-width:34px;text-align:center;font:800 15px var(--fd)}
+.cdel{appearance:none;width:44px;height:44px;border:1px solid var(--line);border-radius:14px;background:none;color:var(--ink2);font-size:22px;line-height:1;cursor:pointer}@media (hover:hover){.cdel:hover{color:var(--bad);border-color:var(--bad)}}
+.cgrp{display:flex;align-items:center;gap:8px;margin:var(--s2) 0 4px}.cgrp::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--gc)}.cgrp small{font-size:13px;color:var(--ink2);font-weight:600}
+.cshop li{gap:8px}.cshop li.done em{text-decoration:line-through;color:var(--ink2)}
+.cqbtn{appearance:none;flex:none;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface2);color:var(--ink);font:600 14px var(--fb);white-space:nowrap;cursor:pointer}.cqbtn svg{opacity:.55}.cqbtn.adj{border-color:var(--pg);color:var(--pg-ink)}
+.cadd{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin:var(--s2) 0}.cadd input[name=name]{grid-column:1/-1}.cadd input{min-width:0}.cadd .btn{min-width:48px;padding:0 16px;font-size:20px}
+.cart-acts{margin-top:var(--s2)}.cart-acts>.btn{width:100%;gap:8px}.btn.danger,button.btn.danger{color:var(--bad)}
+.cartshot{max-height:60vh;overflow:auto;border-radius:18px;border:1px solid var(--line);background:#0B0F19}.cartshot img{display:block;width:100%;height:auto}
 
 /* ---------- 9. Oefeningen ---------- */
 ul.exl{display:grid;gap:var(--s2);margin:0;padding:0;list-style:none}
@@ -4209,34 +4224,156 @@ const cartIds = () => Object.keys(cartOf()).filter(id => RX[id] && S.cart[id] > 
 const cartPortions = () => cartIds().reduce((a, id) => a + S.cart[id], 0);
 function cartIngs() { const t = {}; cartIds().forEach(id => RX[id].ings.forEach(([i, g]) => t[i] = (t[i] || 0) + g * S.cart[id])); return t; }
 const cartBar = () => cartIds().length ? `<button class="cartbar" data-a="cartOpen">${CART_SVG}<span><b>${cartIds().length} recept${cartIds().length === 1 ? '' : 'en'} · ${cartPortions()} porties</b><small>Bekijk je boodschappenlijst</small></span><em>›</em></button>` : '';
+/* lijst = berekende ingrediënten (met eigen aanpassingen) + eigen items */
+const cartEd = () => { const e = S.cartEdit = S.cartEdit || {}; e.adj = e.adj || {}; e.hide = e.hide || {}; e.extra = e.extra || []; return e; };
+const CART_GROUP_COL = { 'Eiwitbronnen': '#FF7A59', 'Zuivel en alternatieven': '#5BA8FF', 'Groente en fruit': '#6FD6A0', 'Granen, peulvruchten en brood': '#FFB020', 'Overig': '#9A8CFF', 'Eigen items': '#FF5C8A' };
+const gRound = g => g >= 20 ? Math.round(g / 5) * 5 : Math.round(g);
+function cartList() {
+  const tot = cartIngs(), E = cartEd(), tk = S.cartShop = S.cartShop || {}, out = [];
+  Object.entries(tot).forEach(([id, g0]) => { if (E.hide[id]) return; const a = E.adj[id], adj = a && Math.abs(a.base - g0) < .5, g = adj ? a.g : g0;
+    out.push({ key: id, name: ING[id][0], qty: ingText(id, g).replace(/^\d+ g [^(]*/, m => gRound(g) + ' g ').replace(/\s+$/, ''), short: gRound(g) + ' g', group: ingGroup(id), adj, done: !!tk[id] }); });
+  E.extra.forEach(x => out.push({ key: 'x:' + x.id, name: x.name, qty: x.qty || '', short: x.qty || '', group: 'Eigen items', extra: true, done: !!tk['x:' + x.id] }));
+  const order = ING_GROUPS.map(g => g[0]).concat('Eigen items');
+  return out.sort((a, b) => order.indexOf(a.group) - order.indexOf(b.group) || (a.extra ? 0 : a.name.localeCompare(b.name, 'nl')));
+}
 function cartCard(pp) {
-  const ids = cartIds(), S2 = S.cartShop = S.cartShop || {};
+  const ids = cartIds(), E = cartEd();
   const fromWeek = pp && pp.recipes.length ? `<button class="btn ghost sm" data-a="cartFromWeek">Weekplanning toevoegen</button>` : '';
-  if (!ids.length) return `<div class="card cartcard"><div class="row"><h3>${CART_SVG} Boodschappenkarretje</h3></div><p class="sub">Leeg. Tik bij Recepten op het karretje van een recept om het toe te voegen. Kies daarna hier hoeveel porties je maakt; de app telt alle ingrediënten bij elkaar op tot één boodschappenlijst.</p><div class="btns"><button class="btn sm" data-a="foodTab" data-t="recepten">Naar recepten</button>${fromWeek}</div></div>`;
-  const tot = cartIngs(), groups = {}; Object.entries(tot).forEach(([id, g]) => (groups[ingGroup(id)] = groups[ingGroup(id)] || []).push({ id, g }));
-  const n = Object.keys(tot).length, done = Object.keys(tot).filter(id => S2[id]).length;
-  return `<div class="card cartcard"><div class="row"><h3>${CART_SVG} Boodschappenkarretje</h3><span class="pill">${cartPortions()} porties</span></div>
-   <ul class="plain cartlist">${ids.map(id => `<li><span><b>${rnum(id)}</b> ${esc(RX[id].name)}</span><span class="step"><button data-a="cartQty" data-id="${id}" data-d="-1" aria-label="Eén portie minder">−</button><span>${S.cart[id]}×</span><button data-a="cartQty" data-id="${id}" data-d="1" aria-label="Eén portie meer">+</button></span></li>`).join('')}</ul>
+  const head = (sub) => `<div class="cart-hd"><span class="cart-ic">${CART_SVG}</span><div><h3>Boodschappenkarretje</h3><small>${sub}</small></div></div>`;
+  if (!ids.length && !E.extra.length) return `<div class="card cartcard">${head('Nog leeg')}<p class="sub">Tik bij Recepten op het karretje van een recept om het toe te voegen. Kies daarna hier hoeveel porties je maakt; de app telt alle ingrediënten bij elkaar op tot één boodschappenlijst.</p><div class="btns"><button class="btn sm" data-a="foodTab" data-t="recepten">Naar recepten</button>${fromWeek}</div></div>`;
+  const L = cartList(), n = L.length, done = L.filter(x => x.done).length, edits = Object.keys(E.hide).length + Object.keys(E.adj).length;
+  const groups = []; L.forEach(x => { let g = groups.find(y => y.n === x.group); if (!g) groups.push(g = { n: x.group, xs: [] }); g.xs.push(x); });
+  return `<div class="card cartcard">${head(n + ' item' + (n === 1 ? '' : 's') + ' op je lijst')}
+   <div class="cart-stats"><div><b>${ids.length}</b><small>recept${ids.length === 1 ? '' : 'en'}</small></div><div><b>${cartPortions()}</b><small>porties</small></div><div><b>${done}<i>/${n}</i></b><small>afgevinkt</small></div></div>
+   <div class="cart-prog" role="progressbar" aria-label="Afgevinkt" aria-valuemin="0" aria-valuemax="${n}" aria-valuenow="${done}"><span style="width:${n ? Math.round(done / n * 100) : 0}%"></span></div>
+   ${ids.length ? `<ul class="plain cartlist">${ids.map(id => `<li><span class="cname"><i>${rnum(id)}</i>${esc(RX[id].name)}</span><span class="cstep"><button data-a="cartQty" data-id="${id}" data-d="-1" aria-label="Eén portie minder van ${esc(RX[id].name)}">−</button><b>${S.cart[id]}×</b><button data-a="cartQty" data-id="${id}" data-d="1" aria-label="Eén portie meer van ${esc(RX[id].name)}">+</button></span><button class="cdel" data-a="cartDel" data-id="${id}" aria-label="${esc(RX[id].name)} uit karretje halen">×</button></li>`).join('')}</ul>` : ''}
    <div class="btns">${fromWeek}<button class="btn ghost sm" data-a="foodTab" data-t="recepten">Recept toevoegen</button></div>
-   ${acc('Boodschappenlijst', `${done} van ${n} afgevinkt`, ING_GROUPS.map(([gn]) => groups[gn] ? `<h4>${gn}</h4><ul class="shop">${groups[gn].sort((a, b) => ING[a.id][0].localeCompare(ING[b.id][0], 'nl')).map(x => `<li><label class="tick wide"><input type="checkbox" data-c="cartShop" data-k="${x.id}" ${S2[x.id] ? 'checked' : ''}><span></span><em>${esc(ING[x.id][0])}</em><b>${x.g >= 20 ? Math.round(x.g / 5) * 5 : Math.round(x.g)} g</b></label></li>`).join('')}</ul>` : '').join('') +
-     `<div class="btns"><button class="btn sm" data-a="cartShare">Deel of kopieer lijst</button>${done ? '<button class="btn ghost sm" data-a="cartUntick">Vinkjes weghalen</button>' : ''}<button class="btn ghost sm" data-a="cartClear">Karretje leegmaken</button></div>`, true)}</div>`;
+   ${acc('Boodschappenlijst', `${done} van ${n} afgevinkt`, groups.map(g => `<h4 class="cgrp" style="--gc:${CART_GROUP_COL[g.n] || '#9A8CFF'}">${g.n}<small>${g.xs.length}</small></h4><ul class="shop cshop">${g.xs.map(x => `<li class="${x.done ? 'done' : ''}"><label class="tick wide"><input type="checkbox" data-c="cartShop" data-k="${esc(x.key)}" ${x.done ? 'checked' : ''}><span></span><em>${esc(x.name)}</em></label><button class="cqbtn${x.adj ? ' adj' : ''}" data-a="cartItem" data-k="${esc(x.key)}" aria-label="${esc(x.name)} aanpassen of verwijderen">${esc(x.short || 'Aanpassen')}<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button></li>`).join('')}</ul>`).join('') +
+     `<form data-submit="cartExtra" class="cadd"><input name="name" required maxlength="60" placeholder="Eigen item, bijv. koffie" aria-label="Naam van eigen item"><input name="qty" maxlength="20" placeholder="Aantal" aria-label="Hoeveelheid"><button class="btn sm" aria-label="Item toevoegen">+</button></form>
+     ${edits ? `<p class="sub">${edits} aanpassing${edits === 1 ? '' : 'en'} op de berekende lijst. <button class="link" data-a="cartResetEdits">Zet terug</button></p>` : ''}`, true)}
+   <div class="cart-acts"><button class="btn" data-a="cartImg"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg>Download of deel lijst</button>
+    <div class="btns"><button class="btn ghost sm" data-a="cartShare">Deel als tekst</button>${done ? '<button class="btn ghost sm" data-a="cartUntick">Vinkjes weghalen</button>' : ''}<button class="btn ghost sm danger" data-a="cartClear">Lijst wissen</button></div></div></div>`;
 }
 A.cartToggle = d => { const c = cartOf(); if (c[d.id]) { delete c[d.id]; toast('Uit je karretje gehaald.'); } else { c[d.id] = 1; toast(rnum(d.id) + ' in je karretje. Bekijk de lijst bij Mealprep.'); } save(); const l = $('#reclist'); if (l) { render(); } };
 A.cartAddM = d => { const c = cartOf(); c[d.id] = (c[d.id] || 0) + 1; save(); toast(rnum(d.id) + ': ' + c[d.id] + (c[d.id] === 1 ? ' portie' : ' porties') + ' in je karretje.'); recipeModal(d.id, +d.f || 1, d.item || ''); render(); };
 A.cartQty = d => { const c = cartOf(); c[d.id] = (c[d.id] || 0) + +d.d; if (c[d.id] <= 0) delete c[d.id]; save(); render(); };
+A.cartDel = d => { delete cartOf()[d.id]; save(); render(); toast((RX[d.id] ? RX[d.id].name : 'Recept') + ' uit je karretje gehaald.'); };
 A.cartOpen = () => { ui.foodTab = 'prep'; render(); window.scrollTo(0, 0); };
 A.cartFromWeek = () => { const mon = addDays(ui.foodDate, -wdOf(ui.foodDate)), c = cartOf(); let n = 0; prepPlan(mon).recipes.forEach(o => { c[o.r.id] = (c[o.r.id] || 0) + Math.max(1, Math.round(o.portions)); n++; }); save(); render(); toast(n + ' recepten uit je weekplanning toegevoegd.'); };
-A.cartClear = () => modal(`<h3>Karretje leegmaken?</h3><p>Alle recepten en vinkjes gaan uit je boodschappenkarretje.</p><div class="btns end"><button class="btn ghost" data-a="close">Annuleren</button><button class="btn" data-a="cartClearDo">Leegmaken</button></div>`);
-A.cartClearDo = () => { S.cart = {}; S.cartShop = {}; save(); closeModal(); render(); toast('Karretje is leeg.'); };
+A.cartClear = () => modal(`<h3>Lijst wissen?</h3><p>Alle recepten, eigen items, aanpassingen en vinkjes gaan uit je boodschappenkarretje. Dit kun je niet ongedaan maken.</p><div class="btns end"><button class="btn ghost" data-a="close">Annuleren</button><button class="btn" data-a="cartClearDo">Wissen</button></div>`);
+A.cartClearDo = () => { S.cart = {}; S.cartShop = {}; S.cartEdit = {}; save(); closeModal(); render(); toast('Lijst gewist.'); };
 A.cartUntick = () => { S.cartShop = {}; save(); render(); };
+A.cartResetEdits = () => { const E = cartEd(); E.adj = {}; E.hide = {}; save(); render(); toast('Berekende lijst hersteld.'); };
 C.cartShop = el => { (S.cartShop = S.cartShop || {})[el.dataset.k] = el.checked; save(); render(); };
+F.cartExtra = (f, fd) => { const name = (fd.get('name') || '').trim(); if (!name) return; cartEd().extra.push({ id: uid(), name, qty: (fd.get('qty') || '').trim() }); save(); render(); toast(name + ' op je lijst gezet.'); };
+A.cartItem = d => {
+  const k = d.k, E = cartEd();
+  if (k.startsWith('x:')) { const x = E.extra.find(y => 'x:' + y.id === k); if (!x) return;
+    modal(`<h3>Eigen item</h3><form data-submit="cartItemX"><input type="hidden" name="k" value="${esc(k)}"><label class="f">Naam<input name="name" required maxlength="60" value="${esc(x.name)}"></label><label class="f">Hoeveelheid<input name="qty" maxlength="20" value="${esc(x.qty)}" placeholder="bijv. 2 pakken"></label>
+     <div class="btns end"><button type="button" class="btn ghost danger" data-a="cartItemDel" data-k="${esc(k)}">Verwijder</button><button type="button" class="btn ghost" data-a="close">Annuleren</button><button class="btn">Opslaan</button></div></form>`); return; }
+  const g0 = cartIngs()[k]; if (g0 == null) return; const a = E.adj[k], g = a && Math.abs(a.base - g0) < .5 ? a.g : g0;
+  modal(`<h3>${esc(ING[k][0])}</h3><p class="sub">Berekend uit je recepten: ${gRound(g0)} g. Pas aan als je al iets in huis hebt of meer wilt kopen.</p><form data-submit="cartItemG"><input type="hidden" name="k" value="${esc(k)}"><label class="f">Hoeveelheid (gram)<input name="g" type="number" inputmode="numeric" min="0" max="20000" step="5" required value="${gRound(g)}"></label>
+   <div class="btns end"><button type="button" class="btn ghost danger" data-a="cartItemDel" data-k="${esc(k)}">Van lijst halen</button>${a ? `<button type="button" class="btn ghost" data-a="cartItemReset" data-k="${esc(k)}">Berekend</button>` : ''}<button class="btn">Opslaan</button></div></form>`);
+};
+F.cartItemG = (f, fd) => { const k = fd.get('k'), g = Math.max(0, +fd.get('g') || 0), E = cartEd(); if (!g) { E.hide[k] = true; delete E.adj[k]; } else E.adj[k] = { g, base: cartIngs()[k] }; save(); closeModal(); render(); };
+F.cartItemX = (f, fd) => { const x = cartEd().extra.find(y => 'x:' + y.id === fd.get('k')); if (x) { x.name = (fd.get('name') || '').trim() || x.name; x.qty = (fd.get('qty') || '').trim(); } save(); closeModal(); render(); };
+A.cartItemDel = d => { const E = cartEd(); if (d.k.startsWith('x:')) E.extra = E.extra.filter(y => 'x:' + y.id !== d.k); else { E.hide[d.k] = true; delete E.adj[d.k]; } delete (S.cartShop || {})[d.k]; save(); closeModal(); render(); toast('Van je lijst gehaald.'); };
+A.cartItemReset = d => { delete cartEd().adj[d.k]; save(); closeModal(); render(); };
+function cartText() {
+  const L = cartList(), lines = ['Boodschappenlijst mealprep', ''];
+  if (cartIds().length) lines.push('Recepten:', ...cartIds().map(id => `${rnum(id)} ${RX[id].name} (${S.cart[id]}×)`), '');
+  [...new Set(L.map(x => x.group))].forEach(gn => { const xs = L.filter(x => x.group === gn && !x.done); if (xs.length) lines.push(gn + ':', ...xs.map(x => '- ' + (x.extra ? x.name + (x.qty ? ' (' + x.qty + ')' : '') : x.qty)), ''); });
+  return lines.join('\n').trim();
+}
 A.cartShare = () => {
-  const tot = cartIngs(), lines = ['Boodschappenlijst mealprep', '', 'Recepten:'].concat(cartIds().map(id => `${rnum(id)} ${RX[id].name} (${S.cart[id]}×)`), ['']);
-  ING_GROUPS.forEach(([gn]) => { const xs = Object.keys(tot).filter(id => ingGroup(id) === gn && !(S.cartShop || {})[id]).sort((a, b) => ING[a][0].localeCompare(ING[b][0], 'nl')); if (xs.length) lines.push(gn + ':', ...xs.map(id => '- ' + ingText(id, tot[id])), ''); });
-  const text = lines.join('\n').trim();
+  const text = cartText();
   if (navigator.share) { navigator.share({ title: 'Boodschappenlijst', text }).catch(() => {}); return; }
   if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => toast('Lijst gekopieerd. Plak hem in je notities of een appje.'), () => toast('Kopiëren lukte niet.')); else toast('Kopiëren wordt niet ondersteund.');
 };
+/* deelbare afbeelding: boodschappenlijst als ticket (PNG) */
+async function cartPNG() {
+  try { await Promise.all(['900 120px Archivo', '800 40px Archivo', '700 30px "DM Sans"', '500 30px "DM Sans"'].map(f => document.fonts.load(f))); } catch (e) {}
+  const L = cartList(), ids = cartIds(), W = 1080, P = 84, IW = W - 2 * P, ACC = '#FFB020', ACC2 = '#8B7CFF', BG = '#0B0F19', INK = '#F3F5F9', MUT = '#94A3B8';
+  const FD = 'Archivo, "Arial Narrow", system-ui, sans-serif', FB = '"DM Sans", system-ui, -apple-system, sans-serif';
+  const groups = []; L.forEach(x => { let g = groups.find(y => y.n === x.group); if (!g) groups.push(g = { n: x.group, xs: [] }); g.xs.push(x); });
+  const wrap = (x, t, maxW) => { const ws = String(t).split(/\s+/), out = []; let l = ''; ws.forEach(w => { const tr = l ? l + ' ' + w : w; if (x.measureText(tr).width > maxW && l) { out.push(l); l = w; } else l = tr; }); if (l) out.push(l); return out; };
+  const rr = (x, a, b, w, h, r) => { x.beginPath(); x.roundRect ? x.roundRect(a, b, w, h, r) : x.rect(a, b, w, h); };
+  const paint = (x, H) => {
+    if (H) { /* achtergrond met gloed en ticket-rand */
+      x.fillStyle = BG; x.fillRect(0, 0, W, H);
+      let g = x.createRadialGradient(0, 0, 0, 0, 0, 900); g.addColorStop(0, 'rgba(255,176,32,.32)'); g.addColorStop(1, 'rgba(255,176,32,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+      g = x.createRadialGradient(W, 260, 0, W, 260, 760); g.addColorStop(0, 'rgba(139,124,255,.26)'); g.addColorStop(1, 'rgba(139,124,255,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+      g = x.createRadialGradient(W / 2, H, 0, W / 2, H, 700); g.addColorStop(0, 'rgba(255,92,138,.14)'); g.addColorStop(1, 'rgba(255,92,138,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+      x.fillStyle = 'rgba(255,255,255,.035)'; rr(x, 36, 36, W - 72, H - 72, 48); x.fill(); x.strokeStyle = 'rgba(255,255,255,.09)'; x.lineWidth = 2; x.stroke();
+    }
+    let y = 112; x.textBaseline = 'alphabetic';
+    // merk + datum
+    if (H) { x.strokeStyle = ACC; x.lineWidth = 5; x.lineCap = 'round'; x.beginPath(); x.arc(P + 14, y - 12, 12, 0, 7); x.moveTo(P + 26, y - 12); x.lineTo(P + 66, y - 12); x.moveTo(P + 52, y - 12); x.lineTo(P + 52, y); x.moveTo(P + 63, y - 12); x.lineTo(P + 63, y - 4); x.stroke();
+      x.fillStyle = INK; x.font = `800 26px ${FD}`; x.letterSpacing = '4px'; x.fillText('THE DISCIPLINE KEY', P + 86, y - 2); x.letterSpacing = '0px';
+      x.fillStyle = MUT; x.font = `600 26px ${FB}`; x.textAlign = 'right'; x.fillText(new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date()), W - P, y - 2); x.textAlign = 'left'; }
+    y += 120;
+    // titel
+    let fs = 124; x.font = `900 ${fs}px ${FD}`; while (fs > 60 && x.measureText('BOODSCHAPPEN').width > IW) { fs -= 4; x.font = `900 ${fs}px ${FD}`; }
+    if (H) { x.fillStyle = INK; x.fillText('BOODSCHAPPEN', P - 4, y);
+      const g = x.createLinearGradient(P, 0, P + 560, 0); g.addColorStop(0, ACC); g.addColorStop(1, '#FF5C8A'); x.fillStyle = g; x.fillText('LIJST.', P - 4, y + fs * .92);
+      const lw = x.measureText('LIJST.').width; x.fillStyle = MUT; x.font = `500 30px ${FB}`; x.fillText('Mealprep in één keer gehaald', P + lw + 24, y + fs * .92 - 6); }
+    y += fs * .92 + 64;
+    // statistieken
+    const st = [[ids.length, ids.length === 1 ? 'recept' : 'recepten'], [cartPortions(), 'porties'], [L.length, L.length === 1 ? 'item' : 'items']], tw = (IW - 2 * 24) / 3;
+    if (H) st.forEach(([v, l], i) => { const a = P + i * (tw + 24); rr(x, a, y, tw, 150, 32); x.fillStyle = 'rgba(255,255,255,.06)'; x.fill(); x.strokeStyle = 'rgba(255,255,255,.1)'; x.lineWidth = 2; x.stroke();
+      x.fillStyle = i === 1 ? ACC : INK; x.font = `900 72px ${FD}`; x.fillText(String(v), a + 30, y + 86); x.fillStyle = MUT; x.font = `600 26px ${FB}`; x.fillText(l, a + 32, y + 124); });
+    y += 150 + 64;
+    // recepten
+    if (ids.length) {
+      if (H) { x.fillStyle = MUT; x.font = `800 24px ${FD}`; x.letterSpacing = '4px'; x.fillText('RECEPTEN', P, y); x.letterSpacing = '0px'; }
+      y += 26;
+      ids.forEach(id => { x.font = `600 30px ${FB}`; const ln = wrap(x, RX[id].name, IW - 230), h = 34 + ln.length * 40;
+        if (H) { rr(x, P, y, IW, h, 26); x.fillStyle = 'rgba(255,255,255,.05)'; x.fill();
+          x.fillStyle = ACC; x.font = `900 30px ${FD}`; x.fillText(rnum(id), P + 26, y + 50);
+          x.fillStyle = INK; x.font = `600 30px ${FB}`; ln.forEach((t, i) => x.fillText(t, P + 120, y + 50 + i * 40));
+          const q = S.cart[id] + '×'; x.font = `900 34px ${FD}`; const qw = x.measureText(q).width + 36; rr(x, W - P - 20 - qw, y + 17, qw, 48, 24); x.fillStyle = ACC; x.fill(); x.fillStyle = '#1A1200'; x.textAlign = 'center'; x.fillText(q, W - P - 20 - qw / 2, y + 53); x.textAlign = 'left'; }
+        y += h + 14; });
+      y += 30;
+    }
+    // perforatie
+    if (H) { x.fillStyle = BG; [36, W - 36].forEach(cx => { x.beginPath(); x.arc(cx, y, 26, 0, 7); x.fill(); }); x.strokeStyle = 'rgba(255,255,255,.18)'; x.lineWidth = 3; x.setLineDash([4, 14]); x.lineCap = 'round'; x.beginPath(); x.moveTo(P, y); x.lineTo(W - P, y); x.stroke(); x.setLineDash([]); }
+    y += 70;
+    // groepen
+    groups.forEach((gr, gi) => { if (gi) y += 24; const col = CART_GROUP_COL[gr.n] || ACC2;
+      if (H) { x.fillStyle = col; x.beginPath(); x.arc(P + 9, y - 11, 9, 0, 7); x.fill(); x.fillStyle = INK; x.font = `800 34px ${FD}`; x.fillText(gr.n.toUpperCase(), P + 32, y); const w = x.measureText(gr.n.toUpperCase()).width;
+        x.fillStyle = col; x.font = `700 24px ${FB}`; x.fillText(String(gr.xs.length), P + 46 + w, y - 2); }
+      y += 30;
+      gr.xs.forEach(it => { x.font = `700 28px ${FB}`; const q = it.extra ? (it.qty || '') : it.short, qw = q ? x.measureText(q).width : 0; x.font = `500 30px ${FB}`; const ln = wrap(x, it.name, IW - 80 - qw - 60), h = 26 + ln.length * 40;
+        if (H) { const cy = y + 14; rr(x, P, cy + 4, 34, 34, 10); x.strokeStyle = it.done ? col : 'rgba(255,255,255,.35)'; x.lineWidth = 3; if (it.done) { x.fillStyle = col; x.fill(); x.strokeStyle = BG; x.beginPath(); x.moveTo(P + 8, cy + 21); x.lineTo(P + 15, cy + 29); x.lineTo(P + 27, cy + 13); x.stroke(); } else x.stroke();
+          x.fillStyle = it.done ? 'rgba(243,245,249,.42)' : INK; x.font = `500 30px ${FB}`; ln.forEach((t, i) => x.fillText(t, P + 58, cy + 32 + i * 40));
+          if (it.done) { const lw = x.measureText(ln[0]).width; x.strokeStyle = 'rgba(243,245,249,.42)'; x.lineWidth = 2; x.beginPath(); x.moveTo(P + 58, cy + 22); x.lineTo(P + 58 + lw, cy + 22); x.stroke(); }
+          if (q) { const lw = x.measureText(ln[0]).width; x.strokeStyle = 'rgba(255,255,255,.14)'; x.lineWidth = 2; x.setLineDash([2, 10]); x.beginPath(); x.moveTo(P + 70 + lw, cy + 30); x.lineTo(W - P - qw - 16, cy + 30); x.stroke(); x.setLineDash([]);
+            x.fillStyle = it.done ? MUT : col; x.font = `700 28px ${FB}`; x.textAlign = 'right'; x.fillText(q, W - P, cy + 32); x.textAlign = 'left'; } }
+        y += h + 8; });
+      y += 40; });
+    // voet
+    y += 20;
+    if (H) { x.strokeStyle = 'rgba(255,255,255,.1)'; x.lineWidth = 2; x.beginPath(); x.moveTo(P, y); x.lineTo(W - P, y); x.stroke();
+      x.fillStyle = MUT; x.font = `500 24px ${FB}`; x.fillText('Gemaakt met The Discipline Key · hoeveelheden afgerond op 5 g', P, y + 52);
+      // barcode-detail
+      let bx = W - P - 150; for (let i = 0; i < 26; i++) { const bw = [2, 4, 6][(i * 7 + L.length) % 3]; x.fillStyle = i % 2 ? 'rgba(255,255,255,.0)' : 'rgba(255,255,255,.4)'; x.fillRect(bx, y + 26, bw, 36); bx += bw + 2; } }
+    return y + 120;
+  };
+  const m = document.createElement('canvas').getContext('2d'), H = Math.ceil(paint(m, 0));
+  const c = document.createElement('canvas'); c.width = W; c.height = H; paint(c.getContext('2d'), H); return c;
+}
+A.cartImg = async () => {
+  toast('Afbeelding maken…');
+  let c; try { c = await cartPNG(); } catch (e) { toast('Afbeelding maken lukte niet. Deel de lijst als tekst.'); return; }
+  const url = c.toDataURL('image/png'), name = 'boodschappenlijst-' + today() + '.png';
+  const blob = await new Promise(r => c.toBlob(r, 'image/png')), file = blob && typeof File === 'function' ? new File([blob], name, { type: 'image/png' }) : null;
+  ui.cartFile = file;
+  const canFiles = !!(file && navigator.canShare && navigator.canShare({ files: [file] }));
+  modal(`<h3>Je boodschappenlijst</h3><div class="cartshot"><img src="${url}" alt="Boodschappenlijst als afbeelding"></div>
+   <p class="sub">Tip op iPhone: houd de afbeelding ingedrukt en kies Bewaar in Foto’s of Deel.</p>
+   <div class="btns col">${canFiles ? '<button class="btn" data-a="cartImgShare">Deel afbeelding</button>' : ''}<a class="btn ${canFiles ? 'ghost' : ''}" href="${url}" download="${name}">Download PNG</a><button class="btn ghost" data-a="cartShare">Deel als tekst</button><button class="btn ghost" data-a="close">Sluiten</button></div>`, true);
+};
+A.cartImgShare = () => { const f = ui.cartFile; if (f && navigator.share) navigator.share({ files: [f], title: 'Boodschappenlijst' }).catch(() => {}); };
 C.shop = el => { S.shop[el.dataset.k] = el.checked; save(); const s = el.closest('details.acc')?.querySelector('summary em'); render(); };
 A.fOpenDay = d => { ui.foodDate = d.date; ui.foodTab = 'dag'; render(); };
 
