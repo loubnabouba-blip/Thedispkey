@@ -4425,7 +4425,7 @@ F.compStart = (f, fd) => {
   const base = calcMacros(S.profile); if (base.missing) { toast('Vul eerst je gegevens in bij Profiel: ' + base.missing.join(', ') + '.'); return; }
   const pw = clamp(+fd.get('weeks') || cl.prep[1], 8, Math.min(wl, 30));
   S.comp = { active: true, fed: o.fed, cls: o.cls, date, prepWeeks: pw, start: today(), kcalAdj: 0, cardioAdj: 0, cycle: false, refeed: true, refeedWd: 5, checkins: [], pose: [], ck: {} };
-  S.milestone = Object.assign(S.milestone, { enabled: true, type: 'wedstrijd', name: cl.n + ' wedstrijd', date, items: null, checks: {} });
+  S.milestone = Object.assign(S.milestone, { enabled: true, type: 'wedstrijd', name: cl.n + ' wedstrijd', date, items: null, checks: {}, disc: 'bb' });
   applyMainGoal('bb');
   if (o.adapt && S.profile) { S.profile.program = cl.prog; S.plan = buildPlan(S.profile); S.swaps = {}; S.short = {}; S.draft = null; S.moves = []; }
   save(); ui.compTab = 'overzicht'; render(); toast('Voorbereiding gestart. Doe je eerste check-in deze week.');
@@ -4587,7 +4587,7 @@ A.syncToComp = () => { const c = S.comp, d = S.milestone.date;
   if (diffDays(today(), d) < 56) { closeModal(); S.milestone.date = c.date; save(); render(); toast('Een voorbereiding heeft minstens 8 weken nodig. Je doeldatum is teruggezet.'); return; }
   c.date = d; c.prepWeeks = clamp(c.prepWeeks, 8, Math.min(30, Math.ceil(diffDays(today(), d) / 7))); save(); closeModal(); render(); toast('Wedstrijd bijgewerkt naar ' + fmtL(d) + '.'); };
 A.syncGoalBack = () => { S.milestone.date = S.comp.date; S.milestone.name = CLASSES[S.comp.cls].n + ' wedstrijd'; save(); closeModal(); render(); toast('Je doel is teruggezet naar de wedstrijddatum.'); };
-A.syncToGoal = () => { const c = S.comp; S.milestone.type = 'wedstrijd'; S.milestone.date = c.date; S.milestone.name = CLASSES[c.cls].n + ' wedstrijd'; S.milestone.enabled = true; save(); closeModal(); render(); toast('Doel bijgewerkt.'); };
+A.syncToGoal = () => { const c = S.comp; S.milestone.disc = 'bb'; S.milestone.type = 'wedstrijd'; S.milestone.date = c.date; S.milestone.name = CLASSES[c.cls].n + ' wedstrijd'; S.milestone.enabled = true; save(); closeModal(); render(); toast('Doel bijgewerkt.'); };
 A.syncGoalWedstrijd = () => { S.milestone.type = 'wedstrijd'; save(); closeModal(); render(); toast('Doel teruggezet naar wedstrijd.'); };
 A.syncEndComp = () => { A.compStop(); };
 function syncBanner() {
@@ -4914,6 +4914,26 @@ function applyMainGoal(id, sub) {
   if ((p.program || 'auto') === 'auto') S.plan = buildPlan(p);
   return g;
 }
+/* --- mijlpaal hangt aan de hoofddiscipline als die een wedstrijddatum heeft --- */
+const msNameFor = (id, sub) => id === 'run' ? 'Wedstrijd ' + ((RUNG[sub] || RUNG.k5).n).toLowerCase() : id === 'pl' ? 'Powerlifting-wedstrijd' : id === 'hx' ? 'Hyrox-wedstrijd' : id === 'bb' && S.comp ? CLASSES[S.comp.cls].n + ' wedstrijd' : 'Wedstrijd';
+function msLinked() {
+  const m = S.milestone; if (!m || !m.disc) return null;
+  if (m.disc === 'bb') return S.comp && S.comp.active && S.comp.date ? { id: 'bb', date: S.comp.date } : null;
+  const dc = D()[m.disc]; return dc && dc.date && dWeek(dc, today()) <= dc.weeks ? { id: m.disc, date: dc.date } : null;
+}
+function linkMilestone(id, date, name) {
+  const m = S.milestone, wasW = m.type === 'wedstrijd';
+  Object.assign(m, { enabled: true, type: 'wedstrijd', name, date, disc: id });
+  if (!wasW) { m.items = null; m.checks = {}; }
+}
+/* eigen mijlpaal met een andere datum wordt niet stilletjes overschreven */
+function offerMilestone(id, date, name) {
+  const m = S.milestone;
+  if (!m.date || m.date === date || msLinked() || m.disc === id || m.enabled === false) { linkMilestone(id, date, name); return true; }
+  modal(`<h3>Je doel koppelen aan ${esc(nameOf(id))}?</h3><p>Je doel staat nu op “${esc(m.name)}” met datum ${fmtL(m.date)}. ${esc(nameOf(id))} heeft als wedstrijddatum <b>${fmtL(date)}</b>.</p><p class="sub">Koppel je ze, dan telt je doel af naar de wedstrijd en volgt het de discipline.</p><div class="btns"><button class="btn" data-a="msLinkDo" data-id="${id}" data-date="${date}" data-n="${esc(name)}">Ja, koppel mijn doel</button><button class="btn ghost" data-a="close">Nee, houd mijn eigen doel</button></div>`);
+  return false;
+}
+A.msLinkDo = d => { linkMilestone(d.id, d.date, d.n); save(); closeModal(); render(); toast('Je doel volgt nu ' + nameOf(d.id) + '.'); };
 function compatWith(nw) {
   return activeDisc().filter(o => o.id !== nw.id).map(o => {
     let [lv, msg] = pairLevel(nw, o);
@@ -5025,6 +5045,7 @@ function discBegin() {
   if (o.date && o.date <= start) { toast('Je wedstrijd valt voor de startdatum. Pas de datum aan of start nu.'); return; }
   const dc = { id, v: Date.now(), start, days: [...o.days].sort((a, b) => a - b), weeks: W, goal: o.goal, level: o.level, date: o.date || null, orm: { ...o.orm }, target: o.target, baseSteps: o.baseSteps, short: !!(g && o.date && wk < g.min), role };
   D()[id] = dc; const ng = role === 'main' && !later ? applyMainGoal(id, o.goal) : null;
+  if (role === 'main' && dc.date) offerMilestone(id, dc.date, msNameFor(id, o.goal));
   save(); ui.dsetup = null; ui.dtab = 'overzicht'; render(); window.scrollTo(0, 0); toast(DISC[id].name + (later ? ' start na je andere discipline.' : ' is toegevoegd aan je weekplan.') + (ng ? ' Je basisplan stuurt nu op: ' + GOALS[ng].toLowerCase() + '.' : ''));
 }
 
@@ -5123,6 +5144,10 @@ function dBegLearn() {
 /* ===== Doelen: één doel voor je lichaam + optioneel één sport ===== */
 const GOAL_ORDER = ['combi', 'spier', 'vet', 'kracht', 'conditie', 'bewegen'];
 const GOAL_SUB = { combi: 'Strakker en sterker', spier: 'Meer spiermassa', vet: 'Lager vetpercentage', kracht: 'Zwaarder tillen', conditie: 'Langer en sneller', bewegen: 'Fitter en gezonder' };
+function msLinkedNote() {
+  const l = msLinked(); if (!l) return '';
+  return `<p class="sub">Je einddatum volgt <b>${esc(nameOf(l.id))}</b>: ${fmtL(l.date)}. Wijzig de datum bij die discipline.</p><div class="btns"><button class="btn ghost sm" data-a="${l.id === 'bb' ? 'discBB' : 'discGo'}" data-id="${l.id}">Open ${esc(nameOf(l.id))}</button></div>`;
+}
 function goalsPage() {
   const p = S.profile, m = S.milestone, x = planParts(), dleft = m.enabled !== false && m.date ? diffDays(today(), m.date) : null, items = msItems(), done = items.filter(i => i.done).length;
   const act = activeDisc(), sport = act.find(a => a.role === 'main') || act[0];
@@ -5136,7 +5161,7 @@ function goalsPage() {
   const c = S.comp && S.comp.active, ids = ['run', 'pl', 'hx', 'beg'];
   const cards = ids.map(id => discCard(id, DISC[id].name, DISC[id].blurb, discStatus(id), !!D()[id], 'discGo')).join('') + discCard('bb', 'Bodybuilding', 'Voorbereiding op een wedstrijd met fases, peak week, check-ins en posing.', c ? 'Actief · ' + Math.max(0, Math.ceil(diffDays(today(), S.comp.date) / 7)) + ' weken tot de show' : 'Niet gestart', !!c, 'discBB');
   return `<section><h1>Doelen</h1>${syncBanner()}${hero}
-   ${acc('Einddatum', m.date ? fmtDate(m.date, { day: 'numeric', month: 'short', year: 'numeric' }) : 'Geen', form)}
+   ${acc('Einddatum', m.date ? fmtDate(m.date, { day: 'numeric', month: 'short', year: 'numeric' }) : 'Geen', msLinked() ? msLinkedNote() : form)}
    ${acc('Checklist', done + ' van ' + items.length, check)}
    <div class="card quiet"><div class="row"><div><b>Sport of wedstrijd</b><small>Hardlopen, powerlifting, Hyrox of bodybuilding</small></div><button class="btn sm" data-a="gotoDisc">Disciplines</button></div></div>
    <small class="fine">Algemene schema’s, geen persoonlijke begeleiding. Bij klachten eerst naar je huisarts.</small></section>`;
@@ -5461,7 +5486,7 @@ function vMilestone() {
 }
 function vGoalBasic() {
   const m = S.milestone, d = m.date ? diffDays(today(), m.date) : null, items = msItems();
-  const form = `<form data-submit="milestone" class="grid2"><label class="f">Soort doel<select name="type">${Object.entries(GOAL_TYPES).map(([k, l]) => `<option value="${k}" ${m.type === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label><label class="f">Naam<input name="name" value="${esc(m.name)}" maxlength="40" placeholder="Bijvoorbeeld Hyrox, vakantie of fitter worden"></label><label class="f">Datum (optioneel)<input name="date" type="date" value="${m.date || ''}"></label><label class="f span2">Notitie<textarea name="note" rows="2" maxlength="300" placeholder="Waarom is dit je doel?">${esc(m.note || '')}</textarea></label><label class="chip span2"><input type="checkbox" name="enabled" ${m.enabled ? 'checked' : ''}><span>Doel tonen op Home</span></label><button class="btn sm span2">Opslaan</button></form>`;
+  const lk = msLinked(), form = lk ? `<form data-submit="milestone" class="grid2"><div class="span2">${msLinkedNote()}</div><input type="hidden" name="type" value="${esc(m.type)}"><input type="hidden" name="name" value="${esc(m.name)}"><input type="hidden" name="date" value="${m.date || ''}"><label class="f span2">Notitie<textarea name="note" rows="2" maxlength="300" placeholder="Waarom is dit je doel?">${esc(m.note || '')}</textarea></label><label class="chip span2"><input type="checkbox" name="enabled" ${m.enabled ? 'checked' : ''}><span>Doel tonen op Home</span></label><button class="btn sm span2">Opslaan</button></form>` : `<form data-submit="milestone" class="grid2"><label class="f">Soort doel<select name="type">${Object.entries(GOAL_TYPES).map(([k, l]) => `<option value="${k}" ${m.type === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label><label class="f">Naam<input name="name" value="${esc(m.name)}" maxlength="40" placeholder="Bijvoorbeeld Hyrox, vakantie of fitter worden"></label><label class="f">Datum (optioneel)<input name="date" type="date" value="${m.date || ''}"></label><label class="f span2">Notitie<textarea name="note" rows="2" maxlength="300" placeholder="Waarom is dit je doel?">${esc(m.note || '')}</textarea></label><label class="chip span2"><input type="checkbox" name="enabled" ${m.enabled ? 'checked' : ''}><span>Doel tonen op Home</span></label><button class="btn sm span2">Opslaan</button></form>`;
   const wk = d != null ? Math.floor(d / 7) : null, done = items.filter(i => i.done).length;
   return `<section><p class="eyebrow">${GOAL_TYPES[m.type] || 'Eigen doel'}</p><h1>${esc(m.name)}</h1>
   <div class="card hero">${d == null ? '<p class="big">Geen datum gekozen</p><small>Een doel zonder datum is ook prima.</small>' : d < 0 ? '<p class="big">De datum is voorbij</p>' : `<p class="count"><b>${d}</b> dagen</p><small>${wk > 0 ? wk + ' weken en ' + (d % 7) + ' dagen' : 'Minder dan een week'}</small>`}
@@ -5472,7 +5497,7 @@ function vGoalBasic() {
   <div class="card"><h3>Instellingen</h3>${form}</div>
 </section>`;
 }
-F.milestone = (f, fd) => { const m = S.milestone, nt = fd.get('type') || 'eigen', changed = nt !== m.type, oldDate = m.date; m.type = nt; m.name = (fd.get('name') || '').trim() || 'Mijn doel'; m.date = fd.get('date') || null; m.note = (fd.get('note') || '').trim(); m.enabled = !!fd.get('enabled');
+F.milestone = (f, fd) => { if (!msLinked()) delete S.milestone.disc; const m = S.milestone, nt = fd.get('type') || 'eigen', changed = nt !== m.type, oldDate = m.date; m.type = nt; m.name = (fd.get('name') || '').trim() || 'Mijn doel'; m.date = fd.get('date') || null; m.note = (fd.get('note') || '').trim(); m.enabled = !!fd.get('enabled');
   if (changed && (!m.items || m.items.every(i => !i.done))) m.items = null; save(); render(); toast('Opgeslagen.');
   const c = S.comp; if (c && c.active && (m.date !== oldDate || changed)) askSyncFromGoal(); };
 C.msCheck = el => { const i = msItems().find(x => x.id === el.dataset.k); if (i) i.done = el.checked; save(); render(); };
