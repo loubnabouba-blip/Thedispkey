@@ -4218,10 +4218,10 @@ function cartCard(pp) {
   const tot = cartIngs(), groups = {}; Object.entries(tot).forEach(([id, g]) => (groups[ingGroup(id)] = groups[ingGroup(id)] || []).push({ id, g }));
   const n = Object.keys(tot).length, done = Object.keys(tot).filter(id => S2[id]).length;
   return `<div class="card cartcard"><div class="row"><h3>${CART_SVG} Boodschappenkarretje</h3><span class="pill">${cartPortions()} porties</span></div>
+   <div class="btns"><button class="btn sm" data-a="cartShare">Deel of kopieer lijst</button>${fromWeek}<button class="btn ghost sm" data-a="foodTab" data-t="recepten">Recept toevoegen</button>${done ? '<button class="btn ghost sm" data-a="cartUntick">Vinkjes weghalen</button>' : ''}<button class="btn ghost sm" data-a="cartClear">Leegmaken</button></div>
    <ul class="plain cartlist">${ids.map(id => `<li><span><b>${rnum(id)}</b> ${esc(RX[id].name)}</span><span class="step"><button data-a="cartQty" data-id="${id}" data-d="-1" aria-label="Eén portie minder">−</button><span>${S.cart[id]}×</span><button data-a="cartQty" data-id="${id}" data-d="1" aria-label="Eén portie meer">+</button></span></li>`).join('')}</ul>
-   <div class="btns">${fromWeek}<button class="btn ghost sm" data-a="foodTab" data-t="recepten">Recept toevoegen</button></div>
    ${acc('Boodschappenlijst', `${done} van ${n} afgevinkt`, ING_GROUPS.map(([gn]) => groups[gn] ? `<h4>${gn}</h4><ul class="shop">${groups[gn].sort((a, b) => ING[a.id][0].localeCompare(ING[b.id][0], 'nl')).map(x => `<li><label class="tick wide"><input type="checkbox" data-c="cartShop" data-k="${x.id}" ${S2[x.id] ? 'checked' : ''}><span></span><em>${esc(ING[x.id][0])}</em><b>${x.g >= 20 ? Math.round(x.g / 5) * 5 : Math.round(x.g)} g</b></label></li>`).join('')}</ul>` : '').join('') +
-     `<div class="btns"><button class="btn sm" data-a="cartShare">Deel of kopieer lijst</button>${done ? '<button class="btn ghost sm" data-a="cartUntick">Vinkjes weghalen</button>' : ''}<button class="btn ghost sm" data-a="cartClear">Karretje leegmaken</button></div>`, true)}</div>`;
+     '', true)}</div>`;
 }
 A.cartToggle = d => { const c = cartOf(); if (c[d.id]) { delete c[d.id]; toast('Uit je karretje gehaald.'); } else { c[d.id] = 1; toast(rnum(d.id) + ' in je karretje. Bekijk de lijst bij Mealprep.'); } save(); const l = $('#reclist'); if (l) { render(); } };
 A.cartAddM = d => { const c = cartOf(); c[d.id] = (c[d.id] || 0) + 1; save(); toast(rnum(d.id) + ': ' + c[d.id] + (c[d.id] === 1 ? ' portie' : ' porties') + ' in je karretje.'); recipeModal(d.id, +d.f || 1, d.item || ''); render(); };
