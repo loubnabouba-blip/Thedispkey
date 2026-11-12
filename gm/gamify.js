@@ -247,9 +247,9 @@ function gmFixedModal(e) {
 }
 function gmWelcome(evs) {
   const sp = evs.filter(e => e.type === 'sparks').reduce((a, e) => a + e.amount, 0), ch = evs.find(e => e.type === 'chest');
-  modal(`<div class="gm-sheet cel"><div class="gm-coinstack" aria-hidden="true">✦</div><h2 class="disp">Welkom bij Sparks</h2>
-    <p>Je streak staat nu veilig in je account. Voor je trouw tot nu toe krijg je <b>${gmSpark}${sp}</b> en een gouden kist.</p>
-    <p class="sub">Sparks besteed je aan beschermers, herstel en vlammen, orbits en kleuren.</p>
+  modal(`<div class="gm-sheet cel"><div class="gm-coinstack" aria-hidden="true">✦</div><h2 class="disp">Je gegevens zijn bewaard</h2>
+    <p>Je trainingen, voeding en streak staan nu veilig in je account en gaan mee naar elk toestel. Voor je trouw tot nu toe krijg je er <b>${gmSpark}${sp}</b> en een gouden kist bij.</p>
+    <p class="sub">Sparks besteed je aan beschermers, vlammen, orbits en kleuren.</p>
     <div class="btns end">${ch ? `<button class="btn" data-a="gmChestGo" data-id="${ch.id}">Open je kist</button>` : '<button class="btn" data-a="gmNext">Top</button>'}</div></div>`);
 }
 A.gmChestGo = d => { closeModal(); gmChestModal(d.id, null); };
@@ -278,13 +278,12 @@ A.gmOpen = async (d, el) => {
   catch (e) { el.classList.remove('busy', 'shake'); if (hint) hint.textContent = e.message + ' Tik om het opnieuw te proberen.'; return; }
   gmSetSnap(r.snapshot);
   el.classList.remove('shake'); el.classList.add('open'); hap('ok');
-  const c = r.contents, loot = $('#gmloot'); if (hint) hint.textContent = c.jackpot ? 'JACKPOT!' : '';
-  const rows = [`<div class="gm-li gm-li-sp${c.jackpot ? ' jp' : ''}"><span class="gm-big">${gmSpark}<b data-count="${c.sparks}">0</b></span><small>${c.jackpot ? 'Jackpot ×3 Sparks' : 'Sparks'}</small></div>`];
+  const c = r.contents, loot = $('#gmloot'); if (hint) hint.textContent = '';
+  const rows = [`<div class="gm-li gm-li-sp"><span class="gm-big">${gmSpark}<b data-count="${c.sparks}">0</b></span><small>Sparks</small></div>`];
   if (c.item) rows.push(`<div class="gm-li gm-li-item r-${c.item.rarity}">${gmItemPreview(c.item)}<span><b>${esc(c.item.name)}</b><small>Nieuw ${{ flame: 'vlam', orbit: 'orbit', theme: 'kleurthema' }[c.item.kind]} · ${c.item.rarity}</small></span></div>`);
-  if (c.freeze) rows.push(`<div class="gm-li"><span class="gm-big">🧊</span><span><b>Streakbeschermer</b><small>Vangt een gemiste dag op</small></span></div>`);
   setTimeout(() => {
     if (!loot) return; loot.innerHTML = rows.join(''); gmCountUp($('[data-count]', loot));
-    if (c.jackpot || c.item || c.tier === 'goud') rwConfetti();
+    if (c.item || c.tier === 'goud') rwConfetti();
     const left = (GM.snap.chests || []).length, b = $('#gmcbtn');
     if (b) { b.hidden = false; b.innerHTML = `${c.item ? `<button class="btn ghost" data-a="gmEquipNow" data-slot="${c.item.kind}" data-id="${c.item.id}">Nu gebruiken</button>` : ''}${left ? `<button class="btn" data-a="gmChestGo" data-id="${GM.snap.chests[0].id}">Volgende kist (${left})</button>` : '<button class="btn" data-a="gmNext">Top</button>'}`; }
     render();
@@ -375,7 +374,7 @@ function gmStreakBanner() {
 }
 function gmLoginNudge() {
   if (!gmEnabled() || GM.on || S.gmNudgeOff) return '';
-  return `<div class="gm-nudge"><span>${gmSpark} Verdien Sparks en kisten en zet je streak veilig in een account.</span><a class="link" href="#beloningen">Inloggen</a><button class="link" data-a="gmNudgeOff" aria-label="Verbergen">✕</button></div>`;
+  return `<div class="gm-nudge"><span>Maak een account, zodat je gegevens bewaard blijven op elk toestel.</span><a class="link" href="#beloningen">Inloggen</a><button class="link" data-a="gmNudgeOff" aria-label="Verbergen">✕</button></div>`;
 }
 A.gmNudgeOff = () => { S.gmNudgeOff = true; save(); render(); };
 A.gmRepairAsk = () => { const rp = GM.snap && GM.snap.streak.repair; if (!rp) return; modal(`<div class="gm-sheet"><h3>Reeks direct herstellen?</h3><p>Je ${rp.lost} dagen komen meteen terug. Kost ${gmSpark}${rp.cost}, je hebt er ${gmNum(GM.snap.sparks)}.</p><p class="sub">Gratis alternatief: win nog ${rp.needed - rp.won} ${rp.needed - rp.won === 1 ? 'dag' : 'dagen'} vóór ${gmDeadline(rp.deadline)}.</p><div class="btns end">${GM.snap.sparks >= rp.cost ? `<button class="btn" data-a="gmRepair">Herstel voor ✦${rp.cost}</button>` : `<button class="btn" disabled>Nog ${gmNum(rp.cost - GM.snap.sparks)} Sparks nodig</button>`}<button class="btn ghost" data-a="close">Ik win het terug</button></div></div>`); };
@@ -416,10 +415,10 @@ function gmRewardsSection() {
 }
 A.gmTab = d => { ui.gmTab = d.t; hap('sel'); render(); };
 function gmRulesHtml() {
-  const s = GM.snap, rk = s.rank, o = rk.odds || {};
+  const s = GM.snap;
   return `<div class="gm-rules"><p><b>Sparks per gewonnen dag:</b> vast 8, +2 per rang, +4 bij een perfecte dag (4/4). De eis blijft altijd 3 van de 4 dagdoelen.</p>
-    <p><b>Kisten.</b> Gegarandeerd bij 7, 14, 21 en 30 dagen op rij en daarna elke 30 dagen, bij je eerste dag en bij een comeback na een gebroken reeks. Daarnaast is er elke gewonnen dag een kans op een verrassingskist. Die kans groeit met elke dag zonder kist en is na 5 dagen zeker.</p>
-    <p><b>Soort kist bij jouw rang (${esc(rk.name)}):</b> brons ${o.brons}%, zilver ${o.zilver}%, goud ${o.goud}%. Op een perfecte dag rol je twee keer en telt de beste.</p>
+    <p><b>Kisten.</b> Je krijgt er een bij je eerste dag, bij 7, 14, 21 en 30 dagen op rij en daarna elke 30 dagen, en bij een comeback na een gebroken reeks. Altijd om een reden die je kunt zien aankomen — geen toeval, geen kans erbij.</p>
+    <p><b>Inhoud van een kist.</b> Brons geeft vaste Sparks; zilver en goud geven vaste Sparks plus, als je hem nog niet hebt, gegarandeerd een nieuwe vlam, orbit of kleurthema. Heb je alles al, dan krijg je in plaats daarvan extra Sparks.</p>
     <p><b>Beschermers.</b> De eerste krijg je op dag 1, daarna één per 7 dagen op rij. Je kunt er ${s.streak.freeze_cap} bewaren. Ze worden alleen gebruikt als ze je reeks echt redden.</p>
     <p><b>Herstel.</b> Breekt een reeks van 3 dagen of meer, dan heb je 72 uur. Win in die tijd 2 dagen en je reeks komt terug, of herstel direct met Sparks. Dit kan één keer per 30 dagen.</p>
     <p class="fine">Alles wordt op de server bepaald en vastgelegd. Je telefoonklok verzetten verandert niets.</p></div>`;
@@ -471,7 +470,7 @@ function gmAccountCard(cta) {
   else body = `<div class="gm-verify"><span class="gm-mailic" aria-hidden="true">✉️</span><h3>Check je mail</h3><p class="sub">We stuurden een herstelmail naar <b>${em}</b>. Tik op de knop in de mail; je komt dan hier terug om een nieuw wachtwoord te kiezen.</p></div>
       <details class="gm-alt" ${ui.gmAltOpen ? 'open' : ''}><summary>Ik heb een code gekregen</summary><form data-submit="gmReset" class="stack gm-authf">${gmCodeIn()}${gmPw('password', 'new-password', 'Nieuw wachtwoord')}<button class="btn">Opslaan en inloggen</button></form></details>
       <button class="link" data-a="gmAuthStep" data-s="login">Terug naar inloggen</button>`;
-  return `<div class="card gm-acc ${cta ? 'gm-cta' : ''}">${cta ? `<div class="gm-ctahead"><span class="gm-coinstack" aria-hidden="true">✦</span><div><h3>Sparks, kisten en een veilige streak</h3><p class="sub">Maak een account. Je huidige streak en gegevens gaan mee, en bestaande gebruikers krijgen een welkomstbonus.</p></div></div>` : '<h3>Account</h3>'}
+  return `<div class="card gm-acc ${cta ? 'gm-cta' : ''}">${cta ? `<div class="gm-ctahead"><span class="gm-coinstack" aria-hidden="true">✦</span><div><h3>Bewaar je gegevens</h3><p class="sub">Maak een account, zodat je trainingen, voeding, voortgang en instellingen bewaard blijven en meegaan naar elk toestel. Je streak, Sparks en kisten gaan automatisch mee, en bestaande gebruikers krijgen een welkomstbonus.</p></div></div>` : '<h3>Account</h3>'}
     ${tabs}${body}${ui.gmMsg ? `<p class="gm-authmsg ${ui.gmMsgOk ? 'ok' : ''}" role="status">${esc(ui.gmMsg)}</p>` : ''}</div>`;
 }
 /* code als alternatief voor de link (werkt zodra de mailtemplates {{ .Token }} bevatten) */
