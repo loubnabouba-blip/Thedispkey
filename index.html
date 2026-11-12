@@ -5556,6 +5556,9 @@ try { if ('serviceWorker' in navigator && /^(https:|http:)$/.test(location.proto
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') reg.update().catch(() => {}); });
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       if (!had || document.getElementById('upd')) return;
+      /* Nieuwe versie actief: direct verversen als je niets aan het invullen bent, anders de melding tonen. */
+      const ae = document.activeElement, busy = (ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)) || document.querySelector('#modal-root .overlay') || (typeof ui !== 'undefined' && ui.workout);
+      if (!busy) { location.reload(); return; }
       const b = document.createElement('div'); b.id = 'upd'; b.className = 'upd'; b.setAttribute('role', 'status');
       b.innerHTML = '<span>Er is een nieuwe versie.</span><button class="btn sm" type="button">Verversen</button>';
       b.querySelector('button').onclick = () => location.reload(); document.body.appendChild(b);
