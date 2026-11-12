@@ -4426,6 +4426,7 @@ F.compStart = (f, fd) => {
   const pw = clamp(+fd.get('weeks') || cl.prep[1], 8, Math.min(wl, 30));
   S.comp = { active: true, fed: o.fed, cls: o.cls, date, prepWeeks: pw, start: today(), kcalAdj: 0, cardioAdj: 0, cycle: false, refeed: true, refeedWd: 5, checkins: [], pose: [], ck: {} };
   S.milestone = Object.assign(S.milestone, { enabled: true, type: 'wedstrijd', name: cl.n + ' wedstrijd', date, items: null, checks: {} });
+  applyMainGoal('bb');
   if (o.adapt && S.profile) { S.profile.program = cl.prog; S.plan = buildPlan(S.profile); S.swaps = {}; S.short = {}; S.draft = null; S.moves = []; }
   save(); ui.compTab = 'overzicht'; render(); toast('Voorbereiding gestart. Doe je eerste check-in deze week.');
 };
@@ -4900,6 +4901,19 @@ function activeDisc() {
   return out;
 }
 const nameOf = id => id === 'bb' ? 'Bodybuilding' : DISC[id].name;
+/* --- discipline = hoofddoel: het hoofddoel stuurt het basisplan (profile.goal) --- */
+const activeMainDisc = () => { const a = activeDisc(); return a.find(x => x.role === 'main') || null; };
+function goalForDisc(id, sub) {
+  if (id === 'beg') return sub === 'afvallen' ? 'vet' : 'bewegen';
+  return { run: 'conditie', hx: 'conditie', pl: 'kracht', bb: 'spier' }[id] || null;
+}
+/* zet profile.goal op het doel van de nieuwe hoofddiscipline; logs, swaps en schema-keuze blijven staan */
+function applyMainGoal(id, sub) {
+  const p = S.profile, g = goalForDisc(id, sub); if (!p || !g || p.goal === g) return null;
+  p.goal = g; S.macroOverride = null;
+  if ((p.program || 'auto') === 'auto') S.plan = buildPlan(p);
+  return g;
+}
 function compatWith(nw) {
   return activeDisc().filter(o => o.id !== nw.id).map(o => {
     let [lv, msg] = pairLevel(nw, o);
@@ -5010,7 +5024,8 @@ function discBegin() {
   const wkFrom = d => Math.floor(diffDays(addDays(start, -wdOf(start)), d) / 7) + 1, def = id === 'beg' ? 12 : id === 'run' ? g.def : 12, wk = o.date && id !== 'beg' ? wkFrom(o.date) : def, W = clamp(wk, 4, id === 'run' ? 30 : 24);
   if (o.date && o.date <= start) { toast('Je wedstrijd valt voor de startdatum. Pas de datum aan of start nu.'); return; }
   const dc = { id, v: Date.now(), start, days: [...o.days].sort((a, b) => a - b), weeks: W, goal: o.goal, level: o.level, date: o.date || null, orm: { ...o.orm }, target: o.target, baseSteps: o.baseSteps, short: !!(g && o.date && wk < g.min), role };
-  D()[id] = dc; save(); ui.dsetup = null; ui.dtab = 'overzicht'; render(); window.scrollTo(0, 0); toast(DISC[id].name + (later ? ' start na je andere discipline.' : ' is toegevoegd aan je weekplan.'));
+  D()[id] = dc; const ng = role === 'main' && !later ? applyMainGoal(id, o.goal) : null;
+  save(); ui.dsetup = null; ui.dtab = 'overzicht'; render(); window.scrollTo(0, 0); toast(DISC[id].name + (later ? ' start na je andere discipline.' : ' is toegevoegd aan je weekplan.') + (ng ? ' Je basisplan stuurt nu op: ' + GOALS[ng].toLowerCase() + '.' : ''));
 }
 
 /* --- hoofdstuk --- */
@@ -5054,7 +5069,7 @@ function dSettings(dc) {
   <div class="card"><h3>Opnieuw beginnen</h3><p class="sub">Reset alleen ${esc(DISC[dc.id].name)}. Andere disciplines, je krachtschema en je voeding blijven zoals ze zijn.</p><button class="btn danger sm" data-a="discResetAsk" data-id="${dc.id}">Reset deze discipline</button></div>`;
 }
 F.discDays = () => { const o = ui.dedit, dc = D()[o.id], [mn, mx] = DLIM[o.id]; if (o.days.length < mn || o.days.length > mx) { toast(`Kies ${mn} tot ${mx} dagen.`); return; } dc.days = [...o.days].sort((a, b) => a - b); dc.v = Date.now(); ui.dedit = null; save(); render(); toast('Trainingsdagen aangepast.'); };
-A.discRole = d => { const dc = D()[d.id]; dc.role = d.r; dc.v = Date.now(); const c = compatWith({ id: dc.id, role: dc.role, goal: dc.goal, peak: dEnd(dc) }); save(); render(); toast(c.some(x => x.lv >= 2) ? 'Rol aangepast. Let op: deze combinatie blijft zwaar.' : 'Rol aangepast. Het schema is bijgewerkt.'); };
+A.discRole = d => { const dc = D()[d.id]; dc.role = d.r; dc.v = Date.now(); const c = compatWith({ id: dc.id, role: dc.role, goal: dc.goal, peak: dEnd(dc) }), ng = d.r === 'main' ? applyMainGoal(dc.id, dc.goal) : null; save(); render(); toast((c.some(x => x.lv >= 2) ? 'Rol aangepast. Let op: deze combinatie blijft zwaar.' : 'Rol aangepast. Het schema is bijgewerkt.') + (ng ? ' Je basisplan stuurt nu op: ' + GOALS[ng].toLowerCase() + '.' : '')); };
 A.discStop = d => modal(`<h3>${DISC[d.id].name} stoppen?</h3><p>Het schema verdwijnt uit je weekplan. Je logs blijven bewaard.</p><div class="btns end"><button class="btn danger" data-a="discStopDo" data-id="${d.id}">Ja, stop</button><button class="btn ghost" data-a="close">Annuleren</button></div>`);
 A.discResetAsk = d => modal(`<h3>${esc(DISC[d.id].name)} resetten?</h3><p>Kies wat je wilt bewaren. Dit raakt alleen deze discipline.</p><div class="btns col"><button class="btn" data-a="discResetDo" data-id="${d.id}" data-logs="keep">Schema opnieuw, logs bewaren</button><button class="btn danger" data-a="discResetDo" data-id="${d.id}" data-logs="wipe">Alles wissen, ook je logs</button><button class="btn ghost" data-a="close">Annuleren</button></div>`);
 A.discResetDo = d => { const pre = 'd:' + d.id + ':'; delete D()[d.id];
