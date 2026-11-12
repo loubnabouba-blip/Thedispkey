@@ -969,6 +969,11 @@ main p b,main p strong,.dialog p b,.dialog p strong,.note b,.note strong,ol.step
 #prban b{font:900 22px/1.05 var(--fd);font-stretch:78%;text-transform:uppercase;color:var(--gold-ink)}
 #prban small{font-size:15px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #prban .hexb{width:46px;height:46px}
+.dwiz-cta{margin-bottom:var(--s2)}
+.dwiz-opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:var(--s2);margin-top:var(--s1)}
+.dwiz-opt{display:grid;gap:4px;text-align:left;padding:var(--s2);border-radius:16px;border:1px solid var(--line2);background:var(--surface2);color:var(--head);font:inherit;cursor:pointer;transition:border-color .15s,background .15s}
+.dwiz-opt b{font-size:14px}.dwiz-opt small{color:var(--ink2)}
+.dwiz-opt.on{border-color:var(--pg);background:color-mix(in srgb,var(--pg) 14%,var(--surface2))}
 .dcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:var(--s2);margin:var(--s2) 0 var(--s3)}
 .dcard{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:230px;padding:var(--s3);border-radius:22px;border:1px solid color-mix(in srgb,var(--dc) 40%,var(--line));background:#10141d;color:#fff;text-align:left;font:inherit;cursor:pointer;overflow:hidden;isolation:isolate;box-shadow:0 22px 44px -26px color-mix(in srgb,var(--dc) 70%,transparent);transition:transform .2s var(--ease)}
 .dcard:active{transform:scale(.98)}
@@ -4713,6 +4718,47 @@ const DISC = {
   hx: { name: 'Hyrox en functional', blurb: 'Hardlopen en stations combineren, met simulaties en een afbouw naar je wedstrijd.' },
   beg: { name: 'Afvallen en gezond leven', blurb: 'Rustig starten met wandelen, basiskracht en gewoontes. Voor beginners.' }
 };
+/* --- app laat je kiezen: 2 vragen -> discipline + instellingen, meteen klaar --- */
+const DWIZ_WHAT = [
+  ['beg', 'Afvallen en fitter worden', 'Wandelen, basiskracht en gewoontes opbouwen.'],
+  ['run', 'Beter worden in hardlopen', 'Van je eerste 5 km tot een marathon.'],
+  ['pl', 'Sterker worden (kracht)', 'Squat, bankdrukken en deadlift in golven.'],
+  ['hx', 'Hyrox of een functional wedstrijd', 'Hardlopen en stations combineren.'],
+  ['bb', 'Spiermassa opbouwen of een bodybuilding-wedstrijd', 'Fases, voeding en peak week.']
+];
+ui.dwiz = null;
+function discWizCard() {
+  return `<div class="card quiet dwiz-cta"><div class="row"><div><b>Weet je niet welke je moet kiezen?</b><small>Beantwoord 2 korte vragen en de app stelt een discipline en schema voor, meteen klaar om te starten.</small></div><button class="btn sm" data-a="dwizOpen">Laat de app kiezen</button></div></div>`;
+}
+A.dwizOpen = () => { ui.dwiz = { what: null, exp: null, days: null }; render(); window.scrollTo(0, 0); };
+A.dwizClose = () => { ui.dwiz = null; render(); };
+A.dwizWhat = d => { ui.dwiz.what = d.v; render(); };
+A.dwizExp = d => { ui.dwiz.exp = d.v; render(); };
+A.dwizDays = d => { ui.dwiz.days = +d.v; render(); };
+function dwizView() {
+  const w = ui.dwiz, id = w.what;
+  const q1 = `<div class="f"><span>1. Wat wil je vooral?</span><div class="dwiz-opts">${DWIZ_WHAT.map(([v, l, d]) => `<button type="button" class="dwiz-opt ${id === v ? 'on' : ''}" data-a="dwizWhat" data-v="${v}"><b>${esc(l)}</b><small>${esc(d)}</small></button>`).join('')}</div></div>`;
+  if (!id) return `<section><button class="btn ghost sm" data-a="dwizClose">‹ Disciplines</button><h1>Laat de app kiezen</h1>${q1}</section>`;
+  const q2 = id === 'bb' ? '' : `<div class="f"><span>2. Hoeveel ervaring heb je hiermee?</span><div class="chips">${[['new', 'Ik begin, nog weinig ervaring'], ['reg', 'Ik doe dit al regelmatig']].map(([v, l]) => `<label class="chip"><input type="radio" name="exp" value="${v}" ${w.exp === v ? 'checked' : ''} data-a="dwizExp" data-v="${v}"><span>${l}</span></label>`).join('')}</div></div>`;
+  const needExp = id !== 'bb' && !w.exp;
+  const [dmn, dmx] = DLIM[id] || [2, 5], dayOpts = Array.from({ length: dmx - dmn + 1 }, (_, k) => dmn + k);
+  const q3 = !needExp ? `<div class="f"><span>${id === 'bb' ? '2' : '3'}. Hoeveel dagen per week kun je trainen?</span><div class="chips">${dayOpts
+    .map(n => `<label class="chip"><input type="radio" name="days" value="${n}" ${w.days === n ? 'checked' : ''} data-a="dwizDays" data-v="${n}"><span>${n}</span></label>`).join('')}</div></div>` : '';
+  const ready = id && (id === 'bb' || w.exp) && (id === 'bb' || w.days);
+  return `<section><button class="btn ghost sm" data-a="dwizClose">‹ Disciplines</button><h1>Laat de app kiezen</h1>${q1}${q2}${q3}
+   ${ready ? `<div class="btns"><button class="btn" data-a="dwizGo">Stel mijn schema voor</button></div>` : ''}</section>`;
+}
+A.dwizGo = () => {
+  const w = ui.dwiz, id = w.what;
+  if (id === 'bb') { ui.dwiz = null; A.discBB(); return; }
+  const n = w.days, o = discDefaults(id);
+  o.level = w.exp; o.days = suggestDays(n);
+  if (id === 'run') o.goal = w.exp === 'new' ? 'c30' : 'k5';
+  ui.dsetup = o; ui.disc = id; ui.dwiz = null;
+  if (route !== 'sport') { go('sport'); } else render();
+  window.scrollTo(0, 0);
+  toast('Op basis van je antwoorden hebben we dit voorgesteld. Pas het gerust aan voor je start.');
+};
 const dMon = dc => addDays(dc.start, -wdOf(dc.start));
 const dWeek = (dc, date) => Math.floor(diffDays(dMon(dc), date) / 7) + 1;
 const r25 = n => Math.round(n / 2.5) * 2.5, comma = n => String(n).replace('.', ',');
@@ -5083,10 +5129,11 @@ function goalsPage() {
 function sportPage() {
   const act = activeDisc(), c = S.comp && S.comp.active, ids = ['run', 'pl', 'hx', 'beg'];
   const cards = ids.map(id => discCard(id, DISC[id].name, DISC[id].blurb, discStatus(id), !!D()[id], 'discGo')).join('') + discCard('bb', 'Bodybuilding', 'Voorbereiding op een wedstrijd met fases, peak week, check-ins en posing.', c ? 'Actief · ' + Math.max(0, Math.ceil(diffDays(today(), S.comp.date) / 7)) + ' weken tot de show' : 'Niet gestart', !!c, 'discBB');
-  return `<section><h1>Disciplines</h1>${syncBanner()}<p class="sub">Train je voor een sport of wedstrijd? Kies hem hier. Je doel bij Plan blijft je voeding en krachttraining sturen.</p>${act.length || c ? weekLoad() : ''}${hubCompat()}<div class="dcards">${cards}</div>
+  return `<section><h1>Disciplines</h1>${syncBanner()}<p class="sub">Train je voor een sport of wedstrijd? Kies hem hier. Je doel bij Plan blijft je voeding en krachttraining sturen.</p>${discWizCard()}${act.length || c ? weekLoad() : ''}${hubCompat()}<div class="dcards">${cards}</div>
    <small class="fine">Algemene schema’s, geen persoonlijke begeleiding. Bij klachten eerst naar je huisarts.</small></section>`;
 }
 function vDisc() {
+  if (ui.dwiz) return dwizView();
   const id = ui.disc;
   if (id === 'bb') return `<section><button class="btn ghost sm" data-a="discBack">‹ Disciplines</button><p class="eyebrow">Bodybuilding</p><h1>Wedstrijd</h1>${syncBanner()}${vComp()}</section>`;
   if (id && DISC[id]) return D()[id] ? discChapter(id) : discSetup(id);
