@@ -5587,6 +5587,13 @@ document.addEventListener('error', e => {
 }, true);
 document.addEventListener('load', e => { const i = e.target; if (i && i.classList && i.classList.contains('rimg')) i.classList.add('ld'); }, true);
 S = loadState();
+/* eenmalig (discipline = hoofddoel): niets overschrijven, alleen een al gelijke mijlpaal als gekoppeld markeren */
+try { if (S && !(S.mig && S.mig.discGoal)) {
+  if (!S.milestone) S.milestone = defaultState().milestone;
+  const m = S.milestone, md = activeMainDisc();
+  if (!m.disc && m.date && md && md.end === m.date && (md.id === 'bb' || (D()[md.id] && D()[md.id].date))) m.disc = md.id;
+  S.mig = Object.assign({}, S.mig, { discGoal: 1 });
+} } catch (e) {}
 if (S && S.photos && S.photos.some(p => p.demo)) { S.photos = S.photos.filter(p => !p.demo); try { save(); } catch (e) {} }
 const THEMES = { dark: 'Donker', light: 'Licht', system: 'Auto' };
 const THEME_ICONS = {
