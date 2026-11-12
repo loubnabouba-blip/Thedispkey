@@ -218,7 +218,7 @@ body:has(#app.ob) #app{padding-bottom:var(--s5)}
 /* Onderbalk vast tegen de onderrand, met ruimte voor de home-indicator: er schuift geen inhoud meer onder of naast de balk door. */
 #nav{position:fixed;left:0;right:0;bottom:0;z-index:40;
   display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:6px max(10px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px));border-radius:var(--r) var(--r) 0 0;border-bottom:0;
-  background:var(--glass);-webkit-backdrop-filter:saturate(1.6) blur(20px);backdrop-filter:saturate(1.6) blur(20px);border:1px solid var(--line2);box-shadow:0 24px 48px -20px rgba(0,0,0,.45)}
+  background:color-mix(in srgb,var(--surface) 96%,transparent);-webkit-backdrop-filter:saturate(1.6) blur(20px);backdrop-filter:saturate(1.6) blur(20px);border:1px solid var(--line2);box-shadow:0 24px 48px -20px rgba(0,0,0,.45)}
 #nav a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:56px;padding:6px 2px;border-radius:var(--r-s);
   color:var(--ink2);text-decoration:none;text-align:center;font-size:13px;font-weight:600;line-height:1.15;transition:var(--t)}
 #nav a span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -234,6 +234,7 @@ body:has(#app.ob) #app{padding-bottom:var(--s5)}
   opacity:0;pointer-events:none;transform:translateY(10px);transition:var(--t)}
 #totop.on{opacity:1;pointer-events:auto;transform:none}
 #totop svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+body:has(#app.ob) #totop{display:none}
 
 @media (min-width:900px){
   :root{--gutter:32px}
@@ -1917,7 +1918,7 @@ function targets(date) { if (S.comp && S.comp.active) { const t = compTargets(da
 function timeEstimate(p) {
   if (!p || !p.targetWeight || !p.weight) return null; const d = p.targetWeight - p.weight;
   if (Math.abs(d) < .5) return { text: 'Je streefgewicht ligt dicht bij je huidige gewicht. Er is geen tijdsinschatting nodig.' };
-  const loss = d < 0; if (loss && !['vet', 'combi'].includes(p.goal) || !loss && !['spier', 'kracht', 'combi'].includes(p.goal)) return { text: 'Je streefgewicht past niet bij het gekozen doel. Pas het doel of het streefgewicht aan voor een inschatting.' };
+  const loss = d < 0; if (loss && !['vet', 'combi'].includes(p.goal) || !loss && !['spier', 'kracht', 'combi'].includes(p.goal)) return { text: `Je streefgewicht (${String(p.targetWeight).replace('.', ',')} kg) is ${loss ? 'lager' : 'hoger'} dan je huidige gewicht (${String(p.weight).replace('.', ',')} kg), dus je wilt ${Math.abs(d).toFixed(1).replace('.', ',').replace(',0', '')} kg ${loss ? 'afvallen' : 'aankomen'}. Je gekozen doel “${GOALS[p.goal]}” is daar niet op gericht: ${loss ? 'je eet dan niet in een tekort, dus je valt niet gericht af' : 'je eet dan niet in een overschot, dus je komt niet gericht aan'}. Wil je ${loss ? 'afvallen' : 'aankomen'}? Kies dan bij Doel voor je lichaam “${loss ? GOALS.vet : GOALS.spier}” of “${GOALS.combi}”. Is je doel juist goed? Pas dan je streefgewicht aan. Daarna rekent de app uit hoe lang het ongeveer duurt.` };
   const rate = loss ? [.25, .75] : p.experience === 'gevorderd' ? [.1, .25] : [.25, .5];
   const lo = Math.ceil(Math.abs(d) / (p.weight * rate[1] / 100)), hi = Math.ceil(Math.abs(d) / (p.weight * rate[0] / 100));
   return { lo, hi, loss, d: Math.abs(d), text: `Bij een gemiddelde verandering van ${rate[0]}–${rate[1]}% van je lichaamsgewicht per week kan ${Math.abs(d).toString().replace('.', ',')} kg ${loss ? 'afvallen' : 'aankomen'} ongeveer ${lo}–${hi} weken duren.` + (hi > 26 ? ' Dat is een lange periode: plan tussentijds evaluatiemomenten in.' : '') };
@@ -3994,7 +3995,7 @@ const dietTag = r => { const f = recFlags(r); return !f.animal ? 'Vegan' : (!f.m
 const NL = { ontbijt: 'Ontbijt', lunch: 'Lunch', diner: 'Diner', tussendoor: 'Tussendoortje', alle: 'Alles' };
 function vFood() {
   const t = ui.foodTab === 'eigen' ? 'recepten' : ui.foodTab;
-  return `<section><h1>Voeding</h1>${tabs(t, [['dag', 'Dag'], ['week', 'Week'], ['macro', 'Macro’s'], ['prep', 'Mealprep'], ['recepten', 'Recepten']], 'foodTab')}${t === 'dag' ? fDay() : t === 'week' ? calReview() + fWeek() : t === 'macro' ? fMacro() : t === 'prep' ? fPrep() : acc('Eigen maaltijden', S.custom.length ? S.custom.length + '' : '', fCustom(), ui.foodTab === 'eigen') + fRecipes()}</section>`;
+  return `<section><h1>Voeding</h1>${tabs(t, [['dag', 'Dag'], ['week', 'Week'], ['macro', 'Macro’s'], ['prep', 'Mealprep'], ['recepten', 'Recepten']], 'foodTab')}${t === 'dag' ? fDay() : t === 'week' ? fWeekPlan() + calReview() + fWeek() : t === 'macro' ? fMacro() : t === 'prep' ? fPrep() : acc('Eigen maaltijden', S.custom.length ? S.custom.length + '' : '', fCustom(), ui.foodTab === 'eigen') + fRecipes()}</section>`;
 }
 function fMacro() { const x = planParts(); return `<div class="card"><h3>Macrodoelen</h3>${x.macroBody}</div><div class="card slim"><div class="row"><div><b>Eetpatroon</b><small>${esc(x.dietName)}</small></div><button class="btn ghost sm" data-a="foodPrefs">Wijzig</button></div></div>`; }
 function calReview() {
@@ -4165,12 +4166,13 @@ C.allerg = el => { const a = S.profile.allergens = S.profile.allergens || []; co
 A.recCat = d => { ui.recCat = d.cat; render(); };
 C.recAll = el => { ui.recAll = el.checked; render(); };
 
+const fWeekPlan = () => `<div class="card"><h3>Weekplanning maken</h3><p class="sub">Maaltijden voor elke dag, passend bij je doelen. Daarna pas je alles aan.</p><div class="btns"><button class="btn" data-a="weekPlanAsk">Maak weekplanning</button><button class="btn ghost" data-a="cartOpen">Boodschappenlijst</button></div></div>`;
 function fWeek() {
   const mon = addDays(ui.foodDate, -wdOf(ui.foodDate)), days = Array.from({ length: 7 }, (_, i) => addDays(mon, i)), t = targets();
   return `<div class="datenav"><button data-a="fDate" data-n="-7" aria-label="Vorige week">‹</button><div><b>Week van ${fmtDate(mon, { day: 'numeric', month: 'long' })}</b></div><button data-a="fDate" data-n="7" aria-label="Volgende week">›</button></div>
   <div class="card"><div class="wtable" role="table"><div class="wrow head" role="row"><span>Dag</span><span>Gepland</span><span>Gegeten</span></div>${days.map(x => { const it = (S.food[x] || { items: [] }).items, p = sumNut(it), e = sumNut(it.filter(i => i.eaten));
     return `<button class="wrow" role="row" data-a="fOpenDay" data-date="${x}"><span><b>${DAYS[wdOf(x)]}</b> ${new Date(x + 'T12:00:00').getDate()}</span><span>${it.length ? kc(p.kcal) + ' kcal · ' + n0(p.p) + ' g' : '–'}${it.length && t && !t.missing ? meter(p.kcal, t.kcal, 'Gepland') : ''}</span><span>${e.kcal ? kc(e.kcal) + ' kcal · ' + n0(e.p) + ' g' : '–'}</span></button>`; }).join('')}</div>${t && !t.missing ? `<small>Doel per dag: ${t.kcal} kcal en ${t.p} g eiwit.</small>` : ''}</div>
-  <div class="card"><h3>Weekplanning maken</h3><p class="sub">Maaltijden voor elke dag, passend bij je doelen. Daarna pas je alles aan.</p><button class="btn" data-a="weekPlanAsk">Maak weekplanning</button></div>`;
+`;
 }
 A.weekPlanAsk = d => {
   if (d && d.today) ui.foodDate = today();
@@ -4216,10 +4218,10 @@ function cartCard(pp) {
   const tot = cartIngs(), groups = {}; Object.entries(tot).forEach(([id, g]) => (groups[ingGroup(id)] = groups[ingGroup(id)] || []).push({ id, g }));
   const n = Object.keys(tot).length, done = Object.keys(tot).filter(id => S2[id]).length;
   return `<div class="card cartcard"><div class="row"><h3>${CART_SVG} Boodschappenkarretje</h3><span class="pill">${cartPortions()} porties</span></div>
+   <div class="btns"><button class="btn sm" data-a="cartShare">Deel of kopieer lijst</button>${fromWeek}<button class="btn ghost sm" data-a="foodTab" data-t="recepten">Recept toevoegen</button>${done ? '<button class="btn ghost sm" data-a="cartUntick">Vinkjes weghalen</button>' : ''}<button class="btn ghost sm" data-a="cartClear">Leegmaken</button></div>
    <ul class="plain cartlist">${ids.map(id => `<li><span><b>${rnum(id)}</b> ${esc(RX[id].name)}</span><span class="step"><button data-a="cartQty" data-id="${id}" data-d="-1" aria-label="Eén portie minder">−</button><span>${S.cart[id]}×</span><button data-a="cartQty" data-id="${id}" data-d="1" aria-label="Eén portie meer">+</button></span></li>`).join('')}</ul>
-   <div class="btns">${fromWeek}<button class="btn ghost sm" data-a="foodTab" data-t="recepten">Recept toevoegen</button></div>
    ${acc('Boodschappenlijst', `${done} van ${n} afgevinkt`, ING_GROUPS.map(([gn]) => groups[gn] ? `<h4>${gn}</h4><ul class="shop">${groups[gn].sort((a, b) => ING[a.id][0].localeCompare(ING[b.id][0], 'nl')).map(x => `<li><label class="tick wide"><input type="checkbox" data-c="cartShop" data-k="${x.id}" ${S2[x.id] ? 'checked' : ''}><span></span><em>${esc(ING[x.id][0])}</em><b>${x.g >= 20 ? Math.round(x.g / 5) * 5 : Math.round(x.g)} g</b></label></li>`).join('')}</ul>` : '').join('') +
-     `<div class="btns"><button class="btn sm" data-a="cartShare">Deel of kopieer lijst</button>${done ? '<button class="btn ghost sm" data-a="cartUntick">Vinkjes weghalen</button>' : ''}<button class="btn ghost sm" data-a="cartClear">Karretje leegmaken</button></div>`, true)}</div>`;
+     '', true)}</div>`;
 }
 A.cartToggle = d => { const c = cartOf(); if (c[d.id]) { delete c[d.id]; toast('Uit je karretje gehaald.'); } else { c[d.id] = 1; toast(rnum(d.id) + ' in je karretje. Bekijk de lijst bij Mealprep.'); } save(); const l = $('#reclist'); if (l) { render(); } };
 A.cartAddM = d => { const c = cartOf(); c[d.id] = (c[d.id] || 0) + 1; save(); toast(rnum(d.id) + ': ' + c[d.id] + (c[d.id] === 1 ? ' portie' : ' porties') + ' in je karretje.'); recipeModal(d.id, +d.f || 1, d.item || ''); render(); };
