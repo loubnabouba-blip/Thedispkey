@@ -50,4 +50,4 @@ Disciplines (`discBegin()`) raakten tot nu toe geen van beide.
 - **Mijlpaal:** `discBegin()` koppelt een wedstrijddatum aan `S.milestone`
   (nieuw veld `disc`). Doelen-pagina toont het losse naam/datum-formulier alleen
   als er geen gekoppelde discipline met datum is.
-- **Navigatie (`ROUTES`/`SUBN`)**: bewust nog niet aangepast (stap 4, later).
+- **Navigatie (stap 4):** de onderbalk heeft één ingang "Mijn doel" (route `sport`, opent altijd op het overzicht). "Doel en checklist" (`goalsPage`, route `disciplines`) is een detailscherm daaronder, niet meer een tabblad onder Plan. Oude links `#disciplines`, `#mijn-doel` en `#fotoshoot` blijven werken. `discHub()` (dode code) is verwijderd.
