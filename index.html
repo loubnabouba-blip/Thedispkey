@@ -970,6 +970,7 @@ main p b,main p strong,.dialog p b,.dialog p strong,.note b,.note strong,ol.step
 #prban small{font-size:15px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #prban .hexb{width:46px;height:46px}
 .dwiz-cta{margin-bottom:var(--s2)}
+.dwiz-cta .row{flex-wrap:wrap}.dwiz-cta .row>div{flex:1 1 200px}
 .dwiz-opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:var(--s2);margin-top:var(--s1)}
 .dwiz-opt{display:grid;gap:4px;text-align:left;padding:var(--s2);border-radius:16px;border:1px solid var(--line2);background:var(--surface2);color:var(--head);font:inherit;cursor:pointer;transition:border-color .15s,background .15s}
 .dwiz-opt b{font-size:14px}.dwiz-opt small{color:var(--ink2)}
@@ -2221,7 +2222,7 @@ const ICONS = {
   jij: '<circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/>',
   mindful: '<path d="M12 3c-3 3-4 6-4 9a4 4 0 0 0 8 0c0-3-1-6-4-9z"/><path d="M12 15v6M9 21h6"/>'
 };
-const ROUTES = [['home', 'Home'], ['mijn-plan', 'Mijn plan'], ['training', 'Training'], ['voeding', 'Voeding'], ['disciplines', 'Doelen'], ['sport', 'Disciplines'], ['voortgang', 'Voortgang'], ['mijn-doel', 'Mijn doel'], ['beloningen', 'Beloningen'], ['mindful', 'Mindful']];
+const ROUTES = [['home', 'Home'], ['mijn-plan', 'Mijn plan'], ['training', 'Training'], ['voeding', 'Voeding'], ['disciplines', 'Doel en checklist'], ['sport', 'Mijn doel'], ['voortgang', 'Voortgang'], ['mijn-doel', 'Mijn doel'], ['beloningen', 'Beloningen'], ['mindful', 'Mindful']];
 const ico = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
 const GOALS = { kracht: 'Sterker worden', spier: 'Spiermassa opbouwen', vet: 'Vet verliezen', conditie: 'Conditie verbeteren', bewegen: 'Meer bewegen', combi: 'Spier opbouwen en vet verliezen' };
 const ACTS = { laag: 'Laag (zittend werk, weinig lopen)', licht: 'Licht (af en toe lopen of fietsen)', matig: 'Matig (veel staan of fietsen)', hoog: 'Hoog (fysiek werk of veel sport)' };
@@ -2277,13 +2278,13 @@ let toastT; function toast(m) { const t = $('#toast'); t.textContent = m; t.clas
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('#modal-root .overlay')) closeModal(); });
 
 /* --- schaal --- */
-const NAVG = [['home', 'Vandaag', 'home', ['home']], ['plan', 'Plan', 'plan', ['training', 'voeding', 'disciplines']], ['sport', 'Disciplines', 'sport', ['sport']], ['mindful', 'Mindful', 'mindful', ['mindful']]];
+const NAVG = [['home', 'Vandaag', 'home', ['home']], ['plan', 'Plan', 'plan', ['training', 'voeding']], ['sport', 'Mijn doel', 'mijn-doel', ['sport', 'disciplines']], ['mindful', 'Mindful', 'mindful', ['mindful']]];
 const JIJG = ['jij', 'Jij', 'jij', ['voortgang', 'beloningen', 'mijn-plan']];
-const SUBN = { plan: [['training', 'Training'], ['voeding', 'Voeding'], ['disciplines', 'Doelen']], jij: [['voortgang', 'Voortgang'], ['beloningen', 'Beloningen'], ['mijn-plan', 'Profiel']] };
+const SUBN = { plan: [['training', 'Training'], ['voeding', 'Voeding']], jij: [['voortgang', 'Voortgang'], ['beloningen', 'Beloningen'], ['mijn-plan', 'Profiel']] };
 const grpOf = r => { const rr = r === 'mijn-doel' ? 'disciplines' : r; const g = NAVG.find(x => x[3].includes(rr)); if (g) return g[0]; return JIJG[3].includes(rr) ? JIJG[0] : 'home'; };
 function nav() {
   const cur = grpOf(route); ui.last = ui.last || {}; if (cur !== 'home') ui.last[cur] = route === 'mijn-doel' ? 'disciplines' : route;
-  $('#nav').innerHTML = NAVG.map(([id, l, ic, rs]) => { const to = id === 'home' ? 'home' : (ui.last[id] || rs[0]); return `<a href="#${to}" class="${cur === id ? 'on' : ''}" ${cur === id ? 'aria-current="page"' : ''}>${ico(ic)}<span>${l}</span></a>`; }).join('');
+  $('#nav').innerHTML = NAVG.map(([id, l, ic, rs]) => { const to = id === 'home' || id === 'sport' ? rs[0] : (ui.last[id] || rs[0]); return `<a href="#${to}" class="${cur === id ? 'on' : ''}" ${cur === id ? 'aria-current="page"' : ''}>${ico(ic)}<span>${l}</span></a>`; }).join('');
   const pb = $('#profilebtn'); if (pb) { pb.href = '#' + (ui.last.jij || JIJG[3][0]); pb.classList.toggle('on', cur === 'jij'); }
 }
 function subnav() {
@@ -2313,6 +2314,8 @@ function routeFrom(h) {
   if (h === 'sport') { ui.dTop = 'disc'; }
   return ROUTES.some(r => r[0] === h) ? h : 'home';
 }
+/* onderbalk 'Mijn doel' terwijl je al op die route zit: terug naar het overzicht met de disciplines */
+document.addEventListener('click', e => { const a = e.target.closest && e.target.closest('#nav a[href="#sport"]'); if (!a || route !== 'sport' || !(ui.disc || ui.dwiz || ui.dsetup)) return; e.preventDefault(); ui.disc = null; ui.dsetup = null; ui.dwiz = null; render(); window.scrollTo(0, 0); });
 function go(r) { if (location.hash.slice(1) === r) { render(); } else location.hash = r; }
 window.addEventListener('hashchange', () => { try { closeModal(); } catch (e) {} route = routeFrom(location.hash.slice(1)); ui.workout = (route === 'training' && ui.workout) ? ui.workout : null; render(); window.scrollTo(0, 0); });
 
@@ -3506,7 +3509,7 @@ function planParts() {
    <div class="f"><span>Trainingsdagen</span><div class="chips">${DAYS.map((x, i) => `<label class="chip"><input type="checkbox" name="d" value="${i}" ${(p.days || []).includes(i) ? 'checked' : ''}><span>${x}</span></label>`).join('')}</div></div><button class="btn sm">Schema opnieuw opbouwen</button></form>
    <ul class="plain lst">${S.plan.schedule.map(s => { const d = sessionDef(s.key); return `<li><span><b>${DAYS_LONG[s.wd]}</b></span><span>${esc(d.name)}</span></li>`; }).join('')}</ul>
    <small>Opnieuw opbouwen zet vervangen oefeningen terug. ${S.avoid.length ? 'Niet meer voorgesteld: ' + S.avoid.map(id => esc(EX[id].name)).join(', ') + '.' : ''}</small>${S.avoid.length ? ' <button class="link" data-a="avoidReset">Alles weer toestaan</button>' : ''}`;
-  let macro = S.comp && S.comp.active ? '<div class="note">Je doelen komen nu uit je wedstrijdvoorbereiding (Doelen, Bodybuilding) en wisselen per dag en fase. Beëindig de voorbereiding of pas de instellingen daar aan om dit te wijzigen.</div>' : '';
+  let macro = S.comp && S.comp.active ? '<div class="note">Je doelen komen nu uit je wedstrijdvoorbereiding (Mijn doel, Bodybuilding) en wisselen per dag en fase. Beëindig de voorbereiding of pas de instellingen daar aan om dit te wijzigen.</div>' : '';
   if (!t || t.missing) macro += `<p>Een betrouwbare berekening is nog niet mogelijk: ${(t && t.missing || []).join(', ')} ontbreekt. Vul de gegevens aan bij je profiel of stel zelf doelen in.</p>`;
   else macro += `<div class="stats"><div><b>${t.kcal}</b><span>kcal</span></div><div><b>${t.p}</b><span>g eiwit</span></div><div><b>${t.c}</b><span>g koolhydraten</span></div><div><b>${t.f}</b><span>g vet</span></div></div>
     <p class="sub">${t.auto ? 'Voorstel van de coach, een schatting.' : (t.fromCoach ? 'Aangepast via een coachvoorstel.' : 'Jouw eigen instelling.')}</p>
@@ -3563,7 +3566,7 @@ A.foodPrefs = () => { ui.foodTab = 'recepten'; go('voeding'); };
 A.setPeriod = d => { S.period = d.m; save(); render(); };
 F.planlen = (f, fd) => { const mode = fd.get('mode'), wk = num(fd.get('weeks'));
   if (mode === 'manual' && (!wk || wk < 1)) { toast('Vul het aantal weken in.'); return; }
-  if (mode === 'datum' && !S.milestone.date) { toast('Stel eerst een datum in bij Doelen > Mijn doel.'); return; }
+  if (mode === 'datum' && !S.milestone.date) { toast('Stel eerst een datum in bij Mijn doel.'); return; }
   S.planLength = { mode, weeks: wk || (S.planLength && S.planLength.weeks) || 12 }; save(); render(); toast('Duur van je plan opgeslagen.'); };
 F.program = (f, fd) => { const days = fd.getAll('d').map(Number).sort((a, b) => a - b); if (!days.length) { toast('Kies minstens één trainingsdag.'); return; }
   S.profile.program = fd.get('program'); S.profile.days = days; S.plan = buildPlan(S.profile); S.swaps = {}; S.short = {}; S.draft = null; S.moves = []; save(); render(); toast('Schema opnieuw opgebouwd.'); };
@@ -4425,7 +4428,8 @@ F.compStart = (f, fd) => {
   const base = calcMacros(S.profile); if (base.missing) { toast('Vul eerst je gegevens in bij Profiel: ' + base.missing.join(', ') + '.'); return; }
   const pw = clamp(+fd.get('weeks') || cl.prep[1], 8, Math.min(wl, 30));
   S.comp = { active: true, fed: o.fed, cls: o.cls, date, prepWeeks: pw, start: today(), kcalAdj: 0, cardioAdj: 0, cycle: false, refeed: true, refeedWd: 5, checkins: [], pose: [], ck: {} };
-  S.milestone = Object.assign(S.milestone, { enabled: true, type: 'wedstrijd', name: cl.n + ' wedstrijd', date, items: null, checks: {} });
+  S.milestone = Object.assign(S.milestone, { enabled: true, type: 'wedstrijd', name: cl.n + ' wedstrijd', date, items: null, checks: {}, disc: 'bb' });
+  applyMainGoal('bb');
   if (o.adapt && S.profile) { S.profile.program = cl.prog; S.plan = buildPlan(S.profile); S.swaps = {}; S.short = {}; S.draft = null; S.moves = []; }
   save(); ui.compTab = 'overzicht'; render(); toast('Voorbereiding gestart. Doe je eerste check-in deze week.');
 };
@@ -4586,7 +4590,7 @@ A.syncToComp = () => { const c = S.comp, d = S.milestone.date;
   if (diffDays(today(), d) < 56) { closeModal(); S.milestone.date = c.date; save(); render(); toast('Een voorbereiding heeft minstens 8 weken nodig. Je doeldatum is teruggezet.'); return; }
   c.date = d; c.prepWeeks = clamp(c.prepWeeks, 8, Math.min(30, Math.ceil(diffDays(today(), d) / 7))); save(); closeModal(); render(); toast('Wedstrijd bijgewerkt naar ' + fmtL(d) + '.'); };
 A.syncGoalBack = () => { S.milestone.date = S.comp.date; S.milestone.name = CLASSES[S.comp.cls].n + ' wedstrijd'; save(); closeModal(); render(); toast('Je doel is teruggezet naar de wedstrijddatum.'); };
-A.syncToGoal = () => { const c = S.comp; S.milestone.type = 'wedstrijd'; S.milestone.date = c.date; S.milestone.name = CLASSES[c.cls].n + ' wedstrijd'; S.milestone.enabled = true; save(); closeModal(); render(); toast('Doel bijgewerkt.'); };
+A.syncToGoal = () => { const c = S.comp; S.milestone.disc = 'bb'; S.milestone.type = 'wedstrijd'; S.milestone.date = c.date; S.milestone.name = CLASSES[c.cls].n + ' wedstrijd'; S.milestone.enabled = true; save(); closeModal(); render(); toast('Doel bijgewerkt.'); };
 A.syncGoalWedstrijd = () => { S.milestone.type = 'wedstrijd'; save(); closeModal(); render(); toast('Doel teruggezet naar wedstrijd.'); };
 A.syncEndComp = () => { A.compStop(); };
 function syncBanner() {
@@ -4738,14 +4742,14 @@ A.dwizDays = d => { ui.dwiz.days = +d.v; render(); };
 function dwizView() {
   const w = ui.dwiz, id = w.what;
   const q1 = `<div class="f"><span>1. Wat wil je vooral?</span><div class="dwiz-opts">${DWIZ_WHAT.map(([v, l, d]) => `<button type="button" class="dwiz-opt ${id === v ? 'on' : ''}" data-a="dwizWhat" data-v="${v}"><b>${esc(l)}</b><small>${esc(d)}</small></button>`).join('')}</div></div>`;
-  if (!id) return `<section><button class="btn ghost sm" data-a="dwizClose">‹ Disciplines</button><h1>Laat de app kiezen</h1>${q1}</section>`;
+  if (!id) return `<section><button class="btn ghost sm" data-a="dwizClose">‹ Mijn doel</button><h1>Laat de app kiezen</h1>${q1}</section>`;
   const q2 = id === 'bb' ? '' : `<div class="f"><span>2. Hoeveel ervaring heb je hiermee?</span><div class="chips">${[['new', 'Ik begin, nog weinig ervaring'], ['reg', 'Ik doe dit al regelmatig']].map(([v, l]) => `<label class="chip"><input type="radio" name="exp" value="${v}" ${w.exp === v ? 'checked' : ''} data-a="dwizExp" data-v="${v}"><span>${l}</span></label>`).join('')}</div></div>`;
   const needExp = id !== 'bb' && !w.exp;
   const [dmn, dmx] = DLIM[id] || [2, 5], dayOpts = Array.from({ length: dmx - dmn + 1 }, (_, k) => dmn + k);
   const q3 = !needExp ? `<div class="f"><span>${id === 'bb' ? '2' : '3'}. Hoeveel dagen per week kun je trainen?</span><div class="chips">${dayOpts
     .map(n => `<label class="chip"><input type="radio" name="days" value="${n}" ${w.days === n ? 'checked' : ''} data-a="dwizDays" data-v="${n}"><span>${n}</span></label>`).join('')}</div></div>` : '';
   const ready = id && (id === 'bb' || w.exp) && (id === 'bb' || w.days);
-  return `<section><button class="btn ghost sm" data-a="dwizClose">‹ Disciplines</button><h1>Laat de app kiezen</h1>${q1}${q2}${q3}
+  return `<section><button class="btn ghost sm" data-a="dwizClose">‹ Mijn doel</button><h1>Laat de app kiezen</h1>${q1}${q2}${q3}
    ${ready ? `<div class="btns"><button class="btn" data-a="dwizGo">Stel mijn schema voor</button></div>` : ''}</section>`;
 }
 A.dwizGo = () => {
@@ -4754,7 +4758,7 @@ A.dwizGo = () => {
   const n = w.days, o = discDefaults(id);
   o.level = w.exp; o.days = suggestDays(n);
   if (id === 'run') o.goal = w.exp === 'new' ? 'c30' : 'k5';
-  ui.dsetup = o; ui.disc = id; ui.dwiz = null;
+  o.wiz = true; ui.dsetup = o; ui.disc = id; ui.dwiz = null;
   if (route !== 'sport') { go('sport'); } else render();
   window.scrollTo(0, 0);
   toast('Op basis van je antwoorden hebben we dit voorgesteld. Pas het gerust aan voor je start.');
@@ -4900,6 +4904,39 @@ function activeDisc() {
   return out;
 }
 const nameOf = id => id === 'bb' ? 'Bodybuilding' : DISC[id].name;
+/* --- discipline = hoofddoel: het hoofddoel stuurt het basisplan (profile.goal) --- */
+const activeMainDisc = () => { const a = activeDisc(); return a.find(x => x.role === 'main') || null; };
+/* afvallen en bodybuilding laten je eigen profieldoel staan (calorieën blijven jouw keuze) */
+function goalForDisc(id) {
+  return { run: 'conditie', hx: 'conditie', pl: 'kracht' }[id] || null;
+}
+/* zet profile.goal op het doel van de nieuwe hoofddiscipline; logs, swaps en schema-keuze blijven staan */
+function applyMainGoal(id, sub) {
+  const p = S.profile, g = goalForDisc(id, sub); if (!p || !g || p.goal === g) return null;
+  p.goal = g; S.macroOverride = null;
+  if ((p.program || 'auto') === 'auto') S.plan = buildPlan(p);
+  return g;
+}
+/* --- mijlpaal hangt aan de hoofddiscipline als die een wedstrijddatum heeft --- */
+const msNameFor = (id, sub) => id === 'run' ? 'Wedstrijd ' + ((RUNG[sub] || RUNG.k5).n).toLowerCase() : id === 'pl' ? 'Powerlifting-wedstrijd' : id === 'hx' ? 'Hyrox-wedstrijd' : id === 'bb' && S.comp ? CLASSES[S.comp.cls].n + ' wedstrijd' : 'Wedstrijd';
+function msLinked() {
+  const m = S.milestone; if (!m || !m.disc) return null;
+  if (m.disc === 'bb') return S.comp && S.comp.active && S.comp.date ? { id: 'bb', date: S.comp.date } : null;
+  const dc = D()[m.disc]; return dc && dc.date && dWeek(dc, today()) <= dc.weeks ? { id: m.disc, date: dc.date } : null;
+}
+function linkMilestone(id, date, name) {
+  const m = S.milestone, wasW = m.type === 'wedstrijd';
+  Object.assign(m, { enabled: true, type: 'wedstrijd', name, date, disc: id });
+  if (!wasW) { m.items = null; m.checks = {}; }
+}
+/* eigen mijlpaal met een andere datum wordt niet stilletjes overschreven */
+function offerMilestone(id, date, name) {
+  const m = S.milestone;
+  if (!m.date || m.date === date || msLinked() || m.disc === id || m.enabled === false) { linkMilestone(id, date, name); return true; }
+  modal(`<h3>Je doel koppelen aan ${esc(nameOf(id))}?</h3><p>Je doel staat nu op “${esc(m.name)}” met datum ${fmtL(m.date)}. ${esc(nameOf(id))} heeft als wedstrijddatum <b>${fmtL(date)}</b>.</p><p class="sub">Koppel je ze, dan telt je doel af naar de wedstrijd en volgt het de discipline.</p><div class="btns"><button class="btn" data-a="msLinkDo" data-id="${id}" data-date="${date}" data-n="${esc(name)}">Ja, koppel mijn doel</button><button class="btn ghost" data-a="close">Nee, houd mijn eigen doel</button></div>`);
+  return false;
+}
+A.msLinkDo = d => { linkMilestone(d.id, d.date, d.n); save(); closeModal(); render(); toast('Je doel volgt nu ' + nameOf(d.id) + '.'); };
 function compatWith(nw) {
   return activeDisc().filter(o => o.id !== nw.id).map(o => {
     let [lv, msg] = pairLevel(nw, o);
@@ -4943,13 +4980,6 @@ function discCard(id, name, blurb, status, active, act) {
    <span class="dtop"><span class="dic"><svg viewBox="0 0 24 24" aria-hidden="true">${ic}</svg></span>${active ? '<span class="dlive">Actief</span>' : ''}</span>
    <span class="dbody"><small class="dtag">${tag}</small><b class="dname">${esc(name)}</b><span class="dblurb">${esc(blurb)}</span><span class="dstat">${esc(status)}</span><span class="dgo">${active ? 'Open' : 'Start'} <i>›</i></span></span></button>`;
 }
-function discHub() {
-  const c = S.comp && S.comp.active;
-  return `<section><h1>Disciplines</h1>${activeDisc().length || (S.comp && S.comp.active) ? weekLoad() : ''}${hubCompat()}
-  <div class="dcards">${Object.entries(DISC).map(([id, d]) => discCard(id, d.name, d.blurb, discStatus(id), !!D()[id], 'discGo')).join('')}
-   ${discCard('bb', 'Bodybuilding', 'Voorbereiding op een wedstrijd met fases, peak week, check-ins en posing.', c ? 'Actief · ' + Math.max(0, Math.ceil(diffDays(today(), S.comp.date) / 7)) + ' weken tot de show' : 'Niet gestart', !!c, 'discBB')}</div>
-  <small class="fine">Algemene schema’s, geen persoonlijke begeleiding. Bij klachten eerst naar je huisarts.</small></section>`;
-}
 function hubCompat() {
   const act = activeDisc(); if (act.length < 2) return '';
   const rows = []; act.forEach((a, i) => act.slice(i + 1).forEach(b => { const [lv, msg] = pairLevel(a, b), eff = lv === 2 && (a.role === 'support' || b.role === 'support') ? 1 : lv; if (eff) rows.push(`<div class="note ${eff >= 2 ? 'warn' : ''}"><b>${esc(nameOf(a.id))} + ${esc(nameOf(b.id))}: ${LV[eff]}</b><br>${esc(msg)}</div>`); }));
@@ -4987,10 +5017,20 @@ function discSetup(id) {
   const cl = compatWith(nwd), later = cl.filter(x => x.lv >= 2).sort((a, b) => b.o.end.localeCompare(a.o.end))[0];
   const rolePick = others.length ? `<div class="f"><span>Rol van deze discipline</span><div class="chips">${[['main', 'Hoofddoel'], ['support', 'Ondersteunend']].map(([k, l]) => `<label class="chip"><input type="radio" name="role" value="${k}" data-c="dsf" ${o.role === k ? 'checked' : ''}><span>${l}</span></label>`).join('')}</div><small>Het hoofddoel is de piek waar je naartoe werkt. Een ondersteunende discipline krijgt een lichter schema: korter, rustiger en minder sets.</small></div>` : '';
   const bmi = id === 'beg' && o.goal === 'afvallen' && S.profile && S.profile.weight && S.profile.height ? S.profile.weight / Math.pow(S.profile.height / 100, 2) : null;
-  return `<section><button class="btn ghost sm" data-a="discBack">‹ Disciplines</button><p class="eyebrow">Nieuwe discipline</p><h1>${DISC[id].name}</h1>${intro}
-  ${compatCard(cl, later && later.o)}<form data-submit="discStart" class="card"><h3>Instellingen</h3>${fields}${rolePick}${bmi && bmi < 20 ? '<div class="note warn">Je BMI ligt laag. Afvallen is dan waarschijnlijk niet nodig. Kies liever “Fitter worden”, of bespreek dit met je huisarts of diëtist.</div>' : ''}
+  return `<section><button class="btn ghost sm" data-a="discBack">‹ Mijn doel</button><p class="eyebrow">Nieuwe discipline</p><h1>${DISC[id].name}</h1>${intro}
+  ${compatCard(cl, later && later.o)}${mainPreview(o, later)}<form data-submit="discStart" class="card"><h3>Instellingen</h3>${fields}${rolePick}${bmi && bmi < 20 ? '<div class="note warn">Je BMI ligt laag. Afvallen is dan waarschijnlijk niet nodig. Kies liever “Fitter worden”, of bespreek dit met je huisarts of diëtist.</div>' : ''}
    <div class="f"><span>Trainingsdagen (${mn} tot ${mx})</span><div class="chips">${DAYS.map((d, i) => `<label class="chip"><input type="checkbox" data-c="dday" value="${i}" ${o.days.includes(i) ? 'checked' : ''}><span>${d}</span></label>`).join('')}</div><small>Voorgesteld op basis van de dagen die nog het rustigst zijn in je weekplan. Pas aan zoals het jou past.</small></div>
    <div class="btns"><button class="btn">${cl.some(x => x.lv >= 2) ? 'Toch starten' : 'Start deze discipline'}</button><button type="button" class="btn ghost" data-a="discBack">Annuleren</button></div></form></section>`;
+}
+/* voorstel tonen vóór de start: wat de hoofddiscipline ook instelt (basisplan + mijlpaal) */
+function mainPreview(o, later) {
+  if ((o.role || 'main') !== 'main' || (later && o.later)) return '';
+  const p = S.profile, g = goalForDisc(o.id, o.goal), m = S.milestone, rows = [];
+  if (p && !g) rows.push(`<li>Basisplan: blijft op <b>${esc((GOALS[p.goal] || 'je eigen doel').toLowerCase())}</b>. Dit pas je zelf aan onder Mijn doel.</li>`);
+  if (p && g) rows.push(p.goal === g ? `<li>Basisplan: blijft op <b>${esc(GOALS[g].toLowerCase())}</b>.</li>` : `<li>Basisplan: van ${esc((GOALS[p.goal] || 'geen doel').toLowerCase())} naar <b>${esc(GOALS[g].toLowerCase())}</b>. Je calorieën en schema volgen dit doel.</li>`);
+  if (o.date) rows.push(!m.date || m.date === o.date || msLinked() || m.enabled === false ? `<li>Mijn doel: telt af naar <b>${esc(msNameFor(o.id, o.goal))}</b> op ${fmtL(o.date)}.</li>` : `<li>Mijn doel: je hebt al “${esc(m.name)}” op ${fmtL(m.date)}. Na de start vraagt de app of je dat wilt koppelen aan deze wedstrijd.</li>`);
+  else rows.push(`<li>Mijn doel: geen wedstrijddatum, dus je doel blijft zoals het is.${o.id === 'beg' ? '' : ' Vul hieronder een datum in om af te tellen.'}</li>`);
+  return `<div class="card quiet"><h3>${ui.dsetup && ui.dsetup.wiz ? 'Voorstel van de app' : 'Dit wordt je hoofddoel'}</h3><ul class="plain">${rows.join('')}</ul><small>Klopt iets niet? Pas het hieronder aan. Er verandert pas iets als je op start drukt.</small></div>`;
 }
 C.dsf = el => { const o = ui.dsetup; if (!o) return; if (el.name.startsWith('orm_')) o.orm[el.name.slice(4)] = el.value; else o[el.name] = el.value; if (['goal', 'level', 'role', 'date'].includes(el.name)) render(); };
 C.dday = el => { const o = ui.dsetup || ui.dedit; if (!o) return; const v = +el.value, i = o.days.indexOf(v); if (el.checked && i < 0) o.days.push(v); if (!el.checked && i >= 0) o.days.splice(i, 1); };
@@ -5010,7 +5050,9 @@ function discBegin() {
   const wkFrom = d => Math.floor(diffDays(addDays(start, -wdOf(start)), d) / 7) + 1, def = id === 'beg' ? 12 : id === 'run' ? g.def : 12, wk = o.date && id !== 'beg' ? wkFrom(o.date) : def, W = clamp(wk, 4, id === 'run' ? 30 : 24);
   if (o.date && o.date <= start) { toast('Je wedstrijd valt voor de startdatum. Pas de datum aan of start nu.'); return; }
   const dc = { id, v: Date.now(), start, days: [...o.days].sort((a, b) => a - b), weeks: W, goal: o.goal, level: o.level, date: o.date || null, orm: { ...o.orm }, target: o.target, baseSteps: o.baseSteps, short: !!(g && o.date && wk < g.min), role };
-  D()[id] = dc; save(); ui.dsetup = null; ui.dtab = 'overzicht'; render(); window.scrollTo(0, 0); toast(DISC[id].name + (later ? ' start na je andere discipline.' : ' is toegevoegd aan je weekplan.'));
+  D()[id] = dc; const ng = role === 'main' && !later ? applyMainGoal(id, o.goal) : null;
+  if (role === 'main' && dc.date) offerMilestone(id, dc.date, msNameFor(id, o.goal));
+  save(); ui.dsetup = null; ui.dtab = 'overzicht'; render(); window.scrollTo(0, 0); toast(DISC[id].name + (later ? ' start na je andere discipline.' : ' is toegevoegd aan je weekplan.') + (ng ? ' Je basisplan stuurt nu op: ' + GOALS[ng].toLowerCase() + '.' : ''));
 }
 
 /* --- hoofdstuk --- */
@@ -5023,7 +5065,7 @@ function discChapter(id) {
   const dc = D()[id], w = dWeek(dc, today()), t = ui.dtab, tl = [['overzicht', 'Overzicht'], ['schema', 'Schema']];
   if (id === 'pl') tl.push(['wedstrijd', 'Wedstrijd']); if (id === 'hx') tl.push(['sims', 'Simulaties']); if (id === 'beg') tl.push(['doelen', 'Weekdoelen'], ['leren', 'Leren']); tl.push(['instel', 'Instellingen']);
   const tt = tl.some(x => x[0] === t) ? t : 'overzicht', body = ({ overzicht: dOverview, schema: dSchema, wedstrijd: dPl, sims: dHx, doelen: dBegGoals, leren: dBegLearn, instel: dSettings })[tt](dc, w);
-  return `<section><button class="btn ghost sm" data-a="discBack">‹ Disciplines</button><p class="eyebrow">${discStatus(id)}</p><h1>${DISC[id].name}</h1>${tabs(tt, tl, 'discTab')}${body}</section>`;
+  return `<section><button class="btn ghost sm" data-a="discBack">‹ Mijn doel</button><p class="eyebrow">${discStatus(id)}</p><h1>${DISC[id].name}</h1>${tabs(tt, tl, 'discTab')}${body}</section>`;
 }
 function sessLine(dc, k, i, s) { const date = addDays(dMon(dc), (k - 1) * 7 + dSorted(dc)[i]), key = `d:${dc.id}:${k}:${i}`, done = isDone(date, key); return { date, key, done }; }
 function dOverview(dc, w) {
@@ -5054,7 +5096,7 @@ function dSettings(dc) {
   <div class="card"><h3>Opnieuw beginnen</h3><p class="sub">Reset alleen ${esc(DISC[dc.id].name)}. Andere disciplines, je krachtschema en je voeding blijven zoals ze zijn.</p><button class="btn danger sm" data-a="discResetAsk" data-id="${dc.id}">Reset deze discipline</button></div>`;
 }
 F.discDays = () => { const o = ui.dedit, dc = D()[o.id], [mn, mx] = DLIM[o.id]; if (o.days.length < mn || o.days.length > mx) { toast(`Kies ${mn} tot ${mx} dagen.`); return; } dc.days = [...o.days].sort((a, b) => a - b); dc.v = Date.now(); ui.dedit = null; save(); render(); toast('Trainingsdagen aangepast.'); };
-A.discRole = d => { const dc = D()[d.id]; dc.role = d.r; dc.v = Date.now(); const c = compatWith({ id: dc.id, role: dc.role, goal: dc.goal, peak: dEnd(dc) }); save(); render(); toast(c.some(x => x.lv >= 2) ? 'Rol aangepast. Let op: deze combinatie blijft zwaar.' : 'Rol aangepast. Het schema is bijgewerkt.'); };
+A.discRole = d => { const dc = D()[d.id]; dc.role = d.r; dc.v = Date.now(); const c = compatWith({ id: dc.id, role: dc.role, goal: dc.goal, peak: dEnd(dc) }), ng = d.r === 'main' ? applyMainGoal(dc.id, dc.goal) : null; save(); render(); toast((c.some(x => x.lv >= 2) ? 'Rol aangepast. Let op: deze combinatie blijft zwaar.' : 'Rol aangepast. Het schema is bijgewerkt.') + (ng ? ' Je basisplan stuurt nu op: ' + GOALS[ng].toLowerCase() + '.' : '')); };
 A.discStop = d => modal(`<h3>${DISC[d.id].name} stoppen?</h3><p>Het schema verdwijnt uit je weekplan. Je logs blijven bewaard.</p><div class="btns end"><button class="btn danger" data-a="discStopDo" data-id="${d.id}">Ja, stop</button><button class="btn ghost" data-a="close">Annuleren</button></div>`);
 A.discResetAsk = d => modal(`<h3>${esc(DISC[d.id].name)} resetten?</h3><p>Kies wat je wilt bewaren. Dit raakt alleen deze discipline.</p><div class="btns col"><button class="btn" data-a="discResetDo" data-id="${d.id}" data-logs="keep">Schema opnieuw, logs bewaren</button><button class="btn danger" data-a="discResetDo" data-id="${d.id}" data-logs="wipe">Alles wissen, ook je logs</button><button class="btn ghost" data-a="close">Annuleren</button></div>`);
 A.discResetDo = d => { const pre = 'd:' + d.id + ':'; delete D()[d.id];
@@ -5108,6 +5150,10 @@ function dBegLearn() {
 /* ===== Doelen: één doel voor je lichaam + optioneel één sport ===== */
 const GOAL_ORDER = ['combi', 'spier', 'vet', 'kracht', 'conditie', 'bewegen'];
 const GOAL_SUB = { combi: 'Strakker en sterker', spier: 'Meer spiermassa', vet: 'Lager vetpercentage', kracht: 'Zwaarder tillen', conditie: 'Langer en sneller', bewegen: 'Fitter en gezonder' };
+function msLinkedNote() {
+  const l = msLinked(); if (!l) return '';
+  return `<p class="sub">Je einddatum volgt <b>${esc(nameOf(l.id))}</b>: ${fmtL(l.date)}. Wijzig de datum bij die discipline.</p><div class="btns"><button class="btn ghost sm" data-a="${l.id === 'bb' ? 'discBB' : 'discGo'}" data-id="${l.id}">Open ${esc(nameOf(l.id))}</button></div>`;
+}
 function goalsPage() {
   const p = S.profile, m = S.milestone, x = planParts(), dleft = m.enabled !== false && m.date ? diffDays(today(), m.date) : null, items = msItems(), done = items.filter(i => i.done).length;
   const act = activeDisc(), sport = act.find(a => a.role === 'main') || act[0];
@@ -5118,24 +5164,28 @@ function goalsPage() {
     <div class="btns"><button class="btn ghost sm" data-a="editProfile" data-s="2">Doel wijzigen</button></div></div>`;
   const form = `<form data-submit="milestone" class="stack"><label class="f">Naam<input name="name" value="${esc(m.name)}" maxlength="40" placeholder="Bijvoorbeeld zomer, fotoshoot of wedstrijd"></label><label class="f">Einddatum<input name="date" type="date" value="${m.date || ''}" min="${today()}"></label><input type="hidden" name="type" value="${esc(m.type || 'eigen')}"><input type="hidden" name="note" value="${esc(m.note || '')}"><input type="hidden" name="enabled" value="1"><button class="btn sm">Opslaan</button></form>`;
   const check = `<ul class="checks">${items.map(i => `<li><label class="tick wide"><input type="checkbox" data-c="msCheck" data-k="${i.id}" ${i.done ? 'checked' : ''}><span></span><em>${esc(i.t)}</em></label><button class="link" data-a="msDel" data-k="${i.id}" aria-label="Verwijder: ${esc(i.t)}">Verwijder</button></li>`).join('')}</ul><form class="inline" data-submit="msAdd"><input name="t" maxlength="120" placeholder="Nieuw punt" aria-label="Nieuw punt"><button class="btn sm">Toevoegen</button></form>`;
-  const c = S.comp && S.comp.active, ids = ['run', 'pl', 'hx', 'beg'];
-  const cards = ids.map(id => discCard(id, DISC[id].name, DISC[id].blurb, discStatus(id), !!D()[id], 'discGo')).join('') + discCard('bb', 'Bodybuilding', 'Voorbereiding op een wedstrijd met fases, peak week, check-ins en posing.', c ? 'Actief · ' + Math.max(0, Math.ceil(diffDays(today(), S.comp.date) / 7)) + ' weken tot de show' : 'Niet gestart', !!c, 'discBB');
-  return `<section><h1>Doelen</h1>${syncBanner()}${hero}
-   ${acc('Einddatum', m.date ? fmtDate(m.date, { day: 'numeric', month: 'short', year: 'numeric' }) : 'Geen', form)}
+  return `<section><button class="btn ghost sm" data-a="gotoDisc">‹ Mijn doel</button><h1>Doel en checklist</h1>${syncBanner()}${hero}
+   ${acc('Einddatum', m.date ? fmtDate(m.date, { day: 'numeric', month: 'short', year: 'numeric' }) : 'Geen', msLinked() ? msLinkedNote() : form)}
    ${acc('Checklist', done + ' van ' + items.length, check)}
-   <div class="card quiet"><div class="row"><div><b>Sport of wedstrijd</b><small>Hardlopen, powerlifting, Hyrox of bodybuilding</small></div><button class="btn sm" data-a="gotoDisc">Disciplines</button></div></div>
    <small class="fine">Algemene schema’s, geen persoonlijke begeleiding. Bij klachten eerst naar je huisarts.</small></section>`;
+}
+function goalSummary() {
+  const p = S.profile, m = S.milestone, md = activeMainDisc(), items = msItems(), done = items.filter(i => i.done).length, dl = m.enabled !== false && m.date ? diffDays(today(), m.date) : null;
+  return `<div class="card goalhero"><span class="eyebrow">Jouw doel</span><h2>${esc(md ? nameOf(md.id) : GOALS[p.goal] || 'Nog geen doel')}</h2>
+   ${md ? `<p class="gsport">Basisplan: <b>${esc((GOALS[p.goal] || '').toLowerCase())}</b></p>` : ''}
+   <div class="gstats">${dl != null && dl >= 0 ? `<div><b>${dl}</b><span>dagen tot ${esc(m.name)}</span></div>` : ''}<div><b>${done}/${items.length}</b><span>checklist</span></div></div>
+   <div class="btns"><button class="btn ghost sm" data-a="go" data-r="disciplines">Doel en checklist</button></div></div>`;
 }
 function sportPage() {
   const act = activeDisc(), c = S.comp && S.comp.active, ids = ['run', 'pl', 'hx', 'beg'];
   const cards = ids.map(id => discCard(id, DISC[id].name, DISC[id].blurb, discStatus(id), !!D()[id], 'discGo')).join('') + discCard('bb', 'Bodybuilding', 'Voorbereiding op een wedstrijd met fases, peak week, check-ins en posing.', c ? 'Actief · ' + Math.max(0, Math.ceil(diffDays(today(), S.comp.date) / 7)) + ' weken tot de show' : 'Niet gestart', !!c, 'discBB');
-  return `<section><h1>Disciplines</h1>${syncBanner()}<p class="sub">Train je voor een sport of wedstrijd? Kies hem hier. Je doel bij Plan blijft je voeding en krachttraining sturen.</p>${discWizCard()}${act.length || c ? weekLoad() : ''}${hubCompat()}<div class="dcards">${cards}</div>
+  return `<section><h1>Mijn doel</h1>${syncBanner()}${goalSummary()}<p class="sub">Je hoofddiscipline is je doel. Kies er een, of laat de app kiezen.</p>${discWizCard()}${act.length || c ? weekLoad() : ''}${hubCompat()}<div class="dcards">${cards}</div>
    <small class="fine">Algemene schema’s, geen persoonlijke begeleiding. Bij klachten eerst naar je huisarts.</small></section>`;
 }
 function vDisc() {
   if (ui.dwiz) return dwizView();
   const id = ui.disc;
-  if (id === 'bb') return `<section><button class="btn ghost sm" data-a="discBack">‹ Disciplines</button><p class="eyebrow">Bodybuilding</p><h1>Wedstrijd</h1>${syncBanner()}${vComp()}</section>`;
+  if (id === 'bb') return `<section><button class="btn ghost sm" data-a="discBack">‹ Mijn doel</button><p class="eyebrow">Bodybuilding</p><h1>Wedstrijd</h1>${syncBanner()}${vComp()}</section>`;
   if (id && DISC[id]) return D()[id] ? discChapter(id) : discSetup(id);
   return sportPage();
 }
@@ -5446,7 +5496,7 @@ function vMilestone() {
 }
 function vGoalBasic() {
   const m = S.milestone, d = m.date ? diffDays(today(), m.date) : null, items = msItems();
-  const form = `<form data-submit="milestone" class="grid2"><label class="f">Soort doel<select name="type">${Object.entries(GOAL_TYPES).map(([k, l]) => `<option value="${k}" ${m.type === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label><label class="f">Naam<input name="name" value="${esc(m.name)}" maxlength="40" placeholder="Bijvoorbeeld Hyrox, vakantie of fitter worden"></label><label class="f">Datum (optioneel)<input name="date" type="date" value="${m.date || ''}"></label><label class="f span2">Notitie<textarea name="note" rows="2" maxlength="300" placeholder="Waarom is dit je doel?">${esc(m.note || '')}</textarea></label><label class="chip span2"><input type="checkbox" name="enabled" ${m.enabled ? 'checked' : ''}><span>Doel tonen op Home</span></label><button class="btn sm span2">Opslaan</button></form>`;
+  const lk = msLinked(), form = lk ? `<form data-submit="milestone" class="grid2"><div class="span2">${msLinkedNote()}</div><input type="hidden" name="type" value="${esc(m.type)}"><input type="hidden" name="name" value="${esc(m.name)}"><input type="hidden" name="date" value="${m.date || ''}"><label class="f span2">Notitie<textarea name="note" rows="2" maxlength="300" placeholder="Waarom is dit je doel?">${esc(m.note || '')}</textarea></label><label class="chip span2"><input type="checkbox" name="enabled" ${m.enabled ? 'checked' : ''}><span>Doel tonen op Home</span></label><button class="btn sm span2">Opslaan</button></form>` : `<form data-submit="milestone" class="grid2"><label class="f">Soort doel<select name="type">${Object.entries(GOAL_TYPES).map(([k, l]) => `<option value="${k}" ${m.type === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label><label class="f">Naam<input name="name" value="${esc(m.name)}" maxlength="40" placeholder="Bijvoorbeeld Hyrox, vakantie of fitter worden"></label><label class="f">Datum (optioneel)<input name="date" type="date" value="${m.date || ''}"></label><label class="f span2">Notitie<textarea name="note" rows="2" maxlength="300" placeholder="Waarom is dit je doel?">${esc(m.note || '')}</textarea></label><label class="chip span2"><input type="checkbox" name="enabled" ${m.enabled ? 'checked' : ''}><span>Doel tonen op Home</span></label><button class="btn sm span2">Opslaan</button></form>`;
   const wk = d != null ? Math.floor(d / 7) : null, done = items.filter(i => i.done).length;
   return `<section><p class="eyebrow">${GOAL_TYPES[m.type] || 'Eigen doel'}</p><h1>${esc(m.name)}</h1>
   <div class="card hero">${d == null ? '<p class="big">Geen datum gekozen</p><small>Een doel zonder datum is ook prima.</small>' : d < 0 ? '<p class="big">De datum is voorbij</p>' : `<p class="count"><b>${d}</b> dagen</p><small>${wk > 0 ? wk + ' weken en ' + (d % 7) + ' dagen' : 'Minder dan een week'}</small>`}
@@ -5457,7 +5507,7 @@ function vGoalBasic() {
   <div class="card"><h3>Instellingen</h3>${form}</div>
 </section>`;
 }
-F.milestone = (f, fd) => { const m = S.milestone, nt = fd.get('type') || 'eigen', changed = nt !== m.type, oldDate = m.date; m.type = nt; m.name = (fd.get('name') || '').trim() || 'Mijn doel'; m.date = fd.get('date') || null; m.note = (fd.get('note') || '').trim(); m.enabled = !!fd.get('enabled');
+F.milestone = (f, fd) => { if (!msLinked()) delete S.milestone.disc; const m = S.milestone, nt = fd.get('type') || 'eigen', changed = nt !== m.type, oldDate = m.date; m.type = nt; m.name = (fd.get('name') || '').trim() || 'Mijn doel'; m.date = fd.get('date') || null; m.note = (fd.get('note') || '').trim(); m.enabled = !!fd.get('enabled');
   if (changed && (!m.items || m.items.every(i => !i.done))) m.items = null; save(); render(); toast('Opgeslagen.');
   const c = S.comp; if (c && c.active && (m.date !== oldDate || changed)) askSyncFromGoal(); };
 C.msCheck = el => { const i = msItems().find(x => x.id === el.dataset.k); if (i) i.done = el.checked; save(); render(); };
@@ -5538,6 +5588,13 @@ document.addEventListener('error', e => {
 }, true);
 document.addEventListener('load', e => { const i = e.target; if (i && i.classList && i.classList.contains('rimg')) i.classList.add('ld'); }, true);
 S = loadState();
+/* eenmalig (discipline = hoofddoel): niets overschrijven, alleen een al gelijke mijlpaal als gekoppeld markeren */
+try { if (S && !(S.mig && S.mig.discGoal)) {
+  if (!S.milestone) S.milestone = defaultState().milestone;
+  const m = S.milestone, md = activeMainDisc();
+  if (!m.disc && m.date && md && md.end === m.date && (md.id === 'bb' || (D()[md.id] && D()[md.id].date))) m.disc = md.id;
+  S.mig = Object.assign({}, S.mig, { discGoal: 1 });
+} } catch (e) {}
 if (S && S.photos && S.photos.some(p => p.demo)) { S.photos = S.photos.filter(p => !p.demo); try { save(); } catch (e) {} }
 const THEMES = { dark: 'Donker', light: 'Licht', system: 'Auto' };
 const THEME_ICONS = {
