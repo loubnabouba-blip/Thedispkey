@@ -583,6 +583,19 @@ button.wl{font:inherit;color:inherit;width:100%}button.wl:disabled{cursor:defaul
 @media (hover:hover){.heart:hover{background:var(--surface2)}}
 .heart:active{transform:scale(.92)}
 .heart.on{color:var(--accent)}
+:root,:root[data-theme="dark"]{--fg1:#F2F5FF;--fg2:#8E9CC0;--fe:#C9F24D;--fbg:radial-gradient(120% 95% at 50% 0%,#1D2842 0%,#101728 72%);--fsh:.32}
+:root[data-theme="light"]{--fg1:#5F6F99;--fg2:#243050;--fe:#6F9300;--fbg:radial-gradient(120% 95% at 50% 0%,#FFFFFF 0%,#E1E9F7 85%);--fsh:.12}
+@media (prefers-color-scheme:light){:root:not([data-theme]){--fg1:#5F6F99;--fg2:#243050;--fe:#6F9300;--fbg:radial-gradient(120% 95% at 50% 0%,#FFFFFF 0%,#E1E9F7 85%);--fsh:.12}}
+svg.fgfx{display:block;width:100%;height:100%;background:var(--fbg);border-radius:inherit}
+svg.fgfx .fb{stroke:var(--fg2);stroke-linecap:round;fill:none}svg.fgfx .fb.hi{stroke:var(--fg1);opacity:.5}svg.fgfx .fb.far{opacity:.45}svg.fgfx .fb.hi.far{opacity:.2}
+svg.fgfx .fh{fill:var(--fg2)}svg.fgfx .fhh{fill:var(--fg1);opacity:.5}
+svg.fgfx .fsh{fill:#000;opacity:var(--fsh)}svg.fgfx .ffl{stroke:var(--fg2);opacity:.22;stroke-width:1.4}
+svg.fgfx .eq{stroke:var(--fe);stroke-width:2.2;fill:none;stroke-linecap:round}svg.fgfx .eq.wall{stroke:var(--fg2);opacity:.45;stroke-dasharray:3 3}
+svg.fgfx .eqf{fill:var(--fe)}svg.fgfx .eqb{stroke:var(--fe);stroke-width:5.6;stroke-linecap:round}
+.figbig{margin:var(--s2) 0 var(--s1);border-radius:var(--r);overflow:hidden;aspect-ratio:16/10}
+.exmedia .b2{display:none}
+@media (prefers-reduced-motion:no-preference){.focuscard .exmedia .b2{display:block;position:absolute;inset:0;opacity:0;animation:exfade 3.4s ease-in-out infinite}}
+@keyframes exfade{0%,28%{opacity:0}40%,72%{opacity:1}84%,100%{opacity:0}}
 .thumb{position:relative}
 .shopv .shophead{display:flex;align-items:center;gap:var(--s2);margin-bottom:var(--s1)}.shophead h2{margin:0;font-size:22px}
 .shopsticky{position:sticky;top:var(--shopTop,81px);z-index:20;margin:0 calc(-1*var(--gutter,16px));padding:var(--s1) var(--gutter,16px);background:linear-gradient(var(--bg) 85%,transparent)}
@@ -619,7 +632,7 @@ ul.exl li.exli{display:block;padding:0;border:0}
 .exmedia img{display:block;width:100%;height:100%;object-fit:cover}
 .exmedia::after{content:"";position:absolute;inset:0 0 0 auto;width:38%;background:linear-gradient(90deg,transparent,var(--surface));pointer-events:none}
 .exmedia.fig,.exmedia.ph{background:var(--surface2);color:var(--ink)}
-.exmedia.fig svg{width:100%;height:100%;background:none;border-radius:0}
+.exmedia.fig svg{width:100%;height:100%;border-radius:0}
 .exmedia.ph{color:var(--ink2)}
 .exmedia.ph svg{width:40px;height:40px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .exrow .extxt{display:grid;gap:4px;align-content:end;min-width:0;padding:var(--s2) var(--s2) 0 var(--s1)}
@@ -647,7 +660,7 @@ ul.exl li.exli{display:block;padding:0;border:0}
 .card.ex{padding:var(--s3)}
 .expics{display:grid;grid-template-columns:1fr 1fr;gap:var(--s1);margin:var(--s2) 0 var(--s1)}
 .expics img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:var(--r);background:#fff}
-.expics.figs svg{width:100%;height:auto;aspect-ratio:120/108;border-radius:var(--r);background:var(--surface2);color:var(--ink)}
+.expics.figs svg{width:100%;height:auto;aspect-ratio:120/108;border-radius:var(--r)}
 .expics .eq{stroke:var(--ink);stroke-width:2.2;fill:none;stroke-linecap:round}
 .expics .eq.wall{opacity:.5}
 .expics .eqf{fill:var(--ink)}
@@ -967,6 +980,7 @@ main p b,main p strong,.dialog p b,.dialog p strong,.note b,.note strong,ol.step
 .chipb svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .focuscard .exhead{grid-template-columns:minmax(0,1fr)!important}
 .focuscard .exhead .exmedia{grid-row:auto!important;width:auto!important;height:auto!important;aspect-ratio:16/9;margin:calc(var(--s3)*-1) calc(var(--s3)*-1) var(--s1);border-radius:var(--r) var(--r) 0 0!important;overflow:hidden;background:#fff}
+.focuscard .exhead .exmedia.fig{background:var(--fbg)}
 .focuscard .exhead .exmedia img{width:100%;height:100%;object-fit:contain}
 .focuscard .exhead .extxt,.focuscard .exhead .exrx{grid-column:1!important}
 .focuscard .link.title{font-stretch:78%!important;text-transform:uppercase;font-size:28px!important;line-height:1!important}
@@ -3793,27 +3807,53 @@ const FIGS = {
   bandpulldown: [[FJ({ e: [67, 8], w: [69, -6] }), j => fLn([68, -14], j.w) + fDot([68, -14])], [FJ({ e: [55, 32], w: [66, 24] }), j => fLn([68, -14], j.w) + fDot([68, -14])]],
   bandrow: [[FJ({ e: [74, 27], w: [88, 26] }), j => fLn([114, 26], j.w) + fDot([114, 26])], [FJ({ e: [50, 31], w: [64, 27] }), j => fLn([114, 26], j.w) + fDot([114, 26])]],
   bandcurl: [[FJ({ e: [61, 33], w: [62, 46] }), j => fLn([60, 80], j.w)], [FJ({ e: [61, 33], w: [69, 22] }), j => fLn([60, 80], j.w)]],
-  lateralband: [[FJ({ front: 1, s: [67, 21], k: [55, 61], f: [52, 80], e: [70, 33], w: [71, 45] }), j => fLn([52, 80], j.w) + fLn([68, 80], [49, 45])], [FJ({ front: 1, s: [67, 21], k: [55, 61], f: [52, 80], e: [84, 24], w: [100, 22] }), j => fLn([52, 80], j.w) + fLn([68, 80], [20, 22])]],
+  lateralband: [[FJ({ front: 1, s: [67, 21], k: [55, 61], f: [52, 80], e: [70, 33], w: [71, 45] }), j => fLn([52, 80], j.w) + fLn([68, 80], [120 - j.w[0], j.w[1]])], [FJ({ front: 1, s: [67, 21], k: [55, 61], f: [52, 80], e: [84, 24], w: [100, 22] }), j => fLn([52, 80], j.w) + fLn([68, 80], [120 - j.w[0], j.w[1]])]],
   lateralcable: [[FJ({ front: 1, one: 1, s: [67, 21], k: [55, 61], f: [52, 80], e: [70, 33], w: [71, 45] }), j => fLn([14, 86], j.w) + fDot([14, 86])], [FJ({ front: 1, one: 1, s: [67, 21], k: [55, 61], f: [52, 80], e: [84, 24], w: [100, 22] }), j => fLn([14, 86], j.w) + fDot([14, 86])]],
   pike: [[{ h: [41, 56], n: [46, 50], p: [68, 30], e: [40, 65], w: [35, 80], k: [82, 56], f: [96, 80] }, () => ''], [{ h: [53, 70], n: [50, 62], p: [68, 32], e: [42, 70], w: [35, 80], k: [82, 57], f: [96, 80] }, () => '']],
   bearcrawl: [[{ h: [90, 40], n: [80, 46], p: [42, 50], e: [82, 64], w: [84, 80], k: [54, 72], f: [30, 79] }, () => ''], [{ h: [90, 40], n: [80, 46], p: [42, 50], e: [92, 62], w: [98, 80], k: [64, 70], f: [40, 79] }, () => '']],
-  wallball: [[{ h: [60, 30], n: [55, 38], p: [46, 58], e: [63, 50], w: [71, 43], k: [68, 62], f: [58, 80] }, () => fBall([77, 42]) + fLn([112, -18], [112, 83], 'eq wall')], [FJ({ e: [66, 10], w: [68, -3] }), () => fBall([72, -11]) + fLn([112, -18], [112, 83], 'eq wall')]],
+  wallball: [[{ h: [60, 30], n: [55, 38], p: [46, 58], e: [63, 50], w: [71, 43], k: [68, 62], f: [58, 80] }, j => fBall([j.w[0] + 5, j.w[1] - 4]) + fLn([112, -18], [112, 83], 'eq wall')], [FJ({ e: [66, 10], w: [68, -3] }), j => fBall([j.w[0] + 5, j.w[1] - 4]) + fLn([112, -18], [112, 83], 'eq wall')]],
   thruster: [[{ h: [60, 30], n: [55, 38], p: [46, 58], e: [63, 50], w: [71, 43], k: [68, 62], f: [58, 80] }, j => fDb(j.w)], [FJ({ e: [66, 10], w: [66, -4] }), j => fDb(j.w)]],
-  burpeebj: [[{ h: [88, 44], n: [77, 50], p: [46, 60], e: [79, 66], w: [81, 80], k: [30, 68], f: [14, 77] }, () => ''], [{ h: [66, 6], n: [60, 16], p: [50, 38], e: [72, 20], w: [84, 19], k: [66, 48], f: [52, 56] }, () => '<line class="eq" stroke-dasharray="4 4" x1="20" y1="88" x2="100" y2="88"/>']],
+  burpeebj: [[{ h: [88, 44], n: [77, 50], p: [46, 60], e: [79, 66], w: [81, 80], k: [30, 68], f: [14, 77] }, () => ''], [{ h: [66, 6], n: [60, 16], p: [50, 38], e: [72, 20], w: [84, 19], k: [66, 48], f: [52, 56] }, () => '']],
   skierg: [[FJ({ e: [66, 8], w: [68, -6] }), j => fLn([88, -14], j.w) + fLn([88, -14], [88, 83], 'eq wall')], [{ h: [56, 24], n: [54, 32], p: [46, 48], e: [58, 44], w: [60, 56], k: [56, 64], f: [56, 80] }, j => fLn([88, -14], j.w) + fLn([88, -14], [88, 83], 'eq wall')]]
 };
-function figSvg(name, fr, i) {
-  const j = fr[0], L = (a, b) => `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"/>`, m = a => [120 - a[0], a[1]], s = j.s || j.n;
-  let l = L(j.n, j.p) + L(s, j.e) + L(j.e, j.w) + L(j.p, j.k) + L(j.k, j.f);
-  if (j.front) { l += L(s, m(s)) + L(j.p, m(j.k)) + L(m(j.k), m(j.f)); if (!j.one) l += L(m(s), m(j.e)) + L(m(j.e), m(j.w)); }
-  return `<svg viewBox="0 -18 120 108" role="img" aria-label="${esc(name)}: ${i ? 'eindstand' : 'beginstand'} (schematische tekening)"><line x1="4" y1="83" x2="116" y2="83" stroke="currentColor" opacity=".3" stroke-width="2"/><g fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">${l}</g><circle cx="${j.h[0]}" cy="${j.h[1]}" r="6" fill="currentColor"/>${fr[1](j)}</svg>`;
+/* oefeningfiguurtjes (eigen illustratie): afgeronde ledematen, vloerschaduw en een lus tussen begin- en eindstand */
+const figLp = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+function figMix(j0, j1, t) { const o = {}; ['h', 'n', 'p', 'e', 'w', 'k', 'f', 's'].forEach(k => { const a = j0[k], b = j1[k]; if (a && b) o[k] = figLp(a, b, t); else if (a || b) o[k] = a || b; }); if (j0.front) o.front = 1; if (j0.one) o.one = 1; return o; }
+const f1 = n => Math.round(n * 10) / 10;
+function figBody(j, eq) {
+  const mir = a => [120 - a[0], a[1]], sh = j.s || j.n, dir = (j.h[0] - j.p[0]) >= 0 ? 1 : -1, fr = !!j.front;
+  const ln = (a, b, w, far) => `<line class="fb${far ? ' far' : ''}" x1="${f1(a[0])}" y1="${f1(a[1])}" x2="${f1(b[0])}" y2="${f1(b[1])}" stroke-width="${w}"/><line class="fb hi${far ? ' far' : ''}" x1="${f1(a[0])}" y1="${f1(a[1])}" x2="${f1(b[0])}" y2="${f1(b[1])}" stroke-width="${f1(w * .4)}"/>`;
+  const foot = (f, side) => ln(f, [f[0] + (fr ? (f[0] >= 60 ? 1 : -1) : dir) * 6, f[1]], 5.4, side);
+  let o = `<ellipse class="fsh" cx="60" cy="83.6" rx="40" ry="2.6"/><line class="ffl" x1="6" y1="83" x2="114" y2="83"/>`;
+  if (fr) { o += ln(j.p, mir(j.k), 10.5, 1) + ln(mir(j.k), mir(j.f), 8.4, 1) + foot(mir(j.f), 1); if (!j.one) o += ln(mir(sh), mir(j.e), 7.4, 1) + ln(mir(j.e), mir(j.w), 6.4, 1); }
+  o += ln(j.p, j.k, 10.5) + ln(j.k, j.f, 8.4) + foot(j.f) + ln(j.n, j.p, 13);
+  if (fr) o += ln(sh, mir(sh), 9);
+  o += ln(sh, j.e, 7.4) + ln(j.e, j.w, 6.4) + (eq || '');
+  const hand = a => `<circle class="fh" cx="${f1(a[0])}" cy="${f1(a[1])}" r="3.3"/>`;
+  o += hand(j.w) + (fr && !j.one ? hand(mir(j.w)) : '');
+  return o + `<circle class="fh" cx="${f1(j.h[0])}" cy="${f1(j.h[1])}" r="7"/><circle class="fhh" cx="${f1(j.h[0] - 1.8)}" cy="${f1(j.h[1] - 2)}" r="2.8"/>`;
 }
+const figWrap = (label, inner, cls, data) => `<svg class="fgfx ${cls || ''}" ${data || ''} viewBox="0 -18 120 108" role="img" aria-label="${esc(label)}">${inner}</svg>`;
+const figFrame = (id, t) => { const [a, b] = FIGS[id], j = figMix(a[0], b[0], t); return figBody(j, a[1](j)); };
+function figSvg(name, fr, i) { const j = fr[0]; return figWrap(name + ': ' + (i ? 'eindstand' : 'beginstand') + ' (schematische tekening)', figBody(j, fr[1](j))); }
+const figAnim = id => figWrap(EX[id].name + ': schematische animatie van begin- naar eindstand', figFrame(id, 0), 'fanim', `data-f="${id}"`);
+/* lus: omhoog, even vast, rustig terug, even rust. Alleen in de trainingskaart en het oefeningvenster, niet in lijsten. */
+const FIG_CYCLE = 3400, FIG_SEL = '.focuscard svg.fanim, .figbig svg.fanim';
+const figEase = x => x < .5 ? 2 * x * x : 1 - Math.pow(2 - 2 * x, 2) / 2;
+const figT = ms => { const u = (ms % FIG_CYCLE) / FIG_CYCLE; return u < .36 ? figEase(u / .36) : u < .46 ? 1 : u < .86 ? 1 - figEase((u - .46) / .4) : 0; };
+let figRaf = 0, figLast = 0;
+function figTick(ms) {
+  const els = document.querySelectorAll(FIG_SEL); if (!els.length) { figRaf = 0; return; }
+  if (ms - figLast > 30) { figLast = ms; const t = figT(ms); els.forEach(sv => { if (FIGS[sv.dataset.f] && sv.getClientRects().length) sv.innerHTML = figFrame(sv.dataset.f, t); }); }
+  figRaf = requestAnimationFrame(figTick);
+}
+if (typeof MutationObserver !== 'undefined' && !matchMedia('(prefers-reduced-motion: reduce)').matches) { const mo = new MutationObserver(() => { if (!figRaf && document.querySelector(FIG_SEL)) figRaf = requestAnimationFrame(figTick); }); ['main', 'modal-root'].forEach(i => { const n = document.getElementById(i); if (n) mo.observe(n, { childList: true, subtree: true }); }); }
 function exPics(id) {
-  if (!EXIMG.has(id) && FIGS[id]) return `<div class="expics figs">${FIGS[id].map((f, i) => figSvg(EX[id].name, f, i)).join('')}</div><small class="expic-src">Schematische tekening (eigen illustratie).</small>`; return EXIMG.has(id) ? `<div class="expics"><img src="ex/${id}_0.webp" alt="${esc(EX[id].name)}: beginstand" loading="lazy" width="320" height="240"><img src="ex/${id}_1.webp" alt="${esc(EX[id].name)}: eindstand" loading="lazy" width="320" height="240"></div><small class="expic-src">Foto’s: free-exercise-db (publiek domein).</small>` : ''; }
+  if (!EXIMG.has(id) && FIGS[id]) return `<div class="figbig">${figAnim(id)}</div><div class="expics figs">${FIGS[id].map((f, i) => figSvg(EX[id].name, f, i)).join('')}</div><small class="expic-src">Animatie: begin- en eindstand in een lus. Schematisch, eigen illustratie.</small>`; return EXIMG.has(id) ? `<div class="expics"><img src="ex/${id}_0.webp" alt="${esc(EX[id].name)}: beginstand" loading="lazy" width="320" height="240"><img src="ex/${id}_1.webp" alt="${esc(EX[id].name)}: eindstand" loading="lazy" width="320" height="240"></div><small class="expic-src">Foto’s: free-exercise-db (publiek domein).</small>` : ''; }
 function exMedia(id) {
   const e = EX[id];
-  if (EXIMG.has(id)) return `<span class="exmedia" aria-hidden="true"><img src="ex/${id}_0.webp" alt="" loading="lazy" decoding="async"></span>`;
-  if (FIGS[id]) return `<span class="exmedia fig" aria-hidden="true">${figSvg(e.name, FIGS[id][0], 0)}</span>`;
+  if (EXIMG.has(id)) return `<span class="exmedia" aria-hidden="true"><img src="ex/${id}_0.webp" alt="" loading="lazy" decoding="async"><img class="b2" src="ex/${id}_1.webp" alt="" loading="lazy" decoding="async"></span>`;
+  if (FIGS[id]) return `<span class="exmedia fig" aria-hidden="true">${figAnim(id)}</span>`;
   return `<span class="exmedia ph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg></span>`;
 }
 function exLibList() {
