@@ -44,8 +44,8 @@ Disciplines (`discBegin()`) raakten tot nu toe geen van beide.
 
 - **Hoofddoel:** `activeMainDisc()` — de actieve discipline met rol `main`
   (bodybuilding-voorbereiding telt mee).
-- **Basisplan:** `discBegin()` en `F.compStart` zetten `S.profile.goal` via
-  `goalForDisc()` als de nieuwe discipline het hoofddoel is. Alle lezers hierboven
+- **Basisplan:** `discBegin()` zet `S.profile.goal` via
+  `goalForDisc()` als de nieuwe discipline het hoofddoel is (hardlopen en Hyrox → conditie, powerlifting → kracht). Afvallen en bodybuilding laten het eigen profieldoel staan. Alle lezers hierboven
   blijven `S.profile.goal` lezen; er hoeft dus niets anders om.
 - **Mijlpaal:** `discBegin()` koppelt een wedstrijddatum aan `S.milestone`
   (nieuw veld `disc`). Doelen-pagina toont het losse naam/datum-formulier alleen

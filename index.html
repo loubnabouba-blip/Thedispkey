@@ -4903,9 +4903,9 @@ function activeDisc() {
 const nameOf = id => id === 'bb' ? 'Bodybuilding' : DISC[id].name;
 /* --- discipline = hoofddoel: het hoofddoel stuurt het basisplan (profile.goal) --- */
 const activeMainDisc = () => { const a = activeDisc(); return a.find(x => x.role === 'main') || null; };
-function goalForDisc(id, sub) {
-  if (id === 'beg') return sub === 'afvallen' ? 'vet' : 'bewegen';
-  return { run: 'conditie', hx: 'conditie', pl: 'kracht', bb: 'spier' }[id] || null;
+/* afvallen en bodybuilding laten je eigen profieldoel staan (calorieën blijven jouw keuze) */
+function goalForDisc(id) {
+  return { run: 'conditie', hx: 'conditie', pl: 'kracht' }[id] || null;
 }
 /* zet profile.goal op het doel van de nieuwe hoofddiscipline; logs, swaps en schema-keuze blijven staan */
 function applyMainGoal(id, sub) {
@@ -5030,6 +5030,7 @@ function discSetup(id) {
 function mainPreview(o, later) {
   if ((o.role || 'main') !== 'main' || (later && o.later)) return '';
   const p = S.profile, g = goalForDisc(o.id, o.goal), m = S.milestone, rows = [];
+  if (p && !g) rows.push(`<li>Basisplan: blijft op <b>${esc((GOALS[p.goal] || 'je eigen doel').toLowerCase())}</b>. Dit pas je zelf aan onder Doelen.</li>`);
   if (p && g) rows.push(p.goal === g ? `<li>Basisplan: blijft op <b>${esc(GOALS[g].toLowerCase())}</b>.</li>` : `<li>Basisplan: van ${esc((GOALS[p.goal] || 'geen doel').toLowerCase())} naar <b>${esc(GOALS[g].toLowerCase())}</b>. Je calorieën en schema volgen dit doel.</li>`);
   if (o.date) rows.push(!m.date || m.date === o.date || msLinked() || m.enabled === false ? `<li>Mijn doel: telt af naar <b>${esc(msNameFor(o.id, o.goal))}</b> op ${fmtL(o.date)}.</li>` : `<li>Mijn doel: je hebt al “${esc(m.name)}” op ${fmtL(m.date)}. Na de start vraagt de app of je dat wilt koppelen aan deze wedstrijd.</li>`);
   else rows.push(`<li>Mijn doel: geen wedstrijddatum, dus je doel blijft zoals het is.${o.id === 'beg' ? '' : ' Vul hieronder een datum in om af te tellen.'}</li>`);
