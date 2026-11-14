@@ -5801,7 +5801,7 @@ function lockShow() {
   el.addEventListener('click', e => { const b = e.target.closest('[data-lk]'); if (!b) return; const k = b.dataset.lk; if (k === 'go') return lockOpen(el); if (k === 'bio') return lockBio(el); if (!pin) return; if (k === '⌫') lockPinBuf = lockPinBuf.slice(0, -1); else if (lockPinBuf.length < 4) lockPinBuf += k; lockDots(el); if (lockPinBuf.length === 4) lockCheck(el); });
   document.body.appendChild(el); document.body.classList.add('noscroll'); lockDots(el);
   const bp = bioPlugin();
-  if (bp) bp.checkBiometry().then(r => {
+  if (bp && S.lock.bio !== false) bp.checkBiometry().then(r => {
     if (!r || !r.isAvailable || !el.isConnected) return;
     const k = $('.lkbio', el); if (k) k.hidden = false;
     const g = $('.lkgo', el); if (g) { g.dataset.lk = 'bio'; g.innerHTML = FACE_ICON + '<span>Ontgrendel met ' + (r.biometryType === 1 ? 'Touch ID' : 'Face ID') + '</span>'; }
@@ -5817,12 +5817,14 @@ function lockOpen(el) {
 }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') lockHiddenAt = Date.now(); else if (S.lock && S.lock.on && lockHiddenAt && Date.now() - lockHiddenAt > 60000) lockShow(); });
 A.lockToggle = () => { const c = lockCfg(); c.on = !c.on; save(); render(); toast(c.on ? 'Vergrendeling staat aan.' : 'Vergrendeling staat uit.'); };
+A.lockBioToggle = () => { const c = lockCfg(); c.bio = c.bio === false; save(); render(); toast(c.bio ? 'Face ID staat aan.' : 'Face ID staat uit.'); };
 A.lockNow = () => lockShow();
 A.lockPinClear = () => { lockCfg().pin = ''; save(); render(); toast('Pincode gewist.'); };
 F.lockPin = async (f, fd) => { const v = String(fd.get('pin') || '').trim(); if (!/^\d{4}$/.test(v)) { toast('Kies precies 4 cijfers.'); return; } lockCfg().pin = await lockHash(v); save(); render(); toast('Pincode opgeslagen.'); };
 function lockCard() {
   const c = S.lock || {}, on = !!c.on;
   return `<div class="card slim lockc"><div class="row"><div><b>Vergrendelen</b><small>${on ? (c.pin ? 'Aan, met pincode' : 'Aan, zonder pincode') : 'Uit'}</small></div><button class="btn ghost sm" data-a="lockToggle">${on ? 'Uitzetten' : 'Aanzetten'}</button></div>
+  ${on && bioPlugin() ? `<div class="row"><div><b>Face ID</b><small>${c.bio === false ? 'Uit' : 'Aan'}</small></div><button class="btn ghost sm" data-a="lockBioToggle">${c.bio === false ? 'Aanzetten' : 'Uitzetten'}</button></div>` : ''}
   ${on ? `<form data-submit="lockPin" class="nameform"><label class="f">Pincode (4 cijfers, optioneel)<input name="pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" placeholder="••••"></label><button class="btn sm">Opslaan</button></form><div class="btns tight">${c.pin ? '<button class="link" data-a="lockPinClear">Pincode wissen</button>' : ''}<button class="link" data-a="lockNow">Nu vergrendelen</button></div>` : ''}
   <small class="fine">Dit scherm houdt nieuwsgierige blikken weg. Het is geen versleuteling: je gegevens blijven op dit toestel staan.</small></div>`;
 }
