@@ -1258,7 +1258,7 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .vnext,.vnext small,.vnext b{color:#10130a}
 .vnext .btn{color:var(--pg);background:#0B1220;border-color:#0B1220}
 /* ===== Vergrendelscherm ===== */
-#lock{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;background:radial-gradient(120% 70% at 50% 30%,#16264A 0%,#0B1220 70%);color:#F4F7FB;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);overflow:auto;transition:opacity .4s ease .75s}
+#lock{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;background:radial-gradient(120% 70% at 50% 30%,#16264A 0%,#0B1220 70%);color:#F4F7FB;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);overflow:auto;transition:opacity .4s ease 1.55s}
 #lock.go{opacity:0;pointer-events:none}
 .lkin{width:min(420px,100%);padding:20px 24px 28px;display:flex;flex-direction:column;align-items:flex-start;box-sizing:border-box;min-height:100%}
 .lkcap{font:800 16px/1 var(--fd);letter-spacing:.02em;color:#fff}
@@ -1275,6 +1275,9 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .lkk{min-height:60px;border-radius:18px;border:1px solid #2A3857;background:#141E33;color:#fff;font:800 26px var(--fd);cursor:pointer}
 .lkk:active{background:#C9F24D;color:#10130a}
 @keyframes lkpulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}}
+@keyframes lkfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes lkkin{to{transform:translateY(0)}}
+@keyframes lkkturn{to{transform:rotate(-38deg)}}
 @keyframes lkshl{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(-14px) rotate(-22deg)}}
 @keyframes lkbur{0%{opacity:.9;transform:scale(.6)}100%{opacity:0;transform:scale(2.2)}}
 @keyframes lkbody{0%,100%{filter:none}50%{filter:drop-shadow(0 0 22px #C9F24D)}}
@@ -1282,16 +1285,22 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .lkring.r2{animation-delay:.5s}.lkring.r3{animation-delay:1s}
 .lkshackle{transform-origin:128px 136px}
 .lkburst{opacity:0;transform-origin:150px 150px}
-#lock.go .lkshackle{animation:lkshl .4s ease-out forwards}
-#lock.go .lkburst{animation:lkbur .8s ease-out .1s forwards}
-#lock.go .lkdisc{animation:lkbody .7s ease-in-out}
+.lkt{animation:lkfloat 3s ease-in-out infinite}
+.lkkey{transform:translateY(52px)}
+.lkkturn{transform-origin:150px 168px}
+#lock.go .lkt{animation:none}
+#lock.go .lkkey{animation:lkkin .6s cubic-bezier(.4,0,.2,1) forwards}
+#lock.go .lkkturn{animation:lkkturn .35s ease-in-out .6s forwards}
+#lock.go .lkshackle{animation:lkshl .4s ease-out .95s forwards}
+#lock.go .lkburst{animation:lkbur .8s ease-out .95s forwards}
+#lock.go .lkdisc{animation:lkbody .7s ease-in-out .95s}
 .lkgo{display:flex;align-items:center;justify-content:center;gap:10px}
 .lkgo svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .lkalt{margin:8px auto 0;min-height:44px;border:0;background:none;color:#B9C5DA;font:600 15px var(--fb);cursor:pointer}
 .lkbio{display:grid;place-items:center;background:none;border-color:transparent}
 .lkbio svg{width:30px;height:30px;fill:none;stroke:#C9F24D;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .lkbio[hidden]{display:none}
-@media (prefers-reduced-motion:reduce){.lkring{animation:none}#lock{transition:none}}
+@media (prefers-reduced-motion:reduce){.lkring,.lkt{animation:none}#lock{transition:none}}
 /* ===== Metingen: silhouet met linten ===== */
 .mcard .mhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:var(--s1)}
 .mcard .mhead h3{margin:0;font:900 24px/1.1 var(--fd);text-transform:uppercase;letter-spacing:-.01em}
@@ -5782,6 +5791,7 @@ const LOCK_SCENE = `<svg class="lkscene" viewBox="0 0 300 300" aria-hidden="true
   <circle class="lkburst" cx="150" cy="150" r="56" fill="none" stroke="#C9F24D" stroke-width="3"/>
   <circle class="lkdisc" cx="150" cy="150" r="56" fill="#141E33" stroke="#C9F24D" stroke-width="4"/>
   <g class="lkshackle"><path d="M128 146v-10a22 22 0 0 1 44 0v10" fill="none" stroke="#C9F24D" stroke-width="7" stroke-linecap="round"/></g>
+  <g class="lkt"><g class="lkkturn"><g class="lkkey"><rect x="147.5" y="166" width="5" height="58" rx="2" fill="#C9F24D"/><rect x="152.5" y="202" width="10" height="6" rx="2" fill="#C9F24D"/><rect x="152.5" y="212" width="7" height="6" rx="2" fill="#C9F24D"/><circle cx="150" cy="236" r="13" fill="#C9F24D"/><circle cx="150" cy="236" r="5" fill="#141E33"/></g></g></g>
   <rect x="116" y="144" width="68" height="46" rx="13" fill="#141E33" stroke="#C9F24D" stroke-width="6"/>
   <circle cx="150" cy="164" r="6" fill="#C9F24D"/><rect x="147.5" y="166" width="5" height="12" rx="2" fill="#C9F24D"/></svg>`;
 /* Face ID / Touch ID: alleen in de iOS-app (Capacitor-plugin BiometricAuthNative). In de browser blijft het bij knop of pincode. */
@@ -5813,7 +5823,7 @@ async function lockCheck(el) { const h = await lockHash(lockPinBuf); if (h === S
 function lockOpen(el) {
   if (el.classList.contains('go')) return; el.classList.add('go'); try { navigator.vibrate && navigator.vibrate([30, 40, 60]); } catch (e) {}
   const fast = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  setTimeout(() => { el.remove(); document.body.classList.remove('noscroll'); }, fast ? 50 : 1150);
+  setTimeout(() => { el.remove(); document.body.classList.remove('noscroll'); }, fast ? 50 : 2000);
 }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') lockHiddenAt = Date.now(); else if (S.lock && S.lock.on && lockHiddenAt && Date.now() - lockHiddenAt > 60000) lockShow(); });
 A.lockToggle = () => { const c = lockCfg(); c.on = !c.on; save(); render(); toast(c.on ? 'Vergrendeling staat aan.' : 'Vergrendeling staat uit.'); };
