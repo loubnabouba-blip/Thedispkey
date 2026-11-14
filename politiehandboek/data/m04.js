@@ -15,7 +15,7 @@
     { h: "Drie niveaus: aanspreken, ID vragen, staande houden", b: [
       ["tab", ["Niveau", "Wat mag", "Wat heb je nodig", "Wat mag de burger"], [
         ["Aanspreken", "Praten, vragen stellen, informeren", "Een reden in de taak (Pw 3)", "Meewerken of doorlopen. Geen plicht om vragen te beantwoorden."],
-        ["ID vragen", "Vragen naar het identiteitsbewijs", "Redelijkerwijs nodig voor de taak (Wet op de identificatieplicht). Vanaf 14 jaar.", "Moet document tonen. Hoeft niet verder te antwoorden."],
+        ["ID vragen", "Vragen naar het identiteitsbewijs", "Redelijkerwijs noodzakelijk voor de politietaak (Pw 8). Vanaf 14 jaar verplicht te tonen (Wet op de identificatieplicht art. 2).", "Moet document tonen. Hoeft niet verder te antwoorden."],
         ["Staande houden", "Tijdelijk tegenhouden, identiteit vaststellen", "Verdenking (Sv 27, Sv 52)", "Moet naam en gegevens geven. Heeft zwijgrecht bij verhoor (cautie)."]
       ]],
       ["tip", "Begin op het laagste niveau en schaal alleen op als de feiten daar om vragen. ‘Mag ik u wat vragen?’ kost niets en laat zien of er echt een verdenking is."],
@@ -69,7 +69,7 @@
       ]],
       ["De drie niveaus", [
         ["Aanspreken", "Vrijwillig. Reden in de taak. Burger hoeft niet te antwoorden."],
-        ["ID vragen", "Redelijkerwijs nodig voor je taak. Burger toont document."],
+        ["ID vragen", "Redelijkerwijs noodzakelijk voor je taak (Pw 8). Burger toont document (Wet ID art. 2)."],
         ["Staande houden", "Verdenking nodig (Sv 27, Sv 52). Naam en gegevens verplicht."]
       ]],
       ["Gespreksopbouw (STOP)", [

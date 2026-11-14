@@ -24,7 +24,7 @@
       ["p", "Vóór het verhoor van een verdachte geef je de <b>cautie</b>: hij is niet verplicht te antwoorden (Sv 29 lid 2). Hij heeft recht op een advocaat (Sv 28). Een verhoor zonder cautie kan het bewijs onbruikbaar maken."],
       ["stap", [
         ["Voorbereiden", "Lees de zaak, bepaal je vragen en de volgorde. Weet wat je wilt bewijzen."],
-        ["Open met cautie", "‘U hoeft niets te zeggen. Alles wat u zegt, kan tegen u worden gebruikt.’ Leg vast dat hij het begrepen heeft."],
+        ["Open met cautie", "‘U hoeft niets te zeggen. Alles wat u zegt, kan tegen u worden gebruikt.’ Leg vast dat hij het begrepen heeft. De mededeling neem je op in het proces-verbaal (Sv 29 lid 2)."],
         ["Vrij vertellen", "Laat de verdachte eerst zelf vertellen. Onderbreek niet."],
         ["Doorvragen", "Open vragen. Gesloten vragen alleen om bevestiging of details."],
         ["Voorhouden", "Leg bewijs voor, zonder te liegen over wat je hebt."],

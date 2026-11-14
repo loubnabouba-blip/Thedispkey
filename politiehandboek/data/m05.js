@@ -41,10 +41,10 @@
       ["tab", ["Feit", "Artikel", "Max. straf", "Kern"], [
         ["Mishandeling", "Sr 300", "3 jaar (zwaar letsel 4, dood 6)", "Opzettelijk pijn of letsel toebrengen"],
         ["Zware mishandeling", "Sr 302", "8 jaar", "Opzettelijk zwaar lichamelijk letsel toebrengen"],
-        ["Doodslag", "Sr 287", "15 jaar", "Opzettelijk een ander van het leven beroven"],
-        ["Moord", "Sr 289", "Levenslang", "Doodslag met voorbedachten rade"],
-        ["Openlijke geweldpleging", "Sr 141", "4 jaar", "Openlijk, in vereniging, geweld tegen personen of goederen"],
-        ["Bedreiging", "Sr 285", "2 jaar (check hogere vormen)", "Bedreigen met een ernstig misdrijf (leven, zwaar letsel, brandstichting) met het oogmerk vrees aan te jagen"],
+        ["Doodslag", "Sr 287", "25 jaar", "Opzettelijk een ander van het leven beroven"],
+        ["Moord", "Sr 289", "Levenslang of tot 30 jaar", "Doodslag met voorbedachten rade"],
+        ["Openlijke geweldpleging", "Sr 141", "4 jaar en 6 maanden (zwaar letsel 6, dood 9)", "Openlijk, in vereniging, geweld tegen personen of goederen"],
+        ["Bedreiging", "Sr 285", "3 jaar (bij bepaalde vormen 4 of 6)", "Bedreigen met een ernstig misdrijf (leven, zwaar letsel, brandstichting) met het oogmerk vrees aan te jagen"],
         ["Stalking", "Sr 285b", "3 jaar", "Stelselmatig inbreuk op iemands persoonlijke levenssfeer, met het oogmerk iemand te dwingen of vrees aan te jagen"]
       ]],
       ["let", "Maximumstraffen veranderen. Gebruik ze om te weten of voorlopige hechtenis mogelijk is (4 jaar of meer, Sv 67 lid 1), maar controleer het actuele artikel."],
@@ -52,19 +52,19 @@
     ] },
     { h: "Feiten tegen ambtenaren en de openbare orde", b: [
       ["tab", ["Feit", "Artikel", "Max. straf", "Kern"], [
-        ["Wederspannigheid", "Sr 180", "3 jaar", "Met geweld of bedreiging verzet tegen een ambtenaar die rechtmatig werkt"],
-        ["Mishandeling ambtenaar", "Sr 300 + Sr 304", "Max. + 1/3", "Mishandeling van een ambtenaar in dienst. De straf kan met een derde worden verhoogd"],
-        ["Belediging", "Sr 266", "3 maanden", "Opzettelijk in het openbaar iemand beledigen (meestal klachtdelict)"],
-        ["Belediging ambtenaar", "Sr 267", "+ 1/3", "Belediging van een ambtenaar in de uitoefening van zijn taak"],
+        ["Wederspannigheid", "Sr 180", "1 jaar", "Met geweld of bedreiging verzet tegen een ambtenaar die rechtmatig werkt"],
+        ["Mishandeling ambtenaar", "Sr 300 + Sr 304 sub 3", "Max. + 1/3", "Mishandeling van een ambtenaar in dienst. De straf kan met een derde worden verhoogd"],
+        ["Belediging", "Sr 266", "3 maanden", "Opzettelijke belediging, in het openbaar of in iemands tegenwoordigheid. Vervolging alleen op klacht (Sr 269)"],
+        ["Belediging ambtenaar", "Sr 267", "+ 1/3", "Belediging van een ambtenaar in de rechtmatige uitoefening van zijn taak. Hiervoor is geen klacht nodig (Sr 269 lid 2)"],
         ["Niet gehoorzamen bevel", "Sr 184", "3 maanden", "Opzettelijk niet voldoen aan een bevel dat een ambtenaar rechtmatig gaf"],
-        ["Openbare dronkenschap", "Sr 453", "Overtreding", "In het openbaar dronken zijn en gevaar of overlast veroorzaken"]
+        ["Openbare dronkenschap", "Sr 430b", "12 dagen hechtenis (overtreding)", "Zich in kennelijke staat van dronkenschap op de openbare weg bevinden"]
       ]],
       ["let", "Voor wederspannigheid, Sr 184 en strafverzwaring moet je optreden rechtmatig zijn en je moet in de uitoefening van je taak handelen. Je legitimatie en uitleg tellen mee."],
       ["tip", "Wordt een collega mishandeld of bedreigd, doe dan altijd aangifte of laat die opnemen. Leg vast dat het feit is gepleegd tijdens dienst."]
     ] },
     { h: "Poging, voorbereiding, deelneming en uitsluiting", b: [
       ["dl", [
-        ["Poging (Sr 45)", "Het voornemen is blijk gegeven door een begin van uitvoering, maar het feit werd niet voltooid. Strafmaximum is twee derde van dat van het voltooide feit. Alleen bij misdrijven."],
+        ["Poging (Sr 45)", "Het voornemen heeft zich door een begin van uitvoering geopenbaard, maar het feit werd niet voltooid. Het strafmaximum wordt met een derde verminderd. Alleen bij misdrijven."],
         ["Voorbereiding (Sr 46)", "Alleen strafbaar bij bepaalde ernstige misdrijven. Denk aan wapens of voorwerpen om zwaar misdrijf te plegen."],
         ["Medeplegen (Sr 47)", "Bewuste en nauwe samenwerking tijdens het feit."],
         ["Medeplichtigheid (Sr 48)", "Opzettelijk behulpzaam zijn vóór of bij het feit. Lagere straf dan de dader."],
@@ -88,8 +88,8 @@
         ["Gaat kapot", "Vernieling Sr 350 (2 jaar)."]
       ]],
       ["Tegen de politie", [
-        ["Verzet met geweld", "Wederspannigheid Sr 180."],
-        ["Mishandeling ambtenaar", "Sr 300 met strafverzwaring Sr 304."],
+        ["Verzet met geweld", "Wederspannigheid Sr 180 (1 jaar)."],
+        ["Mishandeling ambtenaar", "Sr 300 met strafverzwaring Sr 304 sub 3."],
         ["Belediging", "Sr 266, ambtenaar Sr 267."],
         ["Bevel negeren", "Sr 184."]
       ]],
@@ -119,8 +119,8 @@
       ["Diefstal", "Sr 310", "4 jaar"], ["Gekwalificeerde diefstal", "Sr 311", "6 jaar"], ["Diefstal met geweld", "Sr 312", "9 jaar"],
       ["Afpersing", "Sr 317", "9 jaar"], ["Verduistering", "Sr 321", "3 jaar"], ["Oplichting", "Sr 326", "4 jaar"], ["Heling", "Sr 416", "4 jaar"],
       ["Vernieling", "Sr 350", "2 jaar"], ["Mishandeling", "Sr 300", "3 jaar"], ["Zware mishandeling", "Sr 302", "8 jaar"],
-      ["Doodslag", "Sr 287", "15 jaar"], ["Moord", "Sr 289", "Levenslang"], ["Openlijke geweldpleging", "Sr 141", "4 jaar"],
-      ["Stalking", "Sr 285b", "3 jaar"], ["Wederspannigheid", "Sr 180", "3 jaar"]
+      ["Doodslag", "Sr 287", "25 jaar"], ["Moord", "Sr 289", "Levenslang of 30 jaar"], ["Openlijke geweldpleging", "Sr 141", "4 jaar en 6 maanden (zwaar letsel 6, dood 9)"],
+      ["Stalking", "Sr 285b", "3 jaar"], ["Wederspannigheid", "Sr 180", "1 jaar"]
     ]]],
     check: [
       ["Feitenrelaas", "Wie, wat, waar, wanneer, hoe, waarmee."],
@@ -136,7 +136,7 @@
       ["Geweld vergeten bij diefstal", "Duw bij tasjesroof maakt het Sr 312, niet Sr 310."],
       ["Alleen één artikel", "Denk aan een alternatief: mishandeling of zware mishandeling, diefstal of gekwalificeerd."],
       ["Opzet aannemen zonder bewijs", "Leg vast wat iemand zei en deed dat opzet toont."],
-      ["Beledigen zonder klacht", "Belediging is meestal een klachtdelict. Vraag om klacht of aangifte."],
+      ["Beledigen zonder klacht", "Belediging is een klachtdelict (Sr 269), behalve bij belediging van een ambtenaar in dienst (Sr 267). Vraag om klacht of aangifte."],
       ["Poging bij overtreding", "Poging is alleen strafbaar bij misdrijven."]
     ],
     flits: [
@@ -147,12 +147,12 @@
       ["Vermogen", "Wat is oplichting?", "Iemand door valse naam, listige kunstgrepen of verdichtsels bewegen tot afgifte (Sr 326). Max. 4 jaar."],
       ["Vermogen", "Wat is heling?", "Verwerven, voorhanden hebben of overdragen van goed dat van misdrijf afkomstig is, wetende dat (Sr 416). Max. 4 jaar."],
       ["Geweld", "Wat is mishandeling?", "Opzettelijk pijn of letsel toebrengen (Sr 300). Max. 3 jaar. Zwaar letsel 4, dood 6."],
-      ["Geweld", "Wat is openlijke geweldpleging?", "Openlijk en in vereniging geweld plegen tegen personen of goederen (Sr 141). Max. 4 jaar."],
+      ["Geweld", "Wat is openlijke geweldpleging?", "Openlijk en in vereniging geweld plegen tegen personen of goederen (Sr 141). Max. 4 jaar en 6 maanden."],
       ["Geweld", "Wat is bedreiging?", "Bedreigen met een ernstig misdrijf met het oogmerk vrees aan te jagen (Sr 285)."],
-      ["Politie", "Wat is wederspannigheid?", "Met geweld of bedreiging verzet tegen een ambtenaar die rechtmatig werkt (Sr 180). Max. 3 jaar."],
-      ["Politie", "Wat gebeurt er met de straf bij mishandeling van een ambtenaar?", "Verhoging met een derde (Sr 304)."],
+      ["Politie", "Wat is wederspannigheid?", "Met geweld of bedreiging verzet tegen een ambtenaar die rechtmatig werkt (Sr 180). Max. 1 jaar."],
+      ["Politie", "Wat gebeurt er met de straf bij mishandeling van een ambtenaar?", "Verhoging met een derde (Sr 304 sub 3)."],
       ["Algemeen", "Wat is het verschil tussen misdrijf en overtreding?", "Misdrijven staan in Boek II Sr (zwaarder), overtredingen in Boek III Sr (lichter). Poging is alleen bij misdrijven strafbaar."],
-      ["Algemeen", "Wat is poging (Sr 45)?", "Begin van uitvoering, maar niet voltooid. Strafmaximum is twee derde."],
+      ["Algemeen", "Wat is poging (Sr 45)?", "Begin van uitvoering, maar niet voltooid. Het strafmaximum wordt met een derde verminderd."],
       ["Algemeen", "Wat is noodweer (Sr 41)?", "Verdediging tegen een ogenblikkelijke wederrechtelijke aanranding. Strafuitsluitingsgrond."]
     ]
   }

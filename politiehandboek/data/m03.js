@@ -11,8 +11,8 @@
       ["tab", ["Doel", "Wat je doet", "Grondslag"], [
         ["Eigen veiligheid", "Aftasten op gevaarlijke voorwerpen", "Veiligheidsfouillering: Pw 7 lid 3"],
         ["Vervoer en insluiting", "Aftasten vóór je iemand vervoert of insluit", "Vervoersfouillering: Pw 7 lid 4"],
-        ["Opsporing", "Zoeken naar bewijs bij een aangehouden verdachte", "Onderzoek aan kleding: Sv 56"],
-        ["Preventie", "Zoeken naar wapens zonder verdenking", "Veiligheidsrisicogebied: Gemw 151b"]
+        ["Opsporing", "Zoeken naar bewijs bij een aangehouden verdachte", "Onderzoek aan kleding of lichaam: Sv 56 (op bepaling van hulpofficier of officier van justitie). Beslag: Sv 95"],
+        ["Preventie", "Zoeken naar wapens zonder verdenking", "Veiligheidsrisicogebied: Gemw 151b met WWM 50 t/m 52"]
       ]],
       ["truc", "Vier woorden, vier doelen: <b>veilig, vervoer, vondst, voorkomen</b>. Veilig is voor je eigen veiligheid, vervoer vóór meenemen, vondst bij aanhouding van een verdachte, voorkomen in een aangewezen gebied."],
       ["let", "De precieze artikelnummers en voorwaarden kunnen verschillen per versie van de wet en het handelingskader. Gebruik ze als wegwijzer en controleer ze in de bron."]
@@ -24,16 +24,16 @@
       ["tip", "Vraag eerst: ‘Heeft u iets bij u waar ik me aan kan verwonden?’ Dat geeft de burger de kans zelf een mes of naald te noemen en maakt het veiliger voor jullie beiden."]
     ] },
     { h: "Opsporingsfouillering", b: [
-      ["p", "Bij de aanhouding van een verdachte mag een opsporingsambtenaar de kleding en voorwerpen die iemand bij zich heeft onderzoeken (Sv 56). Dat gaat verder dan aftasten: je zoekt naar bewijs of voorwerpen die van belang zijn voor het onderzoek. Een onderzoek aan het lichaam (inwendig) mag alleen onder strikte voorwaarden en door een arts."],
-      ["casus", "Casus: de tas bij de aanhouding", "Je houdt een man aan die net een telefoon uit een auto pakte. Hij heeft een rugzak bij zich.", "Mag je de rugzak doorzoeken?", "Ja. Bij de aanhouding van een verdachte mag je kleding en voorwerpen die hij bij zich heeft onderzoeken (Sv 56). Leg vast wat je vond, in welke vak, en neem voorwerpen die van belang zijn in beslag (Sv 94, Sv 95). Doe dit zo spoedig mogelijk en liefst met een collega erbij."]
+      ["p", "Voor het onderzoek aan de kleding of het lichaam van een aangehouden verdachte bepaalt de hulpofficier of officier van justitie dat dit gebeurt, bij het bestaan van ernstige bezwaren en in het belang van het onderzoek (Sv 56). Het inwendig onderzoek in het lichaam bepaalt de officier van justitie, en gebeurt door een arts of ander bevoegd persoon. Wat een staande gehouden of aangehouden verdachte bij zich draagt, mag de opsporingsambtenaar in beslag nemen (Sv 95). Voor het vaststellen van de identiteit mag hij ook de kleding en voorwerpen onderzoeken, voor zover dat noodzakelijk is (Sv 55b)."],
+      ["casus", "Casus: de tas bij de aanhouding", "Je houdt een man aan die net een telefoon uit een auto pakte. Hij heeft een rugzak bij zich.", "Mag je de rugzak doorzoeken?", "Voorwerpen die hij bij zich draagt, mag je in beslag nemen (Sv 95). Voor een uitgebreid onderzoek aan zijn kleding of lichaam is een bepaling van de hulpofficier of officier van justitie nodig (Sv 56). Bij de rugzak zelf kun je voor wapens ook WWM 52 gebruiken als daar aanleiding voor is. Leg vast wat je vond en in welk vak, en doe dit zo spoedig mogelijk, liefst met een collega erbij."]
     ] },
     { h: "Preventief fouilleren", b: [
-      ["p", "In een door de burgemeester aangewezen <b>veiligheidsrisicogebied</b> (Gemw 151b) mag de politie, op grond van een bevel van de officier van justitie, personen en voorwerpen controleren op wapens, zónder dat er verdenking is. Het gebied en de periode zijn beperkt."],
+      ["p", "De gemeenteraad kan de burgemeester bij verordening de bevoegdheid geven een gebied aan te wijzen als <b>veiligheidsrisicogebied</b>, bij verstoring van de openbare orde door wapens of bij ernstige vrees daarvoor (Gemw 151b). In zo’n gebied kan de officier van justitie gelasten dat de opsporingsbevoegdheden uit WWM 50 lid 3, WWM 51 lid 3 en WWM 52 lid 3 tegenover een ieder worden uitgeoefend: verpakkingen laten openen, vervoermiddelen onderzoeken en personen aan de kleding onderzoeken, zonder dat er verdenking tegen een persoon is."],
       ["vs", "Dit mag in zo’n gebied", ["Passanten aanspreken en aftasten op wapens", "Tassen en voertuigen controleren op wapens", "Een wapen in beslag nemen"], "Dit mag niet zomaar", ["Zoeken naar drugs of ander bewijs", "Iemand buiten het aangewezen gebied controleren", "Doorgaan als het bevel of de periode is verlopen"]],
       ["let", "Preventief fouilleren is gericht op wapens. Vind je daarbij iets anders, dan gaat het verder via de gewone strafvorderlijke regels. Controleer aanwijzing, periode en bevel bij elke inzet."]
     ] },
     { h: "Binnentreden en de woning", b: [
-      ["p", "De woning is door Gw 12 extra beschermd. Zonder toestemming van de bewoner mag je alleen binnentreden als de wet je dat toestaat. Voor de meeste situaties moet je beschikken over een <b>machtiging</b> en moet je voorafgaand je legitimatie tonen en het doel melden (Algemene wet op het binnentreden)."],
+      ["p", "De woning is door Gw 12 extra beschermd. Voor het binnentreden zonder toestemming van de bewoner is een <b>schriftelijke machtiging</b> vereist, tenzij de wet iets anders bepaalt (Algemene wet op het binnentreden, art. 2 lid 1). Voor doeleinden buiten de strafvordering kan de burgemeester machtigen (art. 3 lid 2). Voor aanhouding mag een opsporingsambtenaar bij heterdaad of bij verdenking van een misdrijf met voorlopige hechtenis plaatsen doorzoeken, in beginsel met machtiging van de officier van justitie (Sv 55a); voor een woning zonder toestemming is de rechter-commissaris of bij spoed de officier van justitie bevoegd (Sv 97). Legitimeer je en meld het doel."],
       ["stap", [
         ["Vraag eerst toestemming", "De bewoner kan vrijwillig meewerken. Leg vast dat hij toestemming gaf en wat hij zei."],
         ["Zonder toestemming: grondslag nodig", "Je hebt een wettelijke bevoegdheid nodig, zoals aanhouden van een verdachte of een doorzoeking."],
@@ -46,7 +46,7 @@
       ["quiz", "De bewoner staat voor de deur en weigert je binnen te laten. Je wilt hem aanhouden. Wat moet je weten?", ["Dat je zonder meer mag binnenvallen", "Dat je een wettelijke grondslag en meestal een machtiging nodig hebt", "Dat een mondeling bevel van je chef genoeg is", "Dat dit alleen na middernacht mag"], 1, "Binnentreden zonder toestemming vraagt een wettelijke grondslag en in de regel een machtiging, plus legitimeren en doel melden. Controleer altijd de uitzonderingen bij spoed."]
     ] },
     { h: "Inbeslagneming en vondsten", b: [
-      ["p", "Voorwerpen mag je in beslag nemen als ze dienen om de waarheid aan het licht te brengen, kunnen worden verbeurdverklaard of onttrokken aan het verkeer, of gebruikt zijn bij het strafbare feit (Sv 94). Bij heterdaad kan iedere opsporingsambtenaar dat zelf doen (Sv 95)."],
+      ["p", "Voorwerpen zijn vatbaar voor inbeslagneming als ze kunnen dienen om de waarheid aan het licht te brengen of wederrechtelijk verkregen voordeel aan te tonen, of als verbeurdverklaring of onttrekking aan het verkeer kan worden bevolen (Sv 94). De opsporingsambtenaar die een verdachte staande houdt of aanhoudt, kan de voorwerpen die hij bij zich draagt in beslag nemen (Sv 95). Bij heterdaad of verdenking van een misdrijf met voorlopige hechtenis mag hij daarvoor ook elke plaats betreden (Sv 96) en een vervoermiddel doorzoeken (Sv 96b)."],
       ["stap", [
         ["Veiligstellen", "Eerst jezelf en anderen beschermen, zeker bij wapens en drugs. Draag handschoenen."],
         ["Foto en positie", "Leg vast waar het lag, hoe, in wiens bezit. Pas daarna aanraken."],
@@ -64,8 +64,8 @@
       ["Soorten fouilleren", [
         ["Veiligheid", "Pw 7 lid 3: onmiddellijk gevaar, noodzakelijk, aftasten. Melden."],
         ["Vervoer", "Pw 7 lid 4: iedereen die je vervoert of insluit. Geen aparte verdenking nodig."],
-        ["Opsporing", "Sv 56: bij aanhouding verdachte, kleding en voorwerpen."],
-        ["Preventief", "Gemw 151b: aangewezen gebied, bevel officier van justitie, op wapens."]
+        ["Opsporing", "Sv 56: kleding of lichaam onderzoeken, bepaling door hulpofficier of officier van justitie. Sv 95: beslag op wat de verdachte bij zich draagt."],
+        ["Preventief", "Gemw 151b: aangewezen gebied. Officier van justitie gelast WWM 50 t/m 52 tegenover een ieder."]
       ]],
       ["Woning", [
         ["Eerst", "Toestemming bewoner. Zo niet: grondslag plus meestal machtiging."],
@@ -74,8 +74,8 @@
         ["Truc", "T-M-L-V: Toestemming, Machtiging, Legitimeren, Verslag."]
       ]],
       ["Beslag", [
-        ["Waarvoor", "Voorwerpen die de waarheid kunnen tonen, verbeurd kunnen worden verklaard of onttrokken kunnen worden (Sv 94)."],
-        ["Heterdaad", "Iedere opsporingsambtenaar kan zelf in beslag nemen (Sv 95)."],
+        ["Waarvoor", "Voorwerpen die de waarheid of wederrechtelijk voordeel kunnen tonen, of verbeurd of onttrokken kunnen worden (Sv 94)."],
+        ["Bij staande houden of aanhouden", "Beslag op wat de verdachte bij zich draagt (Sv 95). Plaats betreden: Sv 96."],
         ["Bewaren", "Fotograferen, verpakken, labelen, bewijsketen sluitend."],
         ["Telefoon", "Beslag mag. Inhoud doorzoeken vraagt eigen regels."]
       ]]
@@ -86,16 +86,16 @@
       c: { q: "Is er onmiddellijk gevaar voor veiligheid (jezelf of anderen), blijkend uit feiten?", o: [["Ja", "s"], ["Nee", "d"]] },
       d: { q: "Sta je in een aangewezen veiligheidsrisicogebied met een bevel van de officier van justitie?", o: [["Ja", "p"], ["Nee", "x"]] },
       v: { r: "Vervoersfouillering (Pw 7 lid 4). Aftasten, ook zonder verdenking.", k: "ok" },
-      o: { r: "Opsporingsfouillering (Sv 56). Kleding en voorwerpen onderzoeken, bewijs veiligstellen.", k: "ok" },
+      o: { r: "Opsporingsfouillering (Sv 56, Sv 95). Bepaling door hulpofficier of officier van justitie, bij ernstige bezwaren. Voorwerpen die hij bij zich draagt neem je in beslag.", k: "ok" },
       s: { r: "Veiligheidsfouillering (Pw 7 lid 3). Oppervlakkig aftasten, daarna melden.", k: "ok" },
-      p: { r: "Preventief fouilleren (Gemw 151b). Alleen op wapens, binnen gebied en periode van het bevel.", k: "warn" },
+      p: { r: "Preventief fouilleren (Gemw 151b, WWM 52 lid 3). Alleen op wapens, binnen gebied en periode van het bevel.", k: "warn" },
       x: { r: "Geen fouillering mogelijk. Je kunt aanspreken en vragen of iemand meewerkt (vrijwillig), maar dwingen mag niet.", k: "no" }
     } },
     tabel: [["Wie en wat", ["Vorm", "Grondslag", "Verdenking nodig?", "Melden?"], [
       ["Veiligheid", "Pw 7 lid 3", "Nee, wel onmiddellijk gevaar", "Ja"],
       ["Vervoer", "Pw 7 lid 4", "Nee", "Nee"],
-      ["Opsporing", "Sv 56", "Ja, aangehouden verdachte", "In het PV"],
-      ["Preventief", "Gemw 151b", "Nee, aangewezen gebied en bevel", "Volgens bevel"]
+      ["Opsporing", "Sv 56 (en Sv 95 voor beslag)", "Ja, ernstige bezwaren, op bepaling hulpofficier of officier van justitie", "In het PV"],
+      ["Preventief", "Gemw 151b, WWM 50 t/m 52", "Nee, aangewezen gebied en bevel officier van justitie", "Volgens bevel"]
     ]]],
     check: [
       ["Welk doel?", "Veiligheid, vervoer, vondst of voorkomen?"],
@@ -115,17 +115,17 @@
       ["Telefoon doorzoeken", "Beslag is iets anders dan de inhoud bekijken. Volg het voorschrift."]
     ],
     flits: [
-      ["Fouilleren", "Noem de vier doelen van fouilleren.", "Veilig (Pw 7 lid 3), vervoer (Pw 7 lid 4), vondst (Sv 56), voorkomen (Gemw 151b)."],
+      ["Fouilleren", "Noem de vier doelen van fouilleren.", "Veilig (Pw 7 lid 3), vervoer (Pw 7 lid 4), vondst (Sv 56, Sv 95), voorkomen (Gemw 151b met WWM 50 t/m 52)."],
       ["Fouilleren", "Heb je verdenking nodig voor een vervoersfouillering?", "Nee. Iedereen die je vervoert of insluit, tast je vooraf af (Pw 7 lid 4)."],
       ["Fouilleren", "Wat is de voorwaarde voor een veiligheidsfouillering?", "Uit feiten of omstandigheden blijkt een onmiddellijk gevaar, en het onderzoek is noodzakelijk (Pw 7 lid 3)."],
-      ["Fouilleren", "Wat mag je bij een opsporingsfouillering?", "Kleding en voorwerpen die de aangehouden verdachte bij zich heeft onderzoeken (Sv 56)."],
-      ["Fouilleren", "Waarop richt preventief fouilleren zich?", "Op wapens, in een aangewezen veiligheidsrisicogebied en met een bevel (Gemw 151b)."],
+      ["Fouilleren", "Wie bepaalt een onderzoek aan kleding of lichaam van de aangehouden verdachte?", "De hulpofficier of officier van justitie, bij ernstige bezwaren en in het belang van het onderzoek (Sv 56). Beslag op wat hij bij zich draagt: Sv 95."],
+      ["Fouilleren", "Waarop richt preventief fouilleren zich?", "Op wapens, in een aangewezen veiligheidsrisicogebied (Gemw 151b) met een bevel van de officier van justitie op grond van WWM 50 t/m 52."],
       ["Fouilleren", "Hoe tast je af?", "Oppervlakkig, zo veel mogelijk door iemand van hetzelfde geslacht. Gevaarlijke voorwerpen neem je in bewaring."],
-      ["Woning", "Welke grondrechtsbescherming heeft de woning?", "Gw 12: niet binnentreden zonder toestemming, behalve bij wettelijke bevoegdheid."],
+      ["Woning", "Wat is vereist voor binnentreden zonder toestemming van de bewoner?", "Een schriftelijke machtiging, tenzij de wet iets anders bepaalt (Awbi art. 2 lid 1, Gw 12)."],
       ["Woning", "Wat betekent T-M-L-V?", "Toestemming, Machtiging, Legitimeren en doel melden, Verslag."],
       ["Woning", "Wat doe je vóór binnentreden?", "Je legitimeert je en meldt het doel."],
-      ["Beslag", "Wat mag in beslag genomen worden (Sv 94)?", "Voorwerpen die de waarheid kunnen tonen, verbeurd kunnen worden verklaard, onttrokken kunnen worden aan het verkeer, of gebruikt zijn bij het feit."],
-      ["Beslag", "Wie mag op heterdaad in beslag nemen?", "Iedere opsporingsambtenaar (Sv 95)."],
+      ["Beslag", "Wat mag in beslag genomen worden (Sv 94)?", "Voorwerpen die de waarheid of wederrechtelijk voordeel kunnen aantonen, of waarvan verbeurdverklaring of onttrekking aan het verkeer kan worden bevolen."],
+      ["Beslag", "Wat mag je in beslag nemen bij staande houden of aanhouden?", "De voor beslag vatbare voorwerpen die de verdachte bij zich draagt (Sv 95)."],
       ["Beslag", "Wat is bewijsketen?", "De sluitende registratie van wie het voorwerp wanneer heeft aangeraakt of overgedragen."],
       ["Beslag", "Mag je zomaar in een telefoon kijken die je in beslag nam?", "Nee. Beslag is iets anders dan doorzoeken van de inhoud. Volg de eigen regels en het voorschrift."]
     ]

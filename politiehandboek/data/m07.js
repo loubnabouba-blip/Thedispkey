@@ -12,10 +12,10 @@
         ["Voorbeelden", "Heroïne, cocaïne, amfetamine, XTC (MDMA), GHB, LSD", "Hasj, wiet (marihuana), hennepplanten"],
         ["Artikel", "Opw 2", "Opw 3"],
         ["Risico", "Onaanvaardbaar risico voor de gezondheid", "Minder risico, maar niet toegestaan"],
-        ["Bezit eigen gebruik", "Misdrijf, tot 1 jaar", "Overtreding tot 30 gram; daarboven misdrijf"],
-        ["Handel, vervoer, bereiden", "Hoogste straffen, tot 8 jaar (invoer en uitvoer 12 jaar)", "Lagere straffen, tot 4 jaar"]
+        ["Bezit", "Misdrijf, tot 6 jaar. Geringe hoeveelheid voor eigen gebruik: tot 1 jaar (Opw 10 lid 3 en 6)", "Hennep of hasj tot 30 gram: overtreding, hechtenis tot 1 maand (Opw 11 lid 1 en 6). Daarboven opzettelijk bezit: tot 2 jaar (Opw 11 lid 2)"],
+        ["Verkopen, telen, bereiden, vervoeren", "Tot 8 jaar. Invoer of uitvoer: tot 12 jaar (Opw 10 lid 4 en 5)", "Tot 2 jaar. In beroep of bedrijf: tot 6 jaar. Invoer of uitvoer: tot 4 jaar. Grote hoeveelheid: tot 6 jaar (Opw 11)"]
       ]],
-      ["let", "Deze straffen zijn indicatief. De wet is meermaals aangepast en ook lijsten veranderen. Controleer de actuele tekst van Opw 10 en 11 en de lijsten bij de Opiumwet."],
+      ["let", "Deze straffen zijn getoetst aan Opw 10 en 11 (wetten.overheid.nl, versie 2026). Wetten en lijsten wijzigen; controleer de actuele tekst."],
       ["truc", "Drie handelingen, drie vragen: <b>heeft hij het (bezit)</b>, <b>verkoopt of vervoert hij het (handel)</b>, <b>maakt of kweekt hij het (bereiden, telen)</b>. Hoe verder naar rechts, hoe zwaarder de straf."],
       ["quiz", "Welke stof staat op lijst I?", ["Hasj", "Wiet", "Cocaïne", "Hennepplant"], 2, "Cocaïne is een harddrug (lijst I). Hasj, wiet en hennep staan op lijst II."]
     ] },
@@ -70,8 +70,8 @@
     cijfers: [["Lijst I", "Harddrugs: cocaïne, heroïne, XTC, amfetamine, GHB"], ["Lijst II", "Hennep, hasj, wiet"], ["30 g", "Hennep: tot hier een overtreding bij bezit"], ["500 g", "Coffeeshop: max. voorraad (AHOJG-G)"]],
     kern: [
       ["Lijsten en straffen", [
-        ["Lijst I", "Opw 2. Bezit: tot 1 jaar. Handel en bereiden: tot 8 jaar. In- en uitvoer: tot 12 jaar."],
-        ["Lijst II", "Opw 3. Bezit tot 30 g: overtreding. Handel: tot 4 jaar."],
+        ["Lijst I", "Opw 2, Opw 10. Bezit: tot 6 jaar (geringe hoeveelheid eigen gebruik: 1 jaar). Verkopen, telen, bereiden, vervoeren: tot 8 jaar. In- en uitvoer: tot 12 jaar."],
+        ["Lijst II", "Opw 3, Opw 11. Hennep of hasj tot 30 g: overtreding (hechtenis tot 1 maand). Opzettelijk bezit en handel: tot 2 jaar; beroep of bedrijf tot 6 jaar; in- en uitvoer tot 4 jaar."],
         ["Controleer", "Straffen, lijsten en hoeveelheden wijzigen. Check Opw 10 en 11."]
       ]],
       ["Drie handelingen", [
@@ -134,14 +134,14 @@
       ["Lijsten", "Wat staat op lijst II?", "Hennep, hasj en wiet."],
       ["Lijsten", "Welk artikel verbiedt lijst I-middelen?", "Opw 2."],
       ["Lijsten", "Welk artikel verbiedt lijst II-middelen?", "Opw 3."],
-      ["Straffen", "Hoeveel jaar max. voor handel in lijst I?", "Tot 8 jaar (in- en uitvoer tot 12 jaar). Controleer Opw 10."],
-      ["Straffen", "Wat is bezit van hennep tot 30 gram?", "Een overtreding. Daarboven een misdrijf."],
+      ["Straffen", "Hoeveel jaar max. voor handel in lijst I?", "Tot 8 jaar voor verkopen, telen, bereiden en vervoeren; in- en uitvoer tot 12 jaar (Opw 10)."],
+      ["Straffen", "Wat is bezit van hennep tot 30 gram?", "Een overtreding (Opw 11 lid 1 en 6). Daarboven is opzettelijk bezit een misdrijf (tot 2 jaar)."],
       ["Beleid", "Wat is AHOJG-G?", "Affichering, Harddrugs, Overlast, Jeugd, Grote hoeveelheden, Gemeente: de gedoogvoorwaarden voor coffeeshops."],
       ["Beleid", "Hoeveel mag een coffeeshop voorraad hebben?", "Maximaal 500 gram en 5 gram per transactie."],
       ["Beleid", "Wat is het verschil tussen wet en beleid?", "De wet zegt wat strafbaar is. Het OM-beleid zegt wat wordt aangepakt of vervolgd."],
       ["Optreden", "Wat zijn tekenen van handel?", "Veel doseringen, verpakking, contant geld, weegschaal, meerdere telefoons, chatberichten."],
       ["Optreden", "Hoe behandel je een vondst?", "Veilig, foto, weeg, verpak, label, bewijsketen, proces-verbaal."],
-      ["Bestuurlijk", "Wat kan de burgemeester doen bij een drugspand?", "Het pand sluiten (Opw 13b)."]
+      ["Bestuurlijk", "Wat kan de burgemeester doen bij een drugspand?", "De burgemeester kan een last onder bestuursdwang opleggen, bijvoorbeeld het pand sluiten (Opw 13b)."]
     ]
   }
 });

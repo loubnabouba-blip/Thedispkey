@@ -21,12 +21,12 @@
       ["p", "De politietaak staat in Pw 3: de <b>daadwerkelijke handhaving van de rechtsorde</b> en het <b>verlenen van hulp aan hen die dat behoeven</b>. Handhaving omvat preventie, het optreden bij verstoring en de opsporing."],
       ["p", "Wie bepaalt wat je doet? Dat hangt af van de taak waarin je werkt:"],
       ["tab", ["Taak", "Gezag", "Voorbeeld"], [
-        ["Handhaving openbare orde en hulpverlening", "Burgemeester (Pw 12)", "Demonstratie begeleiden, evenement, noodbevel"],
-        ["Strafrechtelijke handhaving, opsporing", "Officier van justitie (Pw 13)", "Aanhouden, verhoren, beslag"],
+        ["Handhaving openbare orde en hulpverlening", "Burgemeester (Pw 11)", "Demonstratie begeleiden, evenement, noodbevel"],
+        ["Strafrechtelijke handhaving, opsporing", "Officier van justitie (Pw 12)", "Aanhouden, verhoren, beslag"],
         ["Beheer (mensen, middelen)", "Korpschef", "Dienstrooster, uitrusting"]
       ]],
       ["tip", "Bij twijfel: vraag je af of er een strafbaar feit speelt. Zo ja, dan werk je onder gezag van de officier van justitie en geldt het Wetboek van Strafvordering. Zo nee, dan zit je in de bestuurlijke of hulpverlenende lijn."],
-      ["p", "<b>Opsporingsambtenaren</b> zijn de ambtenaren die met opsporing zijn belast (Sv 141). Buitengewoon opsporingsambtenaren (boa) hebben beperkte bevoegdheden (Sv 142). De <b>hulpofficier van justitie</b> (Sv 154) heeft extra bevoegdheden, bijvoorbeeld bij het ophouden en in verzekering stellen."]
+      ["p", "<b>Opsporingsambtenaren</b> zijn de ambtenaren die met opsporing zijn belast (Sv 141). Buitengewoon opsporingsambtenaren (boa) hebben beperkte bevoegdheden (Sv 142). De <b>hulpofficier van justitie</b> is een daartoe aangewezen politieambtenaar met extra bevoegdheden, bijvoorbeeld bij het ophouden voor onderzoek en het in verzekering stellen (Sv 56a, Sv 57)."]
     ] },
     { h: "De vier beginselen", b: [
       ["p", "Elke bevoegdheid die je gebruikt, moet door vier toetsen. Ze komen steeds terug, ook bij geweld."],
@@ -44,7 +44,7 @@
       ["p", "Let op de woorden. <b>Feiten of omstandigheden</b>: concreet, objectief, aan te wijzen. <b>Redelijk vermoeden</b>: meer dan een gevoel of een vermoeden zonder grond. <b>Strafbaar feit</b>: je kunt het feit benoemen."],
       ["vs", "Kan verdenking opleveren", ["Een melding van een getuige met signalement en richting", "Je ziet iemand een fiets forceren", "Je ruikt hennep uit de auto die net stopt", "Iemand past bij het signalement en is vlakbij, kort na het feit"], "Is niet genoeg", ["Een onderbuikgevoel", "De afkomst of huidskleur van iemand", "Iemand loopt ’s nachts rond in een rustige wijk", "Iemand kijkt schichtig weg bij het zien van politie"]],
       ["let", "Afkomst, huidskleur of geloof zijn nooit een feit of omstandigheid die verdenking oplevert. Dat is discriminatie en bovendien juridisch onhoudbaar. Zie het onderdeel Professioneel controleren."],
-      ["p", "<b>Heterdaad</b> (Sv 128) is ontdekking van een strafbaar feit terwijl het wordt begaan of onmiddellijk daarna. Ook als de verdachte door het publiek wordt achtervolgd, of kort na het feit wordt aangetroffen met voorwerpen die hem verdacht maken. Heterdaad geeft extra bevoegdheden, ook aan gewone burgers."]
+      ["p", "<b>Heterdaad</b> (Sv 128) is ontdekking van een strafbaar feit terwijl het wordt begaan of terstond nadat het is begaan. De heterdaadsituatie duurt niet langer dan kort na het feit. Heterdaad geeft extra bevoegdheden, ook aan gewone burgers (Sv 53)."]
     ] },
     { h: "De vaste route voor elke bevoegdheid", b: [
       ["stap", [
@@ -69,9 +69,9 @@
     kern: [
       ["Taak en gezag", [
         ["Taak", "Handhaven van de rechtsorde en hulp verlenen aan wie dat nodig heeft (Pw 3)."],
-        ["Burgemeester", "Gezag over openbare orde en hulpverlening (Pw 12)."],
-        ["Officier van justitie", "Gezag over strafrechtelijke handhaving en opsporing (Pw 13)."],
-        ["Opsporingsambtenaar", "Sv 141. Buitengewoon opsporingsambtenaar (boa): Sv 142. Hulpofficier: Sv 154."]
+        ["Burgemeester", "Gezag over openbare orde en hulpverlening (Pw 11)."],
+        ["Officier van justitie", "Gezag over strafrechtelijke handhaving en opsporing (Pw 12)."],
+        ["Opsporingsambtenaar", "Sv 141. Buitengewoon opsporingsambtenaar (boa): Sv 142. Hulpofficier van justitie: aangewezen politieambtenaar met extra bevoegdheden."]
       ]],
       ["Beginselen", [
         ["Legaliteit", "Geen bevoegdheid zonder wet (Sv 1, Sr 1)."],
@@ -81,7 +81,7 @@
       ]],
       ["Begrippen", [
         ["Verdachte", "Redelijk vermoeden van schuld uit feiten of omstandigheden (Sv 27)."],
-        ["Heterdaad", "Ontdekking terwijl het feit gebeurt of onmiddellijk daarna (Sv 128)."],
+        ["Heterdaad", "Ontdekking terwijl het feit wordt begaan of terstond daarna, en niet langer dan kort na het feit (Sv 128)."],
         ["Vormverzuim", "Onrechtmatig optreden kan bewijsuitsluiting of strafvermindering geven (Sv 359a)."],
         ["Grondrechten", "Gw 10 privacy · 11 lichaam · 12 woning · 15 vrijheid · EVRM 5 en 8."]
       ]]
@@ -91,8 +91,8 @@
       b: { q: "Wordt het feit nu gepleegd, of net gepleegd (heterdaad)?", o: [["Ja, heterdaad", "h"], ["Nee, eerder gepleegd", "n"]] },
       c: { q: "Is er gevaar voor de openbare orde, of heeft iemand hulp nodig?", o: [["Openbare orde", "o"], ["Hulp nodig", "z"], ["Geen van beide", "g"]] },
       h: { r: "Strafvordering, onder gezag van de officier van justitie. Heterdaad geeft de ruimste bevoegdheden (aanhouden door iedereen: Sv 53).", k: "ok", w: "Zie onderdeel 2 Aanhouden en onderdeel 3 Fouilleren." },
-      n: { r: "Strafvordering, onder gezag van de officier van justitie. Aanhouden kan bij verdenking van een misdrijf met voorlopige hechtenis (Sv 54, Sv 67).", k: "ok", w: "Zie onderdeel 2 Aanhouden." },
-      o: { r: "Bestuurlijke lijn, onder gezag van de burgemeester (Pw 12, Gemw 172). Denk aan noodbevel, APV, gebiedsaanwijzing.", k: "warn", w: "Zie onderdeel 6 Openbare orde." },
+      n: { r: "Strafvordering, onder gezag van de officier van justitie. Aanhouden kan op bevel van de officier van justitie bij verdenking van een misdrijf met voorlopige hechtenis (Sv 54, Sv 67).", k: "ok", w: "Zie onderdeel 2 Aanhouden." },
+      o: { r: "Bestuurlijke lijn, onder gezag van de burgemeester (Pw 11, Gemw 172). Denk aan noodbevel, APV, gebiedsaanwijzing.", k: "warn", w: "Zie onderdeel 6 Openbare orde." },
       z: { r: "Hulpverlening (Pw 3). Zorg, meld door, zorg voor veiligheid. Geweld alleen op de algemene grondslag Pw 7.", k: "warn" },
       g: { r: "Geen dwangmiddel mogelijk. Je kunt aanspreken, informeren en de situatie in de gaten houden. Zonder grondslag blijft het bij vrijwillig contact.", k: "no" }
     } },
@@ -115,13 +115,13 @@
     ],
     flits: [
       ["Basis", "Wat is de politietaak?", "Daadwerkelijke handhaving van de rechtsorde en hulp verlenen aan wie dat nodig heeft (Pw 3)."],
-      ["Basis", "Wie heeft gezag bij openbare orde en hulpverlening?", "De burgemeester (Pw 12)."],
-      ["Basis", "Wie heeft gezag bij strafrechtelijke handhaving?", "De officier van justitie (Pw 13)."],
+      ["Basis", "Wie heeft gezag bij openbare orde en hulpverlening?", "De burgemeester (Pw 11)."],
+      ["Basis", "Wie heeft gezag bij strafrechtelijke handhaving?", "De officier van justitie (Pw 12)."],
       ["Basis", "Noem de vier beginselen.", "Legaliteit, proportionaliteit, subsidiariteit, doelmatigheid."],
       ["Basis", "Wat is het verschil tussen proportionaliteit en subsidiariteit?", "Proportionaliteit: past de inbreuk bij het doel. Subsidiariteit: kan het met een lichter middel."],
       ["Begrippen", "Wat is een verdachte (Sv 27)?", "Iemand ten aanzien van wie uit feiten of omstandigheden een redelijk vermoeden van schuld aan een strafbaar feit voortvloeit."],
-      ["Begrippen", "Wat is heterdaad (Sv 128)?", "Ontdekking van een strafbaar feit terwijl het wordt begaan of onmiddellijk daarna. Ook achtervolging door het publiek of kort na het feit aantreffen met verdachte voorwerpen."],
-      ["Begrippen", "Wie zijn opsporingsambtenaren?", "Zij die met opsporing zijn belast (Sv 141). Boa’s zijn buitengewoon opsporingsambtenaar (Sv 142). De hulpofficier staat in Sv 154."],
+      ["Begrippen", "Wat is heterdaad (Sv 128)?", "Ontdekking van een strafbaar feit terwijl het wordt begaan of terstond nadat het is begaan. De situatie duurt niet langer dan kort na het feit."],
+      ["Begrippen", "Wie zijn opsporingsambtenaren?", "Zij die met opsporing zijn belast (Sv 141). Boa’s zijn buitengewoon opsporingsambtenaar (Sv 142). Een hulpofficier van justitie is een aangewezen politieambtenaar met extra bevoegdheden."],
       ["Begrippen", "Is een nerveuze indruk voldoende voor verdenking?", "Nee. Je hebt concrete feiten of omstandigheden nodig."],
       ["Grenzen", "Wat kan het gevolg zijn van een onrechtmatige bevoegdheidsuitoefening?", "Bewijsuitsluiting, strafvermindering of niet-ontvankelijkheid (Sv 359a), en een klacht of tuchtzaak."],
       ["Grenzen", "Welke grondrechten raak je meestal?", "Lichamelijke integriteit (Gw 11), vrijheid (Gw 15), privacy (Gw 10), woning (Gw 12)."],

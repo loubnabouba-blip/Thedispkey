@@ -8,7 +8,7 @@
   leren: [
     { h: "Twee lijnen naast elkaar", b: [
       ["tab", ["", "Strafrechtelijk", "Bestuurlijk"], [
-        ["Gezag", "Officier van justitie (Pw 13)", "Burgemeester (Pw 12, Gemw 172)"],
+        ["Gezag", "Officier van justitie (Pw 12)", "Burgemeester (Pw 11, Gemw 172)"],
         ["Doel", "Opsporen en vervolgen van strafbare feiten", "Orde herstellen of voorkomen, hulp verlenen"],
         ["Wet", "Wetboek van Strafrecht en Strafvordering", "Gemeentewet, APV, Awb"],
         ["Instrument", "Aanhouden, verhoren, beslag, vervolging", "Bevel, aanwijzing, sluiting, last onder dwangsom, boete"],
@@ -26,7 +26,7 @@
       ["p", "Bij een ernstige verstoring van de openbare orde of een ernstig gevaar voor de veiligheid kan de burgemeester snel optreden."],
       ["dl", [
         ["Noodbevel (Gemw 175)", "Een dringend bevel, vaak mondeling, voor een bepaalde plaats en beperkte tijd. Bijvoorbeeld: ruim dit plein, of ga weg uit dit gebied. Wie het niet opvolgt, kan strafbaar zijn."],
-        ["Noodverordening (Gemw 176)", "Een tijdelijke verordening voor een gebied en periode, bijvoorbeeld bij rellen of een grote verstoring. Dit kan ook bestuurlijke ophouding en ruimere bevoegdheden inhouden."]
+        ["Noodverordening (Gemw 176)", "Een tijdelijke verordening voor een gebied en periode, bijvoorbeeld bij rellen of een grote verstoring. Op grond van een verordening kan de burgemeester ook groepen personen tijdelijk laten ophouden (Gemw 154a)."]
       ]],
       ["stap", [
         ["Signaleren", "Je ziet de verstoring ontstaan en meldt dit aan de meldkamer en de leiding."],
@@ -38,7 +38,7 @@
       ["quiz", "Wie geeft een noodbevel (Gemw 175)?", ["De officier van justitie", "De korpschef", "De burgemeester", "De hulpofficier"], 2, "De burgemeester, vanwege zijn gezag over de openbare orde. Jij voert het uit en legt vast wat er is gebeurd."]
     ] },
     { h: "Preventief fouilleren, cameratoezicht en gebiedsaanwijzingen", b: [
-      ["p", "De burgemeester kan een gebied aanwijzen als <b>veiligheidsrisicogebied</b> (Gemw 151b) als daar herhaaldelijk ernstige verstoringen of wapenbezit voorkomen. De officier van justitie kan een bevel geven om te fouilleren op wapens (zie onderdeel 3). Daarnaast bestaat <b>cameratoezicht</b> op openbare plaatsen (Gemw 151c) met een eigen aanwijzing van de burgemeester."],
+      ["p", "Als de raad daarvoor een verordening heeft vastgesteld, kan de burgemeester bij verstoring van de openbare orde door wapens, of bij ernstige vrees daarvoor, een gebied aanwijzen als <b>veiligheidsrisicogebied</b> (Gemw 151b). De officier van justitie kan dan gelasten dat de bevoegdheden uit WWM 50 t/m 52 tegenover een ieder worden uitgeoefend (zie onderdeel 3). Daarnaast bestaat <b>cameratoezicht</b> op openbare plaatsen (Gemw 151c) met een eigen aanwijzing van de burgemeester."],
       ["tip", "Een gebiedsaanwijzing is tijdelijk en specifiek. Controleer vooraf: welk gebied, welke periode, welke bevoegdheid. Vind je het bevel niet, vraag het aan je leidinggevende voordat je gaat fouilleren."]
     ] },
     { h: "Huiselijk geweld en huisverbod", b: [
@@ -70,13 +70,13 @@
         ["APV", "Lokale regels. Overtreding strafbaar (Gemw 154) en bestuurlijk handhaafbaar."],
         ["Noodbevel", "Gemw 175. Snel, beperkt in plaats en tijd."],
         ["Noodverordening", "Gemw 176. Tijdelijke verordening voor gebied en periode."],
-        ["Veiligheidsrisicogebied", "Gemw 151b. Preventief fouilleren op wapens met bevel."],
+        ["Veiligheidsrisicogebied", "Gemw 151b. Preventief fouilleren op wapens met bevel officier van justitie (WWM 50 t/m 52)."],
         ["Cameratoezicht", "Gemw 151c."],
         ["Huisverbod", "Wet tijdelijk huisverbod: 10 dagen, verlengbaar tot 28 dagen."]
       ]],
       ["Bestuurlijke handhaving", [
         ["Bestuursdwang", "Awb 5:21: de gemeente herstelt zelf de overtreding op kosten van de overtreder."],
-        ["Last onder dwangsom", "Awb 5:31a: betalen bij voortduring."],
+        ["Last onder dwangsom", "Awb 5:32: betalen bij voortduring van de overtreding."],
         ["Bestuurlijke boete", "Awb 5:40: direct opgelegd door het bestuursorgaan."],
         ["Sluiting", "Bijvoorbeeld bij Opiumwet of overlast. Zie onderdeel 7 en 10."]
       ]]
@@ -108,15 +108,15 @@
       ["Huisverbod als straf", "Het is een bestuurlijke maatregel. Het strafrechtelijk dossier loopt los daarvan."]
     ],
     flits: [
-      ["Gezag", "Wie heeft het gezag over de openbare orde?", "De burgemeester (Pw 12, Gemw 172)."],
-      ["Gezag", "Wie heeft het gezag over strafrechtelijke handhaving?", "De officier van justitie (Pw 13)."],
+      ["Gezag", "Wie heeft het gezag over de openbare orde?", "De burgemeester (Pw 11, Gemw 172)."],
+      ["Gezag", "Wie heeft het gezag over strafrechtelijke handhaving?", "De officier van justitie (Pw 12)."],
       ["Gezag", "Wat is de APV?", "De Algemene Plaatselijke Verordening: lokale regels, vastgesteld door de gemeenteraad."],
       ["Instrumenten", "Wat is een noodbevel?", "Dringend bevel van de burgemeester voor een bepaalde plaats en beperkte tijd (Gemw 175)."],
       ["Instrumenten", "Wat is een noodverordening?", "Tijdelijke verordening bij ernstige verstoring van de orde (Gemw 176)."],
       ["Instrumenten", "Wat is een veiligheidsrisicogebied?", "Gebied aangewezen door de burgemeester (Gemw 151b), waarin met een bevel preventief gefouilleerd kan worden."],
       ["Instrumenten", "Hoelang duurt een huisverbod?", "10 dagen, verlengbaar tot maximaal 28 dagen (Wet tijdelijk huisverbod)."],
       ["Handhaving", "Wat is bestuursdwang?", "De gemeente herstelt de overtreding zelf op kosten van de overtreder (Awb 5:21)."],
-      ["Handhaving", "Wat is een last onder dwangsom?", "De overtreder betaalt bij voortduring van de overtreding (Awb 5:31a)."],
+      ["Handhaving", "Wat is een last onder dwangsom?", "De overtreder betaalt bij voortduring van de overtreding (Awb 5:32)."],
       ["Handhaving", "Wat is een bestuurlijke boete?", "Een boete die het bestuursorgaan zelf oplegt (Awb 5:40)."],
       ["Zorg", "Wat doe je bij verward gedrag zonder strafbaar feit?", "Veiligheid, rustig contact, zorg inschakelen (crisisdienst, GGZ). Dwang alleen bij direct gevaar en binnen de Ambtsinstructie."],
       ["Zorg", "Wie kan een crisismaatregel treffen?", "De burgemeester, op grond van de Wet verplichte ggz."]
