@@ -263,8 +263,7 @@ b,strong{font-weight:700}
 .count{margin:0}
 .count b{font:800 56px/1 var(--fd);font-stretch:112%;letter-spacing:-.03em}
 .tile-main,.stats b,.daysum b,.prepcount b,.mrow b,.macros b,.goalchip b,.rtxt,.exrx b{font-family:var(--fd);font-weight:800;font-stretch:108%;letter-spacing:-.02em}
-.tile-main{font-size:32px;line-height:1.1;margin:0}
-.tile-main small{font:500 14px var(--fb);letter-spacing:0}
+
 .stats{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);margin:var(--s1) 0 var(--s2)}
 .stats div{display:grid;gap:4px}
 .stats b{font-size:40px;line-height:1}
@@ -426,11 +425,10 @@ ul.checks li,.shop li,.checks li{display:flex;align-items:center;justify-content
 .mrow span{flex:1;color:var(--ink2);font-size:14px}
 .mrow b{font-size:26px;line-height:1}
 
-.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:var(--s3);margin:0 0 var(--s3);align-items:start}
 .tile{display:grid;gap:var(--s1);align-content:start;min-width:0;padding:var(--s4) var(--s3)}
 .tile h3{margin:0 0 var(--s1);color:var(--text);font:700 14px/1.3 var(--fb);text-transform:uppercase;letter-spacing:.14em;color:var(--ink2)}
 .tile .btn{justify-self:start;margin-top:var(--s1)}
-@media (min-width:900px){.tiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (min-width:900px){}
 
 details.acc{margin:0 0 var(--s3);overflow:hidden}
 details.acc>summary{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);min-height:72px;padding:var(--s2) var(--s3);list-style:none;cursor:pointer;font-weight:700;transition:var(--t)}
@@ -460,7 +458,7 @@ section.hero,.hero:not(.card){position:relative;overflow:hidden;display:grid;gap
 .hero:not(.card) h1{margin:0;font:900 clamp(34px,9vw,46px)/1.04 var(--fd);color:var(--head);font-stretch:112%;letter-spacing:-.03em}
 .hero:not(.card) p{margin:0;color:var(--text)}
 .hero:not(.card) .eyebrow{margin:0;color:var(--ink2)}
-.heroOk{color:var(--ok)!important;font-weight:600}
+
 .goalchip{display:inline-flex;align-items:center;gap:var(--s1);min-height:48px;padding:0 var(--s2);border-radius:var(--r);background:var(--surface2);border:1px solid var(--line);color:var(--ink);font-size:14px;text-decoration:none}
 .goalchip b{font-size:22px;line-height:1}
 .hero:not(.card) .btn.big{margin-top:var(--s1)}
@@ -604,9 +602,14 @@ svg.fgfx .eqf{fill:var(--fe)}svg.fgfx .eqb{stroke:var(--fe);stroke-width:5.6;str
 .reccats .chip,.recact .chip,.recact .link{flex:none;white-space:nowrap}.reccats .chip.btnchip,.recact .chip.btnchip{min-height:40px;padding:0 14px}
 .recmeta{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);margin:var(--s1) 0 var(--s2);color:var(--ink2);font-size:15px}.recmeta b{color:var(--ink)}
 .recmeta .recsort{margin:0;max-width:62%}.recmeta select{min-height:40px;padding:0 32px 0 12px;font-size:14px}
+.vday .daycard{display:grid;gap:6px;padding:var(--s2) var(--s3);margin-bottom:var(--s2)}.vday .daycard h2{margin:0;font-size:20px;line-height:1.2}.vday .daycard .eyebrow{margin:0;font-size:12px;line-height:1.2}.vday .daycard .btns{margin:0}
+.vday .vdate{margin:var(--s2) 0 var(--s1);font-size:13px}.dmeals .tick.wide em{min-width:0;display:grid}.dmeals .nm{font-style:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drow{display:flex;align-items:center;justify-content:space-between;gap:var(--s2)}.drow+.drow{border-top:1px solid var(--line);padding-top:var(--s2)}.drow small{display:block;color:var(--ink2)}
+.dmeals{list-style:none;margin:0;padding:0}.dmeals .tick.wide{min-height:52px}.dmeals em small,.dmeals .plainrow small{display:block;color:var(--ink2);font-size:13px}.dmeals .plainrow{padding:10px 0;border-bottom:1px solid var(--line)}.dmeals .plainrow em{font-style:normal}
+.dtot{margin:0;color:var(--ink2);font-size:14px}.daycard.due{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
 .thumb{position:relative}
 .shopv .shophead{display:flex;align-items:center;gap:var(--s2);margin-bottom:var(--s1)}.shophead h2{margin:0;font-size:22px}
-.shopsticky{position:sticky;top:var(--shopTop,81px);z-index:20;margin:0 calc(-1*var(--gutter,16px));padding:var(--s1) var(--gutter,16px);background:linear-gradient(var(--bg) 85%,transparent)}
+.shopsticky{position:sticky;top:calc(var(--shopTop,0px) + var(--shopInset,0px));z-index:20;margin:0 calc(-1*var(--gutter,16px));padding:var(--s1) var(--gutter,16px);background:linear-gradient(var(--bg) 85%,transparent)}
 .shopprog{display:flex;align-items:baseline;gap:6px;font-size:15px;color:var(--ink2)}.shopprog b{color:var(--ink);font-size:20px}
 .schips{display:flex;gap:8px;overflow-x:auto;padding:6px 0 2px;scrollbar-width:none}.schips::-webkit-scrollbar{display:none}
 .schip{appearance:none;flex:none;min-height:44px;padding:0 16px;border-radius:99px;border:1px solid var(--line2);background:transparent;color:var(--ink2);font:700 14px var(--fb);cursor:pointer;white-space:nowrap}
@@ -858,16 +861,9 @@ main p b,main p strong,.dialog p b,.dialog p strong,.note b,.note strong,ol.step
 /* ===== Beloningen ===== */
 .disp,h1{font-stretch:75%!important;text-transform:uppercase;letter-spacing:-.01em!important;font-weight:900}
 .hero:not(.card) h1{font-size:clamp(32px,9vw,50px)!important;line-height:.98!important;overflow-wrap:anywhere}
-.rwchip{display:inline-flex;align-items:center;height:48px;color:var(--head);font:800 15px/1 var(--fd);text-decoration:none;white-space:nowrap}
-.rwchip .pill{display:inline-flex;align-items:center;gap:5px;height:34px;padding:0 10px;border-radius:99px;background:var(--surface2);border:1px solid var(--line2)}
-.rwchip .lvn{color:var(--pg-ink)}
-.rwchip.on .pill{border-color:var(--pg)}
-.rwcard{display:block;margin:0 0 var(--s2);padding:var(--s2) var(--s3);border-radius:var(--r);text-decoration:none;color:var(--ink);background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--pg) 18%,transparent),transparent 60%),radial-gradient(100% 120% at 100% 100%,rgba(255,92,138,.16),transparent 60%),var(--surface);border:1px solid color-mix(in srgb,var(--pg) 30%,var(--line));box-shadow:0 18px 40px -24px color-mix(in srgb,var(--pg) 55%,transparent)}
-.rwtop{display:flex;align-items:center;gap:var(--s2)}
-.rwlv{flex:1;min-width:0;display:grid;gap:5px}
+
 .rwlv .eyebrow{margin:0;color:var(--head)}
-.rwlv small{font-size:14px;color:var(--ink2)}
-.rwlv small b{color:var(--pg-ink)}
+
 .xpbar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
 .xpbar.big{height:12px;margin:var(--s1) 0}
 .xpbar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--pg),#FFD166,#FF5C8A);box-shadow:0 0 12px color-mix(in srgb,var(--pg) 70%,transparent);transition:width .8s var(--ease)}
@@ -877,13 +873,13 @@ main p b,main p strong,.dialog p b,.dialog p strong,.note b,.note strong,ol.step
 .streak b{font:900 24px/1 var(--fd);font-stretch:80%;color:var(--head)}
 .streak small{font-size:13px;color:var(--ink2)}
 @keyframes flick{0%,100%{transform:scale(1) rotate(-3deg)}50%{transform:scale(1.12) rotate(3deg)}}
-.sdots{display:flex;align-items:center;gap:6px;margin-top:var(--s2)}
+
 .sd{flex:1;height:6px;border-radius:99px;background:var(--line)}
 .sd.won,.cal.won{background:linear-gradient(90deg,var(--pg),#FFD166)}
 .sd.frozen,.cal.frozen{background:#7FD4FF}
 .sd.miss,.cal.miss{background:color-mix(in srgb,var(--bad) 55%,transparent)}
 .sd.open,.cal.open{background:transparent;box-shadow:inset 0 0 0 1.5px var(--pg)}
-.frz{font-size:14px;color:var(--ink2);white-space:nowrap}
+
 .hexb{position:relative;display:inline-grid;place-items:center;width:52px;height:52px;flex:none}
 .hexb svg{position:absolute;inset:0;width:100%;height:100%}
 .hexb svg path{fill:var(--surface2);stroke:var(--line2);stroke-width:2}
@@ -893,25 +889,18 @@ main p b,main p strong,.dialog p b,.dialog p strong,.note b,.note strong,ol.step
 .hexb.off{filter:grayscale(1);opacity:.45}
 .hexb.big{width:96px;height:96px}
 .hexb.big b{font-size:38px}
-.quest{padding:var(--s2) var(--s3) var(--s3)}
-.qhead{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s1);flex-wrap:wrap;margin-bottom:var(--s2)}
-.qwin{font-size:14px;font-weight:700;color:var(--ink2)}
+
 .qwin.on{color:var(--pg-ink)}
-.qrings{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+
 .gring{position:relative;display:grid;justify-items:center;text-align:center;gap:2px}
 .gring svg{width:100%;max-width:74px;height:auto;filter:drop-shadow(0 0 7px color-mix(in srgb,var(--rc) 45%,transparent))}
 .gring .gr{transition:stroke-dashoffset 1s var(--ease)}
 .gring>b{position:absolute;top:0;left:0;right:0;aspect-ratio:1;max-width:74px;margin:0 auto;display:grid;place-items:center;font:800 15px/1 var(--fd);font-stretch:85%;color:color-mix(in srgb,var(--rc) var(--pgm),var(--ink))}
 .gring>span{font-size:14px;font-weight:600;color:var(--head);line-height:1.25}
 .gring em{display:block;font-style:normal;font-size:12.5px;font-weight:500;color:var(--ink2)}
-.wkgoal h3{font-size:24px}
-.wkhex{display:grid;place-items:center;margin:var(--s1) 0 var(--s2)}
+
 .hexring .hexfill{filter:drop-shadow(0 0 6px rgba(255,209,102,.35));transition:stroke-dashoffset 1.1s var(--ease)}
-.hexpct{font:900 40px var(--fd);font-stretch:78%;fill:var(--head);font-style:italic}
-.wkrow{display:flex;align-items:center;gap:var(--s2);padding:10px 12px;margin-top:6px;border-radius:var(--r-s);background:var(--surface2)}
-.wkrow>div{flex:1;min-width:0;display:grid}
-.wkrow b{font-size:14px;color:var(--head)}
-.wkrow small{font-size:14px;color:var(--ink2)}
+
 .wkrow .left{display:grid;justify-items:end;line-height:1.1}
 .wkrow .left b{font:900 20px/1 var(--fd);font-stretch:80%}
 .lvcard{display:flex;align-items:center;gap:var(--s3);flex-wrap:wrap}
@@ -922,8 +911,7 @@ main p b,main p strong,.dialog p b,.dialog p strong,.note b,.note strong,ol.step
 .lvstats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin-top:var(--s2)}
 .lvstats span{display:grid;font-size:13px;color:var(--ink2);line-height:1.2}
 .lvstats b{font:900 22px/1.1 var(--fd);font-stretch:80%;color:var(--head)}
-.calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin:var(--s2) 0 var(--s1)}
-.cal{display:block;aspect-ratio:1;border-radius:6px;background:var(--line)}
+
 .legend{display:flex;flex-wrap:wrap;gap:6px var(--s2);font-size:14px;color:var(--ink2)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend .cal{width:12px;height:12px;border-radius:3px}
@@ -962,7 +950,6 @@ main p b,main p strong,.dialog p b,.dialog p strong,.note b,.note strong,ol.step
 .cel-xp{font:900 28px/1 var(--fd)!important;font-stretch:85%;background:linear-gradient(90deg,var(--pg),#FFD166,#FF5C8A);-webkit-background-clip:text;background-clip:text;color:transparent!important}
 .cel .btns{justify-content:center}
 @media (prefers-reduced-motion:reduce){.streak.on .fl,#xpfly.on,.cel .hexb{animation:none}#xpfly.on{opacity:1}}
-
 
 /* ===== Trainingsscherm (setlogger) ===== */
 .set{grid-template-columns:34px minmax(0,1fr) minmax(0,1fr) 48px 30px!important;padding:6px;border:1px solid transparent;transition:background .25s,border-color .25s}
@@ -1056,7 +1043,7 @@ main p b,main p strong,.dialog p b,.dialog p strong,.note b,.note strong,ol.step
 .chipb svg{color:var(--gold-ink)}
 .card h3::after{content:none}
 .xpbar i{background:linear-gradient(90deg,#FFD166,var(--pg))}
-.rwcard{border-color:color-mix(in srgb,var(--gold) 40%,var(--line))!important}
+
 .hexb.lvl svg path{stroke:var(--gold)!important;fill:color-mix(in srgb,var(--gold) 18%,var(--surface))!important}
 .rwlv .eyebrow{color:var(--head)!important}
 .qwin.on{color:var(--gold-ink)!important}
@@ -1112,25 +1099,15 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 
 /* ===== Compact Home-dashboard ===== */
 .home>.hdash{margin-bottom:var(--s2)}
-.hdash{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;padding:var(--s3);border-radius:22px;background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--pg) 16%,transparent),transparent 60%),radial-gradient(100% 120% at 100% 100%,rgba(255,209,102,.14),transparent 60%),var(--surface);border:1px solid color-mix(in srgb,var(--gold) 35%,var(--line))}
-.hd-top{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s2)}
-.hd-txt{min-width:0}
+
 .hd-txt .eyebrow{margin:0 0 4px;display:block}
-.hdash h1{margin:0;font-size:clamp(20px,6.6vw,30px)!important;line-height:1!important;overflow-wrap:break-word}
-.hd-streak{display:flex;align-items:center;gap:4px;flex:none;height:44px;box-sizing:border-box;padding:0 12px;border-radius:99px;background:var(--surface2);border:1px solid var(--line2);text-decoration:none;color:var(--head)}
+
 .hd-streak .fl{font-size:20px;filter:grayscale(1) opacity(.5)}
 .hd-streak.on .fl{filter:none}
-.hd-streak b{font:900 20px/1 var(--fd);font-stretch:80%}
-.hd-lv{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
+
 .hd-lv .hexb{width:42px;height:42px}
 .hd-lv .hexb b{font-size:17px}
-.hd-lv>div{flex:1;min-width:0;display:grid;gap:6px}
-.hd-lv>div>span{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:15px}
-.hd-lv>div>span b{font:900 15px/1 var(--fd);font-stretch:85%;text-transform:uppercase;color:var(--head)}
-.hd-lv small{font-size:14px;color:var(--ink2);white-space:nowrap}
-.hd-lv em{font-style:normal;color:var(--gold-ink);font-weight:700}
-.hd-line{margin:0;font-size:15px;color:var(--ink2);line-height:1.4}
-.hd-line a{color:var(--gold-ink);text-decoration:none}
+
 .hdash .btn.big{margin:0;min-height:52px}
 .home .quest{padding:12px var(--s2) var(--s2);margin-bottom:var(--s2)}
 .home .qhead{margin-bottom:8px}
@@ -1140,28 +1117,24 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .home .gring>b{max-width:58px;font-size:15px}
 .home .gring>span{font-size:13px}
 .home .gring em{display:none}
-.dash{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2);margin:0 0 var(--s2)}
-.dash .dtrain{grid-column:1/-1;padding:var(--s2) var(--s3)}
-.dash .dtrain .tile-main{font-size:22px}
+
 .dash .tile h3{margin:0;font-size:15px}
-.dmini{display:grid;gap:6px;align-content:start;padding:12px!important;text-align:left;font:inherit;color:var(--ink);cursor:pointer;border:1px solid var(--line)}
+
 .mini{display:flex;align-items:center;gap:10px;min-width:0}
 .mring{flex:none}
 .mring text{font:800 13px var(--fd);fill:var(--head)}
-.mnums{display:grid;gap:4px;min-width:0}
-.mnums b{font:900 20px/1 var(--fd);font-stretch:85%;color:var(--head);white-space:nowrap}
-.mnums b small{font:600 13px var(--fb);color:var(--ink2);margin-left:2px}
+
 .mac{display:grid;gap:2px}
 .mac i{font-style:normal;font-size:13px;font-weight:600;color:var(--ink2);white-space:nowrap;display:flex;align-items:center;gap:5px}
 .mac i::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--mc);flex:none}
 .msub{font-size:13px;color:var(--ink2);line-height:1.3}
-.rwcard[hidden]{display:none!important}
-@media (max-width:330px){.dash{grid-template-columns:1fr}}
-.dash .dtrain{display:grid;gap:4px}
+
+@media (max-width:330px){}
+
 .dash .dtrain .sub{margin:0;font-size:15px}
 .dash .weekstrip{margin-top:6px;gap:4px}
 .dash .weekstrip .day{min-height:44px;padding:6px 0;gap:4px}
-.dmini .mnums b{font-size:18px}
+
 .home .tile h3{color:var(--gold-ink)!important}
 
 .swrow{display:flex;align-items:center;gap:var(--s2);padding:var(--s1) 0}
@@ -1177,11 +1150,9 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 
 /* ===== Opschoning ===== */
 .qbtn{display:block;padding:0;border:0;background:none;color:inherit;font:inherit;cursor:pointer;min-width:0}
-.wkh{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s2)}
-.wkh h3{margin:0}
+
 .wkh .link{min-height:44px}
-.wkgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:var(--s2);align-items:center;margin-top:var(--s1)}
-.wkgrid .wkhex{margin:0}
+
 .wkgrid .hexring{width:100%;max-width:150px;height:auto}
 .bodymap.compact{gap:6px}
 .bodymap.compact .bodies{padding:4px 0;gap:4px}
@@ -1223,25 +1194,20 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .b3d-credit{display:block;font-size:13px;line-height:1.4;color:var(--ink2)}
 .bodymap .b3d-open{justify-self:center;min-height:44px;font-size:14px}
 .orb{position:relative;width:var(--sz);height:calc(var(--sz)*.6);flex:none;perspective:700px}
-.orp{position:absolute;top:50%;left:0;width:100%;height:var(--sz);margin-top:calc(var(--sz)/-2);transform:rotateX(68deg);transform-style:preserve-3d}
-.orr{position:absolute;top:50%;left:50%;width:var(--d);height:var(--d);margin:calc(var(--d)/-2) 0 0 calc(var(--d)/-2);border-radius:50%;border:1px solid var(--line2);animation:orspin linear infinite}
+
 @keyframes orspin{to{transform:rotateZ(360deg)}}
-.od{position:absolute;top:50%;left:50%;width:9px;height:9px;margin:-4.5px;border-radius:50%;background:color-mix(in srgb,var(--ink2) 45%,transparent);transform:rotate(var(--a)) translateY(calc(var(--d)/-2))}
+
 .od.on{background:var(--c);box-shadow:0 0 10px var(--c)}
 .orr.hit{border-color:color-mix(in srgb,var(--c) 60%,transparent);box-shadow:0 0 12px color-mix(in srgb,var(--c) 35%,transparent)}
-.orc.part{opacity:calc(.65 + var(--tp)*.35)}
+
 .od.td{width:13px;height:13px;margin:-6.5px}
 .orb.mini .od{width:6px;height:6px;margin:-3px}.orb.mini .od.td{width:8px;height:8px;margin:-4px}
-.orc{position:absolute;top:50%;left:50%;width:calc(var(--sz)*.3);height:calc(var(--sz)*.3);transform:translate(-50%,-50%);border-radius:50%;display:grid;place-content:center;justify-items:center;line-height:1;background:radial-gradient(circle at 34% 28%,color-mix(in srgb,var(--pg) 40%,#fff),var(--pg) 60%,color-mix(in srgb,var(--pg) 45%,#000));color:#10130a;box-shadow:0 0 34px color-mix(in srgb,var(--pg) 45%,transparent);animation:orpulse 3s ease-in-out infinite}
-.orc b{font:900 26px/1 var(--fd);font-stretch:80%}.orc small{font-size:14px;font-weight:700;margin-top:2px;color:inherit;opacity:.75}
+
 .orb.mini .orc{width:calc(var(--sz)*.38);height:calc(var(--sz)*.38);box-shadow:0 0 14px color-mix(in srgb,var(--pg) 45%,transparent)}.orb.mini .orc b{font-size:18px}.orb.mini .orc small{font-size:8px}
 .orc:not(.on){filter:grayscale(1) opacity(.5)}
 @keyframes orpulse{50%{transform:translate(-50%,-50%) scale(1.06)}}
-.orwrap{display:flex;justify-content:center;margin:var(--s2) 0}
-.orleg{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;font-size:13px;color:var(--ink2)}
-.orleg span{display:flex;align-items:center;gap:5px}.orleg i{width:8px;height:8px;border-radius:50%;display:inline-block}
-.orsub{text-align:center;margin:var(--s1) 0 var(--s2)}
-@media (prefers-reduced-motion:reduce){:root:not([data-motion=on]) .orr,:root:not([data-motion=on]) .orc{animation:none}}
+
+@media (prefers-reduced-motion:reduce){}
 
 /* herstelcheck: strakke kaarten, dikke letters, kleurbalk per keuze */
 .chk2 .chkhead{margin:0 0 var(--s2)}
@@ -1263,7 +1229,7 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .chkbtns .btn{width:100%}
 
 /* ===== Vandaag: leesbare Hierna-kaart ===== */
-.vnext,.vnext small,.vnext b{color:#10130a}
+
 .vnext .btn{color:var(--pg);background:#0B1220;border-color:#0B1220}
 /* ===== Vergrendelscherm ===== */
 #lock{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;background:radial-gradient(120% 70% at 50% 30%,#16264A 0%,#0B1220 70%);color:#F4F7FB;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);overflow:auto;transition:opacity .4s ease 2.1s}
@@ -1385,16 +1351,9 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .vday .vh .eyebrow{margin:0;font-size:14px;font-weight:800}
 .vday .vh h1{margin:2px 0 0;font-size:clamp(44px,13vw,56px);line-height:1}
 .vday .vh p{margin:4px 0 0;font-size:17px;font-weight:600;color:var(--ink2)}
-.vhero{padding:var(--s3) var(--s1) var(--s2);border-radius:26px;background:var(--surface);border:1px solid var(--line);margin:0 0 var(--s2);overflow:hidden;display:flex;justify-content:center;align-items:center}
-.vhero .orc b{font-size:clamp(34px,11vw,46px)}.vhero .orc small{font-size:15px}
-.vgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 var(--s2)}
-.vt{display:flex;flex-direction:column;gap:2px;min-width:0;padding:14px 16px;border-radius:20px;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--c);color:var(--ink);text-align:left;font:inherit;appearance:none;cursor:pointer;min-height:88px}
-.vt b{font:800 clamp(22px,6.4vw,26px)/1.1 var(--fd);color:var(--head)}
-.vt span{font:800 18px/1.2 var(--fb);color:var(--c);overflow-wrap:anywhere}
+
 .vt.ok span::before{content:"✓ "}
-.vnext{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;border-radius:20px;background:var(--pg);color:var(--pg-ink,#10130a);margin:0 0 var(--s2)}
-.vnext small{display:block;font:800 15px/1.3 var(--fb);text-transform:uppercase;letter-spacing:.08em}
-.vnext b{display:block;font:800 clamp(24px,7vw,30px)/1.05 var(--fd)}
+
 .vnext .btn{background:#0B1220;color:var(--pg);border-color:#0B1220;flex:none}
 /* animatie 1: doel gehaald */
 @keyframes orflash{0%,66%{box-shadow:0 0 12px color-mix(in srgb,var(--c) 35%,transparent)}74%{border-color:var(--c);box-shadow:0 0 30px var(--c)}100%{box-shadow:0 0 12px color-mix(in srgb,var(--c) 35%,transparent)}}
@@ -1402,14 +1361,14 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .orb:not(.mini) .orr.hit{animation-name:orspin,orflash;animation-timing-function:linear,ease-out;animation-iteration-count:infinite,infinite;animation-delay:0s,var(--fd,0s)}
 .orb:not(.mini) .od.td.on::after{content:"";position:absolute;left:0;top:0;right:0;bottom:0;border-radius:50%;border:2px solid var(--c);animation:orrip 7s ease-out infinite;animation-delay:var(--fd,0s)}
 /* animatie 2: dag afgerond, sleutel draait om */
-.orkey{position:absolute;left:50%;top:50%;width:34px;margin:-35px 0 0 -17px;opacity:0;pointer-events:none;z-index:3}
+
 @keyframes orkeyin{0%{opacity:0;transform:translateY(60px) rotate(0)}12%{opacity:1;transform:translateY(8px) rotate(0)}20%{opacity:1;transform:translateY(0) rotate(0)}34%,44%{opacity:1;transform:translateY(0) rotate(90deg)}56%{opacity:0;transform:translateY(-14px) rotate(90deg)}100%{opacity:0}}
 @keyframes orcasc{0%,36%{box-shadow:none}44%{border-color:var(--c);box-shadow:0 0 28px var(--c)}70%,100%{box-shadow:0 0 12px color-mix(in srgb,var(--c) 35%,transparent)}}
 @keyframes orboom{0%,36%{box-shadow:0 0 34px color-mix(in srgb,var(--pg) 45%,transparent)}42%{box-shadow:0 0 80px 22px color-mix(in srgb,var(--pg) 90%,transparent)}70%,100%{box-shadow:0 0 34px color-mix(in srgb,var(--pg) 45%,transparent)}}
 .orb.cel .orkey{animation:orkeyin 3.6s ease-in-out both}
 .orb.cel:not(.mini) .orr{--d2:3.6s;animation-name:orspin,orcasc;animation-timing-function:linear,ease-out;animation-iteration-count:infinite,1;animation-delay:0s,var(--cd,0s)}
 .orb.cel .orc{animation:orpulse 3s ease-in-out infinite,orboom 3.6s ease-out 1}
-@media (prefers-reduced-motion:reduce){:root:not([data-motion=on]) .orkey{display:none}}
+@media (prefers-reduced-motion:reduce){}
 
 .rdyrow{display:grid;gap:6px;margin:var(--s2) 0}.rdyrow>span{font-weight:700;font-size:14px}
 .rdych{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
@@ -1429,17 +1388,13 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .hexring .hexfill,.gring .gr{filter:drop-shadow(0 0 5px color-mix(in srgb,var(--pg) 55%,transparent))}
 .gring .gr{filter:drop-shadow(0 0 5px var(--rc))}
 .center{text-align:center}
-.bhead{margin:0 0 var(--s2)}.bhead h1{margin:2px 0 0;font-size:clamp(22px,7vw,30px);line-height:1.05}
-.bgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s2);margin:0 0 var(--s2)}
-.bt{display:flex;flex-direction:column;gap:8px;min-width:0;padding:var(--s3);border-radius:22px;background:var(--surface);border:1px solid var(--line);color:var(--ink);text-align:left;text-decoration:none;font:inherit;appearance:none;position:relative;overflow:hidden}
-.bt h3{margin:0;font:700 14px/1.3 var(--fb);text-transform:uppercase;letter-spacing:.14em;color:var(--ink2)}
-.bt .sub{margin:0;font-size:15px}.bt .tile-main{font-size:26px}
-.bt:active{transform:scale(.98)}
-.b-hero{grid-column:1/-1;gap:6px;background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--pg) 22%,transparent),transparent 62%),var(--surface);border-color:color-mix(in srgb,var(--pg) 38%,var(--line));box-shadow:0 20px 44px -28px color-mix(in srgb,var(--pg) 75%,transparent)}
-.b-hero .tile-main{font-size:30px}.b-hero .weekstrip{margin-top:6px;gap:4px}.b-hero .btn.big{margin:6px 0 0;min-height:52px}
-.b-streak{grid-row:span 2;align-items:center;justify-content:center;text-align:center;background:radial-gradient(90% 70% at 50% 40%,color-mix(in srgb,var(--pg) 18%,transparent),transparent 70%),var(--surface);box-shadow:0 0 30px -14px color-mix(in srgb,var(--pg) 70%,transparent)}
-.b-streak h3{align-self:flex-start}.b-streak .orb.mini{margin:10px auto 0}
-.b-lv .mini{flex-direction:column;align-items:flex-start;gap:6px}.b-lv .xpbar{margin-top:2px}.b-lv .mnums{min-width:0}.b-lv .mnums b{font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}.b-wt .tile-main small{font:500 14px var(--fb)}
+
+.bt .sub{margin:0;font-size:15px}
+
+.b-hero .weekstrip{margin-top:6px;gap:4px}.b-hero .btn.big{margin:6px 0 0;min-height:52px}
+
+.b-streak .orb.mini{margin:10px auto 0}
+.b-lv .mini{flex-direction:column;align-items:flex-start;gap:6px}.b-lv .xpbar{margin-top:2px}
 .vo2grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s2);margin:var(--s2) 0}
 .vo2grid>div{padding:var(--s3);border-radius:18px;background:var(--bg2,var(--surface2));border:1px solid var(--line);display:grid;gap:4px}
 .vo2grid b{font:900 34px/1 var(--fd);font-stretch:80%}.vo2grid .good b{color:var(--pg);text-shadow:0 0 18px color-mix(in srgb,var(--pg) 45%,transparent)}
@@ -1447,7 +1402,7 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 </style>
 <link rel="stylesheet" href="gm/gamify.css">
 <div id="app">
- <header class="top"><div class="logo"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21M17 12v3M20 12v2"/></svg></i><span>The Discipline Key</span></div><div class="topbtns"><a id="rwchip" class="rwchip" href="#beloningen" aria-label="Beloningen" hidden></a><a id="profilebtn" class="themebtn" href="#mijn-plan" aria-label="Jij"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/></svg></a><button id="themebtn" class="themebtn" type="button" data-a="theme" aria-label="Kleurthema wisselen"></button></div></header>
+ <header class="top"><div class="logo"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21M17 12v3M20 12v2"/></svg></i><span>The Discipline Key</span></div><div class="topbtns"><a id="profilebtn" class="themebtn" href="#mijn-plan" aria-label="Jij"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/></svg></a><button id="themebtn" class="themebtn" type="button" data-a="theme" aria-label="Kleurthema wisselen"></button></div></header>
  <div id="savewarn" role="alert" hidden style="grid-column:1/-1">Opslaan in deze browser lukt niet. Je laatste invoer gaat verloren als je de pagina sluit. Maak een export onder Voortgang.</div>
  <nav id="nav" aria-label="Hoofdnavigatie"></nav>
  <main id="main"></main>
@@ -2349,21 +2304,19 @@ const accKey = d => route + ':' + ((d.querySelector(':scope>summary span') || {}
 document.addEventListener('toggle', e => { const d = e.target; if (d && d.matches && d.matches('details.acc')) ui.open[accKey(d)] = d.open; }, true);
 function render() {
   const main = $('#main');
-  document.documentElement.dataset.motion = S.orbMotion ? 'on' : '';
   document.documentElement.dataset.disc = route === 'sport' && ui.disc ? ui.disc : '';
   const sl = sharedList(); if (sl) { $('#app').classList.add('ob'); main.innerHTML = sharedView(sl); return; }
-  if (!S.profile || ui.ob) { $('#app').classList.add('ob'); renderOnboarding(); rwHeaderChip(); return; }
+  if (!S.profile || ui.ob) { $('#app').classList.add('ob'); renderOnboarding(); return; }
   $('#app').classList.remove('ob'); $('#app').classList.toggle('wk', !!ui.workout); nav();
   const V = { home: vHome, 'mijn-plan': vPlan, training: vTraining, voeding: vFood, voortgang: vProgress, disciplines: goalsPage, sport: vDisc, 'mijn-doel': vMilestone, beloningen: vRewards, mindful: vMindful };
   const entering = route !== ui._lr; ui._lr = route; main.classList.toggle('enter', entering); document.documentElement.dataset.route = route;
   main.innerHTML = subnav() + (V[route] || vHome)();
   $$('.seg.one', main).forEach(sg => { const on = $('.on', sg); if (on) sg.scrollLeft = on.offsetLeft - (sg.clientWidth - on.offsetWidth) / 2; });
-  if (ui.shopOpen) { const hd = $('header.top'); if (hd) document.documentElement.style.setProperty('--shopTop', (parseFloat(getComputedStyle(hd).top) || 0) + hd.offsetHeight + 'px'); }
+  if (ui.shopOpen) { const hd = $('header.top'); if (hd) { const cs = getComputedStyle(hd), st = cs.position === 'sticky', rs = document.documentElement.style; rs.setProperty('--shopTop', st ? (parseFloat(cs.top) || 0) + hd.offsetHeight + 'px' : '0px'); rs.setProperty('--shopInset', st ? '0px' : 'env(safe-area-inset-top,0px)'); } }
   $$('details.acc', main).forEach(d => { const k = accKey(d); if (k in ui.open) d.open = ui.open[k]; });
   if (route === 'voortgang') afterProgress && afterProgress();
   if (route === 'home') { const ob = main.querySelector('.orb[data-full="1"]'); if (ob && S.keyDay !== today()) { S.keyDay = today(); save(); setTimeout(() => ob.classList.add('cel'), 700); } }
-  rwHeaderChip(); clearTimeout(window._rwT); window._rwT = setTimeout(rwCheck, 400);
-  if (typeof gmAfterRender === 'function') gmAfterRender();
+  clearTimeout(window._rwT); window._rwT = setTimeout(rwCheck, 400);
 }
 function routeFrom(h) {
   if (h === 'fotoshoot' || h === 'mijn-doel') { ui.disc = ui.goalTab === 'wedstrijd' && h === 'mijn-doel' ? 'bb' : null; ui.dTop = ui.disc ? 'disc' : 'goal'; return ui.disc ? 'sport' : 'disciplines'; }
@@ -2639,7 +2592,7 @@ function rewards() {
   // dagen
   const days = new Set([...Object.keys(S.steps || {}), ...Object.keys(S.food || {}), ...Object.keys(S.recovery || {}), ...S.logs.map(l => l.date), ...S.body.map(b => b.date)].filter(d => d <= T));
   let first = [...days].sort()[0] || T; if (diffDays(first, T) > 400) first = addDays(T, -400);
-  let stepDays = 0, steps10k = 0, proteinDays = 0, checks = 0, perfect = 0, cur = 0, bestStreak = 0, freezes = 0, run = 0, pStreak = 0, bestP = 0, cStreak = 0, bestC = 0;
+  let stepDays = 0, steps10k = 0, proteinDays = 0, checks = 0, perfect = 0, pStreak = 0, bestP = 0, cStreak = 0, bestC = 0;
   const dayInfo = {};
   for (let d = first; d <= T; d = addDays(d, 1)) {
     const p = rwPillars(d), sc = rwScore(p);
@@ -2649,13 +2602,7 @@ function rewards() {
     if (p.kcalOk) add(RW_XP.kcal, 'Calorieën op doel', d);
     if (p.check) { checks++; add(RW_XP.check, 'Herstelcheck', d); cStreak++; bestC = Math.max(bestC, cStreak); } else if (d !== T) cStreak = 0;
     if (sc === 4 && (p.train || p.rest)) { perfect++; add(RW_XP.perfect, 'Perfecte dag', d); }
-    let st;
-    if (sc >= 3) { cur++; run++; st = 'won'; if (run % 7 === 0) { freezes = Math.min(2, freezes + 1); add(run * 15, run + ' dagen op rij', d); } }
-    else if (d === T) st = 'open';
-    else if (freezes > 0) { freezes--; st = 'frozen'; }
-    else { cur = 0; run = 0; st = 'miss'; }
-    bestStreak = Math.max(bestStreak, cur);
-    dayInfo[d] = { st, sc, p };
+    dayInfo[d] = { sc, p };
   }
   const weighDays = new Set(S.body.map(b => b.date)); weighDays.forEach(d => add(RW_XP.weigh, 'Weging', d));
   const photos = S.photos.filter(p => !p.demo).length; S.photos.filter(p => !p.demo).forEach(p => add(RW_XP.photo, 'Voortgangsfoto', p.date));
@@ -2665,12 +2612,11 @@ function rewards() {
     let n = 0, done = 0; for (let i = 0; i < 7; i++) { const dd = addDays(w, i); sessionsOn(dd).forEach(s => { n++; if (isDone(s.from, s.key)) done++; }); }
     if (n && done >= n) { fullWeeks++; add(RW_XP.week, 'Hele week afgerond', addDays(w, 6)); }
   }
-  if (typeof gmOverlay === 'function') { const o = gmOverlay(dayInfo); if (o) { cur = o.current; bestStreak = Math.max(bestStreak, o.best); freezes = o.freezes; } }
   const xp = xpLog.reduce((a, x) => a + x.n, 0), lv = rwLevel(xp);
-  const m = { workouts, cardio, sets, vol, prs: prs.length, streak: cur, bestStreak, perfect, stepDays, steps10k, proteinDays, bestP, checks, bestC, weighs: weighDays.size, photos, fullWeeks, level: lv.n };
+  const m = { workouts, cardio, sets, vol, prs: prs.length, perfect, stepDays, steps10k, proteinDays, bestP, checks, bestC, weighs: weighDays.size, photos, fullWeeks, level: lv.n };
   const badges = RW_BADGES.map(b => { const [c, t] = b.p(m); return { ...b, cur: Math.min(c, t), tgt: t, got: c >= t }; });
   const todayXp = xpLog.filter(x => x.d === T).reduce((a, x) => a + x.n, 0);
-  rwMemo = { key, xp, lv, m, prs, best, hist, badges, dayInfo, freezes, todayXp, today: dayInfo[T] || { st: 'open', sc: 0, p: rwPillars(T) } };
+  rwMemo = { key, xp, lv, m, prs, best, hist, badges, dayInfo, todayXp, today: dayInfo[T] || { sc: 0, p: rwPillars(T) } };
   return rwMemo;
 }
 
@@ -2679,10 +2625,6 @@ const RW_BADGES = [
   { id: 'w10', e: '💪', n: 'Tien keer', d: '10 trainingen afgerond.', p: m => [m.workouts + m.cardio, 10] },
   { id: 'w50', e: '🏋️', n: 'Vaste klant', d: '50 trainingen afgerond.', p: m => [m.workouts + m.cardio, 50] },
   { id: 'w100', e: '🏛️', n: 'Honderdclub', d: '100 trainingen afgerond.', p: m => [m.workouts + m.cardio, 100] },
-  { id: 's3', e: '🔥', n: 'Op gang', d: '3 dagen op rij je dag gewonnen.', p: m => [m.bestStreak, 3] },
-  { id: 's7', e: '⚡', n: 'Week vol vuur', d: '7 dagen op rij.', p: m => [m.bestStreak, 7] },
-  { id: 's30', e: '☄️', n: 'Onbreekbaar', d: '30 dagen op rij.', p: m => [m.bestStreak, 30] },
-  { id: 's100', e: '👑', n: 'Discipline-koning', d: '100 dagen op rij.', p: m => [m.bestStreak, 100] },
   { id: 'pf1', e: '✨', n: 'Perfecte dag', d: 'Alle vier de dagdoelen gehaald.', p: m => [m.perfect, 1] },
   { id: 'pf10', e: '💎', n: 'Perfectionist', d: '10 perfecte dagen.', p: m => [m.perfect, 10] },
   { id: 'pr1', e: '🏆', n: 'Eerste record', d: 'Verbeter je geschatte kracht op een oefening.', p: m => [m.prs, 1] },
@@ -2724,23 +2666,6 @@ function rwWeek() {
   return { plan, done, P, D, pct: P ? D / P : (sessDone && sess ? sessDone / sess : 0), sess, sessDone, w0 };
 }
 
-/* --- streak-orbit (3D, 4 banen = 4 dagdoelen, 7 stippen = laatste 7 dagen) --- */
-function rwOrbit(R, mini, sz0) {
-  const T = today(), days = Array.from({ length: 7 }, (_, i) => addDays(T, i - 6));
-  const G = [['train', '#C9F24D', 'Training'], ['steps', '#5CC8FF', 'Stappen'], ['protein', '#B48CFF', 'Eiwit'], ['check', '#FF9F5A', 'Check-in']];
-  const sz = sz0 || (mini ? 104 : 248), step = mini ? (sz0 ? 15 : 11) : 24, d0 = sz - 6, flame = R.m.streak;
-  const okOn = (d, g) => { const x = R.dayInfo[d], p = x && x.p; return !!(p && (g[0] === 'train' ? (p.train || p.rest) : p[g[0]])); };
-  const todayN = G.filter(g => okOn(T, g)).length;
-  const rings = G.map((g, k) => {
-    const D = d0 - k * step * 2 * (mini ? .9 : 1), dur = 22 - k * 3.5, hit = okOn(T, g);
-    const dots = days.map((d, i) => { const x = R.dayInfo[d], p = x && x.p, ok = p && (g[0] === 'train' ? (p.train || p.rest) : p[g[0]]); return `<i class="od ${ok ? 'on' : ''} ${i === 6 ? 'td' : ''}" style="--a:${(i * 360 / 7).toFixed(1)}deg;--c:${g[1]}" title="${g[2]} · ${fmtDate(d)}"></i>`; }).join('');
-    return `<div class="orr ${hit ? 'hit' : ''}" style="--d:${D}px;--c:${g[1]};--dur:${dur}s;--cd:${((3 - k) * .25).toFixed(2)}s;--fd:${(k * 1.1).toFixed(1)}s;animation-duration:var(--dur),var(--d2,7s);animation-direction:${k % 2 ? 'reverse' : 'normal'},normal">${dots}</div>`;
-  }).join('');
-  return `<div class="orb ${mini ? 'mini' : ''} heat-${typeof gmHeat === 'function' ? gmHeat(flame) : 0}" ${!mini && todayN === 4 ? 'data-full="1"' : ''} style="--sz:${sz}px" role="img" aria-label="${flame} dagen op rij, ${todayN} van 4 doelen vandaag gehaald"><div class="orp">${rings}</div><div class="orc ${flame || todayN ? 'on' : ''} ${!flame && todayN ? 'part' : ''}" style="--tp:${todayN / 4}"><b>${flame}</b><small>${flame === 1 ? 'dag' : 'dagen'}</small></div>${mini ? '' : '<svg class="orkey" viewBox="0 0 34 70" aria-hidden="true"><circle cx="17" cy="54" r="12" fill="#0B1220"/><circle cx="17" cy="54" r="5" fill="#E9FFA8"/><rect x="14" y="8" width="6" height="42" rx="3" fill="#0B1220"/><rect x="20" y="10" width="9" height="6" rx="2" fill="#0B1220"/><rect x="20" y="22" width="6" height="6" rx="2" fill="#0B1220"/></svg>'}</div>`;
-}
-function rwOrbitLegend() { return `<div class="orleg"><span><i style="background:#C9F24D"></i>Training</span><span><i style="background:#5CC8FF"></i>Stappen</span><span><i style="background:#B48CFF"></i>Eiwit</span><span><i style="background:#FF9F5A"></i>Check-in</span></div>`; }
-
-
 /* ===== Haptics en swipe (iOS-app via Capacitor Haptics; in de browser een korte trilling waar dat kan) ===== */
 function hap(k) {
   try { if (S && S.haptics === false) return; const H = window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.Haptics;
@@ -2765,7 +2690,6 @@ function hap(k) {
     const name = s0.el.dataset[dx > 0 ? 'swR' : 'swL']; if (!name || !A[name]) return; hap('sel'); lastScroll = Date.now(); A[name](s0.el.dataset, s0.el, e);
   }, { passive: true });
 })();
-
 
 /* ===== VO2max en fitnessleeftijd =====
    Bronnen: gemeten schatting van Apple Watch (via Gezondheid); 12-minutentest (Cooper 1968: VO2max = (meters - 504,9) / 44,73);
@@ -2854,7 +2778,7 @@ function radarVals(to, n) {
   days.forEach(d => { sessionsOn(d).forEach(s => { const df = sessionDef(s.key); if (df && df.type === 'kracht') { plan++; if (isDone(s.from, s.key)) done++; } });
     ((S.food[d] || {}).items || []).forEach(i => { pl++; if (i.eaten) ea++; });
     const r = S.recovery[d]; if (r && (r.energy || r.recovery)) { filled++; rc.push(((r.energy || 3) + (r.recovery || 3)) / 10); }
-    const x = R.dayInfo[d]; if (x && x.st === 'won') won++; });
+    const x = R.dayInfo[d]; if (x && x.sc >= 3) won++; });
   S.logs.filter(l => l.date >= days[0] && l.date <= to && l.type !== 'kracht').forEach(l => cardio += l.min || 0);
   const kr = plan ? done / plan : S.logs.some(l => l.type === 'kracht' && l.date >= days[0] && l.date <= to) ? 1 : 0;
   const hr = rc.length ? rc.reduce((a, b) => a + b, 0) / rc.length * Math.min(1, filled / (n * .5)) : 0;
@@ -2875,25 +2799,6 @@ function radarCard() {
    <div class="radleg"><span><i class="cur"></i>Laatste 14 dagen</span><span><i class="old"></i>14 dagen daarvoor</span></div>
    ${any ? `<div class="radrow">${L.map((l, i) => { const d = Math.round((cur[i] - prev[i]) * 100); return `<span><b>${Math.round(cur[i] * 100)}%</b>${l}<em class="${d > 0 ? 'up' : d < 0 ? 'dn' : ''}">${d > 0 ? '+' : ''}${d || 0}</em></span>`; }).join('')}</div>` : '<p class="sub">Log trainingen, maaltijden en je herstelcheck. Dan vult het web zich.</p>'}
    ${acc('Hoe wordt dit berekend?', '', '<p><b>Kracht:</b> gedane krachttrainingen ten opzichte van je planning. <b>Conditie:</b> minuten cardio tegenover 75 minuten per week. <b>Voeding:</b> aandeel geplande maaltijden dat je at. <b>Herstel:</b> je gemiddelde energie en herstel uit de check-in, meegewogen naar hoe vaak je die invult. <b>Consistentie:</b> aandeel dagen waarop je je dag won (3 van de 4 dagdoelen).</p>')}</div>`;
-}
-
-/* --- Home-blokken --- */
-function rwHomeCard() {
-  const R = rewards(), lv = R.lv, t = R.today, p = t.p, won = rwScore(p);
-  const flame = R.m.streak;
-  const quests = [
-    ['Training', p.train ? 1 : 0, 1, '#C9F24D', p.train ? '✓' : (p.rest ? 'Rust' : '0/1'), p.rest ? 'rustdag telt' : '+' + (RW_XP.workout + RW_XP.full) + ' XP'],
-    ['Stappen', p.stepsV, p.sg, '#5CC8FF', p.stepsV >= 1000 ? (p.stepsV / 1000).toFixed(1).replace('.', ',') + 'k' : String(p.stepsV), '+' + RW_XP.steps + ' XP'],
-    ['Eiwit', p.pV, p.tp || 1, '#B48CFF', p.tp ? n0(p.pV) + 'g' : '–', '+' + RW_XP.protein + ' XP'],
-    ['Check-in', p.check ? 1 : 0, 1, '#FF9F5A', p.check ? '✓' : '0/1', '+' + RW_XP.check + ' XP']
-  ];
-  const last7 = Array.from({ length: 7 }, (_, i) => addDays(today(), i - 6)).map(d => { const x = R.dayInfo[d]; return `<i class="sd ${x ? x.st : 'none'}" title="${fmtDate(d)}"></i>`; }).join('');
-  return `<a class="rwcard" hidden href="#beloningen" aria-label="Beloningen: level ${lv.n}, ${flame} dagen op rij">
-    <div class="rwtop">${hexBadge(lv.n, 'lvl')}<div class="rwlv"><span class="eyebrow">Level ${lv.n} · ${lv.title}</span><div class="xpbar"><i style="width:${(lv.into / lv.need * 100).toFixed(1)}%"></i></div><small>${lv.into} / ${lv.need} XP${R.todayXp ? ` · <b>+${R.todayXp} vandaag</b>` : ''}</small></div>
-    ${rwOrbit(R, true)}</div>
-    <div class="sdots" aria-hidden="true">${last7}${R.freezes ? `<span class="frz" title="Streakbeschermers">🧊×${R.freezes}</span>` : ''}</div></a>
-   <div class="card quest"><div class="qhead"><h3>Dagdoelen</h3><span class="qwin ${won >= 3 ? 'on' : ''}">${won >= 4 ? 'Perfecte dag! +' + RW_XP.perfect + ' XP' : won >= 3 ? 'Dag gewonnen 🔥' : `${won}/4 · nog ${3 - won} voor je streak`}</span></div>
-    <div class="qrings">${quests.map((q, i) => `<button class="qbtn" data-a="${['questTrain', 'stepsAsk', 'gotoFood', 'checkAsk'][i]}" aria-label="${q[0]}">${glowRing(q[1], q[2], q[3], q[4], `${q[0]}<em>${q[5]}</em>`)}</button>`).join('')}</div></div>`;
 }
 
 /* --- lichaam met spiergroepen --- */
@@ -3153,28 +3058,17 @@ A.b3d = d => {
 A.b3dMode = d => { m3.mode = d.m; m3.sel = null; m3Paint(); };
 A.b3dLv = d => { if (!m3.sel) return; const day = (S.musCheck = S.musCheck || {}), c = day[today()] = day[today()] || {}; if (+d.l < 0) delete c[m3.sel.g]; else c[m3.sel.g] = +d.l; if (!Object.keys(c).length) delete day[today()]; save(); m3Paint(); };
 A.b3dLvClear = () => { if (S.musCheck) delete S.musCheck[today()]; save(); m3Paint(); };
-function rwWeekCard() {
-  const W = rwWeek(); if (!W.P && !W.sess) return '';
-  const pct = Math.round(W.pct * 100), we = addDays(W.w0, 6);
-  return `<div class="card wkgoal"><div class="wkh"><h3>Deze week</h3><button class="link" data-a="pfTo" data-r="training" data-k="trainTab" data-t="volume">Details ›</button></div><p class="sub">${fmtDate(W.w0, { day: 'numeric', month: 'short' })} – ${fmtDate(we, { day: 'numeric', month: 'short' })} · ${W.sessDone}/${W.sess} sessies · ${W.D}/${W.P} sets</p>
-   <div class="wkgrid"><div class="wkhex">${hexRing(W.pct, 140, 'Weekdoel ' + pct + ' procent', `<text x="70" y="70" text-anchor="middle" dominant-baseline="central" class="hexpct">${pct}%</text>`, 'wk')}</div>${bodyMap(true)}</div></div>`;
-}
 
 /* --- Beloningen-scherm --- */
 function vRewards() {
   const R = rewards(), lv = R.lv, got = R.badges.filter(b => b.got).length;
-  const days = Array.from({ length: 35 }, (_, i) => addDays(today(), i - 34)).map(d => { const x = R.dayInfo[d]; return `<i class="cal ${x ? x.st : 'none'}" title="${fmtDate(d)}${x ? ' · ' + x.sc + '/4' : ''}"></i>`; }).join('');
   const recs = Object.keys(R.best).map(id => ({ id, v: R.best[id], h: R.hist[id] })).sort((a, b) => b.v - a.v).slice(0, 12);
   const spark = h => { if (!h || h.length < 2) return ''; const v = h.map(x => x.v), mn = Math.min(...v), mx = Math.max(...v), rg = mx - mn || 1; return `<svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="var(--pg)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="${v.map((y, i) => (i / (v.length - 1) * 100).toFixed(1) + ',' + (27 - (y - mn) / rg * 24).toFixed(1)).join(' ')}"/></svg>`; };
-  const earn = [['Training afgerond', RW_XP.workout + RW_XP.full], ['Cardio of segmenten', RW_XP.cardio], ['Per gelogde set (max. ' + RW_SET_CAP + ' per training)', RW_XP.set], ['Persoonlijk record', RW_XP.pr], ['Stappendoel', RW_XP.steps], ['Eiwitdoel', RW_XP.protein], ['Calorieën binnen 10%', RW_XP.kcal], ['Herstelcheck', RW_XP.check], ['Weging', RW_XP.weigh], ['Voortgangsfoto', RW_XP.photo], ['Perfecte dag (4/4)', RW_XP.perfect], ['Hele week afgerond', RW_XP.week], ['Elke 7 dagen op rij', '15 × dagen']];
+  const earn = [['Training afgerond', RW_XP.workout + RW_XP.full], ['Cardio of segmenten', RW_XP.cardio], ['Per gelogde set (max. ' + RW_SET_CAP + ' per training)', RW_XP.set], ['Persoonlijk record', RW_XP.pr], ['Stappendoel', RW_XP.steps], ['Eiwitdoel', RW_XP.protein], ['Calorieën binnen 10%', RW_XP.kcal], ['Herstelcheck', RW_XP.check], ['Weging', RW_XP.weigh], ['Voortgangsfoto', RW_XP.photo], ['Perfecte dag (4/4)', RW_XP.perfect], ['Hele week afgerond', RW_XP.week]];
   return `<section class="rwpage"><h1>Beloningen</h1>
   <div class="card lvcard">${hexRing(lv.into / lv.need, 150, 'Level ' + lv.n, `<text x="75" y="70" text-anchor="middle" class="hexlv">${lv.n}</text><text x="75" y="98" text-anchor="middle" class="hexlbl">LEVEL</text>`, 'lv')}
    <div><h2 class="disp">${lv.title}</h2><p class="sub">${R.xp.toLocaleString('nl-NL')} XP totaal · nog ${lv.need - lv.into} XP tot level ${lv.n + 1}</p><div class="xpbar big"><i style="width:${(lv.into / lv.need * 100).toFixed(1)}%"></i></div>
-   <div class="lvstats"><span><b>${R.m.streak}</b>huidige streak</span><span><b>${R.m.bestStreak}</b>langste streak</span><span><b>${R.m.prs}</b>records</span><span><b>${got}/${R.badges.length}</b>badges</span></div></div></div>
-  ${typeof gmRewardsSection === 'function' ? gmRewardsSection() : ''}
-  <div class="card"><h3>Streak</h3>${why('Hoe werkt de streak?', '<p>Een dag telt als gewonnen bij 3 van de 4 dagdoelen. Een geplande rustdag telt als trainingsdoel gehaald. Je eerste streakbeschermer 🧊 krijg je op dag 1, daarna één per 7 dagen op rij. Een beschermer vangt een gemiste dag op en wordt alleen gebruikt als hij je reeks echt redt.</p><p>Breekt een reeks van 3 dagen of meer, dan heb je 72 uur voor een herstel-quest: win 2 dagen en je reeks komt terug. Met een account kun je ook direct herstellen met Sparks.</p>')}
-   <div class="orwrap">${rwOrbit(R, false)}</div>${rwOrbitLegend()}<p class="center"><button class="link" data-a="orbMotion">${S.orbMotion ? 'Beweging uit de telefooninstelling volgen' : 'Beweegt het niet? Zet beweging aan'}</button></p><p class="sub orsub">Elke baan is een dagdoel. Elke stip is een van je laatste 7 dagen. Een gevulde stip betekent dat je het doel haalde.</p>
-   <div class="calgrid">${days}</div><div class="legend"><span><i class="cal won"></i>gewonnen</span><span><i class="cal frozen"></i>beschermd</span><span><i class="cal miss"></i>gemist</span><span><i class="cal open"></i>vandaag</span></div>${R.freezes ? `<p class="sub">Je hebt ${R.freezes} streakbeschermer${R.freezes > 1 ? 's' : ''} 🧊.</p>` : ''}</div>
+   <div class="lvstats"><span><b>${R.m.prs}</b>records</span><span><b>${got}/${R.badges.length}</b>badges</span></div></div></div>
   <h3 class="sect">Badges</h3><div class="badges">${R.badges.map(b => `<div class="badge ${b.got ? 'got' : ''}" title="${esc(b.d)}"><span class="bx">${hexBadge(b.e, b.got ? 'gold' : 'off')}</span><b>${esc(b.n)}</b><small>${b.got ? esc(b.d) : `${b.cur.toLocaleString('nl-NL')} / ${b.tgt.toLocaleString('nl-NL')}`}</small>${b.got ? '' : `<i class="bprog"><i style="width:${(b.cur / b.tgt * 100).toFixed(0)}%"></i></i>`}</div>`).join('')}</div>
   <h3 class="sect">Krachtrecords</h3>${recs.length ? `<div class="card recs"><p class="sub">Geschatte 1RM per oefening.</p>${recs.map(r => `<div class="rec"><div><b>${esc((EX[r.id] || {}).name || r.id)}</b><small>${r.h.length} keer gelogd</small></div>${spark(r.h)}<span class="rv">${String(+r.v.toFixed(1)).replace('.', ',')}<small> kg</small></span></div>`).join('')}</div>` : '<div class="card"><p class="sub">Log een krachttraining met gewicht en herhalingen. Daarna zie je hier je records groeien.</p></div>'}
   ${acc('Zo verdien je XP', '', `<div class="earn">${earn.map(e => `<span>${e[0]}</span><b>+${e[1]}</b>`).join('')}</div><p class="sub">Levels worden steeds iets groter. Alles wordt berekend uit wat je logt, ook met terugwerkende kracht. XP beloont dat je je doelen haalt, niet dat je er ver overheen gaat: meer sets of stappen dan nodig levert geen extra XP op.</p>`)}
@@ -3185,7 +3079,7 @@ function vRewards() {
 function rwCheck() {
   if (!S || !S.profile || ui.ob || ui.workout) return;
   let R; try { R = rewards(); } catch (e) { return; }
-  const now = { xp: R.xp, lv: R.lv.n, b: R.badges.filter(b => b.got).map(b => b.id), pr: R.prs.length, st: R.m.streak };
+  const now = { xp: R.xp, lv: R.lv.n, b: R.badges.filter(b => b.got).map(b => b.id), pr: R.prs.length };
   if (!S.rw) { S.rw = now; save(); return; }
   const o = S.rw, nb = R.badges.filter(b => b.got && !o.b.includes(b.id)), npr = Object.values(R.prs.slice(o.pr).reduce((a, x) => (a[x.ex] = x, a), {})), up = now.lv > o.lv, dxp = now.xp - o.xp;
   if (JSON.stringify(o) === JSON.stringify(now)) return;
@@ -3220,12 +3114,7 @@ function rwConfetti() {
   const t0 = performance.now();
   (function f(t) { const k = (t - t0) / 1800; g.clearRect(0, 0, W, H); P.forEach(p => { p.vy += .32; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.r += p.vr; g.save(); g.globalAlpha = Math.max(0, 1 - k); g.translate(p.x, p.y); g.rotate(p.r); g.fillStyle = p.c; g.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); g.restore(); }); if (k < 1) requestAnimationFrame(f); else cv.remove(); })(t0);
 }
-function rwHeaderChip() {
-  const el = $('#rwchip'); if (!el) return; if (!S || !S.profile || ui.ob) { el.hidden = true; return; }
-  try { const R = rewards(); el.hidden = route === 'home'; el.innerHTML = typeof gmChip === 'function' ? gmChip() : `<span class="pill"><span>🔥${R.m.streak}</span><span class="lvn">Lv${R.lv.n}</span></span>`; el.classList.toggle('on', route === 'beloningen'); } catch (e) { el.hidden = true; }
-}
 A.rwGo = () => { closeModal(); go('beloningen'); };
-
 
 function miniRing(val, tgt, col, txt, sub) {
   const r = 22, cc = 2 * Math.PI * r, pc = tgt ? Math.max(0, Math.min(1, val / tgt)) : 0;
@@ -3241,59 +3130,52 @@ function checkBody() { const rec = S.recovery[today()] || {};
   return `<div id="chk" class="chk2"><div class="chkhead"><small>Herstelcheck</small><h3>Hoe sta je ervoor?</h3><div class="chkprog" role="img" aria-label="${n} van 4 ingevuld"><i style="width:${n * 25}%"></i></div><p>${n === 4 ? 'Alles ingevuld. Je training past zich hierop aan.' : 'Tik wat past. ' + n + ' van 4 ingevuld.'}</p></div>${scaleRow('sleep', 'Hoeveel sliep je?', SC.hours, nearest(SC.hours, rec.sleep), 'data-c="recTile"')}${scaleRow('energy', 'Energie', SC.energy, rec.energy, 'data-c="recTile"')}${scaleRow('soreness', 'Spierpijn', SC.sore, rec.soreness, 'data-c="recTile"')}${scaleRow('recovery', 'Herstel', SC.recov, rec.recovery, 'data-c="recTile"')}<div class="chkbtns"><button class="btn big" data-a="close">${n === 4 ? 'Klaar' : 'Later afmaken'}</button><button class="link" data-a="b3d" data-m="checkin">Per spiergroep in 3D</button></div></div>`; }
 A.checkAsk = () => modal(checkBody());
 A.questTrain = () => { ui.trainTab = 'week'; go('training'); };
-function vHome() { return S.homeClassic ? vHomeClassic() : vHomeBento(); }
-function vHomeClassic() {
-  const p = S.profile, t = targets(), d = today(), sess = sessionsOn(d), rec = S.recovery[d] || {}, st = S.steps[d];
-  const hr = new Date().getHours(), greet = hr < 12 ? 'Goedemorgen' : hr < 18 ? 'Goedemiddag' : 'Goedenavond';
-  const fd = S.food[d] || { items: [] }, planned = sumNut(fd.items), eaten = sumNut(fd.items.filter(i => i.eaten));
-  const coach = coachProposal(), stepsGoal = rwStepsGoal();
-  const wk = Array.from({ length: 7 }, (_, i) => addDays(addDays(d, -wdOf(d)), i));
-  const strip = `<div class="weekstrip">${wk.map(x => { const ss = sessionsOn(x), dn = ss.length && ss.every(s => isDone(s.from, s.key)); return `<button class="day ${x === d ? 'today' : ''}" data-a="gotoTrainDate" data-date="${x}" aria-label="${fmtDate(x)}${ss.length ? ', training' + (dn ? ' gedaan' : '') : ''}"><span>${DAYS[wdOf(x)]}</span><i class="${ss.length ? (dn ? 'done' : 'plan') : ''}"></i></button>`; }).join('')}</div>`;
-  const ms = S.milestone.enabled && S.milestone.date ? diffDays(d, S.milestone.date) : null, na = nextAction(sess, fd);
-  const R = rewards(), lv = R.lv;
-  const hero = `<div class="hdash"><div class="hd-top"><div class="hd-txt"><span class="eyebrow">${fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' })}</span><h1>${p.name ? `<span style="white-space:nowrap">${greet},</span> ${esc(p.name)}` : greet}</h1></div>
-    <a class="hd-streak ${R.m.streak ? 'on' : ''} ${typeof gmDay === 'function' && gmDay().state === 'risk' ? 'gm-risk' : ''}" href="#beloningen" aria-label="${R.m.streak} dagen op rij"><span class="fl gm-fl heat-${typeof gmHeat === 'function' ? gmHeat(R.m.streak) : 1}">🔥</span><b>${R.m.streak}</b></a></div>
-   <a class="hd-lv" href="#beloningen" aria-label="Level ${lv.n}, ${lv.into} van ${lv.need} XP">${hexBadge(lv.n, 'lvl')}<div><span><b>${esc(lv.title)}</b><small>${lv.into}/${lv.need} XP${R.todayXp ? ` · <em>+${R.todayXp} vandaag</em>` : ''}</small></span><div class="xpbar"><i style="width:${(lv.into / lv.need * 100).toFixed(1)}%"></i></div></div></a>
-   <p class="hd-line">${esc(weekLine())}${ms != null && ms >= 0 ? ` · <a href="#mijn-doel"><b>${ms}</b> dagen tot ${esc(S.milestone.name)}</a>` : ''}</p>
-   ${na ? `<button class="btn big" data-a="${na.a}" ${na.data}>${esc(na.label)}</button>` : '<p class="heroOk">Alles voor vandaag staat op schema.</p>'}</div>`;
-  const train = !sess.length ? `<p class="tile-main">Rustdag</p><p class="sub">Een wandeling of lichte beweging helpt je herstel.</p>` :
-    sess.map(s => { const def = sessionDef(s.key), done = isDone(s.from, s.key); return `<p class="tile-main">${esc(def.name)}</p><p class="sub">${sessionMeta(def, s.key)}${s.moved ? ' · verplaatst' : ''}${done ? ' · gedaan' : ''}</p>`; }).join('');
-  const food = (!t || t.missing) ? `<p class="sub">Stel je gegevens in bij Profiel.</p>` :
-    `<div class="mini">${miniRing(eaten.kcal, t.kcal, 'var(--pg)', n0(eaten.kcal), 'kcal')}<div class="mnums"><b>${n0(eaten.kcal)}<small>/${t.kcal}</small></b><span class="mac"><i style="--mc:#B48CFF">E ${n0(eaten.p)}/${t.p}</i><i style="--mc:#5CC8FF">K ${n0(eaten.c)}/${t.c}</i><i style="--mc:#FFD166">V ${n0(eaten.f)}/${t.f}</i></span></div></div>`;
-  return `<section class="home">${hero}${typeof gmStreakBanner === 'function' ? gmStreakBanner() : ''}${rwHomeCard()}
-  <div class="dash">
-   <button class="tile dmini" data-a="gotoFood" aria-label="Voeding: ${(!t || t.missing) ? 'nog niet ingesteld' : n0(eaten.kcal) + ' van ' + t.kcal + ' kcal'}"><h3>Voeding</h3>${food}</button>
-   <button class="tile dmini" data-a="stepsAsk" aria-label="Stappen: ${st || 0} van ${stepsGoal}"><h3>Stappen</h3><div class="mini">${miniRing(st || 0, stepsGoal, '#5CC8FF', '', '')}<div class="mnums"><b>${st != null ? (st >= 10000 ? (st / 1000).toFixed(1).replace('.', ',') + 'k' : st.toLocaleString('nl-NL')) : '–'}<small>/${(stepsGoal / 1000).toFixed(stepsGoal % 1000 ? 1 : 0)}k</small></b><span class="msub">${StepSensor.st.mode === 'auto' ? 'automatisch' : StepSensor.st.mode === 'ready' ? 'tik om te koppelen' : 'tik om in te vullen'}</span></div></div></button>
-  </div>${scheduleLagCard()}${coachCard(coach)}
-  ${rwWeekCard()}
-  ${compHomeCard()}
+/* ===== Vandaag: in één oogopslag wat je vandaag of morgen doet: training, maaltijden en een rustmoment ===== */
+ui.homeDay = ui.homeDay || 0;
+const relaxAt = () => S.relaxAt || '20:30';
+const relaxPick = hr => hr < 12 ? 'coherent' : hr < 18 ? 'box' : '478';
+const relaxWhen = hr => hr < 12 ? 'Begin de dag rustig' : hr < 18 ? 'Even resetten' : 'Afbouwen voor de nacht';
+function homeTrain(d, now) {
+  const sess = sessionsOn(d);
+  if (!sess.length) return `<div class="card daycard"><span class="eyebrow">Training</span><h2>Rustdag</h2><p class="sub">${now ? 'Een wandeling of lichte beweging helpt je herstel.' : 'Morgen is een rustdag. Herstel hoort bij je schema.'}</p></div>`;
+  return `<div class="card daycard"><span class="eyebrow">Training</span>${sess.map(s => { const def = sessionDef(s.key), done = isDone(s.from, s.key), disc = String(s.key).startsWith('d:');
+    const act = done ? '<span class="pill ok">Gedaan</span>' : now ? `<button class="btn" data-a="${disc ? 'discDo' : 'openWorkout'}" data-key="${esc(s.key)}" data-date="${d}" data-from="${s.from}">Start</button>` : `<button class="btn ghost sm" data-a="gotoTrainDate" data-date="${d}">Bekijk</button>`;
+    return `<div class="drow"><div><h2>${esc(def.name)}</h2><small>${sessionMeta(def, s.key)}${s.moved ? ' · verplaatst' : ''}</small></div>${act}</div>`; }).join('')}</div>`;
+}
+function homeMeals(d, now) {
+  const fd = S.food[d] || { items: [] }, slots = mySlots();
+  let t = null; try { t = targets(d); } catch (e) {}
+  if (!fd.items.length) return `<div class="card daycard"><span class="eyebrow">Maaltijden</span><h2>Nog niets gepland</h2><p class="sub">${now ? 'Laat de app een dag voorstellen, of kies zelf wat je eet.' : 'Plan alvast wat je morgen eet.'}</p><div class="btns"><button class="btn sm" data-a="homePlanDay" data-date="${d}">Stel een dag voor</button><button class="btn ghost sm" data-a="gotoFoodDate" data-date="${d}">Zelf kiezen</button></div></div>`;
+  const label = it => (slots.find(x => x.id === it.slot) || { label: 'Extra' }).label;
+  const order = it => { const i = slots.findIndex(x => x.id === it.slot); return i < 0 ? 99 : i; };
+  const items = [...fd.items].sort((a, b) => order(a) - order(b));
+  const row = it => { const nm = itemName(it), sub = `${label(it)} · ${kc(itemNut(it).kcal)} kcal`;
+    return now ? `<li><label class="tick wide"><input type="checkbox" data-c="eaten" data-id="${it.id}" ${it.eaten ? 'checked' : ''}><span></span><em><i class="nm">${esc(nm)}</i><small>${esc(sub)}</small></em></label></li>` : `<li class="plainrow"><em><i class="nm">${esc(nm)}</i><small>${esc(sub)}</small></em></li>`; };
+  const plan = sumNut(fd.items), eaten = sumNut(fd.items.filter(i => i.eaten)), ok = t && !t.missing;
+  const tot = now ? `Gegeten ${kc(eaten.kcal)} van ${ok ? t.kcal : kc(plan.kcal)} kcal · ${n0(eaten.p)} van ${ok ? t.p : n0(plan.p)} g eiwit` : `Gepland ${kc(plan.kcal)} kcal · ${n0(plan.p)} g eiwit${ok ? ` (doel ${t.kcal} kcal)` : ''}`;
+  return `<div class="card daycard"><span class="eyebrow">Maaltijden</span><ul class="plain dmeals">${items.map(row).join('')}</ul><p class="dtot">${tot}</p><button class="link" data-a="gotoFoodDate" data-date="${d}">Alle maaltijden ›</button></div>`;
+}
+function homeRelax(d, now) {
+  const hr = new Date().getHours(), at = relaxAt(), done = mindLog().filter(x => x.date === d), off = !!S.relaxOff;
+  const due = now && !done.length && !off && new Date().toTimeString().slice(0, 5) >= at, pid = relaxPick(now ? hr : 20), pat = BREATH_PATTERNS[pid];
+  const rem = `<button class="link" data-a="relaxAt">${off ? 'Herinnering aan' : 'Herinnering ' + at}</button>`;
+  if (done.length) return `<div class="card daycard"><span class="eyebrow">Ontspanning</span><h2>Rustmoment gedaan</h2><p class="sub">${esc(done[done.length - 1].name)}. Goed bezig.</p>${rem}</div>`;
+  return `<div class="card daycard ${due ? 'due' : ''}"><span class="eyebrow">Ontspanning</span><h2>${due ? 'Het is tijd voor je rustmoment' : now ? relaxWhen(hr) : 'Plan een rustmoment'}</h2><p class="sub">${esc(pat.name)}, 3 minuten. ${esc(pat.blurb)}</p><div class="btns">${now ? `<button class="btn ${due ? '' : 'ghost'} sm" data-a="homeRelax" data-id="${pid}">Start 3 minuten</button>` : ''}${rem}</div></div>`;
+}
+function vHome() {
+  const now = ui.homeDay !== 1, T = today(), d = now ? T : addDays(T, 1);
+  return `<section class="home vday"><h1 class="sr">${now ? 'Vandaag' : 'Morgen'}</h1><span class="eyebrow vdate">${fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+  ${tabs(now ? 'vandaag' : 'morgen', [['vandaag', 'Vandaag'], ['morgen', 'Morgen']], 'homeDay', 'one')}
+  ${homeTrain(d, now)}${homeMeals(d, now)}${homeRelax(d, now)}
+  ${now ? scheduleLagCard() + coachCard(coachProposal()) + compHomeCard() : ''}
   ${S.example ? '<p class="sub">Je gebruikt een voorbeeldprofiel. Pas het aan of wis het bij Profiel.</p>' : ''}</section>`;
 }
-
-/* ===== Home als bento-grid: grote tegel voor vandaag, kleinere tegels voor de rest ===== */
-function vHomeBento() {
-  const p = S.profile, t = targets(), d = today(), sess = sessionsOn(d), st = S.steps[d];
-  const hr = new Date().getHours(), greet = hr < 12 ? 'Goedemorgen' : hr < 18 ? 'Goedemiddag' : 'Goedenavond';
-  const fd = S.food[d] || { items: [] }, eaten = sumNut(fd.items.filter(i => i.eaten));
-  const coach = coachProposal(), stepsGoal = rwStepsGoal(), na = nextAction(sess, fd), R = rewards();
-  const x = R.dayInfo[d], pp = (x && x.p) || {}, r = S.recovery[d] || {};
-  const trainOk = !!(pp.train || pp.rest), stepsOk = !!pp.steps, protOk = !!pp.protein, checkOk = !!(pp.check || r.energy || r.recovery);
-  const def = sess[0] ? sessionDef(sess[0].key) : null;
-  const trainTxt = !sess.length ? ('Rustdag') : trainOk ? 'Gedaan' : esc(def.name);
-  const stTxt = st != null ? st.toLocaleString('nl-NL') + ' / ' + stepsGoal.toLocaleString('nl-NL') : 'Nog niet ingevuld';
-  const prTxt = (!t || t.missing || !t.p) ? 'Stel je gegevens in' : n0(eaten.p) + ' / ' + t.p + ' g';
-  const tile = (cls, ok, c, title, txt, a, data = '') => `<button class="vt ${ok ? 'ok' : ''}" style="--c:${c}" data-a="${a}" ${data}><b>${title}</b><span>${txt}</span></button>`;
-  const nextCard = na ? `<div class="vnext"><div><small>Hierna</small><b>${esc(na.label)}</b></div><button class="btn big" data-a="${na.a}" ${na.data}>Start</button></div>` : `<div class="vnext"><div><small>Hierna</small><b>${checkOk ? 'Alles staat op schema' : 'Doe je check-in'}</b></div>${checkOk ? '' : '<button class="btn big" data-a="checkAsk">Check-in</button>'}</div>`;
-  return `<section class="home vday"><div class="vh"><span class="eyebrow">${fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' })}</span><h1>Vandaag</h1><p>${p.name ? `${greet}, ${esc(p.name)}. ` : ''}${esc(weekLine())}</p></div>
-  <a class="vhero" href="#beloningen" aria-label="Streak en beloningen" style="margin-top:var(--s3)">${rwOrbit(R, false, 330)}</a>
-  ${typeof gmStreakBanner === 'function' ? gmStreakBanner() : ''}
-  <div class="vgrid">${tile('t', trainOk, '#C9F24D', 'Training', trainTxt, 'gotoTraining')}${tile('s', stepsOk, '#5CC8FF', 'Stappen', stTxt, 'stepsAsk')}${tile('e', protOk, '#B48CFF', 'Eiwit', prTxt, 'gotoFood')}${tile('c', checkOk, '#FF9F5A', 'Check-in', checkOk ? 'Gedaan' : 'Nog open', 'checkAsk')}</div>
-  ${nextCard}${scheduleLagCard()}${coachCard(coach)}${rwWeekCard()}${compHomeCard()}
-  ${S.example ? '<p class="sub">Je gebruikt een voorbeeldprofiel. Pas het aan of wis het bij Profiel.</p>' : ''}
-  <p class="center"><button class="link" data-a="homeLayout">Klassieke weergave</button></p></section>`;
-}
-A.orbMotion = () => { S.orbMotion = !S.orbMotion; save(); render(); };
-A.homeLayout = () => { S.homeClassic = !S.homeClassic; save(); render(); };
+A.homeDay = d => { ui.homeDay = d.t === 'morgen' ? 1 : 0; render(); };
+A.gotoFoodDate = d => { ui.foodDate = d.date; ui.foodTab = 'dag'; go('voeding'); };
+A.homePlanDay = d => { ui.foodDate = d.date; ui.foodTab = 'dag'; A.fSuggest(); };
+A.homeRelax = d => { ui.breath = { pattern: d.id, minutes: 3, running: true, startedAt: Date.now() }; ui.mTab = 'ademhaling'; go('mindful'); };
+A.relaxAt = () => modal(`<h3>Herinnering rustmoment</h3><form data-submit="relaxAtSet"><label class="f">Herinner me om<input type="time" name="t" value="${relaxAt()}" required></label><label class="chip"><input type="checkbox" name="off" ${S.relaxOff ? 'checked' : ''}><span>Geen herinnering tonen</span></label><div class="btns end"><button type="button" class="btn ghost" data-a="close">Annuleren</button><button class="btn">Opslaan</button></div></form><small class="fine">De herinnering verschijnt in de app zodra het zo laat is. Een melding buiten de app is er nog niet.</small>`);
+F.relaxAtSet = (f, fd) => { S.relaxAt = fd.get('t') || '20:30'; S.relaxOff = !!fd.get('off'); save(); closeModal(); render(); toast(S.relaxOff ? 'Herinnering staat uit.' : 'Herinnering om ' + S.relaxAt + '.'); };
 const scale = (cur, [lo, hi]) => `<option value="">–</option>` + [1, 2, 3, 4, 5].map(i => `<option value="${i}" ${cur === i ? 'selected' : ''}>${i}${i === 1 ? ' (' + lo + ')' : i === 5 ? ' (' + hi + ')' : ''}</option>`).join('');
 
 /* ===== Achterstand op schema: melding + optie om te pauzeren ===== */
@@ -3488,7 +3370,6 @@ const StepSensor = (() => {
 })();
 A.stepLink = async () => { const mo = StepSensor.st.kind === 'motion', ok = await StepSensor.link(); toast(ok ? (mo ? 'Gekoppeld. Er worden stappen geteld zolang de app open staat.' : 'Stappen worden nu automatisch bijgewerkt.') : (mo ? 'Geen toegang tot de bewegingssensor. Vul je stappen handmatig in, of open de app als losse pagina vanaf je beginscherm.' : 'Geen toegang tot de stappenteller. Je kunt je stappen gewoon handmatig invullen.')); render(); };
 A.stepOff = () => { StepSensor.meta().off = true; StepSensor.meta().motion = false; StepSensor.stopMotion(); StepSensor.st.mode = 'manual'; StepSensor.st.kind = null; save(); render(); toast('Automatisch bijhouden staat uit. Je vult stappen handmatig in.'); };
-
 
 /* ===== Check-in tegels: tikken in plaats van invullen ===== */
 function scaleRow(name, label, opts, cur, attrs = '') {
@@ -4850,7 +4731,6 @@ F.volFb = (f, fd) => {
   lg.fb = res; save(); closeModal(); render(); toast(out.length ? 'Volgende keer: ' + out.join(', ') + '.' : 'Opgeslagen. Je volume blijft gelijk.');
 };
 
-
 /* ===== Slim volume: spiercheck-in + herstel + prestatie sturen je sets ===== */
 const RDY_MAP = { 'Borst': ['borst'], 'Rug': ['rug', 'onderrug'], 'Schouders': ['schouders'], 'Biceps': ['biceps'], 'Triceps': ['triceps'], 'Quadriceps': ['quadriceps'], 'Hamstrings en billen': ['hamstrings', 'billen'], 'Kuiten': ['kuiten'], 'Core': ['buik'] };
 function rdyLevel(g, d) { const c = m3Check(d || today()), v = (RDY_MAP[g] || []).map(k => c[k]).filter(x => x != null); return v.length ? Math.min(...v) : null; }
@@ -5077,7 +4957,6 @@ function discRx(exId, key) {
   return { ...g, label: d.label };
 }
 const isHard = key => { const d = sessionDef(key); return !!d && (d.hard != null ? d.hard : d.type === 'kracht' || d.type === 'segments'); };
-
 
 /* --- combineren: compatibiliteit --- */
 const heavyRun = x => x.id === 'run' && ['hm', 'm'].includes(x.goal);
