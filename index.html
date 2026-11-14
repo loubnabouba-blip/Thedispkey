@@ -596,6 +596,13 @@ svg.fgfx .eqf{fill:var(--fe)}svg.fgfx .eqb{stroke:var(--fe);stroke-width:5.6;str
 .exmedia .b2{display:none}
 @media (prefers-reduced-motion:no-preference){.focuscard .exmedia .b2{display:block;position:absolute;inset:0;opacity:0;animation:exfade 3.4s ease-in-out infinite}}
 @keyframes exfade{0%,28%{opacity:0}40%,72%{opacity:1}84%,100%{opacity:0}}
+.recbar{display:flex;gap:8px;align-items:stretch;margin:0 0 var(--s1)}.recbar .recsearch{flex:1;margin:0;min-width:0}
+.recfbtn{position:relative;flex:none;width:56px;border-radius:var(--r);border:1px solid var(--line2);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer}.recfbtn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}.recfbtn.on{border-color:var(--accent);color:var(--accent)}
+.recfbtn i{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--accent);color:#111;font:800 12px/20px var(--fb);font-style:normal;text-align:center}
+.reccats,.recact{display:flex;flex-wrap:nowrap;align-items:center;gap:8px;overflow-x:auto;margin:0 calc(-1*var(--gutter,16px)) var(--s1);padding:2px var(--gutter,16px);scrollbar-width:none}.reccats::-webkit-scrollbar,.recact::-webkit-scrollbar{display:none}
+.reccats .chip,.recact .chip,.recact .link{flex:none;white-space:nowrap}.reccats .chip.btnchip,.recact .chip.btnchip{min-height:40px;padding:0 14px}
+.recmeta{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);margin:var(--s1) 0 var(--s2);color:var(--ink2);font-size:15px}.recmeta b{color:var(--ink)}
+.recmeta .recsort{margin:0;max-width:62%}.recmeta select{min-height:40px;padding:0 32px 0 12px;font-size:14px}
 .thumb{position:relative}
 .shopv .shophead{display:flex;align-items:center;gap:var(--s2);margin-bottom:var(--s1)}.shophead h2{margin:0;font-size:22px}
 .shopsticky{position:sticky;top:var(--shopTop,81px);z-index:20;margin:0 calc(-1*var(--gutter,16px));padding:var(--s1) var(--gutter,16px);background:linear-gradient(var(--bg) 85%,transparent)}
@@ -4075,8 +4082,8 @@ const dietTag = r => { const f = recFlags(r); return !f.animal ? 'Vegan' : (!f.m
 const NL = { ontbijt: 'Ontbijt', lunch: 'Lunch', diner: 'Diner', tussendoor: 'Tussendoortje', alle: 'Alles' };
 function vFood() {
   if (ui.shopOpen) return shopView();
-  const t = ui.foodTab === 'eigen' ? 'recepten' : ui.foodTab;
-  return `<section><h1>Voeding</h1>${tabs(t, [['dag', 'Dag'], ['week', 'Week'], ['macro', 'Macro’s'], ['prep', 'Mealprep'], ['recepten', 'Recepten']], 'foodTab')}${t === 'dag' ? fDay() : t === 'week' ? calReview() + fWeek() : t === 'macro' ? fMacro() : t === 'prep' ? fPrep() : acc('Eigen maaltijden', S.custom.length ? S.custom.length + '' : '', fCustom(), ui.foodTab === 'eigen') + fRecipes()}</section>`;
+  const t = ui.foodTab === 'eigen' ? 'recepten' : ui.foodTab; if (ui.foodTab === 'eigen') ui.recCat = 'eigen';
+  return `<section><h1>Voeding</h1>${tabs(t, [['dag', 'Dag'], ['week', 'Week'], ['macro', 'Macro’s'], ['prep', 'Mealprep'], ['recepten', 'Recepten']], 'foodTab')}${t === 'dag' ? fDay() : t === 'week' ? calReview() + fWeek() : t === 'macro' ? fMacro() : t === 'prep' ? fPrep() : fRecipes()}</section>`;
 }
 function fMacro() { const x = planParts(); return `<div class="card"><h3>Macrodoelen</h3>${x.macroBody}</div><div class="card slim"><div class="row"><div><b>Eetpatroon</b><small>${esc(x.dietName)}</small></div><button class="btn ghost sm" data-a="foodPrefs">Wijzig</button></div></div>`; }
 function calReview() {
@@ -4205,7 +4212,7 @@ function recFit(r) {
   const d = Math.abs(b.kcal * f - ref.kcal) / ref.kcal + Math.abs(b.p * f - ref.p) / Math.max(ref.p, 1);
   return { f, score: clamp(Math.round(100 - d * 70), 0, 99), kcal: b.kcal * f, p: b.p * f, c: b.c * f, fat: b.f * f };
 }
-function recList() {
+function recItems() {
   const cat = ui.recCat, q = ui.recQ.trim().toLowerCase(), F = ui.recF;
   let list = RECIPES.filter(r => (cat === 'alle' || r.cat === cat) && (ui.recAll || recipeOK(r, S.profile))).map(r => ({ r, x: recFit(r) }));
   if (/^#?\d+$/.test(q)) list = list.filter(({ r }) => RNUM[r.id] === +q.replace('#', ''));
@@ -4218,8 +4225,12 @@ function recList() {
   if (F.pop) list = list.filter(({ r }) => POPULAR.includes(r.id));
   const so = ui.recSort, rb = r => recBase(r);
   list.sort((a, b) => (so === 'prot' ? rb(b.r).p - rb(a.r).p : so === 'ratio' ? rb(b.r).p / rb(b.r).kcal - rb(a.r).p / rb(a.r).kcal : so === 'kcal' ? rb(a.r).kcal - rb(b.r).kcal : so === 'min' ? a.r.min - b.r.min : (b.x.score ?? 0) - (a.x.score ?? 0)) || a.r.name.localeCompare(b.r.name, 'nl'));
+  return list;
+}
+function recList() {
+  const list = recItems();
   if (!list.length) return '<div class="card"><p>Geen recepten gevonden. Haal een filter weg of pas je zoekopdracht aan.</p></div>';
-  return `<p class="sub">${list.length} recept${list.length === 1 ? '' : 'en'}</p><div class="recgrid">${list.map(({ r, x }) => { const n = recBase(r);
+  return `<div class="recmeta"><span><b>${list.length}</b> recept${list.length === 1 ? '' : 'en'}</span><label class="recsort"><span class="sr">Sorteer op</span><select data-c="recSort" aria-label="Sorteer op">${REC_SORT.map(([k, l]) => `<option value="${k}" ${ui.recSort === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label></div><div class="recgrid">${list.map(({ r, x }) => { const n = recBase(r);
     return `<div class="rwrap"><button class="rcard" data-a="recipeOpen" data-id="${r.id}"><div class="rec-art">${recArtFull(r)}<span class="rnum">${rnum(r.id)}</span></div><b>${esc(r.name)}</b>
      <small>${NL[r.cat]} · ${r.min} min${dietTag(r) ? ' · ' + dietTag(r) : ''}${POPULAR.includes(r.id) ? ' · Klassieker' : ''}</small>
      <small class="mac"><span><b>${n0(n.p)}</b> g eiwit</span><span><b>${n0(n.c)}</b> kh</span><span><b>${n0(n.f)}</b> vet</span><span><b>${kc(n.kcal)}</b> kcal</span></small>
@@ -4227,17 +4238,30 @@ function recList() {
      <button class="heart ${isFav(r.id) ? 'on' : ''}" data-a="recFav" data-id="${r.id}" aria-pressed="${isFav(r.id)}" aria-label="${isFav(r.id) ? 'Verwijder uit favorieten' : 'Voeg toe aan favorieten'}">${isFav(r.id) ? '♥' : '♡'}</button>
      <button class="heart cartbtn ${inCart(r.id) ? 'on' : ''}" data-a="cartToggle" data-id="${r.id}" aria-pressed="${!!inCart(r.id)}" aria-label="${inCart(r.id) ? 'Haal uit boodschappenkarretje' : 'Zet in boodschappenkarretje'}">${CART_SVG}${inCart(r.id) ? `<i>${inCart(r.id)}</i>` : ''}</button></div>`; }).join('')}</div>`;
 }
+const FILTER_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>';
+const recHidden = () => RECIPES.length - RECIPES.filter(r => recipeOK(r, S.profile)).length;
+const recNAct = () => REC_F.filter(([k]) => ui.recF[k]).length + (ui.recAll ? 1 : 0);
 function fRecipes() {
-  const cat = ui.recCat, F = ui.recF, hidden = RECIPES.length - RECIPES.filter(r => recipeOK(r, S.profile)).length, t = targets();
-  const prefs = acc('Eetpatroon en allergenen', ((DIETS.find(x => x[0] === (S.profile.diet || 'omni')) || [0, ''])[1]) + ((S.profile.allergens || []).length ? ' · ' + S.profile.allergens.length + ' allergenen' : ''), `<label class="f">Ik eet<select data-c="diet">${DIETS.map(([k, l]) => `<option value="${k}" ${(S.profile.diet || 'omni') === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>${S.profile.diet === 'halal' ? '<p class="sub">Er staat geen varkensvlees in de recepten. Kies zelf halal-gecertificeerd vlees.</p>' : ''}<div class="f"><span>Allergenen vermijden</span><div class="chips">${Object.entries(ALLERGENS).map(([k, l]) => `<label class="chip"><input type="checkbox" data-c="allerg" value="${k}" ${(S.profile.allergens || []).includes(k) ? 'checked' : ''}><span>${l}</span></label>`).join('')}</div></div>`);
-  return prefs + `<label class="f recsearch"><span class="sr">Zoek een recept</span><input type="search" data-rq placeholder="Zoek op gerecht, ingrediënt of nummer" value="${esc(ui.recQ)}" autocomplete="off"></label>
-  <div class="chips sc">${['alle', 'ontbijt', 'lunch', 'diner', 'tussendoor'].map(c => `<button class="chip btnchip ${cat === c ? 'on' : ''}" data-a="recCat" data-cat="${c}">${NL[c]}</button>`).join('')}</div>
-  <div class="chips sc">${REC_F.map(([k, l]) => `<button class="chip btnchip ${F[k] ? 'on' : ''}" data-a="recF" data-k="${k}" aria-pressed="${!!F[k]}">${l}</button>`).join('')}</div>
-  <label class="f inl recsort">Sorteer op<select data-c="recSort">${REC_SORT.map(([k, l]) => `<option value="${k}" ${ui.recSort === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
-  ${hidden ? `<label class="chip"><input type="checkbox" data-c="recAll" ${ui.recAll ? 'checked' : ''}><span>Ook recepten tonen die niet bij mijn voorkeuren passen (${hidden})</span></label>` : ''}
-  <p class="sub">${RECIPES.length} recepten met minstens 30 g eiwit per standaardportie.${t && !t.missing ? ' De match laat zien hoe goed een recept bij het bijbehorende eetmoment in jouw dagdoel past, met de portie die je dan eet.' : ''} Voedingswaarden zijn berekende richtwaarden. De afbeeldingen zijn ter illustratie en geen bron voor voedingswaarden.</p>
-  ${cartBar()}<div id="reclist">${recList()}</div>`;
+  const cat = ui.recCat, F = ui.recF, nAct = recNAct();
+  const bar = `<div class="recbar"><label class="f recsearch"><span class="sr">Zoek een recept</span><input type="search" data-rq placeholder="Zoek gerecht, ingrediënt of nummer" value="${esc(ui.recQ)}" autocomplete="off"></label><button class="recfbtn ${nAct ? 'on' : ''}" data-a="recFilters" aria-label="Filters en eetpatroon${nAct ? ', ' + nAct + ' actief' : ''}">${FILTER_SVG}${nAct ? `<i>${nAct}</i>` : ''}</button></div>`;
+  const cats = `<div class="reccats">${['alle', 'ontbijt', 'lunch', 'diner', 'tussendoor'].map(c => `<button class="chip btnchip ${cat === c ? 'on' : ''}" data-a="recCat" data-cat="${c}">${NL[c]}</button>`).join('')}<button class="chip btnchip ${cat === 'eigen' ? 'on' : ''}" data-a="recCat" data-cat="eigen">Eigen${S.custom.length ? ' · ' + S.custom.length : ''}</button></div>`;
+  if (cat === 'eigen') return cats + fCustom();
+  const act = nAct ? `<div class="recact">${REC_F.filter(([k]) => F[k]).map(([k, l]) => `<button class="chip btnchip on" data-a="recF" data-k="${k}" aria-label="Filter ${esc(l.replace('♥ ', ''))} uitzetten">${esc(l.replace('♥ ', ''))} ✕</button>`).join('')}${ui.recAll ? '<button class="chip btnchip on" data-a="recAllOff">Ook andere voorkeuren ✕</button>' : ''}<button class="link" data-a="recFClear">Wis alles</button></div>` : '';
+  return bar + cats + act + `${cartBar()}<div id="reclist">${recList()}</div><small class="fine">${RECIPES.length} recepten met minstens 30 g eiwit per standaardportie. Voedingswaarden zijn berekende richtwaarden; de afbeeldingen zijn ter illustratie. De match laat zien hoe goed een recept bij dat eetmoment in jouw dagdoel past, met de portie die je dan eet.</small>`;
 }
+function recSheet() {
+  const F = ui.recF, p = S.profile, hidden = recHidden(), n = recItems().length;
+  modal(`<h3>Filters</h3><div class="f"><span>Snel kiezen</span><div class="chips">${REC_F.map(([k, l]) => `<button class="chip btnchip ${F[k] ? 'on' : ''}" data-a="recFm" data-k="${k}" aria-pressed="${!!F[k]}">${l}</button>`).join('')}</div></div>
+   <label class="f">Sorteer op<select data-c="recSort">${REC_SORT.map(([k, l]) => `<option value="${k}" ${ui.recSort === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+   <h4>Eetpatroon en allergenen</h4><label class="f">Ik eet<select data-c="diet">${DIETS.map(([k, l]) => `<option value="${k}" ${(p.diet || 'omni') === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>${p.diet === 'halal' ? '<p class="sub">Er staat geen varkensvlees in de recepten. Kies zelf halal-gecertificeerd vlees.</p>' : ''}
+   <div class="f"><span>Allergenen vermijden</span><div class="chips">${Object.entries(ALLERGENS).map(([k, l]) => `<label class="chip"><input type="checkbox" data-c="allerg" value="${k}" ${(p.allergens || []).includes(k) ? 'checked' : ''}><span>${l}</span></label>`).join('')}</div></div>
+   ${hidden ? `<label class="chip"><input type="checkbox" data-c="recAll" ${ui.recAll ? 'checked' : ''}><span>Ook recepten tonen die niet bij mijn voorkeuren passen (${hidden})</span></label>` : ''}
+   <div class="btns end"><button class="btn ghost" data-a="recFClear">Wis filters</button><button class="btn" data-a="close">Toon ${n} recept${n === 1 ? '' : 'en'}</button></div>`);
+}
+A.recFilters = recSheet;
+A.recFm = d => { ui.recF[d.k] = !ui.recF[d.k]; render(); recSheet(); };
+A.recFClear = () => { ui.recF = {}; ui.recAll = false; closeModal(); render(); };
+A.recAllOff = () => { ui.recAll = false; render(); };
 document.addEventListener('input', e => { const t = e.target.closest('[data-rq]'); if (!t) return; ui.recQ = t.value; const l = $('#reclist'); if (l) l.innerHTML = recList(); });
 A.recF = d => { ui.recF[d.k] = !ui.recF[d.k]; render(); };
 C.recSort = el => { ui.recSort = el.value; render(); };
