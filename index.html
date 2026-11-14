@@ -1258,7 +1258,7 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .vnext,.vnext small,.vnext b{color:#10130a}
 .vnext .btn{color:var(--pg);background:#0B1220;border-color:#0B1220}
 /* ===== Vergrendelscherm ===== */
-#lock{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;background:radial-gradient(120% 70% at 50% 30%,#16264A 0%,#0B1220 70%);color:#F4F7FB;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);overflow:auto;transition:opacity .4s ease 1.55s}
+#lock{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;background:radial-gradient(120% 70% at 50% 30%,#16264A 0%,#0B1220 70%);color:#F4F7FB;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);overflow:auto;transition:opacity .4s ease 2.1s}
 #lock.go{opacity:0;pointer-events:none}
 .lkin{width:min(420px,100%);padding:20px 24px 28px;display:flex;flex-direction:column;align-items:flex-start;box-sizing:border-box;min-height:100%}
 .lkcap{font:800 16px/1 var(--fd);letter-spacing:.02em;color:#fff}
@@ -1276,8 +1276,8 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .lkk:active{background:#C9F24D;color:#10130a}
 @keyframes lkpulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}}
 @keyframes lkfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-@keyframes lkkin{to{transform:translateY(0)}}
-@keyframes lkkturn{to{transform:rotate(-38deg)}}
+@keyframes lkkgo{0%{transform:translateY(52px) scale(1);opacity:1}28%{transform:translateY(0) scale(1.55);opacity:1}72%{transform:translateY(0) scale(.2);opacity:1}100%{transform:translateY(0) scale(.08);opacity:0}}
+@keyframes lkbar{0%{opacity:0;transform:rotate(0)}15%{opacity:1;transform:rotate(0)}100%{opacity:1;transform:rotate(90deg)}}
 @keyframes lkshl{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(-14px) rotate(-22deg)}}
 @keyframes lkbur{0%{opacity:.9;transform:scale(.6)}100%{opacity:0;transform:scale(2.2)}}
 @keyframes lkbody{0%,100%{filter:none}50%{filter:drop-shadow(0 0 22px #C9F24D)}}
@@ -1286,14 +1286,15 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .lkshackle{transform-origin:128px 136px}
 .lkburst{opacity:0;transform-origin:150px 150px}
 .lkt{animation:lkfloat 3s ease-in-out infinite}
-.lkkey{transform:translateY(52px)}
-.lkkturn{transform-origin:150px 164px}
+.lkkey{transform:translateY(52px);transform-origin:150px 164px}
+.lkbar{opacity:0;transform-origin:150px 164px}
+.lktop{width:100%;text-align:center}
 #lock.go .lkt{animation:none}
-#lock.go .lkkey{animation:lkkin .6s cubic-bezier(.4,0,.2,1) forwards}
-#lock.go .lkkturn{animation:lkkturn .35s ease-in-out .6s forwards}
-#lock.go .lkshackle{animation:lkshl .4s ease-out .95s forwards}
-#lock.go .lkburst{animation:lkbur .8s ease-out .95s forwards}
-#lock.go .lkdisc{animation:lkbody .7s ease-in-out .95s}
+#lock.go .lkkey{animation:lkkgo .8s cubic-bezier(.4,0,.2,1) forwards}
+#lock.go .lkbar{animation:lkbar .75s ease-in-out .7s forwards}
+#lock.go .lkshackle{animation:lkshl .4s ease-out 1.5s forwards}
+#lock.go .lkburst{animation:lkbur .8s ease-out 1.5s forwards}
+#lock.go .lkdisc{animation:lkbody .7s ease-in-out 1.5s}
 .lkgo{display:flex;align-items:center;justify-content:center;gap:10px}
 .lkgo svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .lkalt{margin:8px auto 0;min-height:44px;border:0;background:none;color:#B9C5DA;font:600 15px var(--fb);cursor:pointer}
@@ -5793,7 +5794,8 @@ const LOCK_SCENE = `<svg class="lkscene" viewBox="0 0 300 300" aria-hidden="true
   <g class="lkshackle"><path d="M128 146v-10a22 22 0 0 1 44 0v10" fill="none" stroke="#C9F24D" stroke-width="7" stroke-linecap="round"/></g>
   <rect x="116" y="144" width="68" height="46" rx="13" fill="#141E33" stroke="#C9F24D" stroke-width="6"/>
   <circle cx="150" cy="164" r="6" fill="#C9F24D"/><rect x="147.5" y="166" width="5" height="12" rx="2" fill="#C9F24D"/>
-  <g class="lkt"><g class="lkkturn"><g class="lkkey"><rect x="147.5" y="160" width="5" height="64" rx="2" fill="#C9F24D"/><rect x="152.5" y="202" width="10" height="6" rx="2" fill="#C9F24D"/><rect x="152.5" y="212" width="7" height="6" rx="2" fill="#C9F24D"/><circle cx="150" cy="236" r="13" fill="#C9F24D"/><circle cx="150" cy="236" r="5" fill="#141E33"/></g></g></g></svg>`;
+  <g class="lkt"><g class="lkkey"><rect x="147.5" y="160" width="5" height="64" rx="2" fill="#C9F24D"/><rect x="152.5" y="202" width="10" height="6" rx="2" fill="#C9F24D"/><rect x="152.5" y="212" width="7" height="6" rx="2" fill="#C9F24D"/><circle cx="150" cy="236" r="13" fill="#C9F24D"/><circle cx="150" cy="236" r="5" fill="#141E33"/></g></g>
+  <rect class="lkbar" x="146.5" y="150" width="7" height="28" rx="3.5" fill="#C9F24D" stroke="#141E33" stroke-width="1.5"/></svg>`;
 /* Face ID / Touch ID: alleen in de iOS-app (Capacitor-plugin BiometricAuthNative). In de browser blijft het bij knop of pincode. */
 const bioPlugin = () => { try { const c = window.Capacitor; return (c && c.isNativePlatform && c.isNativePlatform() && c.Plugins && c.Plugins.BiometricAuthNative) || null; } catch (e) { return null; } };
 let lockBioBusy = false;
@@ -5823,7 +5825,7 @@ async function lockCheck(el) { const h = await lockHash(lockPinBuf); if (h === S
 function lockOpen(el) {
   if (el.classList.contains('go')) return; el.classList.add('go'); try { navigator.vibrate && navigator.vibrate([30, 40, 60]); } catch (e) {}
   const fast = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  setTimeout(() => { el.remove(); document.body.classList.remove('noscroll'); }, fast ? 50 : 2000);
+  setTimeout(() => { el.remove(); document.body.classList.remove('noscroll'); }, fast ? 50 : 2550);
 }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') lockHiddenAt = Date.now(); else if (S.lock && S.lock.on && lockHiddenAt && Date.now() - lockHiddenAt > 60000) lockShow(); });
 A.lockToggle = () => { const c = lockCfg(); c.on = !c.on; save(); render(); toast(c.on ? 'Vergrendeling staat aan.' : 'Vergrendeling staat uit.'); };
