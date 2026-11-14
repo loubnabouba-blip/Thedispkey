@@ -1940,7 +1940,7 @@ function planWeek() { if (!S.planStart) return 0; const d = diffDays(S.planStart
 function planTotal() {
   const m = S.planLength || { mode: 'auto' };
   if (m.mode === 'manual') return m.weeks || null;
-  if (m.mode === 'datum') return (S.milestone.date && S.planStart) ? Math.max(1, Math.ceil((diffDays(S.planStart, S.milestone.date) + 1) / 7)) : null;
+  if (m.mode === 'datum') return (S.goalDate && S.planStart) ? Math.max(1, Math.ceil((diffDays(S.planStart, S.goalDate) + 1) / 7)) : null;
   if (m.mode === 'auto') { const te = timeEstimate(S.profile); return te && te.lo ? Math.round((te.lo + te.hi) / 2) : null; }
   return null;
 }
@@ -2230,7 +2230,7 @@ const ICONS = {
   jij: '<circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-3.9 3.4-6.5 7.5-6.5s7.5 2.6 7.5 6.5"/>',
   mindful: '<path d="M12 3c-3 3-4 6-4 9a4 4 0 0 0 8 0c0-3-1-6-4-9z"/><path d="M12 15v6M9 21h6"/>'
 };
-const ROUTES = [['home', 'Home'], ['mijn-plan', 'Mijn plan'], ['training', 'Training'], ['voeding', 'Voeding'], ['disciplines', 'Doel en checklist'], ['sport', 'Mijn doel'], ['voortgang', 'Voortgang'], ['mijn-doel', 'Mijn doel'], ['beloningen', 'Beloningen'], ['mindful', 'Mindful']];
+const ROUTES = [['home', 'Home'], ['mijn-plan', 'Mijn plan'], ['training', 'Training'], ['voeding', 'Voeding'], ['disciplines', 'Doel en wedstrijd'], ['sport', 'Mijn doel'], ['voortgang', 'Voortgang'], ['mijn-doel', 'Mijn doel'], ['beloningen', 'Beloningen'], ['mindful', 'Mindful']];
 const ico = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
 const GOALS = { kracht: 'Sterker worden', spier: 'Spiermassa opbouwen', vet: 'Vet verliezen', conditie: 'Conditie verbeteren', bewegen: 'Meer bewegen', combi: 'Spier opbouwen en vet verliezen' };
 const ACTS = { laag: 'Laag (zittend werk, weinig lopen)', licht: 'Licht (af en toe lopen of fietsen)', matig: 'Matig (veel staan of fietsen)', hoog: 'Hoog (fysiek werk of veel sport)' };
@@ -2355,8 +2355,7 @@ function renderOnboarding() {
     ${fld('Streefgewicht (kg, optioneel)', inp('targetWeight', d.targetWeight, 'number', 'min="35" max="250" step="0.1" inputmode="decimal"'), 'Alleen voor een tijdsinschatting. Het plan werkt ook zonder.')}
     ${fld('Trainingservaring', sel('experience', [['', 'Niet opgegeven'], ['beginner', 'Beginner (minder dan 1 jaar)'], ['gemiddeld', 'Gemiddeld (1 à 3 jaar)'], ['gevorderd', 'Gevorderd (meer dan 3 jaar)']], d.experience))}
     ${fld('Startdatum', inp('startDate', d.startDate, 'date'))}</div>
-    <label class="chip block"><input type="checkbox" data-fc="milestoneOn" value="1" ${d.milestoneOn ? 'checked' : ''}><span>Mijn doel heeft een einddatum, zoals een fotoshoot of wedstrijd</span></label>
-    ${fld('Einddatum doel (optioneel)', inp('milestoneDate', d.milestoneDate, 'date'), 'De datum waarop je je doel wilt halen. Je kunt hem later aanpassen, uitzetten of een naam geven, bijvoorbeeld Hyrox-wedstrijd.')}`;
+    ${fld('Doeldatum (optioneel)', inp('milestoneDate', d.milestoneDate, 'date'), 'Wanneer wil je je doel halen, bijvoorbeeld over 10 weken? Een wedstrijd, fotoshoot of bruiloft zet je apart bij Mijn doel, met een eigen datum.')}`;
   if (st === 3) body = `${fld('Trainingsdagen', `<div class="chips">${DAYS.map((x, i) => chk('days', i, d.days.includes(i), x)).join('')}</div>`, 'Kies de dagen waarop je kunt trainen. Het aantal bepaalt de opzet van je schema.')}
     <div class="grid2">${fld('Duur per training', sel('duration', [[30, '30 minuten'], [45, '45 minuten'], [60, '60 minuten'], [75, '75 minuten'], [90, '90 minuten']], d.duration))}
     ${fld('Waar train je?', sel('location', [['sportschool', 'Sportschool'], ['thuis', 'Thuis'], ['beide', 'Allebei']], d.location), 'Het kiezen van sportschool vinkt alle materiaal aan.')}
@@ -2409,14 +2408,14 @@ A.obFinish = () => {
   S.profile = { ...d }; S.plan = buildPlan(d); S.swaps = {}; S.short = {}; if (!S.period) S.period = defaultPeriod(d);
   if (!ui.obEdit || !S.planStart) S.planStart = d.startDate || today(); else if (d.startDate) S.planStart = d.startDate;
   if (old && old.goal !== d.goal) S.macroOverride = null;
-  S.milestone.enabled = !!d.milestoneOn; if (d.milestoneDate) S.milestone.date = d.milestoneDate;
+  S.goalDate = d.milestoneDate || null; delete S.profile.milestoneOn; delete S.profile.milestoneDate;
   if (S.food) Object.values(S.food).forEach(x => x.saved = x.saved);
   const sp = d.sport, needSport = sp && (!old || old.sport !== sp) && (sp === 'bb' ? !(S.comp && S.comp.active) : !D()[sp]);
   const wasEdit = ui.obEdit, fromStep = ui.obStart; ui.ob = null; ui.obEdit = false; save();
   if (needSport) { ui.disc = sp; ui.dtab = 'overzicht'; if (sp !== 'bb') ui.dsetup = discDefaults(sp); location.hash = 'sport'; route = 'sport'; render(); window.scrollTo(0, 0); toast('Stel nu je sport in.'); return; }
   const dest = wasEdit ? (fromStep === 2 ? 'disciplines' : 'mijn-plan') : 'home'; if (location.hash.slice(1) !== dest) location.hash = dest; route = dest; render(); window.scrollTo(0, 0); toast(wasEdit ? 'Profiel bijgewerkt.' : 'Je plan is opgeslagen.');
 };
-A.editProfile = d => { const st = d && d.s != null ? +d.s : 1; ui.ob = { ...newDraft(), ...S.profile, days: [...(S.profile.days || [])], equipment: [...(S.profile.equipment || [])], allergens: [...(S.profile.allergens || [])], startDate: S.planStart || today(), milestoneOn: S.milestone.enabled, milestoneDate: S.milestone.date || '' }; ui.obStep = st; ui.obStart = st; ui.obEdit = true; render(); window.scrollTo(0, 0); };
+A.editProfile = d => { const st = d && d.s != null ? +d.s : 1; ui.ob = { ...newDraft(), ...S.profile, days: [...(S.profile.days || [])], equipment: [...(S.profile.equipment || [])], allergens: [...(S.profile.allergens || [])], startDate: S.planStart || today(), milestoneDate: S.goalDate || '' }; ui.obStep = st; ui.obStart = st; ui.obEdit = true; render(); window.scrollTo(0, 0); };
 
 /* --- home --- */
 const acc = (title, summary, body, open) => `<details class="acc" ${open ? 'open' : ''}><summary><span>${title}</span><em>${summary || ''}</em></summary><div class="accbody">${body}</div></details>`;
@@ -3433,7 +3432,7 @@ function planParts() {
   const firstK = (S.plan.sessions.find(x => x.type === 'kracht') || {}).key, cur = blockOf(w || 1, firstK), per = S.period || 'lineair';
   const endDate = tot && S.planStart ? addDays(S.planStart, tot * 7 + (S.weekShift || 0) * 7 + (S.pauseWeeks || 0) * 7 - 1) : null;
   const lenBody = `<p>${tot ? `Je plan loopt <b>${tot} weken</b>${endDate ? ' tot ongeveer ' + fmtDate(endDate, { day: 'numeric', month: 'long', year: 'numeric' }) : ''}.` : 'Je plan heeft <b>geen vaste einddatum</b>.'} ${pl.mode === 'auto' ? (tot ? 'De app berekende dit uit je streefgewicht.' : 'Zonder streefgewicht kan de app geen duur berekenen.') : ''}</p>
-   <form data-submit="planlen" class="stack"><label class="f">Hoe lang loopt je plan?<select name="mode"><option value="auto" ${pl.mode === 'auto' ? 'selected' : ''}>Laat de app berekenen</option><option value="manual" ${pl.mode === 'manual' ? 'selected' : ''}>Zelf instellen</option><option value="datum" ${pl.mode === 'datum' ? 'selected' : ''}>Tot mijn mijlpaaldatum</option><option value="open" ${pl.mode === 'open' ? 'selected' : ''}>Doorlopend, geen einde</option></select></label>
+   <form data-submit="planlen" class="stack"><label class="f">Hoe lang loopt je plan?<select name="mode"><option value="auto" ${pl.mode === 'auto' ? 'selected' : ''}>Laat de app berekenen</option><option value="manual" ${pl.mode === 'manual' ? 'selected' : ''}>Zelf instellen</option><option value="datum" ${pl.mode === 'datum' ? 'selected' : ''}>Tot mijn doeldatum</option><option value="open" ${pl.mode === 'open' ? 'selected' : ''}>Doorlopend, geen einde</option></select></label>
    <label class="f">Aantal weken (bij zelf instellen)<input name="weeks" type="number" min="1" max="104" inputmode="numeric" value="${pl.weeks || ''}"></label><button class="btn sm">Opslaan</button></form>
    ${acc('Planning verschuiven', '', `<div class="btns"><button class="btn ghost sm" data-a="repeatWeek">Herhaal deze week</button><button class="btn ghost sm" data-a="pauseWeek">Pauzeer een week</button></div><form data-submit="startdate" class="inline"><label class="f">Startdatum<input name="d" type="date" value="${S.planStart || ''}"></label><button class="btn ghost sm">Verschuif</button></form>`)}`;
   const perBody = `<p class="sub">Periodisering is het bewust variëren van belasting en volume, zodat je kunt opbouwen en herstellen. Kies een model; je kunt het altijd wisselen.</p>
@@ -3503,7 +3502,7 @@ A.foodPrefs = () => { ui.foodTab = 'recepten'; go('voeding'); };
 A.setPeriod = d => { S.period = d.m; save(); render(); };
 F.planlen = (f, fd) => { const mode = fd.get('mode'), wk = num(fd.get('weeks'));
   if (mode === 'manual' && (!wk || wk < 1)) { toast('Vul het aantal weken in.'); return; }
-  if (mode === 'datum' && !S.milestone.date) { toast('Stel eerst een datum in bij Mijn doel.'); return; }
+  if (mode === 'datum' && !S.goalDate) { toast('Stel eerst een doeldatum in bij Mijn doel.'); return; }
   S.planLength = { mode, weeks: wk || (S.planLength && S.planLength.weeks) || 12 }; save(); render(); toast('Duur van je plan opgeslagen.'); };
 F.program = (f, fd) => { const days = fd.getAll('d').map(Number).sort((a, b) => a - b); if (!days.length) { toast('Kies minstens één trainingsdag.'); return; }
   S.profile.program = fd.get('program'); S.profile.days = days; S.plan = buildPlan(S.profile); S.swaps = {}; S.short = {}; S.draft = null; S.moves = []; save(); render(); toast('Schema opnieuw opgebouwd.'); };
@@ -4993,26 +4992,25 @@ function applyMainGoal(id, sub) {
   if ((p.program || 'auto') === 'auto') S.plan = buildPlan(p);
   return g;
 }
-/* --- mijlpaal hangt aan de hoofddiscipline als die een wedstrijddatum heeft --- */
-const msNameFor = (id, sub) => id === 'run' ? 'Wedstrijd ' + ((RUNG[sub] || RUNG.k5).n).toLowerCase() : id === 'pl' ? 'Powerlifting-wedstrijd' : id === 'hx' ? 'Hyrox-wedstrijd' : id === 'bb' && S.comp ? CLASSES[S.comp.cls].n + ' wedstrijd' : 'Wedstrijd';
+/* --- wedstrijd (S.milestone) hangt aan de hoofddiscipline als die een wedstrijddatum heeft --- */
 function msLinked() {
   const m = S.milestone; if (!m || !m.disc) return null;
   if (m.disc === 'bb') return S.comp && S.comp.active && S.comp.date ? { id: 'bb', date: S.comp.date } : null;
   const dc = D()[m.disc]; return dc && dc.date && dWeek(dc, today()) <= dc.weeks ? { id: m.disc, date: dc.date } : null;
 }
-function linkMilestone(id, date, name) {
-  const m = S.milestone, wasW = m.type === 'wedstrijd';
-  Object.assign(m, { enabled: true, type: 'wedstrijd', name, date, disc: id });
+function linkMilestone(id, date, kind) {
+  const m = S.milestone, e = evInfo(kind), wasW = m.type === 'wedstrijd';
+  Object.assign(m, { enabled: true, type: e[2], kind, name: e[1], date, disc: id });
   if (!wasW) { m.items = null; m.checks = {}; }
 }
-/* eigen mijlpaal met een andere datum wordt niet stilletjes overschreven */
-function offerMilestone(id, date, name) {
+/* een eigen wedstrijd met een andere datum wordt niet stilletjes overschreven */
+function offerMilestone(id, date, kind) {
   const m = S.milestone;
-  if (!m.date || m.date === date || msLinked() || m.disc === id || m.enabled === false) { linkMilestone(id, date, name); return true; }
-  modal(`<h3>Je doel koppelen aan ${esc(nameOf(id))}?</h3><p>Je doel staat nu op “${esc(m.name)}” met datum ${fmtL(m.date)}. ${esc(nameOf(id))} heeft als wedstrijddatum <b>${fmtL(date)}</b>.</p><p class="sub">Koppel je ze, dan telt je doel af naar de wedstrijd en volgt het de discipline.</p><div class="btns"><button class="btn" data-a="msLinkDo" data-id="${id}" data-date="${date}" data-n="${esc(name)}">Ja, koppel mijn doel</button><button class="btn ghost" data-a="close">Nee, houd mijn eigen doel</button></div>`);
+  if (!m.date || m.date === date || msLinked() || m.disc === id || m.enabled === false) { linkMilestone(id, date, kind); return true; }
+  modal(`<h3>Je wedstrijd vervangen?</h3><p>Je hebt al “${esc(m.name)}” op ${fmtL(m.date)}. ${esc(nameOf(id))} heeft als wedstrijddatum <b>${fmtL(date)}</b>.</p><p class="sub">Vervang je je wedstrijd, dan piekt je schema op die dag. Je doeldatum blijft los hiervan.</p><div class="btns"><button class="btn" data-a="msLinkDo" data-id="${id}" data-date="${date}" data-k="${esc(kind)}">Ja, vervang mijn wedstrijd</button><button class="btn ghost" data-a="close">Nee, houd mijn wedstrijd</button></div>`);
   return false;
 }
-A.msLinkDo = d => { linkMilestone(d.id, d.date, d.n); save(); closeModal(); render(); toast('Je doel volgt nu ' + nameOf(d.id) + '.'); };
+A.msLinkDo = d => { linkMilestone(d.id, d.date, d.k); save(); closeModal(); render(); toast('Je wedstrijd volgt nu ' + nameOf(d.id) + '.'); };
 function compatWith(nw) {
   return activeDisc().filter(o => o.id !== nw.id).map(o => {
     let [lv, msg] = pairLevel(nw, o);
@@ -5077,16 +5075,16 @@ function suggestDays(n, skip) {
 const DLIM = { run: [2, 5], pl: [3, 4], hx: [3, 5], beg: [3, 5] };
 function discDefaults(id) {
   const n = { run: 3, pl: 3, hx: 4, beg: 4 }[id], avg = (() => { const v = Object.entries(S.steps || {}).filter(([d]) => diffDays(d, today()) >= 0 && diffDays(d, today()) < 7).map(e => e[1]); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : 5000; })();
-  return { id, goal: id === 'run' ? 'k5' : 'afvallen', level: 'new', date: '', days: suggestDays(n), orm: { sq: '', bp: '', dl: '' }, target: '', baseSteps: clamp(r5(avg / 100) * 100, 3000, 8000) };
+  return { id, kind: 'pl3', hxdiv: S.hx.div, goal: id === 'run' ? 'k5' : 'afvallen', level: 'new', date: '', days: suggestDays(n), orm: { sq: '', bp: '', dl: '' }, target: '', baseSteps: clamp(r5(avg / 100) * 100, 3000, 8000) };
 }
 const dfld = (label, inner, hint) => `<label class="f">${label}${inner}${hint ? `<small>${hint}</small>` : ''}</label>`;
 function discSetup(id) {
   const o = ui.dsetup && ui.dsetup.id === id ? ui.dsetup : (ui.dsetup = discDefaults(id)), sel = (k, opts) => `<select name="${k}" data-c="dsf">${opts.map(([v, l]) => `<option value="${v}" ${o[k] === v ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
   const [mn, mx] = DLIM[id], g = id === 'run' ? RUNG[o.goal] : null;
   const intro = { run: '<p>Een schema op minuten en gevoel (RPE en de praattest), niet op tempo. Bevat rustige duurlopen, tempo of intervallen en een lange duurloop, met herstelweken en een afbouw naar je wedstrijd.</p>', pl: '<p>Zware squat, bankdrukken en deadlift in golven: volume, kracht, piek en afbouw. Met je 1RM rekent de app doelgewichten uit. Zonder 1RM stuurt de app op gevoel (RPE).</p>', hx: '<p>Lopen, stationskracht, circuits en simulaties naar je Hyrox-wedstrijd, met een afbouw in de laatste weken.</p>', beg: '<p>12 weken in vier fases: eerst wennen met wandelen en 2 korte krachtsessies, daarna steeds iets meer. Naast je trainingen krijg je weekdoelen voor stappen, beweging, voeding en slaap.</p>' }[id];
-  const fields = id === 'run' ? `${dfld('Doel', sel('goal', Object.entries(RUNG).map(([k, v]) => [k, v.n])))}${dfld('Mijn niveau', sel('level', [['new', 'Ik begin (nog geen vaste loopervaring)'], ['reg', 'Ik loop al regelmatig (2× per week 30 minuten)']]), ['hm', 'm'].includes(o.goal) && o.level === 'new' ? 'Halve en hele marathon vragen een loopbasis. Begin met 5 of 10 km als je nog niet regelmatig loopt.' : '')}${dfld('Wedstrijddatum (optioneel)', `<input type="date" name="date" data-c="dsf" value="${o.date}" min="${addDays(today(), 7)}">`, `Zonder datum loopt het schema ${g.def} weken. Minimaal aanbevolen: ${g.min} weken.`)}`
-    : id === 'pl' ? `${dfld('Wedstrijd of testdatum (optioneel)', `<input type="date" name="date" data-c="dsf" value="${o.date}" min="${addDays(today(), 28)}">`, 'Zonder datum duurt het schema 12 weken.')}<div class="grid3">${[['sq', 'Squat 1RM (kg)'], ['bp', 'Bank 1RM (kg)'], ['dl', 'Deadlift 1RM (kg)']].map(([k, l]) => dfld(l, `<input type="number" name="orm_${k}" data-c="dsf" inputmode="decimal" step="0.5" min="0" value="${o.orm[k]}">`)).join('')}</div><small>Weet je je 1RM niet? Laat het leeg. Dan gebruikt de app je geschatte 1RM uit je logs, of stuurt hij op gevoel.</small>`
-    : id === 'hx' ? `${dfld('Wedstrijddatum (optioneel)', `<input type="date" name="date" data-c="dsf" value="${o.date}" min="${addDays(today(), 28)}">`, 'Zonder datum duurt het schema 12 weken.')}${dfld('Streeftijd Hyrox in minuten (optioneel)', `<input type="number" name="target" data-c="dsf" inputmode="numeric" min="40" max="200" value="${o.target}">`, 'De eindtijd die je wilt halen voor de hele wedstrijd: 8 keer 1 km hardlopen met 8 stations. Bijvoorbeeld 90 voor 1 uur 30. Laat leeg als je dat nog niet weet.')}`
+  const fields = id === 'run' ? `${dfld('Afstand', sel('goal', Object.entries(RUNG).map(([k, v]) => [k, v.n])))}${dfld('Mijn niveau', sel('level', [['new', 'Ik begin (nog geen vaste loopervaring)'], ['reg', 'Ik loop al regelmatig (2× per week 30 minuten)']]), ['hm', 'm'].includes(o.goal) && o.level === 'new' ? 'Halve en hele marathon vragen een loopbasis. Begin met 5 of 10 km als je nog niet regelmatig loopt.' : '')}${dfld('Wedstrijddatum (optioneel)', `<input type="date" name="date" data-c="dsf" value="${o.date}" min="${addDays(today(), 7)}">`, `Zonder datum loopt het schema ${g.def} weken. Minimaal aanbevolen: ${g.min} weken.`)}`
+    : id === 'pl' ? `${dfld('Soort wedstrijd', sel('kind', EV_SPEC.pl.map(e => [e[0], e[1]])), 'Alleen van belang als je een datum invult.')}${dfld('Wedstrijd of testdatum (optioneel)', `<input type="date" name="date" data-c="dsf" value="${o.date}" min="${addDays(today(), 28)}">`, 'Zonder datum duurt het schema 12 weken.')}<div class="grid3">${[['sq', 'Squat 1RM (kg)'], ['bp', 'Bank 1RM (kg)'], ['dl', 'Deadlift 1RM (kg)']].map(([k, l]) => dfld(l, `<input type="number" name="orm_${k}" data-c="dsf" inputmode="decimal" step="0.5" min="0" value="${o.orm[k]}">`)).join('')}</div><small>Weet je je 1RM niet? Laat het leeg. Dan gebruikt de app je geschatte 1RM uit je logs, of stuurt hij op gevoel.</small>`
+    : id === 'hx' ? `${dfld('Categorie', sel('hxdiv', Object.entries(HX_DIV).map(([k, v]) => [k, v.n])))}${dfld('Wedstrijddatum (optioneel)', `<input type="date" name="date" data-c="dsf" value="${o.date}" min="${addDays(today(), 28)}">`, 'Zonder datum duurt het schema 12 weken.')}${dfld('Streeftijd Hyrox in minuten (optioneel)', `<input type="number" name="target" data-c="dsf" inputmode="numeric" min="40" max="200" value="${o.target}">`, 'De eindtijd die je wilt halen voor de hele wedstrijd: 8 keer 1 km hardlopen met 8 stations. Bijvoorbeeld 90 voor 1 uur 30. Laat leeg als je dat nog niet weet.')}`
     : `${dfld('Mijn doel', sel('goal', [['afvallen', 'Afvallen'], ['fit', 'Fitter worden'], ['gezond', 'Gezonder leven']]))}<small>Je start met ongeveer ${n0(o.baseSteps)} stappen per dag als doel (gebaseerd op je ingevoerde stappen) en bouwt dat elke 3 weken met 1000 stappen op.</small>`;
   const others = activeDisc().filter(x => x.id !== id); if (!o.role) o.role = others.length ? 'support' : 'main';
   const nwd = { id, role: o.role, goal: o.goal, peak: o.date || addDays(today(), (id === 'beg' ? 12 : id === 'run' ? (RUNG[o.goal] || RUNG.k5).def : 12) * 7) };
@@ -5104,8 +5102,8 @@ function mainPreview(o, later) {
   const p = S.profile, g = goalForDisc(o.id, o.goal), m = S.milestone, rows = [];
   if (p && !g) rows.push(`<li>Basisplan: blijft op <b>${esc((GOALS[p.goal] || 'je eigen doel').toLowerCase())}</b>. Dit pas je zelf aan onder Mijn doel.</li>`);
   if (p && g) rows.push(p.goal === g ? `<li>Basisplan: blijft op <b>${esc(GOALS[g].toLowerCase())}</b>.</li>` : `<li>Basisplan: van ${esc((GOALS[p.goal] || 'geen doel').toLowerCase())} naar <b>${esc(GOALS[g].toLowerCase())}</b>. Je calorieën en schema volgen dit doel.</li>`);
-  if (o.date) rows.push(!m.date || m.date === o.date || msLinked() || m.enabled === false ? `<li>Mijn doel: telt af naar <b>${esc(msNameFor(o.id, o.goal))}</b> op ${fmtL(o.date)}.</li>` : `<li>Mijn doel: je hebt al “${esc(m.name)}” op ${fmtL(m.date)}. Na de start vraagt de app of je dat wilt koppelen aan deze wedstrijd.</li>`);
-  else rows.push(`<li>Mijn doel: geen wedstrijddatum, dus je doel blijft zoals het is.${o.id === 'beg' ? '' : ' Vul hieronder een datum in om af te tellen.'}</li>`);
+  if (o.date) { const nm = evInfo(evKindFor(o.id, o))[1]; rows.push(!m.date || m.date === o.date || msLinked() || m.enabled === false ? `<li>Wedstrijd: <b>${esc(nm)}</b> op ${fmtL(o.date)}. Je doeldatum blijft los hiervan.</li>` : `<li>Wedstrijd: je hebt al “${esc(m.name)}” op ${fmtL(m.date)}. Na de start vraagt de app of je die wilt vervangen.</li>`); }
+  else rows.push(`<li>Wedstrijd: geen wedstrijddatum.${o.id === 'beg' ? '' : ' Vul hieronder een datum in als je naar een wedstrijd toewerkt.'}</li>`);
   return `<div class="card quiet"><h3>${ui.dsetup && ui.dsetup.wiz ? 'Voorstel van de app' : 'Dit wordt je hoofddoel'}</h3><ul class="plain">${rows.join('')}</ul><small>Klopt iets niet? Pas het hieronder aan. Er verandert pas iets als je op start drukt.</small></div>`;
 }
 C.dsf = el => { const o = ui.dsetup; if (!o) return; if (el.name.startsWith('orm_')) o.orm[el.name.slice(4)] = el.value; else o[el.name] = el.value; if (['goal', 'level', 'role', 'date'].includes(el.name)) render(); };
@@ -5126,8 +5124,9 @@ function discBegin() {
   const wkFrom = d => Math.floor(diffDays(addDays(start, -wdOf(start)), d) / 7) + 1, def = id === 'beg' ? 12 : id === 'run' ? g.def : 12, wk = o.date && id !== 'beg' ? wkFrom(o.date) : def, W = clamp(wk, 4, id === 'run' ? 30 : 24);
   if (o.date && o.date <= start) { toast('Je wedstrijd valt voor de startdatum. Pas de datum aan of start nu.'); return; }
   const dc = { id, v: Date.now(), start, days: [...o.days].sort((a, b) => a - b), weeks: W, goal: o.goal, level: o.level, date: o.date || null, orm: { ...o.orm }, target: o.target, baseSteps: o.baseSteps, short: !!(g && o.date && wk < g.min), role };
-  D()[id] = dc; const ng = role === 'main' && !later ? applyMainGoal(id, o.goal) : null;
-  if (role === 'main' && dc.date) offerMilestone(id, dc.date, msNameFor(id, o.goal));
+  D()[id] = dc; if (id === 'hx' && o.hxdiv && HX_DIV[o.hxdiv]) S.hx.div = o.hxdiv;
+  const ng = role === 'main' && !later ? applyMainGoal(id, o.goal) : null;
+  if (role === 'main' && dc.date) offerMilestone(id, dc.date, evKindFor(id, o));
   save(); ui.dsetup = null; ui.dtab = 'overzicht'; render(); window.scrollTo(0, 0); toast(DISC[id].name + (later ? ' start na je andere discipline.' : ' is toegevoegd aan je weekplan.') + (ng ? ' Je basisplan stuurt nu op: ' + GOALS[ng].toLowerCase() + '.' : ''));
 }
 
@@ -5226,31 +5225,107 @@ function dBegLearn() {
 /* ===== Doelen: één doel voor je lichaam + optioneel één sport ===== */
 const GOAL_ORDER = ['combi', 'spier', 'vet', 'kracht', 'conditie', 'bewegen'];
 const GOAL_SUB = { combi: 'Strakker en sterker', spier: 'Meer spiermassa', vet: 'Lager vetpercentage', kracht: 'Zwaarder tillen', conditie: 'Langer en sneller', bewegen: 'Fitter en gezonder' };
-function msLinkedNote() {
-  const l = msLinked(); if (!l) return '';
-  return `<p class="sub">Je einddatum volgt <b>${esc(nameOf(l.id))}</b>: ${fmtL(l.date)}. Wijzig de datum bij die discipline.</p><div class="btns"><button class="btn ghost sm" data-a="${l.id === 'bb' ? 'discBB' : 'discGo'}" data-id="${l.id}">Open ${esc(nameOf(l.id))}</button></div>`;
+/* ===== Doel en wedstrijd: twee losse datums =====
+   Doel = wat je wilt bereiken en wanneer (S.goalDate; bij afvallen of aankomen ook het streefgewicht).
+   Wedstrijd of evenement = S.milestone, met een eigen soort en datum (wedstrijd, fotoshoot, bruiloft, ...).
+   Bij een hardloop-, powerlifting- of Hyrox-wedstrijd van je hoofddiscipline piekt het schema op die dag. */
+const EV_GEN = [['fotoshoot', 'Fotoshoot', 'fotoshoot'], ['bruiloft', 'Bruiloft', 'vakantie'], ['vakantie', 'Vakantie', 'vakantie'], ['wedstrijd', 'Wedstrijd', 'wedstrijd'], ['feest', 'Feest of evenement', 'eigen'], ['eigen', 'Anders', 'eigen']];
+const EV_SPEC = {
+  run: Object.entries(RUNG).filter(([k]) => k !== 'c30').map(([k, v]) => [k, v.n, 'wedstrijd']).concat([['run', 'Andere loopwedstrijd', 'wedstrijd']]),
+  pl: [['pl3', 'Powerlifting-wedstrijd (squat, bank, deadlift)', 'wedstrijd'], ['plbp', 'Bankdrukwedstrijd', 'wedstrijd'], ['pltest', 'Testdag voor nieuwe records', 'wedstrijd']],
+  hx: Object.entries(HX_DIV).map(([k, v]) => ['hx-' + k, 'Hyrox ' + v.n, 'wedstrijd'])
+};
+const evInfo = kind => EV_GEN.concat(...Object.values(EV_SPEC)).find(e => e[0] === kind) || EV_GEN[5];
+const evKindFor = (id, o) => id === 'run' ? (o.goal === 'c30' ? 'run' : o.goal) : id === 'pl' ? (o.kind || 'pl3') : id === 'hx' ? 'hx-' + (o.hxdiv || S.hx.div) : 'wedstrijd';
+const evCur = m => m.kind || ({ wedstrijd: 'wedstrijd', fotoshoot: 'fotoshoot', vakantie: 'vakantie' }[m.type] || 'eigen');
+function evChoices() { const md = activeMainDisc(), sp = md && EV_SPEC[md.id]; return sp ? sp.concat(EV_GEN.filter(e => e[0] !== 'wedstrijd')) : EV_GEN; }
+function leftTxt(date) {
+  const d = diffDays(today(), date); if (d < 0) return 'De datum is voorbij'; if (d === 0) return 'vandaag';
+  if (d < 14) return d + (d === 1 ? ' dag' : ' dagen');
+  const w = Math.floor(d / 7), r = d % 7; return w + ' weken' + (r ? ' en ' + r + (r === 1 ? ' dag' : ' dagen') : '');
 }
-function goalsPage() {
-  const p = S.profile, m = S.milestone, x = planParts(), dleft = m.enabled !== false && m.date ? diffDays(today(), m.date) : null, items = msItems(), done = items.filter(i => i.done).length;
-  const act = activeDisc(), sport = act.find(a => a.role === 'main') || act[0];
-  const hero = `<div class="card goalhero"><span class="eyebrow">Jouw doel</span><h2>${esc(GOALS[p.goal])}</h2>
-    ${sport ? `<p class="gsport">Met sport: <b>${esc(nameOf(sport.id))}</b></p>` : ''}
-    <div class="gstats">${dleft != null && dleft >= 0 ? `<div><b>${dleft}</b><span>dagen tot ${esc(m.name)}</span></div>` : ''}<div><b>${done}/${items.length}</b><span>checklist</span></div></div>
-    ${x.te ? `<p class="sub">${esc(x.te.text)}</p>` : ''}
-    <div class="btns"><button class="btn ghost sm" data-a="editProfile" data-s="2">Doel wijzigen</button></div></div>`;
-  const form = `<form data-submit="milestone" class="stack"><label class="f">Naam<input name="name" value="${esc(m.name)}" maxlength="40" placeholder="Bijvoorbeeld zomer, fotoshoot of wedstrijd"></label><label class="f">Einddatum<input name="date" type="date" value="${m.date || ''}" min="${today()}"></label><input type="hidden" name="type" value="${esc(m.type || 'eigen')}"><input type="hidden" name="note" value="${esc(m.note || '')}"><input type="hidden" name="enabled" value="1"><button class="btn sm">Opslaan</button></form>`;
+const leftBig = date => { const d = diffDays(today(), date); return d < 0 ? null : d < 14 ? { n: d, u: d === 1 ? 'dag' : 'dagen' } : { n: Math.round(d / 7), u: 'weken' }; };
+/* de wedstrijddatum van een discipline: het schema piekt op die dag */
+function discSetDate(id, date) {
+  const dc = D()[id]; if (!dc) return true;
+  if (date) {
+    if (date <= dc.start) return false;
+    const g = id === 'run' ? RUNG[dc.goal] : null, wk = Math.floor(diffDays(addDays(dc.start, -wdOf(dc.start)), date) / 7) + 1;
+    dc.weeks = clamp(wk, 4, id === 'run' ? 30 : 24); dc.short = !!(g && wk < g.min);
+  }
+  dc.date = date || null; dc.v = Date.now(); return true;
+}
+function goalCard() {
+  const p = S.profile, md = activeMainDisc(), name = md ? nameOf(md.id) : GOALS[p.goal] || 'Nog geen doel';
+  const wLast = (S.body.filter(b => b.weight).sort((a, b) => a.date.localeCompare(b.date)).pop() || {}).weight || p.weight;
+  const wg = ['vet', 'combi', 'spier'].includes(p.goal) || (md && md.id === 'beg'), gd = S.goalDate, tw = p.targetWeight, dif = tw && wLast ? tw - wLast : 0;
+  const k1 = x => n1(x).replace(',0', '');
+  let info = '';
+  if (wg && tw && wLast && Math.abs(dif) >= .5) {
+    const wk = gd && gd > today() ? Math.ceil(diffDays(today(), gd) / 7) : null, te = timeEstimate(p);
+    info = `<p class="sub">Nu ${k1(wLast)} kg, doel ${k1(tw)} kg: <b>${k1(Math.abs(dif))} kg ${dif < 0 ? 'afvallen' : 'aankomen'}</b>${wk ? ` in ${wk} weken, ongeveer ${k1(Math.abs(dif) / wk)} kg per week` : ''}.</p>`;
+    if (wk && te && te.lo) info += wk < te.lo ? `<div class="note warn">Dat is korter dan de ${te.lo}–${te.hi} weken die de app bij een verantwoord tempo schat. Verleng je doeldatum of kies een lager streefgewicht.</div>` : `<div class="note">Dat past binnen een verantwoord tempo.</div>`;
+    else if (!wk && te && te.text) info += `<p class="sub">${esc(te.text)}</p>`;
+  }
+  return `<div class="card goalcard"><span class="eyebrow">Doel</span><h2>${esc(name)}</h2>
+   <form data-submit="goalSave" class="stack">
+    ${wg ? `<label class="f">Streefgewicht (kg)<input name="tw" type="number" inputmode="decimal" step="0.1" min="35" max="250" value="${tw || ''}" placeholder="Bijvoorbeeld 75"></label>` : ''}
+    <label class="f">Doeldatum<input name="gd" type="date" value="${gd || ''}" min="${addDays(today(), 1)}"></label>
+    ${gd && gd > today() ? `<p class="sub">Nog <b>${leftTxt(gd)}</b> tot je doel.</p>` : ''}${info}
+    <div class="btns"><button class="btn sm">Opslaan</button>${gd ? '<button type="button" class="link" data-a="goalDateDel">Doeldatum wissen</button>' : ''}</div></form>
+   <button class="link" data-a="editProfile" data-s="2">Doel voor je lichaam wijzigen</button></div>`;
+}
+function eventCard() {
+  const m = S.milestone, c = S.comp && S.comp.active;
+  if (c) return `<div class="card goalcard"><span class="eyebrow">Wedstrijd of evenement</span><h2>${esc(CLASSES[S.comp.cls].n)}</h2><p class="sub">Wedstrijd op ${fmtL(S.comp.date)}, nog <b>${leftTxt(S.comp.date)}</b>.</p><p class="sub">Klasse en datum pas je aan in je wedstrijdvoorbereiding.</p><div class="btns"><button class="btn ghost sm" data-a="gotoComp">Open wedstrijdvoorbereiding</button></div></div>`;
+  const has = !!m.date && m.enabled !== false, ch = evChoices(), c0 = evCur(m), cur = ch.some(e => e[0] === c0) ? c0 : c0 === 'wedstrijd' ? ch[0][0] : 'eigen';
+  const items = msItems(), done = items.filter(i => i.done).length, lk = msLinked();
+  const chips = ch.map(([k, l]) => `<label class="chip"><input type="radio" name="kind" value="${esc(k)}" ${k === cur ? 'checked' : ''}><span>${esc(l)}</span></label>`).join('');
   const check = `<ul class="checks">${items.map(i => `<li><label class="tick wide"><input type="checkbox" data-c="msCheck" data-k="${i.id}" ${i.done ? 'checked' : ''}><span></span><em>${esc(i.t)}</em></label><button class="link" data-a="msDel" data-k="${i.id}" aria-label="Verwijder: ${esc(i.t)}">Verwijder</button></li>`).join('')}</ul><form class="inline" data-submit="msAdd"><input name="t" maxlength="120" placeholder="Nieuw punt" aria-label="Nieuw punt"><button class="btn sm">Toevoegen</button></form>`;
-  return `<section><button class="btn ghost sm" data-a="gotoDisc">‹ Mijn doel</button><h1>Doel en checklist</h1>${syncBanner()}${hero}
-   ${acc('Einddatum', m.date ? fmtDate(m.date, { day: 'numeric', month: 'short', year: 'numeric' }) : 'Geen', msLinked() ? msLinkedNote() : form)}
-   ${acc('Checklist', done + ' van ' + items.length, check)}
-   <small class="fine">Algemene schema’s, geen persoonlijke begeleiding. Bij klachten eerst naar je huisarts.</small></section>`;
+  const nm = has && m.kind && m.name !== evInfo(m.kind)[1] ? m.name : '';
+  return `<div class="card goalcard"><span class="eyebrow">Wedstrijd of evenement</span>
+   ${has ? `<h2>${esc(m.name)}</h2><p class="sub">${fmtL(m.date)}, nog <b>${leftTxt(m.date)}</b>.${lk ? ' Je schema van ' + esc(nameOf(lk.id)) + ' piekt op deze dag.' : ''}</p>` : `<p class="sub">Een wedstrijd, fotoshoot of bruiloft met een eigen datum, los van je doeldatum. Kies wat past.</p>`}
+   <form data-submit="eventSave" class="stack"><div class="f"><span>Soort</span><div class="chips">${chips}</div></div>
+    <label class="f">Naam (optioneel)<input name="name" maxlength="40" value="${esc(nm)}" placeholder="Bijvoorbeeld de bruiloft van Sam"></label>
+    <label class="f">Datum<input name="date" type="date" value="${has ? m.date : ''}" min="${addDays(today(), 1)}"></label>
+    <div class="btns"><button class="btn sm">Opslaan</button>${has ? '<button type="button" class="link" data-a="eventDelAsk">Wedstrijd verwijderen</button>' : ''}</div></form>
+   ${has ? acc('Checklist', done + ' van ' + items.length, check) : ''}</div>`;
+}
+F.goalSave = (f, fd) => {
+  const raw = String(fd.get('tw') || '').trim(), tw = raw ? num(raw, 1) : null, gd = fd.get('gd') || null;
+  if (gd && gd <= today()) { toast('Kies een doeldatum in de toekomst.'); return; }
+  if (raw && (!tw || tw < 35 || tw > 250)) { toast('Vul een streefgewicht tussen 35 en 250 kg in.'); return; }
+  if (fd.has('tw')) S.profile.targetWeight = tw;
+  S.goalDate = gd; save(); render(); toast('Doel opgeslagen.');
+};
+A.goalDateDel = () => { S.goalDate = null; save(); render(); toast('Doeldatum gewist.'); };
+F.eventSave = (f, fd) => {
+  const kind = fd.get('kind') || 'eigen', date = fd.get('date') || '', nm = (fd.get('name') || '').trim(), ch = evInfo(kind), m = S.milestone;
+  if (!date) { toast('Kies de datum van je ' + ch[1].toLowerCase() + '.'); return; }
+  if (date <= today()) { toast('Kies een datum in de toekomst.'); return; }
+  const md = activeMainDisc(), link = !!(md && EV_SPEC[md.id] && EV_SPEC[md.id].some(e => e[0] === kind));
+  if (link && !discSetDate(md.id, date)) { toast('Je wedstrijd valt voor de start van je schema. Kies een latere datum.'); return; }
+  if (!link && m.disc) { const dc = D()[m.disc]; if (dc) { dc.date = null; dc.v = Date.now(); } delete m.disc; }
+  const typeChanged = m.type !== ch[2];
+  Object.assign(m, { enabled: true, kind, type: ch[2], name: nm || ch[1], date });
+  if (link) m.disc = md.id;
+  if (typeChanged && (!m.items || m.items.every(i => !i.done))) m.items = null;
+  save(); render(); toast('Wedstrijd opgeslagen.');
+};
+A.eventDelAsk = () => modal(`<h3>Wedstrijd verwijderen?</h3><p>Je wedstrijd en de datum gaan weg. Je doel en je schema blijven.</p><div class="btns end"><button class="btn ghost" data-a="close">Annuleren</button><button class="btn danger" data-a="eventDel">Verwijderen</button></div>`);
+A.eventDel = () => { const m = S.milestone; if (m.disc) { const dc = D()[m.disc]; if (dc) { dc.date = null; dc.v = Date.now(); } } delete m.disc; delete m.kind; m.date = null; m.name = 'Mijn doel'; m.type = 'eigen'; save(); closeModal(); render(); toast('Wedstrijd verwijderd.'); };
+function goalsPage() {
+  return `<section><button class="btn ghost sm" data-a="gotoDisc">‹ Mijn doel</button><h1>Doel en wedstrijd</h1>${syncBanner()}${goalCard()}${eventCard()}
+   <small class="fine">Je doeldatum is wanneer je je doel wilt halen. De datum van een wedstrijd of evenement staat daar los van. Algemene schema’s, geen persoonlijke begeleiding. Bij klachten eerst naar je huisarts.</small></section>`;
 }
 function goalSummary() {
-  const p = S.profile, m = S.milestone, md = activeMainDisc(), items = msItems(), done = items.filter(i => i.done).length, dl = m.enabled !== false && m.date ? diffDays(today(), m.date) : null;
+  const p = S.profile, m = S.milestone, md = activeMainDisc(), c = S.comp && S.comp.active;
+  const gd = S.goalDate && S.goalDate > today() ? leftBig(S.goalDate) : null, evDate = c ? S.comp.date : (m.enabled !== false && m.date ? m.date : null), ev = evDate ? leftBig(evDate) : null;
+  const evName = c ? CLASSES[S.comp.cls].n : m.name;
   return `<div class="card goalhero"><span class="eyebrow">Jouw doel</span><h2>${esc(md ? nameOf(md.id) : GOALS[p.goal] || 'Nog geen doel')}</h2>
    ${md ? `<p class="gsport">Basisplan: <b>${esc((GOALS[p.goal] || '').toLowerCase())}</b></p>` : ''}
-   <div class="gstats">${dl != null && dl >= 0 ? `<div><b>${dl}</b><span>dagen tot ${esc(m.name)}</span></div>` : ''}<div><b>${done}/${items.length}</b><span>checklist</span></div></div>
-   <div class="btns"><button class="btn ghost sm" data-a="go" data-r="disciplines">Doel en checklist</button></div></div>`;
+   <div class="gstats">${gd ? `<div><b>${gd.n}</b><span>${gd.u} tot je doel</span></div>` : ''}${ev ? `<div><b>${ev.n}</b><span>${ev.u} tot ${esc(evName)}</span></div>` : ''}${!gd && !ev ? '<div><span>Nog geen doeldatum of wedstrijd</span></div>' : ''}</div>
+   <div class="btns"><button class="btn ghost sm" data-a="go" data-r="disciplines">Doel en wedstrijd</button></div></div>`;
 }
 function sportPage() {
   const act = activeDisc(), c = S.comp && S.comp.active, ids = ['run', 'pl', 'hx', 'beg'];
@@ -5671,6 +5746,7 @@ try { if (S && !(S.mig && S.mig.discGoal)) {
   if (!m.disc && m.date && md && md.end === m.date && (md.id === 'bb' || (D()[md.id] && D()[md.id].date))) m.disc = md.id;
   S.mig = Object.assign({}, S.mig, { discGoal: 1 });
 } } catch (e) {}
+try { if (S && S.goalDate === undefined) S.goalDate = (S.planLength && S.planLength.mode === 'datum' && S.milestone && S.milestone.date) ? S.milestone.date : null; } catch (e) {}
 if (S && S.photos && S.photos.some(p => p.demo)) { S.photos = S.photos.filter(p => !p.demo); try { save(); } catch (e) {} }
 const THEMES = { dark: 'Donker', light: 'Licht', system: 'Auto' };
 const THEME_ICONS = {
