@@ -4,6 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")/../ios/App/App"
 /usr/libexec/PlistBuddy -c "Add :NSHealthShareUsageDescription string 'Discipline Key leest je stappen, gewicht en slaap om je dagdoelen bij te houden.'" Info.plist || true
 /usr/libexec/PlistBuddy -c "Add :NSHealthUpdateUsageDescription string 'Discipline Key schrijft niets naar Gezondheid.'" Info.plist || true
+/usr/libexec/PlistBuddy -c "Add :NSFaceIDUsageDescription string 'Discipline Key gebruikt Face ID om je gegevens, foto’s en metingen te ontgrendelen.'" Info.plist || true
 /usr/libexec/PlistBuddy -c "Add :ITSAppUsesNonExemptEncryption bool false" Info.plist || true
 cat > App.entitlements <<'XML'
 <?xml version="1.0" encoding="UTF-8"?>

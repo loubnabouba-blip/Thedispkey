@@ -1244,11 +1244,11 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .vnext,.vnext small,.vnext b{color:#10130a}
 .vnext .btn{color:var(--pg);background:#0B1220;border-color:#0B1220}
 /* ===== Vergrendelscherm ===== */
-#lock{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;background:radial-gradient(120% 70% at 50% 30%,#16264A 0%,#0B1220 70%);color:#F4F7FB;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);overflow:auto;transition:opacity .45s ease 1.7s}
+#lock{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;background:radial-gradient(120% 70% at 50% 30%,#16264A 0%,#0B1220 70%);color:#F4F7FB;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);overflow:auto;transition:opacity .4s ease .75s}
 #lock.go{opacity:0;pointer-events:none}
 .lkin{width:min(420px,100%);padding:20px 24px 28px;display:flex;flex-direction:column;align-items:flex-start;box-sizing:border-box;min-height:100%}
 .lkcap{font:800 16px/1 var(--fd);letter-spacing:.02em;color:#fff}
-.lkscene{width:min(240px,62vw);align-self:center;margin:12px 0 0;overflow:visible}
+.lkscene{width:min(290px,72vw);align-self:center;margin:auto 0;overflow:visible}
 #lock h1{margin:6px 0 8px;font:900 clamp(32px,9.4vw,44px)/1.05 var(--fd);color:#fff;text-transform:uppercase;letter-spacing:-.01em;font-stretch:100%;max-width:100%;overflow-wrap:anywhere}
 #lock p{margin:0 0 18px;font:600 18px/1.45 var(--fb);color:#B9C5DA}
 .lkgo{width:100%;min-height:60px;font-size:22px;margin-top:auto;background:#C9F24D;color:#10130a;border-color:#C9F24D}
@@ -1260,22 +1260,24 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .lkpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;margin-top:auto}
 .lkk{min-height:60px;border-radius:18px;border:1px solid #2A3857;background:#141E33;color:#fff;font:800 26px var(--fd);cursor:pointer}
 .lkk:active{background:#C9F24D;color:#10130a}
-@keyframes lkfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.lkt{animation:lkfloat 3s ease-in-out infinite}
-@keyframes lkin{to{transform:translateY(-68px)}}
-@keyframes lkturn{to{transform:rotate(90deg)}}
-@keyframes lkshl{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(-20px) rotate(-24deg)}}
-@keyframes lkbur{0%{opacity:.9;transform:scale(.6)}100%{opacity:0;transform:scale(2.6)}}
+@keyframes lkpulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}}
+@keyframes lkshl{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(-14px) rotate(-22deg)}}
+@keyframes lkbur{0%{opacity:.9;transform:scale(.6)}100%{opacity:0;transform:scale(2.2)}}
 @keyframes lkbody{0%,100%{filter:none}50%{filter:drop-shadow(0 0 22px #C9F24D)}}
-.lkr{transform-origin:120px 232px}
-.lkshackle{transform-origin:86px 104px}
-.lkburst{opacity:0;transform-origin:120px 152px}
-#lock.go .lkt{animation:lkin .6s cubic-bezier(.5,0,.2,1) forwards}
-#lock.go .lkr{animation:lkturn .5s ease-in-out .65s forwards}
-#lock.go .lkshackle{animation:lkshl .45s ease-out 1.15s forwards}
-#lock.go .lkburst{animation:lkbur .7s ease-out 1.15s forwards}
-#lock.go .lkbody{animation:lkbody .8s ease-in-out 1.15s}
-@media (prefers-reduced-motion:reduce){.lkt{animation:none}#lock{transition:none}}
+.lkring{transform-origin:150px 150px;animation:lkpulse 3.2s ease-in-out infinite}
+.lkring.r2{animation-delay:.5s}.lkring.r3{animation-delay:1s}
+.lkshackle{transform-origin:128px 136px}
+.lkburst{opacity:0;transform-origin:150px 150px}
+#lock.go .lkshackle{animation:lkshl .4s ease-out forwards}
+#lock.go .lkburst{animation:lkbur .8s ease-out .1s forwards}
+#lock.go .lkdisc{animation:lkbody .7s ease-in-out}
+.lkgo{display:flex;align-items:center;justify-content:center;gap:10px}
+.lkgo svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lkalt{margin:8px auto 0;min-height:44px;border:0;background:none;color:#B9C5DA;font:600 15px var(--fb);cursor:pointer}
+.lkbio{display:grid;place-items:center;background:none;border-color:transparent}
+.lkbio svg{width:30px;height:30px;fill:none;stroke:#C9F24D;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.lkbio[hidden]{display:none}
+@media (prefers-reduced-motion:reduce){.lkring{animation:none}#lock{transition:none}}
 /* ===== Metingen: silhouet met linten ===== */
 .mcard .mhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:var(--s1)}
 .mcard .mhead h3{margin:0;font:900 24px/1.1 var(--fd);text-transform:uppercase;letter-spacing:-.01em}
@@ -5732,27 +5734,46 @@ applyTheme();
 const lockCfg = () => S.lock || (S.lock = { on: false, pin: '' });
 async function lockHash(t) { try { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('dk:' + t)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); } catch (e) { return 'p:' + t; } }
 let lockHiddenAt = 0, lockPinBuf = '';
-const LOCK_SCENE = `<svg class="lkscene" viewBox="0 0 240 310" aria-hidden="true">
-  <g class="lkshackle"><path d="M86 104V76a34 34 0 0 1 68 0v28" fill="none" stroke="#A9B6CC" stroke-width="14" stroke-linecap="round"/></g>
-  <rect class="lkbody" x="58" y="100" width="124" height="104" rx="20" fill="#141E33" stroke="#C9F24D" stroke-width="6"/>
-  <circle cx="120" cy="140" r="12" fill="#C9F24D"/><rect x="116" y="144" width="8" height="24" rx="3" fill="#C9F24D"/>
-  <circle class="lkburst" cx="120" cy="152" r="40" fill="none" stroke="#C9F24D" stroke-width="3"/>
-  <g class="lkt"><g class="lkr"><rect x="116" y="222" width="8" height="58" rx="3" fill="#C9F24D"/><rect x="124" y="228" width="11" height="7" rx="2" fill="#C9F24D"/><rect x="124" y="242" width="8" height="7" rx="2" fill="#C9F24D"/><circle cx="120" cy="288" r="17" fill="#C9F24D"/><circle cx="120" cy="288" r="6" fill="#0B1220"/></g></g></svg>`;
+const FACE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M9 10v1M15 10v1M12 10v4h-1M9 16c1.7 1.3 4.3 1.3 6 0"/></svg>';
+const LOCK_SCENE = `<svg class="lkscene" viewBox="0 0 300 300" aria-hidden="true">
+  <circle class="lkring" cx="150" cy="150" r="146" fill="none" stroke="#C9F24D" stroke-opacity=".12" stroke-width="2"/>
+  <circle class="lkring r2" cx="150" cy="150" r="114" fill="none" stroke="#C9F24D" stroke-opacity=".22" stroke-width="2"/>
+  <circle class="lkring r3" cx="150" cy="150" r="82" fill="#C9F24D" fill-opacity=".05" stroke="#C9F24D" stroke-opacity=".4" stroke-width="2.5"/>
+  <circle class="lkburst" cx="150" cy="150" r="56" fill="none" stroke="#C9F24D" stroke-width="3"/>
+  <circle class="lkdisc" cx="150" cy="150" r="56" fill="#141E33" stroke="#C9F24D" stroke-width="4"/>
+  <g class="lkshackle"><path d="M128 146v-10a22 22 0 0 1 44 0v10" fill="none" stroke="#C9F24D" stroke-width="7" stroke-linecap="round"/></g>
+  <rect x="116" y="144" width="68" height="46" rx="13" fill="#141E33" stroke="#C9F24D" stroke-width="6"/>
+  <circle cx="150" cy="164" r="6" fill="#C9F24D"/><rect x="147.5" y="166" width="5" height="12" rx="2" fill="#C9F24D"/></svg>`;
+/* Face ID / Touch ID: alleen in de iOS-app (Capacitor-plugin BiometricAuthNative). In de browser blijft het bij knop of pincode. */
+const bioPlugin = () => { try { const c = window.Capacitor; return (c && c.isNativePlatform && c.isNativePlatform() && c.Plugins && c.Plugins.BiometricAuthNative) || null; } catch (e) { return null; } };
+let lockBioBusy = false;
+async function lockBio(el) {
+  const p = bioPlugin(); if (!p || lockBioBusy || el.classList.contains('go')) return; lockBioBusy = true;
+  try { await p.internalAuthenticate({ reason: 'Ontgrendel The Discipline Key', cancelTitle: 'Annuleer', allowDeviceCredential: true }); lockOpen(el); } catch (e) { /* geannuleerd of mislukt: knop of pincode blijft beschikbaar */ }
+  lockBioBusy = false;
+}
 function lockShow() {
   if (!S.lock || !S.lock.on || !S.profile || $('#lock')) return;
   const el = document.createElement('div'); el.id = 'lock'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Vergrendeld');
   const pin = !!S.lock.pin; lockPinBuf = '';
-  const pad = pin ? `<div class="lkpin" aria-live="polite"><i></i><i></i><i></i><i></i></div><div class="lkpad">${[1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, '⌫'].map(k => k === '' ? '<span></span>' : `<button type="button" class="lkk" data-lk="${k}" aria-label="${k === '⌫' ? 'Wis' : k}">${k}</button>`).join('')}</div>` : `<button type="button" class="btn big lkgo" data-lk="go">Ontgrendel</button>`;
+  const pad = pin ? `<div class="lkpin" aria-live="polite"><i></i><i></i><i></i><i></i></div><div class="lkpad">${[1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, '⌫'].map(k => k === '' ? `<button type="button" class="lkk lkbio" data-lk="bio" aria-label="Face ID" hidden>${FACE_ICON}</button>` : `<button type="button" class="lkk" data-lk="${k}" aria-label="${k === '⌫' ? 'Wis' : k}">${k}</button>`).join('')}</div>` : `<button type="button" class="btn big lkgo" data-lk="go"><span class="lkgot">Ontgrendel</span></button>`;
   el.innerHTML = `<div class="lkin"><div class="lktop"><span class="lkcap">The Discipline Key</span></div>${LOCK_SCENE}<h1>Vergrendeld</h1><p>Je gegevens, foto’s en metingen zijn afgeschermd.${pin ? ' Voer je pincode in.' : ' Tik op Ontgrendel om verder te gaan.'}</p>${pad}</div>`;
-  el.addEventListener('click', e => { const b = e.target.closest('[data-lk]'); if (!b) return; const k = b.dataset.lk; if (k === 'go') return lockOpen(el); if (!pin) return; if (k === '⌫') lockPinBuf = lockPinBuf.slice(0, -1); else if (lockPinBuf.length < 4) lockPinBuf += k; lockDots(el); if (lockPinBuf.length === 4) lockCheck(el); });
+  el.addEventListener('click', e => { const b = e.target.closest('[data-lk]'); if (!b) return; const k = b.dataset.lk; if (k === 'go') return lockOpen(el); if (k === 'bio') return lockBio(el); if (!pin) return; if (k === '⌫') lockPinBuf = lockPinBuf.slice(0, -1); else if (lockPinBuf.length < 4) lockPinBuf += k; lockDots(el); if (lockPinBuf.length === 4) lockCheck(el); });
   document.body.appendChild(el); document.body.classList.add('noscroll'); lockDots(el);
+  const bp = bioPlugin();
+  if (bp) bp.checkBiometry().then(r => {
+    if (!r || !r.isAvailable || !el.isConnected) return;
+    const k = $('.lkbio', el); if (k) k.hidden = false;
+    const g = $('.lkgo', el); if (g) { g.dataset.lk = 'bio'; g.innerHTML = FACE_ICON + '<span>Ontgrendel met ' + (r.biometryType === 1 ? 'Touch ID' : 'Face ID') + '</span>'; }
+    lockBio(el);
+  }).catch(() => {});
 }
 function lockDots(el) { $$('.lkpin i', el).forEach((d, i) => d.classList.toggle('on', i < lockPinBuf.length)); }
 async function lockCheck(el) { const h = await lockHash(lockPinBuf); if (h === S.lock.pin) { lockOpen(el); } else { lockPinBuf = ''; const pn = $('.lkpin', el); if (pn) { pn.classList.remove('bad'); void pn.offsetWidth; pn.classList.add('bad'); } try { navigator.vibrate && navigator.vibrate(200); } catch (e) {} setTimeout(() => lockDots(el), 350); } }
 function lockOpen(el) {
   if (el.classList.contains('go')) return; el.classList.add('go'); try { navigator.vibrate && navigator.vibrate([30, 40, 60]); } catch (e) {}
   const fast = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  setTimeout(() => { el.remove(); document.body.classList.remove('noscroll'); }, fast ? 50 : 2100);
+  setTimeout(() => { el.remove(); document.body.classList.remove('noscroll'); }, fast ? 50 : 1150);
 }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') lockHiddenAt = Date.now(); else if (S.lock && S.lock.on && lockHiddenAt && Date.now() - lockHiddenAt > 60000) lockShow(); });
 A.lockToggle = () => { const c = lockCfg(); c.on = !c.on; save(); render(); toast(c.on ? 'Vergrendeling staat aan.' : 'Vergrendeling staat uit.'); };
