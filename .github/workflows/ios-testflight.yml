@@ -13,7 +13,7 @@ jobs:
         run: cd ios-app && npm install && npm run prepare-web
       - name: iOS-project aanmaken
         run: cd ios-app && npx cap add ios && npx cap sync ios
-      - name: HealthKit aanzetten
+      - name: HealthKit en Face ID aanzetten
         env: { APPLE_TEAM_ID: "${{ secrets.APPLE_TEAM_ID }}" }
         run: |
           sudo gem install xcodeproj --no-document
