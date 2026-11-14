@@ -1287,7 +1287,7 @@ h1,h2,h3,.dname,.lvcard h2{overflow-wrap:break-word;word-break:normal}
 .lkburst{opacity:0;transform-origin:150px 150px}
 .lkt{animation:lkfloat 3s ease-in-out infinite}
 .lkkey{transform:translateY(52px)}
-.lkkturn{transform-origin:150px 168px}
+.lkkturn{transform-origin:150px 164px}
 #lock.go .lkt{animation:none}
 #lock.go .lkkey{animation:lkkin .6s cubic-bezier(.4,0,.2,1) forwards}
 #lock.go .lkkturn{animation:lkkturn .35s ease-in-out .6s forwards}
@@ -5791,9 +5791,9 @@ const LOCK_SCENE = `<svg class="lkscene" viewBox="0 0 300 300" aria-hidden="true
   <circle class="lkburst" cx="150" cy="150" r="56" fill="none" stroke="#C9F24D" stroke-width="3"/>
   <circle class="lkdisc" cx="150" cy="150" r="56" fill="#141E33" stroke="#C9F24D" stroke-width="4"/>
   <g class="lkshackle"><path d="M128 146v-10a22 22 0 0 1 44 0v10" fill="none" stroke="#C9F24D" stroke-width="7" stroke-linecap="round"/></g>
-  <g class="lkt"><g class="lkkturn"><g class="lkkey"><rect x="147.5" y="166" width="5" height="58" rx="2" fill="#C9F24D"/><rect x="152.5" y="202" width="10" height="6" rx="2" fill="#C9F24D"/><rect x="152.5" y="212" width="7" height="6" rx="2" fill="#C9F24D"/><circle cx="150" cy="236" r="13" fill="#C9F24D"/><circle cx="150" cy="236" r="5" fill="#141E33"/></g></g></g>
   <rect x="116" y="144" width="68" height="46" rx="13" fill="#141E33" stroke="#C9F24D" stroke-width="6"/>
-  <circle cx="150" cy="164" r="6" fill="#C9F24D"/><rect x="147.5" y="166" width="5" height="12" rx="2" fill="#C9F24D"/></svg>`;
+  <circle cx="150" cy="164" r="6" fill="#C9F24D"/><rect x="147.5" y="166" width="5" height="12" rx="2" fill="#C9F24D"/>
+  <g class="lkt"><g class="lkkturn"><g class="lkkey"><rect x="147.5" y="160" width="5" height="64" rx="2" fill="#C9F24D"/><rect x="152.5" y="202" width="10" height="6" rx="2" fill="#C9F24D"/><rect x="152.5" y="212" width="7" height="6" rx="2" fill="#C9F24D"/><circle cx="150" cy="236" r="13" fill="#C9F24D"/><circle cx="150" cy="236" r="5" fill="#141E33"/></g></g></g></svg>`;
 /* Face ID / Touch ID: alleen in de iOS-app (Capacitor-plugin BiometricAuthNative). In de browser blijft het bij knop of pincode. */
 const bioPlugin = () => { try { const c = window.Capacitor; return (c && c.isNativePlatform && c.isNativePlatform() && c.Plugins && c.Plugins.BiometricAuthNative) || null; } catch (e) { return null; } };
 let lockBioBusy = false;
