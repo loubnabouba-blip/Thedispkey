@@ -602,11 +602,44 @@ svg.fgfx .eqf{fill:var(--fe)}svg.fgfx .eqb{stroke:var(--fe);stroke-width:5.6;str
 .reccats .chip,.recact .chip,.recact .link{flex:none;white-space:nowrap}.reccats .chip.btnchip,.recact .chip.btnchip{min-height:40px;padding:0 14px}
 .recmeta{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);margin:var(--s1) 0 var(--s2);color:var(--ink2);font-size:15px}.recmeta b{color:var(--ink)}
 .recmeta .recsort{margin:0;max-width:62%}.recmeta select{min-height:40px;padding:0 32px 0 12px;font-size:14px}
-.vday .daycard{display:grid;gap:6px;padding:var(--s2) var(--s3);margin-bottom:var(--s2)}.vday .daycard h2{margin:0;font-size:20px;line-height:1.2}.vday .daycard .eyebrow{margin:0;font-size:12px;line-height:1.2}.vday .daycard .btns{margin:0}
-.vday .vdate{margin:var(--s2) 0 var(--s1);font-size:13px}.dmeals .tick.wide em{min-width:0;display:grid}.dmeals .nm{font-style:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.drow{display:flex;align-items:center;justify-content:space-between;gap:var(--s2)}.drow+.drow{border-top:1px solid var(--line);padding-top:var(--s2)}.drow small{display:block;color:var(--ink2)}
-.dmeals{list-style:none;margin:0;padding:0}.dmeals .tick.wide{min-height:52px}.dmeals em small,.dmeals .plainrow small{display:block;color:var(--ink2);font-size:13px}.dmeals .plainrow{padding:10px 0;border-bottom:1px solid var(--line)}.dmeals .plainrow em{font-style:normal}
-.dtot{margin:0;color:var(--ink2);font-size:14px}.daycard.due{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.vday{position:relative}
+.vday::before{content:"";position:absolute;inset:-40px -24px auto -24px;height:340px;background:radial-gradient(60% 70% at 12% 0%,color-mix(in srgb,var(--accent) 15%,transparent),transparent 70%),radial-gradient(50% 60% at 96% 8%,color-mix(in srgb,#8B7CFF 14%,transparent),transparent 70%);pointer-events:none;z-index:-1}
+.tdhead{margin:var(--s2) 0 var(--s3)}.tdrow{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);margin-top:6px}
+.tdgreet{display:block;font:700 14px/1.2 var(--fb);color:var(--ink2)}
+.tdhead h1{margin:0;font-size:clamp(28px,8.4vw,34px);line-height:1.1;text-transform:none;letter-spacing:-.01em;white-space:nowrap}
+.dayseg{display:inline-flex;flex:none;padding:3px;border-radius:99px;background:var(--surface2);border:1px solid var(--line)}
+.dayseg button{appearance:none;border:0;min-height:40px;padding:0 14px;border-radius:99px;background:transparent;color:var(--ink2);font:700 14px var(--fb);cursor:pointer}
+.dayseg button.on{background:var(--accent);color:var(--on-accent)}
+.thero{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:228px;margin:0 0 var(--s3);padding:var(--s3);border-radius:26px;overflow:hidden;color:#fff;background:#10141d center/cover no-repeat;box-shadow:0 18px 40px -22px rgba(0,0,0,.7)}
+.thero.small{min-height:130px}.thero>*{position:relative}.thero>.tshade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,12,22,.25) 0%,rgba(8,12,22,.35) 38%,rgba(8,12,22,.9) 100%)}
+.thero.done>.tshade{background:linear-gradient(180deg,rgba(8,12,22,.45),rgba(8,12,22,.92))}
+.ttop{display:flex;gap:8px;flex-wrap:wrap}.tchip{display:inline-flex;align-items:center;min-height:30px;padding:0 12px;border-radius:99px;background:rgba(255,255,255,.16);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font:700 12px var(--fb);letter-spacing:.08em;text-transform:uppercase}.tchip.ok{background:var(--accent);color:var(--on-accent)}
+.tbody{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s2)}.tbody h2{margin:0;color:#fff;font-size:clamp(24px,7vw,30px);line-height:1.1;text-shadow:0 2px 14px rgba(0,0,0,.5)}.tbody small{display:block;margin-top:6px;color:rgba(255,255,255,.84);font-size:14px}
+.tgo{appearance:none;flex:none;display:inline-flex;align-items:center;gap:6px;min-height:52px;padding:0 24px;border:0;border-radius:99px;background:var(--accent);color:var(--on-accent);font:800 17px var(--fb);cursor:pointer;box-shadow:0 10px 28px -10px color-mix(in srgb,var(--accent) 70%,transparent)}.tgo i{font-style:normal;font-size:22px}.tgo.ghost{background:rgba(255,255,255,.2);color:#fff;box-shadow:none;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.thero.rest{min-height:170px;background:linear-gradient(135deg,#1d3b4a,#2a2b63 70%,#3a2f6b)}.trest{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.14);margin-bottom:10px}.trest svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.msec{margin:0 0 var(--s3)}.mhead{display:flex;align-items:center;justify-content:space-between;margin:0 0 var(--s1)}.mhead h3{margin:0;font-size:20px}
+.mrow{display:flex;gap:12px;overflow-x:auto;margin:0 calc(-1*var(--gutter,16px));padding:4px var(--gutter,16px) 10px;scroll-snap-type:x proximity;scrollbar-width:none}.mrow::-webkit-scrollbar{display:none}
+.mcard{position:relative;flex:none;width:158px;scroll-snap-align:start;border-radius:20px;background:var(--surface);border:1px solid var(--line);overflow:hidden;box-shadow:var(--shadow)}
+.mopen{appearance:none;display:grid;gap:4px;width:100%;padding:0 0 12px;border:0;background:transparent;color:var(--ink);text-align:left;font:inherit;cursor:pointer}
+.mimg{position:relative;display:block;aspect-ratio:4/3;overflow:hidden;background:var(--surface2)}.mimg img,.mimg svg{width:100%;height:100%;object-fit:cover;display:block}.mimg .nothumb{display:grid;place-items:center;width:100%;height:100%}
+.mslot{position:absolute;left:10px;bottom:10px;padding:4px 10px;border-radius:99px;background:rgba(8,12,22,.8);color:#fff;font:800 11px var(--fb);letter-spacing:.06em;text-transform:uppercase}
+.mopen b{padding:0 12px;font-size:15px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.5em}.mopen small{padding:0 12px;color:var(--ink2);font-size:13px}
+.mchk{position:absolute;right:10px;top:10px;width:44px;height:44px;padding:0;border-radius:50%;border:2px solid rgba(255,255,255,.9);background:rgba(8,12,22,.5);display:grid;place-items:center;cursor:pointer}.mchk svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:0}
+.mcard.eaten .mchk{background:var(--accent);border-color:var(--accent)}.mcard.eaten .mchk svg{opacity:1;stroke:var(--on-accent)}.mcard.eaten .mimg{opacity:.5}
+.madd{display:grid;place-content:center;gap:6px;text-align:center;border-style:dashed;background:transparent;color:var(--ink2);font:700 14px var(--fb);cursor:pointer;min-height:210px;box-shadow:none}.madd span{font-size:34px;line-height:1;color:var(--ink)}
+.mtot p{margin:6px 0 0;color:var(--ink2);font-size:14px}
+.mempty{padding:var(--s3);border-radius:22px;background:var(--surface);border:1px dashed var(--line2)}.mempty b{font-size:18px}.mempty p{margin:6px 0 var(--s2);color:var(--ink2)}.mempty .btns{margin:0}
+.rlx{display:flex;align-items:center;gap:var(--s3);margin:0 0 var(--s3);padding:var(--s3);border-radius:26px;background:linear-gradient(135deg,color-mix(in srgb,#8B7CFF 26%,var(--surface)),color-mix(in srgb,#5CC8FF 14%,var(--surface)));border:1px solid color-mix(in srgb,#8B7CFF 32%,var(--line))}
+.rlx.due{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset,0 12px 34px -16px color-mix(in srgb,var(--accent) 60%,transparent)}
+.rlx h2{margin:2px 0 4px;font-size:20px;line-height:1.2}.rlx p{margin:0 0 var(--s1);color:var(--ink2);font-size:14px}.rlab{display:block;font:700 12px var(--fb);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}.rlx .btns{margin:0;gap:4px 14px;align-items:center}.rlx .link{min-height:36px}
+.rorb{flex:none;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.55),rgba(139,124,255,.33) 55%,rgba(139,124,255,.07) 100%)}.rorb i{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#B7AEFF)}
+@media (prefers-reduced-motion:no-preference){.rorb i{animation:rbreath 6s ease-in-out infinite}}
+@keyframes rbreath{0%,100%{transform:scale(.7)}50%{transform:scale(1.15)}}
+.fbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:25;display:flex;gap:10px;align-items:center;margin:0 calc(-1*var(--gutter,16px)) var(--s2);padding:8px var(--gutter,16px);background:var(--glass);-webkit-backdrop-filter:saturate(1.6) blur(16px);backdrop-filter:saturate(1.6) blur(16px);border-bottom:1px solid var(--line)}
+.fbar .fplan{flex:1;gap:8px;min-height:48px;padding:0 12px;white-space:nowrap;font-size:15px}.fbar .fplan svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.fcart{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 12px;border-radius:var(--r);border:1px solid var(--line2);background:var(--surface);color:var(--ink);font:700 14px var(--fb);white-space:nowrap;cursor:pointer}.fbar .fcart:only-child{flex:1}.fcart.on{border-color:var(--accent)}
+.fcart i{position:absolute;top:-7px;right:-7px;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:var(--accent);color:var(--on-accent);font:800 12px/22px var(--fb);font-style:normal;text-align:center}
+.rlist{display:grid;gap:8px;margin:var(--s2) 0}.rrow{appearance:none;display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px var(--s2);width:100%;padding:var(--s2);border-radius:var(--r);border:1px solid var(--line);background:var(--surface2);color:var(--ink);text-align:left;font:inherit;cursor:pointer}.rrow b{font-size:16px}.rrow small{grid-column:1;color:var(--ink2)}.rrow i{grid-row:1/3;grid-column:2;font-style:normal;font-size:22px;color:var(--ink2)}.rrow.danger b{color:var(--warn,#ff6b6b)}
 .thumb{position:relative}
 .shopv .shophead{display:flex;align-items:center;gap:var(--s2);margin-bottom:var(--s1)}.shophead h2{margin:0;font-size:22px}
 .shopsticky{position:sticky;top:calc(var(--shopTop,0px) + var(--shopInset,0px));z-index:20;margin:0 calc(-1*var(--gutter,16px));padding:var(--s1) var(--gutter,16px);background:linear-gradient(var(--bg) 85%,transparent)}
@@ -3134,41 +3167,52 @@ ui.homeDay = ui.homeDay || 0;
 const relaxAt = () => S.relaxAt || '20:30';
 const relaxPick = hr => hr < 12 ? 'coherent' : hr < 18 ? 'box' : '478';
 const relaxWhen = hr => hr < 12 ? 'Begin de dag rustig' : hr < 18 ? 'Even resetten' : 'Afbouwen voor de nacht';
+const TRAIN_IMG = { bb: 'd_bb', beg: 'd_beg', hx: 'd_hx', pl: 'd_pl', run: 'd_run' };
+function trainImg(key, def) {
+  const d = String(key).startsWith('d:') ? String(key).split(':')[1] : def && def.disc;
+  if (d && TRAIN_IMG[d]) return TRAIN_IMG[d];
+  if (def && def.type === 'kracht') return ['spier', 'combi', 'vet'].includes((S.profile || {}).goal) ? 'd_bb' : 'd_pl';
+  return 'd_run';
+}
+const MOON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.2A8 8 0 1 1 9.8 4a6.4 6.4 0 0 0 10.2 10.2z"/></svg>';
 function homeTrain(d, now) {
   const sess = sessionsOn(d);
-  if (!sess.length) return `<div class="card daycard"><span class="eyebrow">Training</span><h2>Rustdag</h2><p class="sub">${now ? 'Een wandeling of lichte beweging helpt je herstel.' : 'Morgen is een rustdag. Herstel hoort bij je schema.'}</p></div>`;
-  return `<div class="card daycard"><span class="eyebrow">Training</span>${sess.map(s => { const def = sessionDef(s.key), done = isDone(s.from, s.key), disc = String(s.key).startsWith('d:');
-    const act = done ? '<span class="pill ok">Gedaan</span>' : now ? `<button class="btn" data-a="${disc ? 'discDo' : 'openWorkout'}" data-key="${esc(s.key)}" data-date="${d}" data-from="${s.from}">Start</button>` : `<button class="btn ghost sm" data-a="gotoTrainDate" data-date="${d}">Bekijk</button>`;
-    return `<div class="drow"><div><h2>${esc(def.name)}</h2><small>${sessionMeta(def, s.key)}${s.moved ? ' · verplaatst' : ''}</small></div>${act}</div>`; }).join('')}</div>`;
+  if (!sess.length) return `<div class="thero rest"><div class="ttop"><span class="tchip">Training</span></div><div class="tbody"><div><div class="trest">${MOON_SVG}</div><h2>Rustdag</h2><small>${now ? 'Een wandeling of lichte beweging helpt je herstel.' : 'Morgen is een rustdag. Herstel hoort bij je schema.'}</small></div></div></div>`;
+  return sess.map((s, i) => { const def = sessionDef(s.key), done = isDone(s.from, s.key), disc = String(s.key).startsWith('d:');
+    const act = done ? '' : now ? `<button class="tgo" data-a="${disc ? 'discDo' : 'openWorkout'}" data-key="${esc(s.key)}" data-date="${d}" data-from="${s.from}">Start<i aria-hidden="true">›</i></button>` : `<button class="tgo ghost" data-a="gotoTrainDate" data-date="${d}">Bekijk</button>`;
+    return `<div class="thero ${done ? 'done' : ''} ${i ? 'small' : ''}" style="background-image:url('ex/${trainImg(s.key, def)}.webp')"><div class="tshade"></div><div class="ttop"><span class="tchip">Training</span>${done ? '<span class="tchip ok">Gedaan ✓</span>' : ''}${s.moved ? '<span class="tchip">Verplaatst</span>' : ''}</div><div class="tbody"><div><h2>${esc(def.name)}</h2><small>${sessionMeta(def, s.key)}</small></div>${act}</div></div>`; }).join('');
 }
 function homeMeals(d, now) {
   const fd = S.food[d] || { items: [] }, slots = mySlots();
   let t = null; try { t = targets(d); } catch (e) {}
-  if (!fd.items.length) return `<div class="card daycard"><span class="eyebrow">Maaltijden</span><h2>Nog niets gepland</h2><p class="sub">${now ? 'Laat de app een dag voorstellen, of kies zelf wat je eet.' : 'Plan alvast wat je morgen eet.'}</p><div class="btns"><button class="btn sm" data-a="homePlanDay" data-date="${d}">Stel een dag voor</button><button class="btn ghost sm" data-a="gotoFoodDate" data-date="${d}">Zelf kiezen</button></div></div>`;
-  const label = it => (slots.find(x => x.id === it.slot) || { label: 'Extra' }).label;
-  const order = it => { const i = slots.findIndex(x => x.id === it.slot); return i < 0 ? 99 : i; };
-  const items = [...fd.items].sort((a, b) => order(a) - order(b));
-  const row = it => { const nm = itemName(it), sub = `${label(it)} · ${kc(itemNut(it).kcal)} kcal`;
-    return now ? `<li><label class="tick wide"><input type="checkbox" data-c="eaten" data-id="${it.id}" ${it.eaten ? 'checked' : ''}><span></span><em><i class="nm">${esc(nm)}</i><small>${esc(sub)}</small></em></label></li>` : `<li class="plainrow"><em><i class="nm">${esc(nm)}</i><small>${esc(sub)}</small></em></li>`; };
-  const plan = sumNut(fd.items), eaten = sumNut(fd.items.filter(i => i.eaten)), ok = t && !t.missing;
-  const tot = now ? `Gegeten ${kc(eaten.kcal)} van ${ok ? t.kcal : kc(plan.kcal)} kcal · ${n0(eaten.p)} van ${ok ? t.p : n0(plan.p)} g eiwit` : `Gepland ${kc(plan.kcal)} kcal · ${n0(plan.p)} g eiwit${ok ? ` (doel ${t.kcal} kcal)` : ''}`;
-  return `<div class="card daycard"><span class="eyebrow">Maaltijden</span><ul class="plain dmeals">${items.map(row).join('')}</ul><p class="dtot">${tot}</p><button class="link" data-a="gotoFoodDate" data-date="${d}">Alle maaltijden ›</button></div>`;
+  if (!fd.items.length) return `<section class="msec"><div class="mhead"><h3>Maaltijden</h3></div><div class="mempty"><b>${now ? 'Wat eet je vandaag?' : 'Wat eet je morgen?'}</b><p>${now ? 'Laat de app een dag voorstellen, passend bij je doelen, of kies zelf.' : 'Plan alvast je maaltijden voor morgen.'}</p><div class="btns"><button class="btn" data-a="homePlanDay" data-date="${d}">Stel een dag voor</button><button class="btn ghost" data-a="gotoFoodDate" data-date="${d}">Zelf kiezen</button></div></div></section>`;
+  const lab = it => (slots.find(x => x.id === it.slot) || { label: 'Extra' }).label, ord = it => { const i = slots.findIndex(x => x.id === it.slot); return i < 0 ? 99 : i; };
+  const items = [...fd.items].sort((a, b) => ord(a) - ord(b));
+  const card = it => { const isR = it.type === 'r', n = itemNut(it), nm = itemName(it);
+    return `<article class="mcard ${it.eaten ? 'eaten' : ''}"><button class="mopen" data-a="${isR ? 'recipeOpen' : 'customOpen'}" data-id="${it.ref}" data-item="${it.id}" aria-label="Open ${esc(nm)}"><span class="mimg">${mealThumb(it)}<span class="mslot">${esc(lab(it))}</span></span><b>${esc(nm)}</b><small>${kc(n.kcal)} kcal · ${n0(n.p)} g eiwit</small></button>${now ? `<button class="mchk" data-a="homeEat" data-id="${it.id}" aria-pressed="${!!it.eaten}" aria-label="${it.eaten ? 'Niet gegeten' : 'Gegeten'}: ${esc(nm)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>` : ''}</article>`; };
+  const plan = sumNut(fd.items), eaten = sumNut(fd.items.filter(i => i.eaten)), ok = t && !t.missing, gk = ok ? t.kcal : plan.kcal, gp = ok ? t.p : plan.p;
+  return `<section class="msec"><div class="mhead"><h3>Maaltijden</h3><button class="link" data-a="gotoFoodDate" data-date="${d}">Alles in Voeding ›</button></div>
+   <div class="mrow">${items.map(card).join('')}<button class="mcard madd" data-a="homeAddMeal" data-date="${d}"><span aria-hidden="true">+</span>Maaltijd toevoegen</button></div>
+   <div class="mtot">${meter(now ? eaten.kcal : plan.kcal, gk, 'Calorieën')}<p>${now ? `Gegeten ${kc(eaten.kcal)} van ${kc(gk)} kcal · ${n0(eaten.p)} van ${n0(gp)} g eiwit` : `Gepland ${kc(plan.kcal)} kcal · ${n0(plan.p)} g eiwit${ok ? ` (doel ${t.kcal} kcal)` : ''}`}</p></div></section>`;
 }
 function homeRelax(d, now) {
   const hr = new Date().getHours(), at = relaxAt(), done = mindLog().filter(x => x.date === d), off = !!S.relaxOff;
   const due = now && !done.length && !off && new Date().toTimeString().slice(0, 5) >= at, pid = relaxPick(now ? hr : 20), pat = BREATH_PATTERNS[pid];
-  const rem = `<button class="link" data-a="relaxAt">${off ? 'Herinnering aan' : 'Herinnering ' + at}</button>`;
-  if (done.length) return `<div class="card daycard"><span class="eyebrow">Ontspanning</span><h2>Rustmoment gedaan</h2><p class="sub">${esc(done[done.length - 1].name)}. Goed bezig.</p>${rem}</div>`;
-  return `<div class="card daycard ${due ? 'due' : ''}"><span class="eyebrow">Ontspanning</span><h2>${due ? 'Het is tijd voor je rustmoment' : now ? relaxWhen(hr) : 'Plan een rustmoment'}</h2><p class="sub">${esc(pat.name)}, 3 minuten. ${esc(pat.blurb)}</p><div class="btns">${now ? `<button class="btn ${due ? '' : 'ghost'} sm" data-a="homeRelax" data-id="${pid}">Start 3 minuten</button>` : ''}${rem}</div></div>`;
+  const rem = `<button class="link" data-a="relaxAt">${off ? 'Herinnering aan' : 'Herinnering ' + at}</button>`, orb = '<span class="rorb" aria-hidden="true"><i></i></span>';
+  if (done.length) return `<section class="rlx done">${orb}<div><span class="rlab">Ontspanning</span><h2>Rustmoment gedaan</h2><p>${esc(done[done.length - 1].name)}. Goed bezig.</p>${rem}</div></section>`;
+  return `<section class="rlx ${due ? 'due' : ''}">${orb}<div><span class="rlab">Ontspanning</span><h2>${due ? 'Tijd voor je rustmoment' : now ? relaxWhen(hr) : 'Plan een rustmoment'}</h2><p>${esc(pat.name)}, 3 minuten. ${esc(pat.blurb)}</p><div class="btns">${now ? `<button class="btn ${due ? '' : 'ghost'} sm" data-a="homeRelax" data-id="${pid}">Start 3 minuten</button>` : ''}${rem}</div></div></section>`;
 }
 function vHome() {
-  const now = ui.homeDay !== 1, T = today(), d = now ? T : addDays(T, 1);
-  return `<section class="home vday"><h1 class="sr">${now ? 'Vandaag' : 'Morgen'}</h1><span class="eyebrow vdate">${fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' })}</span>
-  ${tabs(now ? 'vandaag' : 'morgen', [['vandaag', 'Vandaag'], ['morgen', 'Morgen']], 'homeDay', 'one')}
+  const p = S.profile, now = ui.homeDay !== 1, T = today(), d = now ? T : addDays(T, 1), hr = new Date().getHours();
+  const greet = now ? (hr < 12 ? 'Goedemorgen' : hr < 18 ? 'Goedemiddag' : 'Goedenavond') + (p.name ? ', ' + p.name : '') : 'Een blik vooruit';
+  return `<section class="home vday"><div class="tdhead"><span class="tdgreet">${esc(greet)}</span><div class="tdrow"><h1 aria-label="${esc(fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' }))}">${esc(fmtDate(d, { weekday: 'short', day: 'numeric', month: 'short' }))}</h1>
+   <div class="dayseg" role="tablist" aria-label="Dag">${[['vandaag', 'Vandaag'], ['morgen', 'Morgen']].map(([k, l]) => `<button role="tab" aria-selected="${(k === 'vandaag') === now}" class="${(k === 'vandaag') === now ? 'on' : ''}" data-a="homeDay" data-t="${k}">${l}</button>`).join('')}</div></div></div>
   ${homeTrain(d, now)}${homeMeals(d, now)}${homeRelax(d, now)}
   ${now ? scheduleLagCard() + coachCard(coachProposal()) + compHomeCard() : ''}
   ${S.example ? '<p class="sub">Je gebruikt een voorbeeldprofiel. Pas het aan of wis het bij Profiel.</p>' : ''}</section>`;
 }
+A.homeEat = d => { const f = findItem(d.id); if (!f) return; f.it.eaten = !f.it.eaten; hap(f.it.eaten ? 'med' : 'sel'); save(); render(); };
+A.homeAddMeal = d => { ui.foodDate = d.date; A.pickAsk({ slot: 'extra', cat: 'alle' }); };
 A.homeDay = d => { ui.homeDay = d.t === 'morgen' ? 1 : 0; render(); };
 A.gotoFoodDate = d => { ui.foodDate = d.date; ui.foodTab = 'dag'; go('voeding'); };
 A.homePlanDay = d => { ui.foodDate = d.date; ui.foodTab = 'dag'; A.fSuggest(); };
@@ -3485,6 +3529,7 @@ function vPlan() {
   const planTxt = tot ? tot + ' weken' + (x.endDate ? ', t/m ' + fmtDate(x.endDate, { day: 'numeric', month: 'short', year: 'numeric' }) : '') : 'Doorlopend';
   const macroTxt = t && !t.missing ? t.kcal + ' kcal · ' + t.p + ' g eiwit' : 'Nog niet ingesteld';
   return `<section><h1>Profiel</h1>
+  <div class="card slim"><div class="row"><div><b>Opnieuw beginnen</b><small>Schema, doel of alles resetten</small></div><button class="btn ghost sm" data-a="resetMenu">Kies</button></div></div>
   <div class="card pf"><h3>Jij</h3><form data-submit="pname" class="nameform"><label class="f">Naam<input name="name" maxlength="40" autocomplete="given-name" placeholder="Hoe mag de app je noemen?" value="${esc(p.name || '')}"></label><button class="btn">Opslaan</button></form>
    <p class="sub">${[p.age ? p.age + ' jaar' : '', p.height ? p.height + ' cm' : '', p.weight ? String(p.weight).replace('.', ',') + ' kg' : ''].filter(Boolean).join(' · ') || 'Nog geen gegevens ingevuld.'}</p><button class="btn ghost sm" data-a="editProfile" data-s="1">Gegevens aanpassen</button></div>
   ${linkCard()}
@@ -3965,7 +4010,14 @@ const NL = { ontbijt: 'Ontbijt', lunch: 'Lunch', diner: 'Diner', tussendoor: 'Tu
 function vFood() {
   if (ui.shopOpen) return shopView();
   const t = ui.foodTab === 'eigen' ? 'recepten' : ui.foodTab; if (ui.foodTab === 'eigen') ui.recCat = 'eigen';
-  return `<section><h1 class="sr">Voeding</h1>${tabs(t, [['dag', 'Dag'], ['week', 'Week'], ['macro', 'Macro’s'], ['prep', 'Mealprep'], ['recepten', 'Recepten']], 'foodTab', 'one')}${t === 'dag' ? fDay() : t === 'week' ? calReview() + fWeek() : t === 'macro' ? fMacro() : t === 'prep' ? fPrep() : fRecipes()}</section>`;
+  return `<section><h1 class="sr">Voeding</h1>${tabs(t, [['dag', 'Dag'], ['week', 'Week'], ['macro', 'Macro’s'], ['prep', 'Mealprep'], ['recepten', 'Recepten']], 'foodTab', 'one')}${foodBar(t)}${t === 'dag' ? fDay() : t === 'week' ? calReview() + fWeek() : t === 'macro' ? fMacro() : t === 'prep' ? fPrep() : fRecipes()}</section>`;
+}
+const PLAN_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>';
+/* altijd in beeld: een dag of week plannen, en het boodschappenkarretje */
+function foodBar(t) {
+  const n = cartIds().length, hasDay = ((S.food[ui.foodDate] || {}).items || []).length;
+  const plan = t === 'dag' ? [hasDay ? 'Nieuw voorstel' : 'Plan mijn dag', 'fSuggest'] : ['week', 'prep'].includes(t) ? ['Plan mijn week', 'weekPlanAsk'] : null;
+  return `<div class="fbar">${plan ? `<button class="btn fplan" data-a="${plan[1]}">${PLAN_SVG}${plan[0]}</button>` : ''}<button class="fcart ${n ? 'on' : ''}" data-a="cartOpen" aria-label="Boodschappenkarretje${n ? ', ' + n + (n === 1 ? ' recept' : ' recepten') : ', leeg'}">${CART_SVG}<span>Boodschappen</span>${n ? `<i>${n}</i>` : ''}</button></div>`;
 }
 function fMacro() { const x = planParts(); return `<div class="card"><h3>Macrodoelen</h3>${x.macroBody}</div><div class="card slim"><div class="row"><div><b>Eetpatroon</b><small>${esc(x.dietName)}</small></div><button class="btn ghost sm" data-a="foodPrefs">Wijzig</button></div></div>`; }
 function calReview() {
@@ -3989,7 +4041,7 @@ function fDay() {
   const checks = dayCheck(date);
   return nav + targetBlock(planned, eaten, t) +
     checks.map(c => `<div class="note warn"><b>Let op.</b> ${esc(c.msg)}<ul class="plain">${c.hints.map(h => `<li>${esc(h)}</li>`).join('')}</ul></div>`).join('') +
-    `<div class="btns"><button class="btn sm" data-a="fSuggest">${d.items.length ? 'Nieuw voorstel' : 'Stel een dag voor'}</button>${d.items.length ? `<details class="menu"><summary class="btn ghost sm">Meer</summary><div class="menubox"><button class="link" data-a="fRescale">Porties bijstellen op je doelen</button><button class="link" data-a="copyAsk" data-scope="day">Kopieer dag naar andere dagen</button><button class="link" data-a="fSave">Dag opslaan</button><button class="link" data-a="fClear">Dag leegmaken</button></div></details>` : ''}</div>
+    `${d.items.length ? `<div class="btns"><details class="menu"><summary class="btn ghost sm">Meer</summary><div class="menubox"><button class="link" data-a="fRescale">Porties bijstellen op je doelen</button><button class="link" data-a="copyAsk" data-scope="day">Kopieer dag naar andere dagen</button><button class="link" data-a="fSave">Dag opslaan</button><button class="link" data-a="fClear">Dag leegmaken</button></div></details></div>` : ''}
     ${d.saved ? '<p class="sub">Deze dag is opgeslagen als planning.</p>' : ''}` + slotsHtml(d, slots);
 }
 function slotsHtml(d, slots) {
@@ -4157,8 +4209,7 @@ function fWeek() {
   const mon = addDays(ui.foodDate, -wdOf(ui.foodDate)), days = Array.from({ length: 7 }, (_, i) => addDays(mon, i)), t = targets();
   return `<div class="datenav"><button data-a="fDate" data-n="-7" aria-label="Vorige week">‹</button><div><b>Week van ${fmtDate(mon, { day: 'numeric', month: 'long' })}</b></div><button data-a="fDate" data-n="7" aria-label="Volgende week">›</button></div>
   <div class="card"><div class="wtable" role="table"><div class="wrow head" role="row"><span>Dag</span><span>Gepland</span><span>Gegeten</span></div>${days.map(x => { const it = (S.food[x] || { items: [] }).items, p = sumNut(it), e = sumNut(it.filter(i => i.eaten));
-    return `<button class="wrow" role="row" data-a="fOpenDay" data-date="${x}"><span><b>${DAYS[wdOf(x)]}</b> ${new Date(x + 'T12:00:00').getDate()}</span><span>${it.length ? kc(p.kcal) + ' kcal · ' + n0(p.p) + ' g' : '–'}${it.length && t && !t.missing ? meter(p.kcal, t.kcal, 'Gepland') : ''}</span><span>${e.kcal ? kc(e.kcal) + ' kcal · ' + n0(e.p) + ' g' : '–'}</span></button>`; }).join('')}</div>${t && !t.missing ? `<small>Doel per dag: ${t.kcal} kcal en ${t.p} g eiwit.</small>` : ''}</div>
-  <div class="card"><h3>Weekplanning maken</h3><p class="sub">Maaltijden voor elke dag, passend bij je doelen. Daarna pas je alles aan.</p><button class="btn" data-a="weekPlanAsk">Maak weekplanning</button></div>`;
+    return `<button class="wrow" role="row" data-a="fOpenDay" data-date="${x}"><span><b>${DAYS[wdOf(x)]}</b> ${new Date(x + 'T12:00:00').getDate()}</span><span>${it.length ? kc(p.kcal) + ' kcal · ' + n0(p.p) + ' g' : '–'}${it.length && t && !t.missing ? meter(p.kcal, t.kcal, 'Gepland') : ''}</span><span>${e.kcal ? kc(e.kcal) + ' kcal · ' + n0(e.p) + ' g' : '–'}</span></button>`; }).join('')}</div>${t && !t.missing ? `<small>Doel per dag: ${t.kcal} kcal en ${t.p} g eiwit.</small>` : ''}</div>`;
 }
 A.weekPlanAsk = d => {
   if (d && d.today) ui.foodDate = today();
@@ -5325,8 +5376,25 @@ function goalSummary() {
   return `<div class="card goalhero"><span class="eyebrow">Jouw doel</span><h2>${esc(md ? nameOf(md.id) : GOALS[p.goal] || 'Nog geen doel')}</h2>
    ${md ? `<p class="gsport">Basisplan: <b>${esc((GOALS[p.goal] || '').toLowerCase())}</b></p>` : ''}
    <div class="gstats">${gd ? `<div><b>${gd.n}</b><span>${gd.u} tot je doel</span></div>` : ''}${ev ? `<div><b>${ev.n}</b><span>${ev.u} tot ${esc(evName)}</span></div>` : ''}${!gd && !ev ? '<div><span>Nog geen doeldatum of wedstrijd</span></div>' : ''}</div>
-   <div class="btns"><button class="btn ghost sm" data-a="go" data-r="disciplines">Doel en wedstrijd</button></div></div>`;
+   <div class="btns"><button class="btn ghost sm" data-a="go" data-r="disciplines">Doel en wedstrijd</button><button class="btn ghost sm" data-a="resetMenu">Opnieuw beginnen</button></div></div>`;
 }
+/* ===== Opnieuw beginnen: alle resets op één plek ===== */
+const rrow = (t, sub, a, cls) => `<button class="rrow ${cls || ''}" ${a}><b>${t}</b><small>${sub}</small><i aria-hidden="true">›</i></button>`;
+A.resetMenu = () => {
+  const act = activeDisc().filter(x => x.id !== 'bb'), c = S.comp && S.comp.active, rows = [];
+  act.forEach(x => rows.push(rrow('Schema ' + esc(nameOf(x.id)) + ' opnieuw', 'Begin dit schema opnieuw. Je kiest zelf of je logs blijven.', `data-a="discResetAsk" data-id="${x.id}"`)));
+  if (c) { rows.push(rrow('Wedstrijdvoorbereiding beëindigen', 'Je check-ins blijven bewaard en je eetdoelen worden weer normaal.', 'data-a="compStopAsk"')); rows.push(rrow('Wedstrijdvoorbereiding wissen', 'Fases, aanpassingen, check-ins en posing-log.', 'data-a="compResetAsk"', 'danger')); }
+  rows.push(rrow('Weekschema opnieuw samenstellen', 'Je krachtschema, ruilen en verplaatsen opnieuw. Je logs blijven.', 'data-a="planRebuildAsk"'));
+  rows.push(rrow('Doel en wedstrijd wissen', 'Doeldatum, streefgewicht en je wedstrijd of evenement.', 'data-a="goalWipeAsk"'));
+  if (cartIds().length) rows.push(rrow('Boodschappenlijst leegmaken', 'Alle recepten en vinkjes van je lijst.', 'data-a="cartClear"'));
+  rows.push(rrow('Alles van dit apparaat wissen', 'Metingen, foto’s, logs en instellingen. Exporteren kan ook.', 'data-a="resetData"', 'danger'));
+  modal(`<h3>Opnieuw beginnen</h3><p class="sub">Kies wat je wilt resetten. Je krijgt altijd eerst een bevestiging.</p><div class="rlist">${rows.join('')}</div><div class="btns end"><button class="btn ghost" data-a="close">Sluiten</button></div>`);
+};
+A.planRebuildAsk = () => modal(`<h3>Weekschema opnieuw samenstellen?</h3><p>Je krachtschema wordt opnieuw opgebouwd. Ruilen, verplaatsen en een lopende training gaan weg. Je logs blijven bewaard.</p><div class="btns end"><button class="btn ghost" data-a="close">Annuleren</button><button class="btn" data-a="planRebuildDo">Opnieuw samenstellen</button></div>`);
+A.planRebuildDo = () => { S.plan = buildPlan(S.profile); S.swaps = {}; S.short = {}; S.draft = null; S.moves = []; save(); closeModal(); render(); toast('Weekschema opnieuw samengesteld.'); };
+A.goalWipeAsk = () => modal(`<h3>Doel en wedstrijd wissen?</h3><p>Je doeldatum, streefgewicht en wedstrijd of evenement gaan weg. Je schema en je logs blijven.</p><div class="btns end"><button class="btn ghost" data-a="close">Annuleren</button><button class="btn danger" data-a="goalWipeDo">Wissen</button></div>`);
+A.goalWipeDo = () => { const m = S.milestone; if (m.disc) { const dc = D()[m.disc]; if (dc) { dc.date = null; dc.v = Date.now(); } } delete m.disc; delete m.kind; m.date = null; m.name = 'Mijn doel'; m.type = 'eigen'; S.goalDate = null; S.profile.targetWeight = null; save(); closeModal(); render(); toast('Doel en wedstrijd gewist.'); };
+A.resetData = () => { closeModal(); ui.open['mijn-plan:Je gegevens'] = true; go('mijn-plan'); setTimeout(() => { const el = $$('details.acc').find(x => /Je gegevens/.test(x.innerText)); if (el) el.scrollIntoView({ block: 'center' }); }, 350); };
 function sportPage() {
   const act = activeDisc(), c = S.comp && S.comp.active, ids = ['run', 'pl', 'hx', 'beg'];
   const cards = ids.map(id => discCard(id, DISC[id].name, DISC[id].blurb, discStatus(id), !!D()[id], 'discGo')).join('') + discCard('bb', 'Bodybuilding', 'Voorbereiding op een wedstrijd met fases, peak week, check-ins en posing.', c ? 'Actief · ' + Math.max(0, Math.ceil(diffDays(today(), S.comp.date) / 7)) + ' weken tot de show' : 'Niet gestart', !!c, 'discBB');
