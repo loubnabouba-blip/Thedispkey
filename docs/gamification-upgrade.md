@@ -1,5 +1,7 @@
 # Gamificatie v2: streak, Sparks en kisten
 
+> **Status (november 2026): grotendeels weggehaald.** De vlam (streak), streakbeschermers, de herstel-quest, de kisten, Sparks, de winkel en de rang zijn uit de app verwijderd: het beloningssysteem was te groot. Wat blijft is klein: level en XP, badges (zonder de streak-badges) en krachtrecords op de pagina Beloningen. Het **account en de synchronisatie** (registreren, inloggen, gegevens bewaren in de cloud) zijn gebleven; die staan bij Profiel. De client roept de streak-, kist- en winkel-RPC's niet meer aan. De databasetabellen, functies en migraties hieronder zijn bewust **niet** aangepast of verwijderd; dat kan later apart. De rest van dit document beschrijft het ontwerp zoals het was.
+
 Upgrade van het streak- en beloningssysteem van The Discipline Key. Doel: betere retentie op de twee momenten waar gebruikers nu afhaken (de eerste gemiste dag en week 2-3) en meer dopamine zonder ongezond gedrag te belonen.
 
 ## 1. Diagnose van het oude systeem
