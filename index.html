@@ -596,6 +596,7 @@ svg.fgfx .eqf{fill:var(--fe)}svg.fgfx .eqb{stroke:var(--fe);stroke-width:5.6;str
 .exmedia .b2{display:none}
 @media (prefers-reduced-motion:no-preference){.focuscard .exmedia .b2{display:block;position:absolute;inset:0;opacity:0;animation:exfade 3.4s ease-in-out infinite}}
 @keyframes exfade{0%,28%{opacity:0}40%,72%{opacity:1}84%,100%{opacity:0}}
+.seg.one{flex-wrap:nowrap;overflow-x:auto;margin-bottom:var(--s2);padding:4px}.seg.one button{flex:1 0 auto;min-height:44px;padding:0 14px}
 .recbar{display:flex;gap:8px;align-items:stretch;margin:0 0 var(--s1)}.recbar .recsearch{flex:1;margin:0;min-width:0}
 .recfbtn{position:relative;flex:none;width:56px;border-radius:var(--r);border:1px solid var(--line2);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer}.recfbtn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}.recfbtn.on{border-color:var(--accent);color:var(--accent)}
 .recfbtn i{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--accent);color:#111;font:800 12px/20px var(--fb);font-style:normal;text-align:center}
@@ -2356,6 +2357,7 @@ function render() {
   const V = { home: vHome, 'mijn-plan': vPlan, training: vTraining, voeding: vFood, voortgang: vProgress, disciplines: goalsPage, sport: vDisc, 'mijn-doel': vMilestone, beloningen: vRewards, mindful: vMindful };
   const entering = route !== ui._lr; ui._lr = route; main.classList.toggle('enter', entering); document.documentElement.dataset.route = route;
   main.innerHTML = subnav() + (V[route] || vHome)();
+  $$('.seg.one', main).forEach(sg => { const on = $('.on', sg); if (on) sg.scrollLeft = on.offsetLeft - (sg.clientWidth - on.offsetWidth) / 2; });
   if (ui.shopOpen) { const hd = $('header.top'); if (hd) document.documentElement.style.setProperty('--shopTop', (parseFloat(getComputedStyle(hd).top) || 0) + hd.offsetHeight + 'px'); }
   $$('details.acc', main).forEach(d => { const k = accKey(d); if (k in ui.open) d.open = ui.open[k]; });
   if (route === 'voortgang') afterProgress && afterProgress();
@@ -3636,7 +3638,7 @@ A.lightWeekBtn = () => { const w = planWeek(), i = S.lightWeeks.indexOf(w); if (
 A.avoidReset = () => { S.avoid = []; S.plan = buildPlan(S.profile); S.swaps = {}; save(); render(); };
 /* ===== VIEWS 2: training en voeding ===== */
 const CARDIO_KINDS = ['Wandelen', 'Fietsen', 'Hardlopen', 'Zwemmen', 'Roeien', 'Intervallen', 'Anders'];
-const tabs = (cur, list, act) => `<div class="seg" role="tablist">${list.map(([id, l]) => `<button role="tab" aria-selected="${cur === id}" class="${cur === id ? 'on' : ''}" data-a="${act}" data-t="${id}">${l}</button>`).join('')}</div>`;
+const tabs = (cur, list, act, cls) => `<div class="seg${cls ? ' ' + cls : ''}" role="tablist">${list.map(([id, l]) => `<button role="tab" aria-selected="${cur === id}" class="${cur === id ? 'on' : ''}" data-a="${act}" data-t="${id}">${l}</button>`).join('')}</div>`;
 
 /* --- training --- */
 const fmtT = sec => { sec = Math.round(sec); const h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), s = sec % 60; return h ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}` : `${m}:${String(s).padStart(2, '0')}`; };
@@ -4083,7 +4085,7 @@ const NL = { ontbijt: 'Ontbijt', lunch: 'Lunch', diner: 'Diner', tussendoor: 'Tu
 function vFood() {
   if (ui.shopOpen) return shopView();
   const t = ui.foodTab === 'eigen' ? 'recepten' : ui.foodTab; if (ui.foodTab === 'eigen') ui.recCat = 'eigen';
-  return `<section><h1>Voeding</h1>${tabs(t, [['dag', 'Dag'], ['week', 'Week'], ['macro', 'Macro’s'], ['prep', 'Mealprep'], ['recepten', 'Recepten']], 'foodTab')}${t === 'dag' ? fDay() : t === 'week' ? calReview() + fWeek() : t === 'macro' ? fMacro() : t === 'prep' ? fPrep() : fRecipes()}</section>`;
+  return `<section><h1 class="sr">Voeding</h1>${tabs(t, [['dag', 'Dag'], ['week', 'Week'], ['macro', 'Macro’s'], ['prep', 'Mealprep'], ['recepten', 'Recepten']], 'foodTab', 'one')}${t === 'dag' ? fDay() : t === 'week' ? calReview() + fWeek() : t === 'macro' ? fMacro() : t === 'prep' ? fPrep() : fRecipes()}</section>`;
 }
 function fMacro() { const x = planParts(); return `<div class="card"><h3>Macrodoelen</h3>${x.macroBody}</div><div class="card slim"><div class="row"><div><b>Eetpatroon</b><small>${esc(x.dietName)}</small></div><button class="btn ghost sm" data-a="foodPrefs">Wijzig</button></div></div>`; }
 function calReview() {
