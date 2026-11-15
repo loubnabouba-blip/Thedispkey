@@ -217,3 +217,5 @@ footer.f{margin-top:22px;font-size:.8rem;color:var(--muted)}
 .qrow a:first-of-type{background:var(--rk);color:#fff}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .qrow a:first-of-type{color:#0b111f}}
 :root[data-theme="dark"] .qrow a:first-of-type{color:#0b111f}
+
+.bo button.weet{border-style:dashed;color:var(--muted);background:transparent}

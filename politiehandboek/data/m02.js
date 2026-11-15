@@ -55,6 +55,7 @@
     ] }
   ],
   spiek: {
+    weet: [["Twijfel je over aanhouden", "Overleg met de hulpofficier van justitie voordat je iemand meeneemt, tenzij er direct gevaar of heterdaad is."], ["Tijd", "Twijfel je over de termijn, reken de nachtregel (00-09) na en vraag de hulpofficier."]],
     cijfers: [["9 uur", "Ophouden voor onderzoek (Sv 56a). 00.00-09.00 telt niet. Zonder voorlopige hechtenis: 6 uur"], ["3 dagen", "Inverzekeringstelling (Sv 57)"], ["+3 dagen", "Verlenging door officier van justitie bij dringend belang"], ["3 d 18 u", "Uiterlijk voor de rechter-commissaris (Sv 59a)"], ["14 dagen", "Bewaring (Sv 63, Sv 64)"]],
     kern: [
       ["De ladder", [

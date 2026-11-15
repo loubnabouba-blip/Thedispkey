@@ -66,6 +66,7 @@
     ] }
   ],
   spiek: {
+    weet: [["Onbekend wapen", "Veiligheid eerst, behandel als echt. Laat de categorie bepalen door een wapenexpert of je teamleider."]],
     cijfers: [["I-IV", "Categorieën in WWM 2"], ["WWM 13", "Cat. I: alles verboden"], ["WWM 26", "Cat. II en III: voorhanden zonder verlof verboden"], ["WWM 27", "Dragen cat. II, III en IV verboden"]],
     kern: [
       ["De vijf vragen", [

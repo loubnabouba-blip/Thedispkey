@@ -65,6 +65,7 @@
     ] }
   ],
   spiek: {
+    weet: [["Wie vraag je?", "Collega of teamleider. Bij strafvordering de officier van justitie, bij openbare orde de burgemeester via je leidinggevende."], ["Standaard", "Zonder grondslag blijft het bij vrijwillig contact."]],
     cijfers: [["Pw 3", "Taak: rechtsorde handhaven, hulp verlenen"], ["Sv 27", "Verdachte: redelijk vermoeden van schuld"], ["Sv 128", "Heterdaad"], ["4", "Beginselen: legaliteit, proportioneel, subsidiair, doelmatig"]],
     kern: [
       ["Taak en gezag", [

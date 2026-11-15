@@ -60,6 +60,7 @@
     ] }
   ],
   spiek: {
+    weet: [["Geen concrete aanleiding?", "Dan blijft het bij aanspreken. Vraag naar de aanleiding van je collega voordat je doorgaat."]],
     cijfers: [["3", "Niveaus: aanspreken, ID vragen, staande houden"], ["14", "Jaar: identificatieplicht"], ["STOP", "Stel aanleiding vast · Toelichten · Onderzoeken · Plaats afronding"], ["NRPB", "Neutraal · Respect · Participatie · Betrouwbaar"]],
     kern: [
       ["Aanleiding", [

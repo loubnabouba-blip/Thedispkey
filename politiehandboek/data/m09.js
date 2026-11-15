@@ -74,6 +74,7 @@
     ] }
   ],
   spiek: {
+    weet: [["Twijfel bij alcohol of drugs", "Volg het protocol stap voor stap en vraag een collega of de hulpofficier over de vervolgstap."]],
     cijfers: [["220", "µg/l: grens gewone bestuurder (0,5 promille)"], ["88", "µg/l: grens starter (0,2 promille)"], ["15 min", "Wachttijd vóór ademanalyse"], ["3 µg/l", "THC in bloed (drugsgrens)"]],
     kern: [
       ["Wet en reglement", [
