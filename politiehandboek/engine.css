@@ -204,3 +204,16 @@ footer.f{margin-top:22px;font-size:.8rem;color:var(--muted)}
  .big{grid-template-columns:repeat(4,1fr)}
 }
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+/* snelle onderwerpenlijst op de hub */
+.quick{margin:14px 0 6px}
+.quick h2{font:700 1.25rem var(--fh);margin:0 0 8px}
+.qg{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--rk);border-radius:14px;padding:6px 12px 8px;margin-bottom:10px}
+.qh{font:800 .72rem var(--fb);letter-spacing:.06em;text-transform:uppercase;color:var(--rk);padding:6px 0}
+.qrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);min-width:0}
+.qn{flex:none;width:24px;height:24px;border-radius:7px;background:var(--bg);display:grid;place-items:center;font:700 .78rem var(--fb);color:var(--rk)}
+.qt{flex:1;min-width:0;font-weight:600;line-height:1.25}
+.qrow a{flex:none;padding:8px 11px;border-radius:9px;border:1.5px solid var(--rk);font:700 .82rem var(--fb);text-decoration:none;color:var(--rk)}
+.qrow a:first-of-type{background:var(--rk);color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .qrow a:first-of-type{color:#0b111f}}
+:root[data-theme="dark"] .qrow a:first-of-type{color:#0b111f}

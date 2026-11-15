@@ -318,15 +318,25 @@
     var hero = el("div", "hero");
     hero.innerHTML = '<div class="crumb"><span class="rk">Voor de politieagent</span></div><h1>Politiehandboek</h1><p class="sub">Per onderdeel een leerdocument om te begrijpen en een spiekbriefje om op straat te gebruiken. Met beslisbomen, flitskaarten, zelftoetsen en tips en trucs.</p>';
     w.appendChild(hero);
-    var route = el("div", "route");
-    [1, 2, 3, 4].forEach(function (r) { route.innerHTML += '<div class="r' + r + '"><b>' + r + ". " + REEKS[r][0] + "</b><span>" + REEKS[r][1] + "</span></div>"; });
-    w.appendChild(route);
-    w.appendChild(el("p", "small", "De volgorde is bewust zo gekozen: eerst het fundament (wat mag, wanneer, waarom), dan de praktijk op straat, dan de bijzondere wetten, en tot slot het vastleggen en verantwoorden. Wie de reeksen op volgorde doorneemt, kan bij elk onderdeel terugvallen op wat eerder is behandeld."));
     var sb = el("div", "sb", '<input id="hq" type="search" placeholder="Zoek in alle onderdelen, bijv. 9 uur, lijst II, wapenstok, heterdaad" autocomplete="off" aria-label="Zoeken in het hele handboek"><button id="hx" aria-label="Wis zoekopdracht" style="display:none">&times;</button>');
     w.appendChild(sb);
     var sres = el("div"); sres.id = "sres"; w.appendChild(sres);
     var grid = el("div"); grid.id = "grid"; w.appendChild(grid);
     var all = mods();
+    var quick = el("div", "quick");
+    quick.appendChild(el("h2", "", "Kies een onderdeel"));
+    [1, 2, 3, 4].forEach(function (r) {
+      var list = all.filter(function (m) { return m.reeks === r; });
+      if (!list.length) return;
+      var g = el("div", "qg r" + r);
+      g.appendChild(el("div", "qh", r + " · " + REEKS[r][0]));
+      list.forEach(function (M) {
+        g.appendChild(el("div", "qrow", '<span class="qn">' + M.nr + '</span><span class="qt">' + esc(M.titel) + '</span><a href="leren/' + M.id + '.html">Leren</a><a href="spiek/' + M.id + '.html">Spiek</a>'));
+      });
+      quick.appendChild(g);
+    });
+    grid.appendChild(quick);
+    grid.appendChild(el("p", "small", "De volgorde is bewust zo gekozen: eerst het fundament (wat mag, wanneer, waarom), dan de praktijk op straat, dan de bijzondere wetten, en tot slot het vastleggen en verantwoorden. Per onderdeel vind je hieronder een korte beschrijving."));
     [1, 2, 3, 4].forEach(function (r) {
       var list = all.filter(function (m) { return m.reeks === r; });
       if (!list.length) return;
