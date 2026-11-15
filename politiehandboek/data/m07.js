@@ -4,7 +4,7 @@
   kort: "Lijst I en II, handel en bezit, kwekerijen, coffeeshops en wat je bij een vondst doet.",
   wetten: [["Opiumwet", "BWBR0001941"], ["Wetboek van Strafvordering", "BWBR0001903"]],
   intro: "De Opiumwet is de wet waar je op straat het vaakst mee te maken krijgt: een geur uit een auto, een zakje in een jas, een pand met afgeplakte ramen. De wet zelf is helder. Het beleid van het Openbaar Ministerie is dat vaak minder. Dit onderdeel helpt je beide uit elkaar te houden.",
-  doelen: ["lijst I en lijst II herkennen en het verschil in straf uitleggen", "het verschil tussen bezit, handel en teelt benoemen", "het gedoogbeleid voor coffeeshops (AHOJG-G) en het verschil tussen wet en beleid uitleggen", "een drugsvondst veilig en bewijskrachtig behandelen"],
+  doelen: ["lijst I en lijst II herkennen en het verschil in straf uitleggen", "het verschil tussen bezit, handel en teelt benoemen", "het gedoogbeleid voor coffeeshops (AHOJG) en het verschil tussen wet en beleid uitleggen", "een drugsvondst veilig en bewijskrachtig behandelen"],
   leren: [
     { h: "Twee lijsten en drie handelingen", b: [
       ["p", "De Opiumwet verdeelt middelen over twee lijsten. De zwaarte van de lijst bepaalt de strafmaat."],
@@ -27,26 +27,26 @@
         ["Telen", "Hennepplanten kweken. Een kleine thuisteelt is door het beleid minder prioriteit, een kwekerij met veel planten is bedrijfsmatig."],
         ["In- en uitvoer", "Zwaarst gestraft. Denk aan smokkel via haven of luchthaven."]
       ]],
-      ["p", "<b>Beleid is niet de wet.</b> De Aanwijzing Opiumwet van het OM bepaalt wanneer er wordt opgetreden of vervolgd. Typische richtlijnen (controleer de actuele Aanwijzing):"],
+      ["p", "<b>Beleid is niet de wet.</b> De Aanwijzing Opiumwet van het OM bepaalt wanneer er wordt opgetreden of vervolgd. Richtlijnen uit de Aanwijzing Opiumwet (versie 2011 getoetst; controleer de actuele versie):"],
       ["tab", ["Situatie", "Wet", "Beleid"], [
-        ["Hennep tot 30 gram bezit", "Overtreding", "In de regel geen prioriteit tot ca. 5 gram voor eigen gebruik"],
-        ["Harddrugs voor eigen gebruik, kleine hoeveelheid", "Strafbaar", "Geen vervolging bij een gebruikershoeveelheid (richtlijn: ca. 0,5 gram)"],
-        ["Hennep thuisteelt tot 5 planten", "Strafbaar", "Meestal geen actie (afhankelijk van lokale afspraken)"],
-        ["Coffeeshop", "Verboden", "Gedoogd onder AHOJG-G"]
+        ["Hennep tot 30 gram bezit", "Overtreding", "Tot 5 gram: inverzekeringstelling en voorlopige hechtenis liggen niet in de rede"],
+        ["Harddrugs voor eigen gebruik, kleine hoeveelheid", "Strafbaar", "Gebruikershoeveelheid: een bolletje, ampul, wikkel of pil, in elk geval maximaal 0,5 gram. Hulpverlening staat voorop"],
+        ["Hennep thuisteelt tot 5 planten", "Strafbaar", "Tot 5 planten wordt in beginsel geen beroeps- of bedrijfsmatig handelen aangenomen; bij een volwassene geen prioriteit"],
+        ["Coffeeshop", "Verboden", "Gedoogd onder AHOJG"]
       ]],
       ["tip", "Je hoeft niet de gedoogregels in je hoofd te hebben, maar wel te weten dat het bestaat. Check bij twijfel de lokale afspraak en geef de zaak door aan de recherche of de officier."]
     ] },
-    { h: "Coffeeshops: AHOJG-G", b: [
-      ["p", "Coffeeshops mogen volgens de wet geen hasj of wiet verkopen. Het OM gedoogt het onder strikte voorwaarden, samengevat in <b>AHOJG-G</b>:"],
+    { h: "Coffeeshops: AHOJG", b: [
+      ["p", "Coffeeshops mogen volgens de wet geen hasj of wiet verkopen. Het OM gedoogt het onder strikte voorwaarden, samengevat in <b>AHOJG</b>:"],
       ["stap", [
         ["A: Affichering", "Geen reclame of publiciteit."],
         ["H: Harddrugs", "Geen harddrugs verkopen of aanwezig hebben."],
         ["O: Overlast", "Geen overlast voor de omgeving."],
         ["J: Jeugd", "Geen toegang of verkoop aan jongeren onder 18."],
-        ["G: Geen grote hoeveelheden", "Maximaal 5 gram per transactie en niet meer dan 500 gram handelsvoorraad."],
-        ["G: Gemeente", "Gemeente heeft de shop erkend of toegestaan, en er geldt in veel gemeenten een ingezetenencriterium."]
+        ["G: Geen grote hoeveelheden", "Niet meer dan 5 gram per transactie (alle koop en verkoop aan dezelfde koper op dezelfde dag in één shop). De maximale handelsvoorraad stelt het driehoeksoverleg vast, nooit meer dan 500 gram."],
+        ["B en I (alleen sommige gebieden)", "In de versie van 2011 gelden voor Limburg, Noord-Brabant en Zeeland ook: besloten club (B) en alleen verkoop aan ingezetenen (I). Controleer de huidige regels voor jouw gemeente."]
       ]],
-      ["let", "De exacte criteria staan in de gemeentelijke regels en de landelijke Aanwijzing, en wijzigen. Controleer ze voordat je optreedt. Experimenten (zoals de gesloten coffeeshopketen) hebben eigen regels."]
+      ["let", "Getoetst aan de Aanwijzing Opiumwet in de versie van 2011 (Stcrt. 2011, 22936). De huidige versie (2015A003) kon ik niet inzien; controleer die en de gemeentelijke regels voordat je optreedt. Experimenten (zoals de gesloten coffeeshopketen) hebben eigen regels."]
     ] },
     { h: "Bevoegdheden en optreden", b: [
       ["p", "Een drugsvondst is bijna altijd aanleiding voor verdere stappen. Wat je kunt doen hangt af van de situatie."],
@@ -67,7 +67,7 @@
     ] }
   ],
   spiek: {
-    cijfers: [["Lijst I", "Harddrugs: cocaïne, heroïne, XTC, amfetamine, GHB"], ["Lijst II", "Hennep, hasj, wiet"], ["30 g", "Hennep: tot hier een overtreding bij bezit"], ["500 g", "Coffeeshop: max. voorraad (AHOJG-G)"]],
+    cijfers: [["Lijst I", "Harddrugs: cocaïne, heroïne, XTC, amfetamine, GHB"], ["Lijst II", "Hennep, hasj, wiet"], ["30 g", "Hennep: tot hier een overtreding bij bezit"], ["500 g", "Coffeeshop: max. voorraad (AHOJG)"]],
     kern: [
       ["Lijsten en straffen", [
         ["Lijst I", "Opw 2, Opw 10. Bezit: tot 6 jaar (geringe hoeveelheid eigen gebruik: 1 jaar). Verkopen, telen, bereiden, vervoeren: tot 8 jaar. In- en uitvoer: tot 12 jaar."],
@@ -79,13 +79,13 @@
         ["Handel", "Verkoopt, vervoert, heeft voor verkoop. Aanhouden kan."],
         ["Bereiden of telen", "Maakt of kweekt. Hennepkwekerij is bedrijfsmatig vanaf enkele planten."]
       ]],
-      ["Coffeeshop (AHOJG-G)", [
+      ["Coffeeshop (AHOJG)", [
         ["A", "Affichering: geen reclame."],
         ["H", "Harddrugs: geen."],
         ["O", "Overlast: geen."],
         ["J", "Jeugd: geen toegang onder 18."],
         ["G", "Geen grote hoeveelheden: 5 g per transactie, 500 g voorraad."],
-        ["G", "Gemeente: toegestaan en vaak ingezetenencriterium."]
+        ["B en I", "Besloten club en ingezetenen: in 2011 voor Limburg, Noord-Brabant en Zeeland. Controleer lokaal."]
       ]],
       ["Bevoegdheden", [
         ["Staande houden", "Bij verdenking (geur, vondst, handel): Sv 52."],
@@ -96,7 +96,7 @@
     ],
     boom: { titel: "Gebruik of handel?", start: "a", n: {
       a: { q: "Gaat het om een middel van lijst I of lijst II?", o: [["Lijst I (hard)", "b"], ["Lijst II (hennep)", "c"], ["Onbekend", "u"]] },
-      b: { q: "Gaat het om een gebruikershoeveelheid (richtlijn ca. 0,5 g) zonder tekenen van handel?", o: [["Ja", "g1"], ["Nee, of tekenen van handel", "h"]] },
+      b: { q: "Gaat het om een gebruikershoeveelheid (maximaal 0,5 g) zonder tekenen van handel?", o: [["Ja", "g1"], ["Nee, of tekenen van handel", "h"]] },
       c: { q: "Is het ≤ 5 gram voor eigen gebruik zonder tekenen van handel?", o: [["Ja", "g2"], ["Nee, meer of tekenen van handel", "c2"]] },
       c2: { q: "Is het ≤ 30 gram en zonder tekenen van handel?", o: [["Ja", "o"], ["Nee", "h"]] },
       u: { r: "Veldtest of laat onderzoeken. Zet het voorlopig in beslag en noteer waarom je denkt aan een verboden middel.", k: "warn" },
@@ -106,11 +106,11 @@
       h: { r: "Mogelijke handel: staande houden, onderzoek, beslag, bij misdrijf aanhouden (Sv 54, Sv 67). Leg tekenen van handel vast.", k: "ok" }
     } },
     tabel: [["Wet en beleid", ["Situatie", "Wet", "Beleid"], [
-      ["Hennep, bezit tot 30 g", "Overtreding", "Meestal geen prioriteit tot ca. 5 g voor eigen gebruik"],
-      ["Harddrugs, gebruikershoeveelheid", "Strafbaar", "Geen vervolging bij kleine hoeveelheid (richtlijn ca. 0,5 g)"],
-      ["Thuisteelt tot 5 planten", "Strafbaar", "Meestal geen actie"],
-      ["Kwekerij vanaf 6 planten", "Misdrijf", "Aanpakken, ook bestuurlijk"],
-      ["Coffeeshop", "Verboden", "Gedoogd onder AHOJG-G"]
+      ["Hennep, bezit tot 30 g", "Overtreding", "Tot 5 g: geen inverzekeringstelling of voorlopige hechtenis"],
+      ["Harddrugs, gebruikershoeveelheid", "Strafbaar", "Maximaal 0,5 g: hulpverlening voorop"],
+      ["Thuisteelt tot 5 planten", "Strafbaar", "Geen bedrijfsmatig handelen aangenomen"],
+      ["Meer dan 5 planten", "Strafbaar", "Beroeps- of bedrijfsmatig handelen wordt aannemelijker (o.a. schaalgrootte). Ook bestuurlijk aanpakken"],
+      ["Coffeeshop", "Verboden", "Gedoogd onder AHOJG"]
     ]]],
     check: [
       ["Welke lijst?", "Lijst I of II? Veldtest of laboratorium?"],
@@ -136,7 +136,7 @@
       ["Lijsten", "Welk artikel verbiedt lijst II-middelen?", "Opw 3."],
       ["Straffen", "Hoeveel jaar max. voor handel in lijst I?", "Tot 8 jaar voor verkopen, telen, bereiden en vervoeren; in- en uitvoer tot 12 jaar (Opw 10)."],
       ["Straffen", "Wat is bezit van hennep tot 30 gram?", "Een overtreding (Opw 11 lid 1 en 6). Daarboven is opzettelijk bezit een misdrijf (tot 2 jaar)."],
-      ["Beleid", "Wat is AHOJG-G?", "Affichering, Harddrugs, Overlast, Jeugd, Grote hoeveelheden, Gemeente: de gedoogvoorwaarden voor coffeeshops."],
+      ["Beleid", "Wat is AHOJG?", "Affichering, Harddrugs, Overlast, Jeugd, Grote hoeveelheden: de gedoogvoorwaarden voor coffeeshops (in sommige gebieden aangevuld met B en I)."],
       ["Beleid", "Hoeveel mag een coffeeshop voorraad hebben?", "Maximaal 500 gram en 5 gram per transactie."],
       ["Beleid", "Wat is het verschil tussen wet en beleid?", "De wet zegt wat strafbaar is. Het OM-beleid zegt wat wordt aangepakt of vervolgd."],
       ["Optreden", "Wat zijn tekenen van handel?", "Veel doseringen, verpakking, contant geld, weegschaal, meerdere telefoons, chatberichten."],

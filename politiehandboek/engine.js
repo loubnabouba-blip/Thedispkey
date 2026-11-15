@@ -10,7 +10,7 @@
   var BWB = { Sv: "BWBR0001903", Sr: "BWBR0001854", Pw: "BWBR0031788", AI: "BWBR0006589", WVW: "BWBR0006622", RVV: "BWBR0004825", Opw: "BWBR0001941", WWM: "BWBR0008804", Gemw: "BWBR0005416", Awb: "BWBR0005537" };
   var NAAM = { Sv: "Wetboek van Strafvordering", Sr: "Wetboek van Strafrecht", Pw: "Politiewet 2012", AI: "Ambtsinstructie", WVW: "Wegenverkeerswet 1994", RVV: "Reglement verkeersregels en verkeerstekens 1990", Opw: "Opiumwet", WWM: "Wet wapens en munitie", Gemw: "Gemeentewet", Awb: "Algemene wet bestuursrecht" };
   var LRE = /(<[^>]*>)|\b(Sv|Sr|Pw|AI|WVW|RVV|Opw|WWM|Gemw|Awb)\s(\d+[a-z]{0,5}(?::\d+[a-z]{0,2})?)\b/g;
-  var NOTE = "Wetsartikelen zijn getoetst aan de tekst op wetten.overheid.nl (stand 14 november 2026). Beleidsregels van het OM (zoals de Aanwijzing Opiumwet en AHOJG-G), jurisprudentie, protocollen (zoals de wachttijd bij de ademanalyse), de Wet politiegegevens, de Wet tijdelijk huisverbod en de Wet verplichte ggz zijn niet getoetst. Wetten wijzigen; controleer altijd de actuele tekst. Korpsvoorschriften, het Handelingskader en de leerstof van je opleiding gaan voor.";
+  var NOTE = "Wetsartikelen zijn getoetst aan de tekst op wetten.overheid.nl (stand 14 november 2026). De Aanwijzing Opiumwet is alleen getoetst in de versie van 2011 (de huidige versie, 2015A003, kon niet worden ingezien). Andere OM-beleidsregels, jurisprudentie, protocollen (zoals de wachttijd bij de ademanalyse), de Wet politiegegevens, de Wet tijdelijk huisverbod en de Wet verplichte ggz zijn niet getoetst. Wetten wijzigen; controleer altijd de actuele tekst. Korpsvoorschriften, het Handelingskader en de leerstof van je opleiding gaan voor.";
 
   function lk(s) {
     return String(s == null ? "" : s).replace(LRE, function (m, tag, w, n) {
