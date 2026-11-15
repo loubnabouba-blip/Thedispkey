@@ -640,6 +640,10 @@ svg.fgfx .eqf{fill:var(--fe)}svg.fgfx .eqb{stroke:var(--fe);stroke-width:5.6;str
 .fcart{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 12px;border-radius:var(--r);border:1px solid var(--line2);background:var(--surface);color:var(--ink);font:700 14px var(--fb);white-space:nowrap;cursor:pointer}.fbar .fcart:only-child{flex:1}.fcart.on{border-color:var(--accent)}
 .fcart i{position:absolute;top:-7px;right:-7px;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:var(--accent);color:var(--on-accent);font:800 12px/22px var(--fb);font-style:normal;text-align:center}
 .rlist{display:grid;gap:8px;margin:var(--s2) 0}.rrow{appearance:none;display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px var(--s2);width:100%;padding:var(--s2);border-radius:var(--r);border:1px solid var(--line);background:var(--surface2);color:var(--ink);text-align:left;font:inherit;cursor:pointer}.rrow b{font-size:16px}.rrow small{grid-column:1;color:var(--ink2)}.rrow i{grid-row:1/3;grid-column:2;font-style:normal;font-size:22px;color:var(--ink2)}.rrow.danger b{color:var(--warn,#ff6b6b)}
+.mvc{margin:0 0 var(--s3);padding:var(--s3);border-radius:22px;background:var(--surface);border:1px solid var(--line)}.mvh{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s2)}.mvh h3{margin:0;font-size:18px;white-space:nowrap}.mvmin{color:var(--ink2);font-size:14px}.mvmin b{color:var(--ink)}
+.mvsteps{appearance:none;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:48px;padding:0;margin-top:var(--s1);border:0;background:transparent;color:var(--ink);font:inherit;cursor:pointer}.mvsteps span{color:var(--ink2);font-size:14px}.mvsteps b small{color:var(--ink2);font-weight:600}
+.mvlist{list-style:none;margin:var(--s1) 0 0;padding:0}.mvlist .tick.wide{min-height:48px}.mvlist em small,.bwcard em small{display:block;color:var(--ink2);font-size:13px}.mvlist .plainrow{padding:8px 0}.mvlist .plainrow em{font-style:normal}.mvlist .plainrow small{display:block;color:var(--ink2);font-size:13px}.mvc .sub{margin:var(--s1) 0 0}
+.bwcard{margin-top:var(--s2)}.cmpcard .btns{margin:0}
 .thumb{position:relative}
 .shopv .shophead{display:flex;align-items:center;gap:var(--s2);margin-bottom:var(--s1)}.shophead h2{margin:0;font-size:22px}
 .shopsticky{position:sticky;top:calc(var(--shopTop,0px) + var(--shopInset,0px));z-index:20;margin:0 calc(-1*var(--gutter,16px));padding:var(--s1) var(--gutter,16px);background:linear-gradient(var(--bg) 85%,transparent)}
@@ -1824,7 +1828,7 @@ function defaultState() {
   return { v: 1, profile: null, plan: null, macroOverride: null, planStart: null, weekShift: 0, pauseWeeks: 0, lightWeeks: [], extras: [], cardioWeek: [], comp: null, restOff: false, volAdj: {}, disc: {},
     stepsGoal: null, logs: [], draft: null, food: {}, custom: [], recipePhotos: {}, body: [], recovery: {}, steps: {}, stepSync: { manual: {}, off: false, last: null }, photos: [],
     milestone: { enabled: true, name: 'Mijn doel', type: 'eigen', date: null, note: '', items: null, checks: {} }, shop: {}, cart: {}, cartShop: {}, avoid: [], swaps: {}, short: {}, moves: [],
-    coachLog: [], coachCheck: null, theme: null, example: false, period: null, planLength: { mode: 'auto', weeks: 12 }, hx: { div: 'open-m', target: 90 }, progTab: 'overzicht', mindful: { log: [] } };
+    coachLog: [], coachCheck: null, bw: [], theme: null, example: false, period: null, planLength: { mode: 'auto', weeks: 12 }, hx: { div: 'open-m', target: 90 }, progTab: 'overzicht', mindful: { log: [] } };
 }
 function loadState() {
   try { const t = localStorage.getItem(KEY); if (t) return Object.assign(defaultState(), JSON.parse(t)); } catch (e) {}
@@ -2072,9 +2076,50 @@ const CARDIO_TYPES = [
   ['bike', 'Fietsen', 'Fietsen', 'Rustig of stevig doortrappen, buiten of op de hometrainer.'],
   ['swim', 'Zwemmen', 'Zwemmen', 'Baantjes in een rustig tempo, eventueel met intervallen.'],
   ['row', 'Roeien', 'Roeien', 'Gelijkmatig tempo op de roeitrainer. Let op een rechte rug.'],
-  ['walk', 'Wandelen', 'Wandelen', 'Stevig doorwandelen. Goed voor herstel en dagelijkse beweging.'],
   ['other', 'Andere cardio', 'Anders', 'Kies zelf de vorm, duur en afstand.']
 ];
+/* ===== Extra training en extra beweging =====
+   Extra training = de aanvulling die bij je doel past: cardio naast kracht, kracht naast cardio. Maximaal één training per dag.
+   Extra beweging = wandelen, fietsen of mobiliteit voor je gezondheid. Telt niet als training (S.bw). */
+const WHO_MIN = 150;
+const BW_TYPES = [['walk', 'Wandelen', 30, 'Stevig doorwandelen. Goed voor je hart, je stemming en je herstel.'], ['bike', 'Rustig fietsen', 30, 'Gemakkelijk tempo, bijvoorbeeld naar je werk of een ritje.'], ['mob', 'Mobiliteit en stretchen', 10, 'Rustig bewegen en rekken. Fijn na een zware training of na veel zitten.'], ['pause', 'Actieve pauze', 10, 'Even opstaan, een rondje lopen of de trap nemen als je veel zit.']];
+const bwOf = date => (S.bw || []).filter(x => x.date === date);
+function bwWeekMin(d0) {
+  const w0 = addDays(d0, -wdOf(d0)), w1 = addDays(w0, 6); let m = 0;
+  (S.bw || []).forEach(x => { if (x.done && x.date >= w0 && x.date <= w1) m += x.min || 0; });
+  S.logs.forEach(l => { if (l.date >= w0 && l.date <= w1 && l.type !== 'kracht') m += l.min || 0; });
+  return m;
+}
+function weekMix(d0) {
+  const w0 = addDays(d0, -wdOf(d0)); let k = 0, c = 0;
+  for (let i = 0; i < 7; i++) sessionsOn(addDays(w0, i)).forEach(x => { const df = sessionDef(x.key); if (!df) return; if (df.type === 'kracht') k++; else if (df.type === 'cardio' || df.type === 'segments') c++; });
+  return { k, c };
+}
+/* welke aanvulling past bij je doel */
+function complement(d0) {
+  const p = S.profile || {}, md = activeMainDisc(), id = md && md.id, mix = weekMix(d0 || today());
+  const focus = id === 'run' || id === 'hx' ? 'cardio' : id === 'pl' || id === 'bb' ? 'kracht' : id === 'beg' ? 'mix' : ['conditie', 'bewegen'].includes(p.goal) ? 'cardio' : 'kracht';
+  const add = focus === 'cardio' ? 'kracht' : focus === 'kracht' ? 'cardio' : (mix.k >= 2 ? 'cardio' : 'kracht');
+  const why = add === 'cardio' ? 'Rustige cardio (20 tot 40 minuten, een tempo waarbij je nog kunt praten) naast je krachttraining verbetert je conditie en je herstel, zonder je spieropbouw in de weg te zitten.' : 'Korte krachttraining voor je hele lichaam maakt je sterker en verkleint de kans op blessures. De WHO adviseert minstens twee dagen per week spierversterkende oefeningen.';
+  return { focus, add, why, have: add === 'cardio' ? mix.c : mix.k, target: 2, name: add === 'cardio' ? 'cardio' : 'krachttraining' };
+}
+const dayHasTraining = date => sessionsOn(date).length >= 1;
+const freeDays = () => Array.from({ length: 14 }, (_, i) => addDays(today(), i)).filter(x => !dayHasTraining(x));
+const dayChip = x => `<button class="chip btnchip" data-a="addTrainAsk" data-date="${x}">${DAYS[wdOf(x)]} ${new Date(x + 'T12:00:00').getDate()}</button>`;
+function complementCard(d0) {
+  const cp = complement(d0); if (cp.have >= cp.target) return '';
+  const wk0 = addDays(d0, -wdOf(d0)), free = freeDays(), inWeek = free.find(x => addDays(x, -wdOf(x)) === wk0), pick = inWeek || free[0];
+  return `<div class="card coach quiet cmpcard"><span class="eyebrow">Aanvulling voor je doel</span><h3>${cp.have} van ${cp.target}× ${cp.name} deze week</h3><p class="sub">${esc(cp.why)}</p><div class="btns">${pick ? `<button class="btn sm" data-a="addTrainAsk" data-date="${pick}">Voeg ${cp.name} toe op ${DAYS_LONG[wdOf(pick)].toLowerCase()}</button>` : '<small class="fine">Geen vrije dag in de komende twee weken.</small>'}</div></div>`;
+}
+function bwBlock(d) {
+  const items = bwOf(d);
+  return `<div class="card slim bwcard"><div class="row"><b>Extra beweging</b><button class="link" data-a="addBwAsk" data-date="${d}">+ Toevoegen</button></div>${items.length ? `<ul class="checks">${items.map(x => `<li><label class="tick wide"><input type="checkbox" data-c="bwDone" data-id="${x.id}" ${x.done ? 'checked' : ''}><span></span><em>${esc(x.name)}<small>${x.min} min</small></em></label><button class="link" data-a="bwDel" data-id="${x.id}" aria-label="Verwijder ${esc(x.name)}">Verwijder</button></li>`).join('')}</ul>` : '<small class="fine">Wandelen, fietsen of mobiliteit voor je gezondheid. Telt niet als training.</small>'}</div>`;
+}
+A.addBwAsk = d => modal(`<h3>Extra beweging op ${fmtDate(d.date, { weekday: 'long', day: 'numeric', month: 'long' })}</h3><p class="sub">Voor je gezondheid, naast je training. Dit telt niet als training. De WHO adviseert volwassenen minstens 150 minuten matig intensieve beweging per week. Bron: ${SRC.who}.</p>
+  ${BW_TYPES.map(b => `<button class="opt" data-a="addBw" data-t="${b[0]}" data-date="${d.date}"><b>${b[1]} · ${b[2]} min</b><small>${b[3]}</small></button>`).join('')}<div class="btns end"><button class="btn ghost" data-a="close">Sluiten</button></div>`, true);
+A.addBw = d => { const b = BW_TYPES.find(x => x[0] === d.t); if (!b) return; S.bw.push({ id: uid(), date: d.date, kind: b[0], name: b[1], min: b[2], done: false }); ui.tDate = d.date; save(); closeModal(); render(); toast(b[1] + ' toegevoegd.'); };
+C.bwDone = el => { const x = (S.bw || []).find(b => b.id === el.dataset.id); if (x) { x.done = el.checked; hap(el.checked ? 'med' : 'sel'); save(); render(); } };
+A.bwDel = d => { S.bw = (S.bw || []).filter(x => x.id !== d.id); save(); render(); };
 const cardioDef = (o, key) => ({ key, type: 'cardio', name: o.name, kind: o.kind, info: o.info, custom: true });
 const freeDef = (o, key) => ({ key, type: 'vrij', name: o.name, info: o.info || 'Losse training, eigen invulling.', custom: true });
 function sessionDef(key) {
@@ -3195,6 +3240,13 @@ function homeMeals(d, now) {
    <div class="mrow">${items.map(card).join('')}<button class="mcard madd" data-a="homeAddMeal" data-date="${d}"><span aria-hidden="true">+</span>Maaltijd toevoegen</button></div>
    <div class="mtot">${meter(now ? eaten.kcal : plan.kcal, gk, 'Calorieën')}<p>${now ? `Gegeten ${kc(eaten.kcal)} van ${kc(gk)} kcal · ${n0(eaten.p)} van ${n0(gp)} g eiwit` : `Gepland ${kc(plan.kcal)} kcal · ${n0(plan.p)} g eiwit${ok ? ` (doel ${t.kcal} kcal)` : ''}`}</p></div></section>`;
 }
+function homeMove(d, now) {
+  const items = bwOf(d), sg = rwStepsGoal(), st = S.steps[d], min = bwWeekMin(d), rest = !sessionsOn(d).length;
+  const list = items.length ? `<ul class="plain mvlist">${items.map(x => now ? `<li><label class="tick wide"><input type="checkbox" data-c="bwDone" data-id="${x.id}" ${x.done ? 'checked' : ''}><span></span><em>${esc(x.name)}<small>${x.min} min</small></em></label></li>` : `<li class="plainrow"><em>${esc(x.name)}<small>${x.min} min</small></em></li>`).join('')}</ul>` : '';
+  const tip = !items.length && rest ? `<p class="sub">${now ? 'Rustdag: een wandeling van 30 minuten helpt je herstel.' : 'Morgen is een rustdag. Plan alvast een wandeling.'}</p>` : '';
+  return `<section class="mvc"><div class="mvh"><h3>Beweging deze week</h3><span class="mvmin"><b>${min}</b> / ${WHO_MIN} min</span></div>${meter(min, WHO_MIN, 'Beweging deze week')}
+   ${now ? `<button class="mvsteps" data-a="stepsAsk"><span>Stappen</span><b>${st != null ? st.toLocaleString('nl-NL') : '–'} <small>van ${sg.toLocaleString('nl-NL')}</small></b></button>` : ''}${list}${tip}<button class="link" data-a="addBwAsk" data-date="${d}">+ Wandelen, fietsen of mobiliteit</button></section>`;
+}
 function homeRelax(d, now) {
   const hr = new Date().getHours(), at = relaxAt(), done = mindLog().filter(x => x.date === d), off = !!S.relaxOff;
   const due = now && !done.length && !off && new Date().toTimeString().slice(0, 5) >= at, pid = relaxPick(now ? hr : 20), pat = BREATH_PATTERNS[pid];
@@ -3207,7 +3259,7 @@ function vHome() {
   const greet = now ? (hr < 12 ? 'Goedemorgen' : hr < 18 ? 'Goedemiddag' : 'Goedenavond') + (p.name ? ', ' + p.name : '') : 'Een blik vooruit';
   return `<section class="home vday"><div class="tdhead"><span class="tdgreet">${esc(greet)}</span><div class="tdrow"><h1 aria-label="${esc(fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' }))}">${esc(fmtDate(d, { weekday: 'short', day: 'numeric', month: 'short' }))}</h1>
    <div class="dayseg" role="tablist" aria-label="Dag">${[['vandaag', 'Vandaag'], ['morgen', 'Morgen']].map(([k, l]) => `<button role="tab" aria-selected="${(k === 'vandaag') === now}" class="${(k === 'vandaag') === now ? 'on' : ''}" data-a="homeDay" data-t="${k}">${l}</button>`).join('')}</div></div></div>
-  ${homeTrain(d, now)}${homeMeals(d, now)}${homeRelax(d, now)}
+  ${homeTrain(d, now)}${homeMeals(d, now)}${homeMove(d, now)}${homeRelax(d, now)}
   ${now ? scheduleLagCard() + coachCard(coachProposal()) + compHomeCard() : ''}
   ${S.example ? '<p class="sub">Je gebruikt een voorbeeldprofiel. Pas het aan of wis het bij Profiel.</p>' : ''}</section>`;
 }
@@ -3619,14 +3671,20 @@ function tWeek() {
      ${def.type === 'kracht' ? `<details class="why"><summary>Bekijk oefeningen</summary><div>${exList(s.key)}</div></details>` : def.type === 'segments' ? `<p class="sub">${esc(def.info)}</p>` : `<p class="sub">${esc(def.info || 'Kies zelf de vorm, duur en afstand.')}</p>`}
      <div class="btns"><button class="btn sm ${done ? 'ghost' : ''}" data-a="openWorkout" data-key="${s.key}" data-date="${d}" data-from="${s.from}">${done ? 'Nog een keer loggen' : d > today() ? 'Alvast bekijken' : 'Start training'}</button>
      <details class="menu"><summary class="btn ghost sm">Meer</summary><div class="menubox">${!done && !s.extra && !s.weekly ? `<button class="link" data-a="moveAsk" data-key="${s.key}" data-from="${s.from}">Verplaats naar andere dag</button>` : ''}${s.extra ? `<button class="link" data-a="extraDel" data-id="${s.extra}">Verwijder uit agenda</button>` : ''}${s.weekly ? `<button class="link" data-a="weeklyDel" data-id="${s.weekly}">Verwijder uit vast weekschema</button>` : ''}${def.type === 'kracht' ? `<button class="link" data-a="shortToggle" data-key="${s.key}">${S.short[s.key] ? 'Volledige versie gebruiken' : 'Kortere versie gebruiken'}</button>` : ''}</div></details></div></div>`; });
-  return weekReview() + strip + `<div data-swipe data-sw-l="tDayNext" data-sw-r="tDayPrev">${body}<button class="btn ghost" data-a="addTrainAsk" data-date="${d}">+ Training of cardio toevoegen</button></div>`;
+  return weekReview() + strip + complementCard(d) + `<div data-swipe data-sw-l="tDayNext" data-sw-r="tDayPrev">${body}${bwBlock(d)}<button class="btn ghost" data-a="addTrainAsk" data-date="${d}">+ Extra training toevoegen</button></div>`;
 }
-A.addTrainAsk = d => { const date = d.date, ks = S.plan.sessions.filter(s => s.type !== 'cardio');
-  modal(`<h3>Toevoegen op ${fmtDate(date, { weekday: 'long', day: 'numeric', month: 'long' })}</h3><p class="sub">Kies een cardiosessie of een training uit je schema. Dit past je vaste schema niet aan, tenzij je herhalen aanzet.</p>
-   <h4>Cardio</h4><label class="chip"><input type="checkbox" id="addrep"><span>Herhaal elke ${DAYS_LONG[wdOf(date)].toLowerCase()}</span></label>
-   ${CARDIO_TYPES.map(c => `<button class="opt" data-a="addCardio" data-t="${c[0]}" data-date="${date}"><b>${c[1]}</b><small>${c[3]}</small></button>`).join('')}
-   <h4>Training uit je schema</h4>${ks.map(s => `<button class="opt" data-a="addKracht" data-key="${s.key}" data-date="${date}"><b>${esc(s.name)}</b><small>${sessionMeta(s, s.key)}</small></button>`).join('')}
-   <h4>Eigen training</h4><button class="opt" data-a="addFreeAsk" data-date="${date}"><b>+ Losse training inplannen</b><small>Eigen naam, buiten je schema om</small></button>
+A.addTrainAsk = d => {
+  const date = d.date, dl = fmtDate(date, { weekday: 'long', day: 'numeric', month: 'long' }), cp = complement(date), ks = S.plan.sessions.filter(s => s.type !== 'cardio');
+  const bw = `<h4>Extra beweging</h4><p class="sub">Voor je gezondheid. Telt niet als training.</p><button class="opt" data-a="addBwAsk" data-date="${date}"><b>Wandelen, fietsen of mobiliteit</b><small>Naast je training, dus ook op een dag met een training</small></button>`;
+  if (dayHasTraining(date)) return modal(`<h3>Toevoegen op ${dl}</h3><div class="note warn"><b>Er staat al een training op deze dag.</b><br>Twee trainingen op één dag maken herstel lastig. Plan extra training op een vrije dag.</div>
+   <h4>Vrije dagen</h4><div class="chips">${freeDays().slice(0, 6).map(dayChip).join('') || '<small class="fine">Geen vrije dag in de komende twee weken.</small>'}</div>${bw}<div class="btns end"><button class="btn ghost" data-a="close">Sluiten</button></div>`, true);
+  const cardio = `<label class="chip"><input type="checkbox" id="addrep"><span>Herhaal elke ${DAYS_LONG[wdOf(date)].toLowerCase()}</span></label>${CARDIO_TYPES.map(c => `<button class="opt" data-a="addCardio" data-t="${c[0]}" data-date="${date}"><b>${c[1]}</b><small>${c[3]}</small></button>`).join('')}`;
+  const kracht = ks.map(s => `<button class="opt" data-a="addKracht" data-key="${s.key}" data-date="${date}"><b>${esc(s.name)}</b><small>${sessionMeta(s, s.key)}</small></button>`).join('') || '<small class="fine">Geen krachttraining in je schema.</small>';
+  const rec = cp.add === 'cardio' ? ['Cardio', cardio, 'Krachttraining uit je schema', kracht] : ['Krachttraining uit je schema', kracht, 'Cardio', cardio];
+  modal(`<h3>Extra training op ${dl}</h3><p class="sub">Een tweede soort training naast je hoofdtraining. Dit past je vaste schema niet aan, tenzij je herhalen aanzet.</p>
+   <div class="note"><b>Aanbevolen voor jouw doel: ${cp.name}</b><br>${esc(cp.why)}</div>
+   <h4>${rec[0]}</h4>${rec[1]}<h4>${rec[2]}</h4>${rec[3]}
+   <h4>Eigen training</h4><button class="opt" data-a="addFreeAsk" data-date="${date}"><b>+ Losse training inplannen</b><small>Eigen naam, buiten je schema om</small></button>${bw}
    <div class="btns end"><button class="btn ghost" data-a="close">Sluiten</button></div>`, true); };
 A.addFreeAsk = d => { const date = d.date;
   modal(`<h3>Losse training inplannen</h3><p class="sub">${fmtDate(date, { weekday: 'long', day: 'numeric', month: 'long' })}</p>
@@ -3635,12 +3693,16 @@ A.addFreeAsk = d => { const date = d.date;
    <div class="btns end"><button type="button" class="btn ghost" data-a="addTrainAsk" data-date="${date}">Terug</button><button class="btn">Toevoegen</button></div></form>`, true);
   setTimeout(() => { const el = $('.dialog input[name=name]'); el && el.focus(); }, 0); };
 F.addFreeSave = (f, fd) => { const date = fd.get('date'), name = (fd.get('name') || '').trim(); if (!name) return;
+  if (dayHasTraining(date)) { toast('Er staat al een training op deze dag. Kies een vrije dag.'); return; }
   const id = uid(); S.extras.push({ id, date, key: 'x-' + id, name, info: (fd.get('info') || '').trim() || undefined, free: true });
   ui.tDate = date; save(); closeModal(); render(); toast('Losse training ingepland.'); };
 A.addCardio = d => { const c = CARDIO_TYPES.find(x => x[0] === d.t), rep = $('#addrep') && $('#addrep').checked, id = uid(), o = { id, name: c[1], kind: c[2], info: c[3], cardio: true };
+  if (dayHasTraining(d.date)) { toast('Er staat al een training op deze dag. Kies een vrije dag.'); return; }
+  if (rep && S.plan.schedule.some(x => x.wd === wdOf(d.date))) { toast('Op ' + DAYS_LONG[wdOf(d.date)].toLowerCase() + ' staat al een training in je vaste schema.'); return; }
   if (rep) { o.wd = wdOf(d.date); S.cardioWeek.push(o); } else { o.date = d.date; o.key = 'x-' + id; S.extras.push(o); }
   ui.tDate = d.date; save(); closeModal(); render(); toast(rep ? 'Toegevoegd aan je vaste weekschema.' : 'Toegevoegd aan je agenda.'); };
-A.addKracht = d => { S.extras.push({ id: uid(), date: d.date, key: d.key }); ui.tDate = d.date; save(); closeModal(); render(); toast('Toegevoegd aan je agenda.'); };
+A.addKracht = d => { if (dayHasTraining(d.date)) { toast('Er staat al een training op deze dag. Kies een vrije dag.'); return; }
+  S.extras.push({ id: uid(), date: d.date, key: d.key }); ui.tDate = d.date; save(); closeModal(); render(); toast('Toegevoegd aan je agenda.'); };
 A.extraDel = d => { S.extras = S.extras.filter(e => e.id !== d.id); save(); render(); };
 A.weeklyDel = d => { S.cardioWeek = S.cardioWeek.filter(e => e.id !== d.id); save(); render(); toast('Verwijderd uit je vaste weekschema.'); };
 A.tDayNext = () => { ui.tDate = addDays(ui.tDate, 1); render(); };
