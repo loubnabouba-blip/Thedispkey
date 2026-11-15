@@ -67,3 +67,11 @@ Een doel en een wedstrijd of evenement zijn twee dingen met elk een eigen, bewer
 - **Extra training = de aanvulling die bij je doel past** (`complement()`): bij een krachtgericht doel (spieropbouw, kracht, powerlifting, bodybuilding, afvallen) is dat rustige cardio; bij een duurgericht doel (conditie, hardlopen, Hyrox) is dat krachttraining. Bij Afvallen en gezond leven kiest de app wat er deze week nog mist. Doel: 2 per week. De trainingsweek toont een kaart zolang het doel niet gehaald is; het toevoegen-venster zet het aanbevolen type bovenaan met uitleg.
 - **Maximaal één training per dag** bij het toevoegen (`dayHasTraining()`): een dag met een training weigert een tweede, en het venster toont de vrije dagen. Dit geldt voor wat je zelf toevoegt; het vaste schema van de app is niet aangepast.
 - **Extra beweging voor je gezondheid** (`S.bw`: wandelen, rustig fietsen, mobiliteit, actieve pauze) is een aparte categorie en telt niet als training. Het mag ook op een dag met een training. Vandaag en de trainingsweek tonen het, met een weekteller tegen het WHO-advies van 150 minuten (afgevinkte beweging plus cardio-logs). Wandelen staat niet meer in de lijst met cardiotrainingen.
+
+## Eén hoofddoel tegelijk
+
+- De rol "ondersteunend" is vervallen: elke actieve discipline is het hoofddoel. Het keuzeveld bij starten en de kaart "Rol" onder Instellingen zijn weg.
+- **Overstappen:** start je een tweede doel (discipline of bodybuilding), dan vraagt de app of je overstapt. Het huidige doel wordt gepauzeerd (`S.paused`, met een kopie van de instellingen). Logs blijven bewaard. Een bodybuilding-voorbereiding kan niet pauzeren en wordt beëindigd; check-ins en posing-log blijven.
+- **Hervatten:** onder Mijn doel staat een kaart "Gepauzeerd" met een knop Hervat. Die opent het startscherm met dezelfde instellingen. Het schema begint opnieuw vanaf vandaag; een wedstrijddatum blijft alleen staan als die nog meer dan 4 weken weg is.
+- **Bestaande gebruikers met meerdere doelen:** een kaart "Kies je hoofddoel" op Mijn doel. Na een keuze worden de andere gepauzeerd.
+- Level, XP en badges blijven ongewijzigd.

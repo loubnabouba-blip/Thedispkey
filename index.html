@@ -4615,6 +4615,9 @@ F.compStart = (f, fd) => {
   if (S.profile && S.profile.care) { toast('Overleg eerst met een arts of diëtist.'); return; }
   if (!date || diffDays(today(), date) < 56) { toast('Kies een wedstrijddatum minstens 8 weken vanaf nu.'); return; }
   if (!fd.get('g1') || !fd.get('g2') || !fd.get('g3')) { toast('Vink de drie veiligheidspunten aan om te starten.'); return; }
+  const others = activeDisc().filter(x => x.id !== 'bb');
+  if (others.length && !ui.csOk) { switchAsk('Bodybuilding', others, 'compSwitch'); return; }
+  ui.csOk = false;
   const base = calcMacros(S.profile); if (base.missing) { toast('Vul eerst je gegevens in bij Profiel: ' + base.missing.join(', ') + '.'); return; }
   const pw = clamp(+fd.get('weeks') || cl.prep[1], 8, Math.min(wl, 30));
   S.comp = { active: true, fed: o.fed, cls: o.cls, date, prepWeeks: pw, start: today(), kcalAdj: 0, cardioAdj: 0, cycle: false, refeed: true, refeedWd: 5, checkins: [], pose: [], ck: {} };
@@ -4635,6 +4638,7 @@ function vComp() {
   const nav = `<div class="btns compnav">${t !== 'overzicht' ? '<button class="btn ghost" data-a="compTab" data-t="overzicht">‹ Overzicht</button>' : ''}${t === 'voeding' ? '<button class="btn ghost" data-a="compTab" data-t="checkin">Naar check-in</button>' : ''}${nx ? `<button class="btn" data-a="compTab" data-t="${nx[0]}">Volgende: ${nx[1]} ›</button>` : ''}</div>`;
   return tabs(t, tabsList, 'compTab') + ({ overzicht: cOverzicht, fases: cFases, voeding: cVoeding, peak: cPeak, checkin: cCheckin, posing: cPosing, supps: cSupps, instel: cInstel })[t]() + nav;
 }
+A.compSwitch = () => { activeDisc().filter(x => x.id !== 'bb').forEach(x => pauseGoal(x.id)); ui.csOk = true; closeModal(); const f = document.querySelector('form[data-submit="compStart"]'); if (f) f.requestSubmit(); };
 A.compTab = d => { ui.compTab = d.t; render(); window.scrollTo(0, 0); };
 A.goalTab = d => { ui.goalTab = d.t; render(); };
 
@@ -5085,6 +5089,17 @@ function pairLevel(a, b) {
   if (both('run', 'pl') || both('run', 'bb')) return [1, 'Kort en rustig lopen past naast krachttraining. Houd het lopen ondersteunend.'];
   return [0, 'Deze twee combineren goed.'];
 }
+/* één hoofddoel tegelijk: een nieuw doel pauzeert het huidige (logs blijven), bodybuilding wordt beëindigd */
+function pauseGoal(id) {
+  if (id === 'bb') { if (S.comp) S.comp.active = false; S.cardioWeek = S.cardioWeek.filter(x => !x.comp); return; }
+  const dc = D()[id]; if (!dc) return;
+  S.paused = (S.paused || []).filter(x => x.id !== id); S.paused.push({ id, at: today(), dc: JSON.parse(JSON.stringify(dc)) });
+  delete D()[id];
+}
+function switchAsk(newName, others, act) {
+  const names = others.map(x => nameOf(x.id)).join(' en '), bb = others.some(x => x.id === 'bb');
+  modal(`<h3>Overstappen naar ${esc(newName)}?</h3><p>Je werkt aan één hoofddoel tegelijk. ${esc(names)} wordt gepauzeerd. Je logs blijven bewaard en je kunt later hervatten.</p>${bb ? '<p class="sub">Een bodybuilding-voorbereiding kan niet pauzeren: die wordt beëindigd. Je check-ins en posing-log blijven bewaard.</p>' : ''}<div class="btns end"><button class="btn" data-a="${act}">Ja, overstappen</button><button class="btn ghost" data-a="close">Annuleren</button></div>`);
+}
 const dEnd = dc => dc.date || addDays(dMon(dc), dc.weeks * 7 - 1);
 function activeDisc() {
   const out = Object.values(D()).filter(dc => dc && dWeek(dc, today()) <= dc.weeks).map(dc => ({ id: dc.id, role: dc.role || 'main', goal: dc.goal, peak: dEnd(dc), end: dEnd(dc) }));
@@ -5167,6 +5182,18 @@ function discCard(id, name, blurb, status, active, act) {
    <span class="dtop"><span class="dic"><svg viewBox="0 0 24 24" aria-hidden="true">${ic}</svg></span>${active ? '<span class="dlive">Actief</span>' : ''}</span>
    <span class="dbody"><small class="dtag">${tag}</small><b class="dname">${esc(name)}</b><span class="dblurb">${esc(blurb)}</span><span class="dstat">${esc(status)}</span><span class="dgo">${active ? 'Open' : 'Start'} <i>›</i></span></span></button>`;
 }
+function multiGoalCard() {
+  const act = activeDisc(); if (act.length < 2) return '';
+  return `<div class="card"><h3>Kies je hoofddoel</h3><p class="sub">Je hebt meer dan één doel actief. De app werkt met één hoofddoel tegelijk. De andere worden gepauzeerd, je logs blijven bewaard.</p><div class="btns col">${act.map(a => `<button class="btn" data-a="goalKeep" data-id="${a.id}">${esc(nameOf(a.id))} wordt mijn hoofddoel</button>`).join('')}</div></div>`;
+}
+A.goalKeep = d => { activeDisc().filter(x => x.id !== d.id).forEach(x => pauseGoal(x.id)); const dc = D()[d.id]; if (dc) { dc.role = 'main'; dc.v = Date.now(); applyMainGoal(d.id, dc.goal); } save(); render(); toast(nameOf(d.id) + ' is nu je hoofddoel.'); };
+function pausedCard() {
+  const list = (S.paused || []).filter(x => DISC[x.id] && !D()[x.id]); if (!list.length) return '';
+  return `<div class="card"><h3>Gepauzeerd</h3>${list.map(x => `<div class="row"><div><b>${esc(DISC[x.id].name)}</b><small>Gepauzeerd op ${fmtL(x.at)}</small></div><button class="btn ghost sm" data-a="goalResume" data-id="${x.id}">Hervat</button></div>`).join('')}<small class="fine">Hervatten start het schema opnieuw vanaf vandaag, met dezelfde instellingen.</small></div>`;
+}
+A.goalResume = d => { const x = (S.paused || []).find(y => y.id === d.id); if (!x) return; const dc = x.dc, o = discDefaults(d.id);
+  Object.assign(o, { goal: dc.goal, level: dc.level, days: [...dc.days], orm: { ...dc.orm }, target: dc.target || '', baseSteps: dc.baseSteps || o.baseSteps, date: dc.date && diffDays(today(), dc.date) > 28 ? dc.date : '' });
+  ui.disc = d.id; ui.dsetup = o; ui.dtab = 'overzicht'; render(); window.scrollTo(0, 0); };
 function hubCompat() {
   const act = activeDisc(); if (act.length < 2) return '';
   const rows = []; act.forEach((a, i) => act.slice(i + 1).forEach(b => { const [lv, msg] = pairLevel(a, b), eff = lv === 2 && (a.role === 'support' || b.role === 'support') ? 1 : lv; if (eff) rows.push(`<div class="note ${eff >= 2 ? 'warn' : ''}"><b>${esc(nameOf(a.id))} + ${esc(nameOf(b.id))}: ${LV[eff]}</b><br>${esc(msg)}</div>`); }));
@@ -5199,10 +5226,9 @@ function discSetup(id) {
     : id === 'pl' ? `${dfld('Soort wedstrijd', sel('kind', EV_SPEC.pl.map(e => [e[0], e[1]])), 'Alleen van belang als je een datum invult.')}${dfld('Wedstrijd of testdatum (optioneel)', `<input type="date" name="date" data-c="dsf" value="${o.date}" min="${addDays(today(), 28)}">`, 'Zonder datum duurt het schema 12 weken.')}<div class="grid3">${[['sq', 'Squat 1RM (kg)'], ['bp', 'Bank 1RM (kg)'], ['dl', 'Deadlift 1RM (kg)']].map(([k, l]) => dfld(l, `<input type="number" name="orm_${k}" data-c="dsf" inputmode="decimal" step="0.5" min="0" value="${o.orm[k]}">`)).join('')}</div><small>Weet je je 1RM niet? Laat het leeg. Dan gebruikt de app je geschatte 1RM uit je logs, of stuurt hij op gevoel.</small>`
     : id === 'hx' ? `${dfld('Categorie', sel('hxdiv', Object.entries(HX_DIV).map(([k, v]) => [k, v.n])))}${dfld('Wedstrijddatum (optioneel)', `<input type="date" name="date" data-c="dsf" value="${o.date}" min="${addDays(today(), 28)}">`, 'Zonder datum duurt het schema 12 weken.')}${dfld('Streeftijd Hyrox in minuten (optioneel)', `<input type="number" name="target" data-c="dsf" inputmode="numeric" min="40" max="200" value="${o.target}">`, 'De eindtijd die je wilt halen voor de hele wedstrijd: 8 keer 1 km hardlopen met 8 stations. Bijvoorbeeld 90 voor 1 uur 30. Laat leeg als je dat nog niet weet.')}`
     : `${dfld('Mijn doel', sel('goal', [['afvallen', 'Afvallen'], ['fit', 'Fitter worden'], ['gezond', 'Gezonder leven']]))}<small>Je start met ongeveer ${n0(o.baseSteps)} stappen per dag als doel (gebaseerd op je ingevoerde stappen) en bouwt dat elke 3 weken met 1000 stappen op.</small>`;
-  const others = activeDisc().filter(x => x.id !== id); if (!o.role) o.role = others.length ? 'support' : 'main';
-  const nwd = { id, role: o.role, goal: o.goal, peak: o.date || addDays(today(), (id === 'beg' ? 12 : id === 'run' ? (RUNG[o.goal] || RUNG.k5).def : 12) * 7) };
-  const cl = compatWith(nwd), later = cl.filter(x => x.lv >= 2).sort((a, b) => b.o.end.localeCompare(a.o.end))[0];
-  const rolePick = others.length ? `<div class="f"><span>Rol van deze discipline</span><div class="chips">${[['main', 'Hoofddoel'], ['support', 'Ondersteunend']].map(([k, l]) => `<label class="chip"><input type="radio" name="role" value="${k}" data-c="dsf" ${o.role === k ? 'checked' : ''}><span>${l}</span></label>`).join('')}</div><small>Het hoofddoel is de piek waar je naartoe werkt. Een ondersteunende discipline krijgt een lichter schema: korter, rustiger en minder sets.</small></div>` : '';
+  const others = activeDisc().filter(x => x.id !== id); o.role = 'main';
+  const cl = [], later = null;
+  const rolePick = others.length ? `<div class="note"><b>Je hebt één hoofddoel tegelijk.</b> ${esc(others.map(x => nameOf(x.id)).join(' en '))} wordt gepauzeerd zodra je dit start.</div>` : '';
   const bmi = id === 'beg' && o.goal === 'afvallen' && S.profile && S.profile.weight && S.profile.height ? S.profile.weight / Math.pow(S.profile.height / 100, 2) : null;
   return `<section><button class="btn ghost sm" data-a="discBack">‹ Mijn doel</button><p class="eyebrow">Nieuwe discipline</p><h1>${DISC[id].name}</h1>${intro}
   ${compatCard(cl, later && later.o)}${mainPreview(o, later)}<form data-submit="discStart" class="card"><h3>Instellingen</h3>${fields}${rolePick}${bmi && bmi < 20 ? '<div class="note warn">Je BMI ligt laag. Afvallen is dan waarschijnlijk niet nodig. Kies liever “Fitter worden”, of bespreek dit met je huisarts of diëtist.</div>' : ''}
@@ -5225,19 +5251,19 @@ F.discStart = () => {
   const o = ui.dsetup, id = o.id, [mn, mx] = DLIM[id], N = o.days.length, lim = id === 'run' && o.goal === 'c30' ? [2, 3] : [mn, mx];
   if (N < lim[0] || N > lim[1]) { toast(`Kies ${lim[0] === lim[1] ? lim[0] : lim[0] + ' tot ' + lim[1]} trainingsdagen.`); return; }
   if (o.date && o.date <= today()) { toast('Kies een datum in de toekomst.'); return; }
-  const role = o.role || (activeDisc().some(x => x.id !== id) ? 'support' : 'main'), cl = compatWith({ id, role, goal: o.goal, peak: o.date || null });
-  if (cl.some(x => x.lv === 3)) { toast('Deze combinatie kan niet: de pieken vallen op dezelfde dagen. Pas de datum of de rol aan.'); return; }
-  if (cl.some(x => x.lv === 2) && !o.ack && !o.later) { modal(`<h3>Toch starten?</h3><p>${esc(cl.filter(x => x.lv === 2).map(x => nameOf(x.o.id) + ': ' + x.msg).join(' '))}</p><p class="sub">Je kunt ook de rol op ondersteunend zetten, of pas starten na je andere discipline.</p><div class="btns end"><button class="btn" data-a="discForce">Toch starten</button><button class="btn ghost" data-a="close">Aanpassen</button></div>`); return; }
+  const others = activeDisc().filter(x => x.id !== id);
+  if (others.length) { switchAsk(DISC[id].name, others, 'discSwitch'); return; }
   discBegin();
 };
-A.discForce = () => { ui.dsetup.ack = true; closeModal(); discBegin(); };
+A.discSwitch = () => { const id = ui.dsetup.id; activeDisc().filter(x => x.id !== id).forEach(x => pauseGoal(x.id)); closeModal(); discBegin(); };
+A.discForce = () => { closeModal(); discBegin(); };
 function discBegin() {
-  const o = ui.dsetup, id = o.id, g = id === 'run' ? RUNG[o.goal] : null, role = o.role || (activeDisc().some(x => x.id !== id) ? 'support' : 'main');
-  const later = o.later ? activeDisc().filter(x => x.id !== id).sort((a, b) => b.end.localeCompare(a.end))[0] : null, start = later ? addDays(later.end, 1) : today();
+  const o = ui.dsetup, id = o.id, g = id === 'run' ? RUNG[o.goal] : null, role = 'main';
+  const later = null, start = today();
   const wkFrom = d => Math.floor(diffDays(addDays(start, -wdOf(start)), d) / 7) + 1, def = id === 'beg' ? 12 : id === 'run' ? g.def : 12, wk = o.date && id !== 'beg' ? wkFrom(o.date) : def, W = clamp(wk, 4, id === 'run' ? 30 : 24);
   if (o.date && o.date <= start) { toast('Je wedstrijd valt voor de startdatum. Pas de datum aan of start nu.'); return; }
   const dc = { id, v: Date.now(), start, days: [...o.days].sort((a, b) => a - b), weeks: W, goal: o.goal, level: o.level, date: o.date || null, orm: { ...o.orm }, target: o.target, baseSteps: o.baseSteps, short: !!(g && o.date && wk < g.min), role };
-  D()[id] = dc; if (id === 'hx' && o.hxdiv && HX_DIV[o.hxdiv]) S.hx.div = o.hxdiv;
+  D()[id] = dc; S.paused = (S.paused || []).filter(x => x.id !== id); if (id === 'hx' && o.hxdiv && HX_DIV[o.hxdiv]) S.hx.div = o.hxdiv;
   const ng = role === 'main' && !later ? applyMainGoal(id, o.goal) : null;
   if (role === 'main' && dc.date) offerMilestone(id, dc.date, evKindFor(id, o));
   save(); ui.dsetup = null; ui.dtab = 'overzicht'; render(); window.scrollTo(0, 0); toast(DISC[id].name + (later ? ' start na je andere discipline.' : ' is toegevoegd aan je weekplan.') + (ng ? ' Je basisplan stuurt nu op: ' + GOALS[ng].toLowerCase() + '.' : ''));
@@ -5279,12 +5305,10 @@ function dSettings(dc) {
   ui.dedit = ui.dedit && ui.dedit.id === dc.id ? ui.dedit : { id: dc.id, days: [...dc.days] }; const [mn, mx] = DLIM[dc.id];
   return `<div class="card"><h3>Samenvatting</h3><ul class="plain"><li>Start: ${fmtDate(dc.start, { day: 'numeric', month: 'long' })}</li><li>Duur: ${dc.weeks} weken</li>${dc.date ? `<li>Wedstrijd: ${fmtDate(dc.date, { day: 'numeric', month: 'long', year: 'numeric' })}</li>` : ''}${dc.goal && dc.id === 'run' ? `<li>Doel: ${RUNG[dc.goal].n}</li>` : ''}</ul></div>
   <form data-submit="discDays" class="card"><h3>Trainingsdagen wijzigen</h3><div class="chips">${DAYS.map((d, i) => `<label class="chip"><input type="checkbox" data-c="dday" value="${i}" ${ui.dedit.days.includes(i) ? 'checked' : ''}><span>${d}</span></label>`).join('')}</div><small>Kies ${mn} tot ${mx} dagen. De rest van het schema past zich aan.</small><div class="btns"><button class="btn sm">Opslaan</button></div></form>
-  <div class="card"><h3>Rol</h3><p class="sub">Het hoofddoel krijgt het volledige schema. Ondersteunend is korter, rustiger en met minder sets.</p><div class="chips">${[['main', 'Hoofddoel'], ['support', 'Ondersteunend']].map(([k, l]) => `<button class="chip btnchip ${(dc.role || 'main') === k ? 'on' : ''}" data-a="discRole" data-id="${dc.id}" data-r="${k}">${l}</button>`).join('')}</div></div>
   <div class="card"><h3>Discipline stoppen</h3><p class="sub">Je logs blijven bewaard. Het schema verdwijnt uit je weekplan.</p><button class="btn danger sm" data-a="discStop" data-id="${dc.id}">Stop deze discipline</button></div>
   <div class="card"><h3>Opnieuw beginnen</h3><p class="sub">Reset alleen ${esc(DISC[dc.id].name)}. Andere disciplines, je krachtschema en je voeding blijven zoals ze zijn.</p><button class="btn danger sm" data-a="discResetAsk" data-id="${dc.id}">Reset deze discipline</button></div>`;
 }
 F.discDays = () => { const o = ui.dedit, dc = D()[o.id], [mn, mx] = DLIM[o.id]; if (o.days.length < mn || o.days.length > mx) { toast(`Kies ${mn} tot ${mx} dagen.`); return; } dc.days = [...o.days].sort((a, b) => a - b); dc.v = Date.now(); ui.dedit = null; save(); render(); toast('Trainingsdagen aangepast.'); };
-A.discRole = d => { const dc = D()[d.id]; dc.role = d.r; dc.v = Date.now(); const c = compatWith({ id: dc.id, role: dc.role, goal: dc.goal, peak: dEnd(dc) }), ng = d.r === 'main' ? applyMainGoal(dc.id, dc.goal) : null; save(); render(); toast((c.some(x => x.lv >= 2) ? 'Rol aangepast. Let op: deze combinatie blijft zwaar.' : 'Rol aangepast. Het schema is bijgewerkt.') + (ng ? ' Je basisplan stuurt nu op: ' + GOALS[ng].toLowerCase() + '.' : '')); };
 A.discStop = d => modal(`<h3>${DISC[d.id].name} stoppen?</h3><p>Het schema verdwijnt uit je weekplan. Je logs blijven bewaard.</p><div class="btns end"><button class="btn danger" data-a="discStopDo" data-id="${d.id}">Ja, stop</button><button class="btn ghost" data-a="close">Annuleren</button></div>`);
 A.discResetAsk = d => modal(`<h3>${esc(DISC[d.id].name)} resetten?</h3><p>Kies wat je wilt bewaren. Dit raakt alleen deze discipline.</p><div class="btns col"><button class="btn" data-a="discResetDo" data-id="${d.id}" data-logs="keep">Schema opnieuw, logs bewaren</button><button class="btn danger" data-a="discResetDo" data-id="${d.id}" data-logs="wipe">Alles wissen, ook je logs</button><button class="btn ghost" data-a="close">Annuleren</button></div>`);
 A.discResetDo = d => { const pre = 'd:' + d.id + ':'; delete D()[d.id];
@@ -5460,7 +5484,7 @@ A.resetData = () => { closeModal(); ui.open['mijn-plan:Je gegevens'] = true; go(
 function sportPage() {
   const act = activeDisc(), c = S.comp && S.comp.active, ids = ['run', 'pl', 'hx', 'beg'];
   const cards = ids.map(id => discCard(id, DISC[id].name, DISC[id].blurb, discStatus(id), !!D()[id], 'discGo')).join('') + discCard('bb', 'Bodybuilding', 'Voorbereiding op een wedstrijd met fases, peak week, check-ins en posing.', c ? 'Actief · ' + Math.max(0, Math.ceil(diffDays(today(), S.comp.date) / 7)) + ' weken tot de show' : 'Niet gestart', !!c, 'discBB');
-  return `<section><h1>Mijn doel</h1>${syncBanner()}${goalSummary()}<p class="sub">Je hoofddiscipline is je doel. Kies er een, of laat de app kiezen.</p>${discWizCard()}${act.length || c ? weekLoad() : ''}${hubCompat()}<div class="dcards">${cards}</div>
+  return `<section><h1>Mijn doel</h1>${syncBanner()}${goalSummary()}<p class="sub">Je werkt aan één hoofddoel tegelijk. Kies er een, of laat de app kiezen.</p>${discWizCard()}${multiGoalCard()}${act.length || c ? weekLoad() : ''}<div class="dcards">${cards}</div>${pausedCard()}
    <small class="fine">Algemene schema’s, geen persoonlijke begeleiding. Bij klachten eerst naar je huisarts.</small></section>`;
 }
 function vDisc() {
