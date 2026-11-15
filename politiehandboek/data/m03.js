@@ -59,6 +59,7 @@
     ] }
   ],
   spiek: {
+    weet: [["Woning", "Twijfel je over toestemming, machtiging of spoed: overleg met je leidinggevende of de officier van justitie voordat je binnengaat, tenzij er direct levensgevaar is."], ["Fouilleren", "Weet je niet welke soort: begin bij aftasten voor veiligheid en vraag wie de verdere bepaling mag doen."]],
     cijfers: [["4", "Soorten fouilleren"], ["Sv 56", "Onderzoek aan kleding bij aanhouding"], ["Sv 94", "Wat in beslag mag"], ["Gw 12", "Woning: extra bescherming"]],
     kern: [
       ["Soorten fouilleren", [

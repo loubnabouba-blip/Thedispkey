@@ -59,6 +59,7 @@
     ] }
   ],
   spiek: {
+    weet: [["Wie is bevoegd?", "Neem contact op met je leidinggevende; die overlegt met de burgemeester (APV, noodbevel, gebiedsaanwijzing)."]],
     cijfers: [["Gemw 172", "Burgemeester: openbare orde"], ["Gemw 175", "Noodbevel"], ["Gemw 176", "Noodverordening"], ["10 dagen", "Huisverbod (verlengbaar tot 28)"]],
     kern: [
       ["Bestuurlijk of strafrechtelijk?", [

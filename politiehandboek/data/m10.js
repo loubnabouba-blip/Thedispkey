@@ -62,6 +62,7 @@
     ] }
   ],
   spiek: {
+    weet: [["Onduidelijk signaal", "Leg het vast en geef het door aan de wijkrecherche of het RIEC. Zelf niet optreden zonder grondslag."]],
     cijfers: [["0800-7000", "Meld Misdaad Anoniem"], ["Sr 420bis", "Witwassen (opzet)"], ["Sr 273f", "Mensenhandel"], ["Opw 13b", "Pand sluiten"]],
     kern: [
       ["Vormen", [

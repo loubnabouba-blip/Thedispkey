@@ -67,6 +67,7 @@
     ] }
   ],
   spiek: {
+    weet: [["Onzeker over middel of hoeveelheid", "Veldtest, weeg, zet in beslag en overleg met je teamleider of de recherche."]],
     cijfers: [["Lijst I", "Harddrugs: cocaïne, heroïne, XTC, amfetamine, GHB"], ["Lijst II", "Hennep, hasj, wiet"], ["30 g", "Hennep: tot hier een overtreding bij bezit"], ["500 g", "Coffeeshop: max. voorraad (AHOJG)"]],
     kern: [
       ["Lijsten en straffen", [

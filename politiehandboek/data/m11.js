@@ -72,6 +72,7 @@
     ] }
   ],
   spiek: {
+    weet: [["Twijfel over je proces-verbaal", "Schrijf de feiten op en laat een collega of je teamleider meelezen voordat je afrondt."]],
     cijfers: [["Sv 152", "Proces-verbaal opmaken"], ["Sv 29 lid 2", "Cautie"], ["Sv 342 lid 2", "Eén bewijsmiddel is niet genoeg"], ["Sv 359a", "Vormverzuim"]],
     kern: [
       ["Het proces-verbaal", [

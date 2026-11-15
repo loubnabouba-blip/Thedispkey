@@ -76,6 +76,7 @@
     ] }
   ],
   spiek: {
+    weet: [["Welk feit?", "Beschrijf de feiten zo precies mogelijk, laat de kwalificatie aan de officier van justitie en leg alle waarnemingen vast."]],
     cijfers: [["4 jaar", "Grens voorlopige hechtenis (Sv 67 lid 1)"], ["Sr 310", "Diefstal"], ["Sr 300", "Mishandeling"], ["Sr 416", "Heling"]],
     kern: [
       ["Snel kwalificeren", [

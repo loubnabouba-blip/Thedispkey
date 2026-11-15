@@ -143,6 +143,15 @@
   }
 
   /* ---------- spiekbriefje ---------- */
+  var WEET_STAPPEN = [
+    ["Is er direct gevaar?", "Voor jou, de burger of anderen. Zo ja: eerst veiligheid en hulp. Voor geweld geldt de Ambtsinstructie."],
+    ["Zo nee: je hoeft niet onder druk te beslissen", "Blijf bij het lichtste: aanspreken, afstand houden, observeren. Zonder duidelijke grondslag geen dwang."],
+    ["Vraag hulp", "Een collega, je teamleider of de meldkamer. Bij strafvordering de hulpofficier van justitie of de officier van justitie. Bij openbare orde je leidinggevende, die overlegt met de burgemeester."],
+    ["Zoek het op", "Gebruik de zoekbalk in dit handboek, wetten.overheid.nl en je korpsvoorschriften."],
+    ["Kies de minst ingrijpende optie", "Kun je niet vaststellen dat je een bevoegdheid hebt, gebruik die dan niet en kies wat wel kan."],
+    ["Leg vast", "Wat wist je, wat deed je, wie raadpleegde je, hoe laat. Zo kun je je keuze later verantwoorden."]
+  ];
+  var WEET_KORT = "Weet je het niet? Raad dan niet. Kies het lichtste middel dat veilig kan, vraag een collega, je teamleider of de hulpofficier, en leg vast waarom. Het volledige stappenplan staat onder het tabblad ‘Weet ik niet’.";
   var cur, qEl, qx, SM, S;
   function vKern(m) {
     if (S.cijfers) { var bg = el("div", "big"); S.cijfers.forEach(function (c) { bg.innerHTML += "<div><b>" + c[0] + "</b><span>" + lk(c[1]) + "</span></div>"; }); m.appendChild(bg); }
@@ -178,7 +187,7 @@
   }
   var bpath = [];
   function vBoom(m) {
-    var B = S.boom, id = bpath.length ? bpath[bpath.length - 1] : B.start, n = B.n[id];
+    var B = S.boom, id = bpath.length ? bpath[bpath.length - 1] : B.start, n = id === "__weet" ? { r: WEET_KORT, k: "warn" } : B.n[id];
     m.appendChild(el("div", "mn", esc(B.titel || "Beantwoord de vragen en kom bij de uitkomst.")));
     var c = el("div", "card");
     if (bpath.length) c.appendChild(el("div", "trail", "Stap " + (bpath.length + 1)));
@@ -186,6 +195,7 @@
       c.appendChild(el("div", "bq", lk(n.q)));
       var o = el("div", "bo");
       n.o.forEach(function (x) { var b = el("button", "", lk(x[0])); b.type = "button"; b.onclick = function () { bpath.push(x[1]); draw(); }; o.appendChild(b); });
+      var wb = el("button", "weet", "Ik weet het niet"); wb.type = "button"; wb.onclick = function () { bpath.push("__weet"); draw(); }; o.appendChild(wb);
       c.appendChild(o);
     } else {
       c.appendChild(el("div", "bres " + (n.k || "ok"), lk(n.r) + (n.w ? '<span class="w">' + lk(n.w) + "</span>" : "")));
@@ -252,9 +262,20 @@
     hits.slice(0, 40).forEach(function (e) { card.innerHTML += '<div class="res"><div class="sec">' + esc(e[0]) + "</div><b>" + hl(e[1], terms) + "</b><span>" + hl(e[2], terms) + "</span></div>"; });
     m.appendChild(card);
   }
+  function vWeet(m) {
+    m.appendChild(el("div", "mn", "Weet je het niet? Dat mag. Raden mag niet. Loop deze stappen af."));
+    var ol = el("ol", "st");
+    WEET_STAPPEN.forEach(function (s) { ol.appendChild(el("li", "", "<div><b>" + lk(s[0]) + "</b>" + lk(s[1]) + "</div>")); });
+    m.appendChild(ol);
+    if (S.weet) {
+      var c = el("div", "card"); c.innerHTML = "<h2>Voor dit onderdeel</h2>" + S.weet.map(function (r) { return '<div class="row"><div class="tag">' + r[0] + '</div><div class="v">' + lk(r[1]) + "</div></div>"; }).join("");
+      m.appendChild(c);
+    }
+  }
   function tabsOf() {
     var t = [["kern", "Kern"]];
     if (S.boom) t.push(["boom", "Beslisboom"]);
+    t.push(["weet", "Weet ik niet"]);
     if (S.tabel) t.push(["tabel", "Tabellen"]);
     if (S.check) t.push(["check", "Checklist"]);
     if (S.valk) t.push(["valk", "Valkuilen"]);
@@ -271,7 +292,7 @@
     var m = $("m"); m.innerHTML = "";
     var qv = qEl.value.trim();
     if (qv) return vSearch(m, qv);
-    ({ kern: vKern, boom: vBoom, tabel: vTab, check: vCheck, valk: vValk, flits: vFlits })[cur](m);
+    ({ kern: vKern, boom: vBoom, weet: vWeet, tabel: vTab, check: vCheck, valk: vValk, flits: vFlits })[cur](m);
   }
   function spiek(root, M) {
     SM = M; S = M.spiek;
