@@ -235,6 +235,7 @@
     var no = el("button", "", "Nog niet"); no.onclick = function () { deck.push(deck.shift()); flip = false; draw(); };
     var yes = el("button", "go", "Wist ik"); yes.onclick = function () { var k2 = known(); k2[ci] = true; sset(SM.id + ":known", k2); deck.shift(); flip = false; draw(); };
     ctl.appendChild(no); ctl.appendChild(yes); m.appendChild(ctl);
+    var al = el("p", "small", '<a href="../oefenen.html">Alle flitskaarten door elkaar</a>'); al.style.textAlign = "center"; m.appendChild(al);
     var rs = el("p", "small", '<a href="#">Wis voortgang</a>'); rs.style.textAlign = "center"; m.appendChild(rs);
     rs.firstChild.onclick = function (e) { e.preventDefault(); sset(SM.id + ":known", {}); deck = null; draw(); };
   }
@@ -341,6 +342,8 @@
     w.appendChild(hero);
     var sb = el("div", "sb", '<input id="hq" type="search" placeholder="Zoek in alle onderdelen, bijv. 9 uur, lijst II, wapenstok, heterdaad" autocomplete="off" aria-label="Zoeken in het hele handboek"><button id="hx" aria-label="Wis zoekopdracht" style="display:none">&times;</button>');
     w.appendChild(sb);
+    var nCards = 0; mods().forEach(function (M) { nCards += (M.spiek && M.spiek.flits) ? M.spiek.flits.length : 0; });
+    var oc = el("a", "cta", "Oefen alle " + nCards + " flitskaarten door elkaar &rarr;"); oc.href = "oefenen.html"; w.appendChild(oc);
     var sres = el("div"); sres.id = "sres"; w.appendChild(sres);
     var grid = el("div"); grid.id = "grid"; w.appendChild(grid);
     var all = mods();
@@ -382,10 +385,56 @@
     up();
   }
 
+  /* ---------- oefenen: alle flitskaarten door elkaar ---------- */
+  function oefen(root) {
+    var w = el("div", "wrap"), top = el("div", "top");
+    top.appendChild(el("div", "crumb", '<a href="index.html">Politiehandboek</a><span>/</span><span class="rk">Oefenen</span>'));
+    top.appendChild(el("h1", "", "Alle flitskaarten"));
+    top.appendChild(el("p", "sub", "Alle onderdelen door elkaar. Je voortgang is dezelfde als bij de flitskaarten per onderdeel."));
+    w.appendChild(top);
+    var box = el("div"); w.appendChild(box); foot(w); root.appendChild(w); up();
+    var all = [];
+    mods().forEach(function (M) { if (M.spiek && M.spiek.flits) M.spiek.flits.forEach(function (c, i) { all.push({ M: M, i: i, c: c }); }); });
+    var filt = "all", deck = null, flip = false;
+    function isKnown(x) { return !!sget(x.M.id + ":known", {})[x.i]; }
+    function inFilt(x) { return filt === "all" || (filt.charAt(0) === "r" && String(x.M.reeks) === filt.slice(1)) || (filt.charAt(0) === "m" && x.M.id === filt); }
+    function build() {
+      deck = all.filter(function (x) { return inFilt(x) && !isKnown(x); });
+      for (var i = deck.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), s = deck[i]; deck[i] = deck[j]; deck[j] = s; }
+      flip = false;
+    }
+    function chip(parent, label, key) {
+      var b = el("button", "", esc(label)); b.type = "button"; b.setAttribute("aria-pressed", filt === key ? "true" : "false");
+      b.onclick = function () { filt = key; deck = null; draw(); }; parent.appendChild(b);
+    }
+    function draw() {
+      if (!deck) build();
+      box.innerHTML = "";
+      var c1 = el("div", "chips"); chip(c1, "Alles", "all"); [1, 2, 3, 4].forEach(function (r) { chip(c1, "Reeks " + r + " · " + REEKS[r][0], "r" + r); }); box.appendChild(c1);
+      var c2 = el("div", "chips"); mods().forEach(function (M) { chip(c2, "Onderdeel " + M.nr, M.id); }); box.appendChild(c2);
+      var sel = all.filter(inFilt), done = sel.filter(isKnown).length;
+      if (!deck.length) {
+        box.appendChild(el("div", "card", "<h2>Alles gehaald</h2><p>Je hebt alle " + sel.length + " kaarten in deze selectie als bekend gemarkeerd.</p>"));
+        var r = el("button", "btn", "Begin opnieuw"); r.onclick = function () { sel.forEach(function (x) { var k = sget(x.M.id + ":known", {}); delete k[x.i]; sset(x.M.id + ":known", k); }); deck = null; draw(); }; box.appendChild(r); return;
+      }
+      box.appendChild(el("p", "small", done + " van " + sel.length + " bekend · nog " + deck.length + " te gaan"));
+      var x = deck[0];
+      var b = el("button", "fl r" + x.M.reeks, '<div class="small" style="margin-bottom:6px;font-weight:700;text-transform:uppercase">Onderdeel ' + x.M.nr + " · " + esc(x.M.titel) + " · " + esc(x.c[0]) + '</div><div class="q">' + lk(x.c[1]) + "</div>" + (flip ? '<div class="a">' + lk(x.c[2]) + "</div>" : '<div class="hint">Denk eerst. Tik voor het antwoord.</div>'));
+      b.onclick = function () { flip = !flip; draw(); }; box.appendChild(b);
+      var ctl = el("div", "ctl");
+      var no = el("button", "", "Nog niet"); no.onclick = function () { deck.push(deck.shift()); flip = false; draw(); };
+      var yes = el("button", "go", "Wist ik"); yes.onclick = function () { var k = sget(x.M.id + ":known", {}); k[x.i] = true; sset(x.M.id + ":known", k); deck.shift(); flip = false; draw(); };
+      ctl.appendChild(no); ctl.appendChild(yes); box.appendChild(ctl);
+      var sk = el("button", "btn", "Schudden"); sk.style.marginTop = "10px"; sk.onclick = function () { deck = null; draw(); }; box.appendChild(sk);
+    }
+    draw();
+  }
+
   /* ---------- start ---------- */
   function start() {
     var root = $("app"), mode = window.MODE;
     if (mode === "hub") return hub(root);
+    if (mode === "oefen") return oefen(root);
     var M = mods()[0];
     if (mode === "leren") leren(root, M); else spiek(root, M);
   }

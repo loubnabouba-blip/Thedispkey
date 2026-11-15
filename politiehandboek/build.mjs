@@ -71,5 +71,15 @@ if (fi > -1) {
     fs.writeFileSync(path.join(dir, "spiek", `${M.id}.html`), page(M, "spiek"));
   }
   fs.writeFileSync(path.join(dir, "index.html"), hub(false));
+  const scripts = MODS.map((M) => `<script src="data/${M.id}.js"></script>`).join("\n");
+  fs.writeFileSync(path.join(dir, "oefenen.html"), `${head("Alle flitskaarten", "engine.css")}
+<body>
+<div id="app"></div>
+<script>window.MODE="oefen"</script>
+${scripts}
+<script src="engine.js"></script>
+</body>
+</html>
+`);
   console.log(`${MODS.length} onderdelen: ${MODS.length * 2} pagina's + index.html geschreven`);
 }
