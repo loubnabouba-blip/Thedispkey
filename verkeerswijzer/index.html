@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Beslagwijzer BT Amersfoort</title>
+<title>Verkeerswijzer BT Amersfoort</title>
 <meta name="description" content="Snelle afhandelwijzer art. 8, 9, 163 WvW94 en snelheid in BVH voor Basisteam Amersfoort.">
 <meta name="theme-color" content="#0a2f6b">
 <link rel="manifest" href="manifest.webmanifest">
@@ -185,7 +185,7 @@ footer{color:var(--muted);font-size:12.5px;padding:10px 0 40px}
  <div class="wrap">
   <div class="bar">
    <svg class="logo" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="112" fill="#0a2f6b" stroke="#fff" stroke-opacity=".25" stroke-width="12"/><path d="M256 84l140 52v108c0 88-58 150-140 184-82-34-140-96-140-184V136z" fill="#f2b705"/><path d="M256 120l106 40v84c0 68-43 117-106 146-63-29-106-78-106-146v-84z" fill="#0a2f6b"/><path d="M206 262l36 36 70-80" fill="none" stroke="#fff" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/></svg>
-   <div class="brand"><b>Beslagwijzer</b><span>Basisteam Amersfoort · verkeer</span></div>
+   <div class="brand"><b>Verkeerswijzer</b><span>Basisteam Amersfoort · verkeer</span></div>
    <button class="ib" id="theme" aria-label="Donker/licht thema" title="Thema">◐</button>
    <button class="ib" id="share" aria-label="Deel deze pagina" title="Deel">⤴</button>
   </div>
@@ -671,7 +671,7 @@ $("#dlg").addEventListener("click",e=>{if(e.target.id==="dlg")e.target.close()})
 /* ---------- delen ---------- */
 async function shareIt(title){
  const url=location.href.split("#")[0]+(location.hash||"");
- if(navigator.share){try{await navigator.share({title:(title||"Beslagwijzer")+" · BT Amersfoort",text:"Beslagwijzer basisteam Amersfoort",url});return}catch(e){if(e&&e.name==="AbortError")return}}
+ if(navigator.share){try{await navigator.share({title:(title||"Verkeerswijzer")+" · BT Amersfoort",text:"Verkeerswijzer basisteam Amersfoort",url});return}catch(e){if(e&&e.name==="AbortError")return}}
  copy(url,"Link gekopieerd")
 }
 $("#share").onclick=()=>shareIt();
