@@ -58,6 +58,8 @@ h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
 .grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
 .tile{display:flex;gap:12px;align-items:flex-start;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-left:6px solid var(--g,var(--acc));border-radius:var(--r);box-shadow:var(--sh);padding:12px 14px;min-height:76px}
 .tile:hover{border-color:var(--g,var(--acc))}
+.tile .kl{flex:none;min-width:46px;text-align:center;font-weight:800;font-size:13px;letter-spacing:.03em;color:var(--g,var(--acc));background:var(--accbg);border-radius:8px;padding:6px 6px;margin-top:1px}
+.opt .chev{font-size:26px;color:var(--muted);line-height:1}
 .tile .ic{font-size:26px;line-height:1;flex:none;margin-top:2px}
 .tile b{display:block;font-size:16px;line-height:1.25}
 .tile small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
@@ -117,7 +119,7 @@ mark{background:var(--gold);color:#000;border-radius:3px;padding:0 1px}
 .step .n::before{counter-increment:s;content:counter(s)}
 .step.on{opacity:.62}
 .step.on .n{background:var(--ok);border-color:var(--ok);color:#fff}
-.step.on .n::before{content:"✓"}
+.step.on .n::before{content:""}
 .step.on .tt{text-decoration:line-through}
 .step .tt{font-weight:700;line-height:1.3}
 .step .d{color:var(--muted);font-size:14.5px;margin-top:3px}
@@ -186,13 +188,13 @@ footer{color:var(--muted);font-size:12.5px;padding:10px 0 40px}
   <div class="bar">
    <svg class="logo" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="112" fill="#0a2f6b" stroke="#fff" stroke-opacity=".25" stroke-width="12"/><path d="M256 84l140 52v108c0 88-58 150-140 184-82-34-140-96-140-184V136z" fill="#f2b705"/><path d="M256 120l106 40v84c0 68-43 117-106 146-63-29-106-78-106-146v-84z" fill="#0a2f6b"/><path d="M206 262l36 36 70-80" fill="none" stroke="#fff" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/></svg>
    <div class="brand"><b>Verkeerswijzer</b><span>Basisteam Amersfoort · verkeer</span></div>
-   <button class="ib" id="theme" aria-label="Donker/licht thema" title="Thema">◐</button>
-   <button class="ib" id="share" aria-label="Deel deze pagina" title="Deel">⤴</button>
+   <button class="ib" id="theme" aria-label="Donker/licht thema" title="Thema"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor"/></svg></button>
+   <button class="ib" id="share" aria-label="Deel deze pagina" title="Deel"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3m0 0L7.5 7.5M12 3l4.5 4.5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button>
   </div>
   <div class="search">
    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
    <input id="q" type="search" inputmode="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Zoek: 8/2/A · D21 · 12262 · weigeren · geschorst…" aria-label="Zoeken">
-   <button class="x" id="qx" aria-label="Wis zoekopdracht">✕</button>
+   <button class="x" id="qx" aria-label="Wis zoekopdracht"></button>
   </div>
   <nav class="nav" id="nav" aria-label="Hoofdmenu"></nav>
  </div>
@@ -201,7 +203,7 @@ footer{color:var(--muted);font-size:12.5px;padding:10px 0 40px}
 <footer>
  <div id="foot"></div>
 </footer></div>
-<dialog id="dlg"><div class="h"><span id="dt"></span><button id="dc" aria-label="Sluiten">✕</button></div><div class="b" id="db"></div></dialog>
+<dialog id="dlg"><div class="h"><span id="dt"></span><button id="dc" aria-label="Sluiten"></button></div><div class="b" id="db"></div></dialog>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -240,15 +242,15 @@ const S={
 };
 
 const GROEPEN={
- alcohol:{n:"Alcohol",c:"#b42318",i:"🍺"},
- drugs:{n:"Drugs/medicijnen",c:"#6b2fb3",i:"💊"},
- rb:{n:"Rijbewijs",c:"#0b7a74",i:"🪪"},
- snelheid:{n:"Snelheid",c:"#b45309",i:"🚦"}
+ alcohol:{n:"Alcohol",c:"#b42318",i:""},
+ drugs:{n:"Drugs/medicijnen",c:"#6b2fb3",i:""},
+ rb:{n:"Rijbewijs",c:"#0b7a74",i:""},
+ snelheid:{n:"Snelheid",c:"#b45309",i:""}
 };
 
 const ZAKEN=[
 /* ---------- ALCOHOL ADEM ---------- */
-{id:"alcohol-gevorderd",g:"alcohol",ic:"🍺",kort:"Ervaren bestuurder · adem >570",titel:"Alcohol · gevorderd bestuurder · ademanalyse hoger dan 570 µg/l",
+{id:"alcohol-gevorderd",g:"alcohol",ic:"",kort:"Ervaren bestuurder · adem >570",titel:"Alcohol · gevorderd bestuurder · ademanalyse hoger dan 570 µg/l",
  zoek:"blazen adem alcohol ervaren gevorderde bestuurder meer dan 5 jaar rijbewijs onder invloed g/f 570 invorderen 8 lid 2",
  klasse:"D21",art:"8 lid 2 sub a WvW94",laste:"8/2/A",aanhouden:{t:"Niet nodig",ok:1},beslag:{t:"Rijbewijs invorderen",red:1},rijverbod:"Volgens tabel",
  codes:[{c:"12262",l:"Artikel 8/2/A WvW94"}],
@@ -256,7 +258,7 @@ const ZAKEN=[
  alerts:[{t:"Bevel op straat",x:"Aanhouden is NIET nodig. Geef de verdachte op straat het bevel mee te werken aan de ademanalyse; hij is daartoe verplicht. Noteer het tijdstip van het bevel: dat moet in het pv rijden onder invloed. Aanhouden mag wel, bijvoorbeeld bij een heel recalcitrante verdachte."}],
  stappen:[S.incident("D21","Rijden onder invloed (uitsluitend alcohol)"),S.invoer(),S.laste("8/2/A WvW94"),S.idstaat,S.kopie,S.g10,S.d30,S.pvinv(),S.kennis,S.i16,S.rijverbod("Duur volgens de rijverbodtabel (ervaren bestuurder)."),S.heen,S.pvOnderInvloed("D21"),S.dpd("de uitdraai van de ademanalyse (die je NIET hebt getekend) en de kopie van het rijbewijs. Geen rijbewijs bij zich? Voeg dan een uitdraai van het rijbewijsregister uit BVIB toe."),S.verkeersbak]},
 
-{id:"alcohol-beginnend",g:"alcohol",ic:"🍺",kort:"Beginnend bestuurder · adem >350",titel:"Alcohol · beginnend bestuurder · ademanalyse hoger dan 350 µg/l",
+{id:"alcohol-beginnend",g:"alcohol",ic:"",kort:"Beginnend bestuurder · adem >350",titel:"Alcohol · beginnend bestuurder · ademanalyse hoger dan 350 µg/l",
  zoek:"blazen adem alcohol beginnend bestuurder beginner 5 jaar 7 jaar rijbewijs onder invloed a/g 350 invorderen 8 lid 3",
  klasse:"D21",art:"8 lid 3 sub a WvW94",laste:"8/3/A",aanhouden:{t:"Niet nodig",ok:1},beslag:{t:"Rijbewijs invorderen",red:1},rijverbod:"Volgens tabel",
  codes:[{c:"13416",l:"8/3/A · 5 jaar beginnend bestuurder"},{c:"13564",l:"8/3/A · 7 jaar beginnend bestuurder"}],
@@ -266,7 +268,7 @@ const ZAKEN=[
  stappen:[S.incident("D21","Rijden onder invloed (uitsluitend alcohol)"),S.invoer(),S.laste("8/3/A WvW94","Kies de code voor 5 of 7 jaar beginnend bestuurder (zie hieronder)."),S.idstaat,S.kopie,S.g10,S.d30,S.pvinv(),S.kennis,S.i16,S.rijverbod("Duur volgens de rijverbodtabel (beginnende bestuurder)."),S.heen,S.pvOnderInvloed("D21"),S.dpd("de uitdraai van de ademanalyse (die je NIET hebt getekend) en de kopie van het rijbewijs. Geen rijbewijs bij zich? Voeg dan een uitdraai van het rijbewijsregister uit BVIB toe."),S.verkeersbak]},
 
 /* ---------- WEIGEREN ---------- */
-{id:"weigeren-adem",g:"alcohol",ic:"✋",kort:"Weigeren ademanalyse",titel:"Weigeren ademanalyse",
+{id:"weigeren-adem",g:"alcohol",ic:"",kort:"Weigeren ademanalyse",titel:"Weigeren ademanalyse",
  zoek:"weigeren weigert blazen ademanalyse niet meewerken d23 163 lid 2 weigering ik weiger",
  klasse:"D23",art:"163 lid 2 WvW94",laste:"163/2",aanhouden:{t:"Niet nodig",ok:1},beslag:{t:"Rijbewijs invorderen",red:1},rijverbod:"24 uur",
  codes:[{c:"09612",l:"Artikel 163/2 WvW94"}],
@@ -275,7 +277,7 @@ const ZAKEN=[
  stappen:[S.incident("D23","Weigeren ademanalyse"),S.invoer(),S.laste("163/2 WvW94"),S.idstaat,S.kopie,S.g10,S.d30,S.pvinv(),S.kennis,S.i16,S.rijverbod("Rijverbod is 24 uur."),S.heen,{k:"FORM",t:"Maak in D23 het formulier ‘PV rijden onder invloed’",d:"De vragen wijzen vanzelf. Voer degene die het bevel gaf mee te werken aan de ademanalyse in als verbalisant: BVH vraagt dan zelf hoe de verdachte weigerde. Een apart pv van bevindingen is niet nodig."},S.dpd("de uitdraai van de ademanalyse (die je NIET hebt getekend) en de kopie van het rijbewijs. Geen rijbewijs bij zich? Voeg dan een uitdraai van het rijbewijsregister uit BVIB toe."),S.verkeersbak]},
 
 /* ---------- DRUGS ---------- */
-{id:"drugs",g:"drugs",ic:"💊",kort:"Drugs / geneesmiddelen",titel:"Rijden onder invloed van drugs/geneesmiddelen (al dan niet met alcohol)",
+{id:"drugs",g:"drugs",ic:"",kort:"Drugs / geneesmiddelen",titel:"Rijden onder invloed van drugs/geneesmiddelen (al dan niet met alcohol)",
  zoek:"drugs geneesmiddelen medicijnen speeksel speekseltest bloed nfi wiet cannabis coke onder invloed d20 8 lid 5 invloed stoffen",
  klasse:"D20",art:"8 lid 5 WvW94",laste:"8/5",aanhouden:{t:"Ja, aanhouding op straat (D20)",red:1},beslag:{t:"Rijbewijs invorderen bij positieve test",red:1},rijverbod:"24 uur",
  codes:[{c:"19332",l:"Na enkelvoudig gebruik aangewezen stoffen"},{c:"19333",l:"Na gebruik aangewezen stoffen als groep"},{c:"19334",l:"Na gebruik een of meer aangewezen stoffen"},{c:"19335",l:"Na combi-gebruik wel en niet aangewezen stoffen"},{c:"19336",l:"Na combi-gebruik van een of meer aangewezen stoffen"},{c:"22490",l:"Na gebruik niet-aangewezen stof i.c.m. alcohol"}],
@@ -289,7 +291,7 @@ const ZAKEN=[
   {k:"MAIL",t:"Wacht op de uitslag van het NFI",d:"Positief → ga naar de volgende stappen. Negatief → mail het verkeerscontact de uitslag."},
   S.pvOnderInvloed("D20"),S.dpd("de uitslag van het bloedonderzoek en de kopie van het rijbewijs. Geen rijbewijs bij zich? Voeg dan een uitdraai van het rijbewijsregister uit BVIB toe.")]},
 
-{id:"weigeren-bloed",g:"drugs",ic:"🩸",kort:"Weigeren bloedonderzoek",titel:"Weigeren bloedonderzoek",
+{id:"weigeren-bloed",g:"drugs",ic:"",kort:"Weigeren bloedonderzoek",titel:"Weigeren bloedonderzoek",
  zoek:"weigeren bloedonderzoek bloedproef bloed weigert d24 163 lid 6 bevelen brigadier art 8 lid 5 weigering",
  klasse:"D24",art:"163 lid 6 WvW94",laste:"163/6",aanhouden:{t:"Ja (eerst aanhouding in D20)",red:1},beslag:{t:"Rijbewijs invorderen",red:1},rijverbod:"24 uur",
  codes:[{c:"09613",l:"Artikel 163/6 WvW94"}],
@@ -298,7 +300,7 @@ const ZAKEN=[
  stappen:[{k:"BVH",t:"Eerst aanhouding en voorgeleiding in de D20 zetten",d:"Daarna pas de incidentcode wijzigen naar D24."},S.incident("D24","Weigeren bloedproef"),S.invoer(),S.laste("163/6 WvW94"),S.idstaat,S.kopie,S.g10,S.d30,S.pvinv(),S.kennis,S.i16,S.rijverbod("Rijverbod is 24 uur."),S.heen,{k:"FORM",t:"Maak in D24 het formulier ‘PV rijden onder invloed’",d:"De vragen wijzen vanzelf. Voer degene die beval mee te werken aan het bloedonderzoek in als verbalisant; BVH vraagt dan zelf hoe de verdachte weigerde. Geen apart pv van bevindingen nodig."},S.dpd("de kopie van het rijbewijs. Geen rijbewijs bij zich? Voeg dan een uitdraai van het rijbewijsregister uit BVIB toe."),S.verkeersbak]},
 
 /* ---------- ALCOHOL BLOED ---------- */
-{id:"bloed-gevorderd",g:"alcohol",ic:"🩸",kort:"Ervaren · bloedafname",titel:"Alcohol · gevorderd bestuurder · bloedafname",
+{id:"bloed-gevorderd",g:"alcohol",ic:"",kort:"Ervaren · bloedafname",titel:"Alcohol · gevorderd bestuurder · bloedafname",
  zoek:"bloed bloedafname bloedproef ademanalyse mislukt medisch gevorderde ervaren bestuurder g/f alcohol 8 lid 2 sub b bloedblok",
  klasse:"D21",art:"8 lid 2 sub b WvW94",laste:"8/2/B",aanhouden:{t:"Niet nodig",ok:1},beslag:{t:"Invorderen bij G/F of ernstig vermoeden >570",red:1},rijverbod:"Volgens tabel",
  codes:[{c:"12263",l:"Artikel 8/2/B WvW94"}],
@@ -311,7 +313,7 @@ const ZAKEN=[
   S.dpd("de kopie van het rijbewijs. Geen rijbewijs bij zich? Voeg dan een uitdraai van het rijbewijsregister uit BVIB toe."),S.verkeersbak,
   {k:"MAIL",t:"Uitslag via de mail binnen? Mail die naar het verkeerscontact",d:"Zij sturen de uitslag door naar het CVOM.",m:"contact"}]},
 
-{id:"bloed-beginnend",g:"alcohol",ic:"🩸",kort:"Beginnend · bloedafname",titel:"Alcohol · beginnend bestuurder · bloedafname",
+{id:"bloed-beginnend",g:"alcohol",ic:"",kort:"Beginnend · bloedafname",titel:"Alcohol · beginnend bestuurder · bloedafname",
  zoek:"bloed bloedafname bloedproef ademanalyse mislukt beginnende beginnend bestuurder a/g alcohol 8 lid 3 sub b bloedblok 350",
  klasse:"D21",art:"8 lid 3 sub b WvW94",laste:"8/3/B",aanhouden:{t:"Niet nodig",ok:1},beslag:{t:"Invorderen bij A/G of ernstig vermoeden >350",red:1},rijverbod:"Volgens tabel",
  codes:[{c:"13423",l:"8/3/B · 5 jaar beginnend bestuurder"},{c:"13565",l:"8/3/B · 7 jaar beginnend bestuurder"}],
@@ -326,7 +328,7 @@ const ZAKEN=[
   {k:"MAIL",t:"Uitslag via de mail binnen? Mail die naar het verkeerscontact",d:"Zij sturen de uitslag door naar het CVOM.",m:"contact"}]},
 
 /* ---------- RIJBEWIJS ---------- */
-{id:"cbr-ongeldig",g:"rb",ic:"🚫",kort:"Ongeldig verklaard door CBR",titel:"Rijden met een door het CBR ongeldig verklaard rijbewijs",
+{id:"cbr-ongeldig",g:"rb",ic:"",kort:"Ongeldig verklaard door CBR",titel:"Rijden met een door het CBR ongeldig verklaard rijbewijs",
  zoek:"cbr ongeldig verklaard rijbewijs ongeldigverklaring 9 lid 2 d44 rijden zonder geldig rijbewijs",
  klasse:"D44",art:"9 lid 2 WvW94",laste:"9/2",aanhouden:{t:"Ja, aanhouden",red:1},beslag:{t:"Rijbewijs innemen als hij het nog heeft",red:1},rijverbod:"—",
  codes:[{c:"09555",l:"Artikel 9/2 (D44) · CBR ongeldig verklaard"}],
@@ -334,7 +336,7 @@ const ZAKEN=[
  alerts:[{t:"Aanhouden",c:"red",x:"De verdachte moet voor dit feit worden aangehouden. Na invoer in de arrestantenmodule maak je het PV aanhouding; van de HOVJ krijg je een PV voorgeleiding."}],
  stappen:[S.incident("D44","Rijden met een ongeldig verklaard rijbewijs"),S.laste("9/2 WvW94"),S.aanhoudenArt9,S.voertuig,S.idstaat,S.g10b,S.heenNaVerhoor,{k:"FORM",t:"Maak in D44 het formulier ‘PV rijden tijdens ontzegging’",d:"De vragen wijzen vanzelf."},S.bvibUitdraai("ongeldig is verklaard"),S.dpd("een uitdraai van het rijbewijsregister."),{k:"FYS",t:"Is het rijbewijs ongeldig verklaard en heeft de verdachte het nog bij zich? Neem het in",d:"Leg het in de verkeersbak en mail het verkeerscontact.",m:"contact"},S.bviCheck]},
 
-{id:"rechtswege-123b",g:"rb",ic:"🪪",kort:"Ongeldig van rechtswege (123b)",titel:"Rijden met een ongeldig verklaard rijbewijs (ongeldig van rechtswege, art. 123b)",
+{id:"rechtswege-123b",g:"rb",ic:"",kort:"Ongeldig van rechtswege (123b)",titel:"Rijden met een ongeldig verklaard rijbewijs (ongeldig van rechtswege, art. 123b)",
  zoek:"ongeldig van rechtswege 123b rijbewijs verlopen vervallen ongeldig d44 9 lid 2",
  klasse:"D44",art:"9 lid 2 WvW94 (123b)",laste:"9/2",aanhouden:{t:"Ja, aanhouden",red:1},beslag:{t:"Rijbewijs innemen als hij het nog heeft",red:1},rijverbod:"—",
  codes:[{c:"14412",l:"Artikel 9/2 (D44) · ongeldig van rechtswege"}],
@@ -342,7 +344,7 @@ const ZAKEN=[
  alerts:[{t:"Aanhouden",c:"red",x:"De verdachte moet voor dit feit worden aangehouden (PV aanhouding, daarna PV voorgeleiding van de HOVJ)."}],
  stappen:[S.incident("D44","Rijden met een ongeldig verklaard rijbewijs"),S.laste("9/2 WvW94"),S.aanhoudenArt9,S.voertuig,S.idstaat,S.g10b,S.heenNaVerhoor,{k:"FORM",t:"Maak in D44 het formulier ‘PV rijden tijdens ontzegging’",d:"De vragen wijzen vanzelf."},S.bvibUitdraai("ongeldig is verklaard"),S.dpd("de uitdraai van het rijbewijsregister."),{k:"FYS",t:"Rijbewijs ongeldig en nog bij de verdachte? Neem het in",d:"Leg het in de verkeersbak en mail het verkeerscontact.",m:"contact"},S.bviCheck]},
 
-{id:"ingevorderd-164",g:"rb",ic:"📛",kort:"Rijden met ingevorderd rijbewijs",titel:"Rijden met een (in)gevorderd rijbewijs (art. 164 WvW94)",
+{id:"ingevorderd-164",g:"rb",ic:"",kort:"Rijden met ingevorderd rijbewijs",titel:"Rijden met een (in)gevorderd rijbewijs (art. 164 WvW94)",
  zoek:"ingevorderd gevorderd rijbewijs 164 overgifte d41 9 lid 7 rijden terwijl rijbewijs ingevorderd",
  klasse:"D41",art:"9 lid 7 WvW94 (164)",laste:"9/7",aanhouden:{t:"Ja, aanhouden",red:1},beslag:{t:"Rijbewijs innemen als hij het nog heeft",red:1},rijverbod:"—",
  codes:[{c:"11835",l:"Artikel 9/7 (D41)"}],
@@ -350,7 +352,7 @@ const ZAKEN=[
  alerts:[{t:"Wanneer deze?",x:"Voor als het rijbewijs al is ingevorderd, inclusief een vordering tot overgifte ex artikel 164 WvW94."},{t:"Aanhouden",c:"red",x:"De verdachte moet voor dit feit worden aangehouden (PV aanhouding, daarna PV voorgeleiding van de HOVJ)."}],
  stappen:[S.incident("D41","Rijden terwijl het rijbewijs is ingevorderd"),S.laste("9/7 WvW94"),S.aanhoudenArt9,S.voertuig,S.idstaat,S.g10b,S.heenNaVerhoor,{k:"FORM",t:"Maak in D41 het formulier ‘PV rijden tijdens ontzegging’",d:"De vragen wijzen vanzelf."},S.bvibUitdraai("is ingevorderd"),S.dpd("de uitdraai van het rijbewijsregister."),{k:"FYS",t:"Rijbewijs ingevorderd en nog bij de verdachte? Neem het in",d:"Leg het in de verkeersbak en mail het verkeerscontact.",m:"contact"},S.bviCheck]},
 
-{id:"geschorst",g:"rb",ic:"⏸️",kort:"Geschorst rijbewijs",titel:"Rijden met een geschorst rijbewijs",
+{id:"geschorst",g:"rb",ic:"",kort:"Geschorst rijbewijs",titel:"Rijden met een geschorst rijbewijs",
  zoek:"geschorst geschorste rijbewijs schorsing d52 9 lid 5 overig verkeersmisdrijf",
  klasse:"D52",art:"9 lid 5 WvW94",laste:"9/5",aanhouden:{t:"Ja, aanhouden",red:1},beslag:{t:"Rijbewijs innemen als hij het nog heeft",red:1},rijverbod:"—",
  codes:[{c:"09558",l:"Artikel 9/5 (D52)"}],
@@ -358,7 +360,7 @@ const ZAKEN=[
  alerts:[{t:"Aanhouden",c:"red",x:"De verdachte moet voor dit feit worden aangehouden (PV aanhouding, daarna PV voorgeleiding van de HOVJ)."}],
  stappen:[S.incident("D52","Overig verkeersmisdrijf"),S.laste("9/5 WvW94"),S.aanhoudenArt9,S.voertuig,S.idstaat,S.g10b,S.heenNaVerhoor,{k:"FORM",t:"Maak in D52 het formulier ‘PV rijden tijdens ontzegging’",d:"De vragen wijzen vanzelf."},S.bvibUitdraai("ongeldig is verklaard (geschorst)"),S.dpd("de uitdraai van het rijbewijsregister."),{k:"FYS",t:"Rijbewijs geschorst en nog bij de verdachte? Neem het in",d:"Leg het in de verkeersbak en mail het verkeerscontact.",m:"contact"},S.bviCheck]},
 
-{id:"obm",g:"rb",ic:"⛔",kort:"Ontzegging rijbevoegdheid (OBM)",titel:"Rijden met een ontzegging van de rijbevoegdheid (OBM)",
+{id:"obm",g:"rb",ic:"",kort:"Ontzegging rijbevoegdheid (OBM)",titel:"Rijden met een ontzegging van de rijbevoegdheid (OBM)",
  zoek:"ontzegging rijbevoegdheid obm ontzegd d42 9 lid 1 rechter rijontzegging",
  klasse:"D42",art:"9 lid 1 WvW94",laste:"9/1",aanhouden:{t:"Ja, aanhouden",red:1},beslag:{t:"Rijbewijs innemen als hij het nog heeft",red:1},rijverbod:"—",
  codes:[{c:"09954",l:"Artikel 9/1 (D42)"}],
@@ -367,7 +369,7 @@ const ZAKEN=[
  stappen:[S.incident("D42","Rijden tijdens ontzegging rijbevoegdheid"),S.laste("9/1 WvW94"),S.aanhoudenArt9,S.voertuig,S.idstaat,S.g10b,S.heenNaVerhoor,{k:"FORM",t:"Maak in D42 het formulier ‘PV rijden tijdens ontzegging’",d:"De vragen wijzen vanzelf."},S.bvibUitdraai("ongeldig is verklaard"),S.dpd("de uitdraai van het rijbewijsregister."),{k:"FYS",t:"Rijbewijs met OBM en nog bij de verdachte? Neem het in",d:"Leg het in de verkeersbak en mail het verkeerscontact.",m:"contact"},S.bviCheck]},
 
 /* ---------- SNELHEID ---------- */
-{id:"snelheid",g:"snelheid",ic:"🚦",kort:"Snelheid met invordering",titel:"Snelheid met invordering rijbewijs",
+{id:"snelheid",g:"snelheid",ic:"",kort:"Snelheid met invordering",titel:"Snelheid met invordering rijbewijs",
  zoek:"snelheid te hard rijden flitsen lasergun invordering rijbewijs d601 20 a rvv bord a1 62 bebouwde kom meos gedragsregel ijkstaat",
  klasse:"D601",art:"20 RVV 90 / 62 RVV 90",laste:"20/A of 62/A1",aanhouden:{t:"Niet nodig",ok:1},beslag:{t:"Rijbewijs invorderen",red:1},rijverbod:"—",
  codes:[],
@@ -383,33 +385,33 @@ const RV=[[1,90,155],[2,156,219],[3,220,285],[4,286,350],[5,351,415],[6,416,480]
 /* Wizard */
 const WZ={
  start:{q:"Wat is er aan de hand?",o:[
-  {i:"🍺",t:"Alcohol",s:"Blazen, bloed, beginnend/ervaren",n:"alc"},
-  {i:"💊",t:"Drugs of geneesmiddelen",s:"Speekseltest, bloedonderzoek",z:"drugs"},
-  {i:"✋",t:"Verdachte weigert medewerking",s:"Adem of bloed",n:"weiger"},
-  {i:"🪪",t:"Rijden terwijl het rijbewijs niet geldt",s:"Ongeldig, ingevorderd, geschorst, OBM",n:"rb"},
-  {i:"🚦",t:"Te hard gereden",s:"Met invordering rijbewijs",z:"snelheid"}]},
+  {i:"",t:"Alcohol",s:"Blazen, bloed, beginnend/ervaren",n:"alc"},
+  {i:"",t:"Drugs of geneesmiddelen",s:"Speekseltest, bloedonderzoek",z:"drugs"},
+  {i:"",t:"Verdachte weigert medewerking",s:"Adem of bloed",n:"weiger"},
+  {i:"",t:"Rijden terwijl het rijbewijs niet geldt",s:"Ongeldig, ingevorderd, geschorst, OBM",n:"rb"},
+  {i:"",t:"Te hard gereden",s:"Met invordering rijbewijs",z:"snelheid"}]},
  alc:{q:"Is de ademanalyse gelukt?",o:[
-  {i:"✅",t:"Ja, er is een uitslag",s:"Je hebt een ademanalyse-uitdraai",n:"alcbb"},
-  {i:"🫁",t:"Mislukt: blaast niet hard genoeg",s:"Dat is géén weigering – eerst opnieuw proberen, daarna bloed",n:"alcmis"},
-  {i:"🏥",t:"Niet mogelijk om medische redenen",s:"Bloedafname",n:"alcbl"},
-  {i:"🙅",t:"Verdachte zegt: ik weiger",s:"Echte weigering",z:"weigeren-adem"}]},
+  {i:"",t:"Ja, er is een uitslag",s:"Je hebt een ademanalyse-uitdraai",n:"alcbb"},
+  {i:"",t:"Mislukt: blaast niet hard genoeg",s:"Dat is géén weigering – eerst opnieuw proberen, daarna bloed",n:"alcmis"},
+  {i:"",t:"Niet mogelijk om medische redenen",s:"Bloedafname",n:"alcbl"},
+  {i:"",t:"Verdachte zegt: ik weiger",s:"Echte weigering",z:"weigeren-adem"}]},
  alcmis:{q:"Lukt de ademanalyse na nieuwe pogingen nog steeds niet?",note:"Een mislukte ademanalyse is geen weigering. Lukt het nog steeds niet, dan ga je over op bloedonderzoek.",o:[
-  {i:"🩸",t:"Ja, nog steeds niet gelukt",s:"Over op bloedonderzoek",n:"alcbl"},
-  {i:"🙅",t:"Verdachte zegt nu: ik weiger",s:"Echte weigering",z:"weigeren-adem"}]},
+  {i:"",t:"Ja, nog steeds niet gelukt",s:"Over op bloedonderzoek",n:"alcbl"},
+  {i:"",t:"Verdachte zegt nu: ik weiger",s:"Echte weigering",z:"weigeren-adem"}]},
  alcbb:{q:"Is de verdachte beginnend of ervaren bestuurder?",note:"Beginnend = binnen 5 jaar (of 7 jaar) na het eerste rijbewijs. Twijfel? Gebruik de check Beginnend bestuurder.",tool:["#/tools/beginnend","Check beginnend bestuurder"],o:[
-  {i:"🎓",t:"Beginnend bestuurder",s:"Invorderen boven 350 µg/l",z:"alcohol-beginnend"},
-  {i:"🚘",t:"Ervaren (gevorderd) bestuurder",s:"Invorderen boven 570 µg/l",z:"alcohol-gevorderd"}]},
+  {i:"",t:"Beginnend bestuurder",s:"Invorderen boven 350 µg/l",z:"alcohol-beginnend"},
+  {i:"",t:"Ervaren (gevorderd) bestuurder",s:"Invorderen boven 570 µg/l",z:"alcohol-gevorderd"}]},
  alcbl:{q:"Beginnend of ervaren bestuurder?",o:[
-  {i:"🎓",t:"Beginnend bestuurder",z:"bloed-beginnend"},{i:"🚘",t:"Ervaren (gevorderd) bestuurder",z:"bloed-gevorderd"}]},
+  {i:"",t:"Beginnend bestuurder",z:"bloed-beginnend"},{i:"",t:"Ervaren (gevorderd) bestuurder",z:"bloed-gevorderd"}]},
  weiger:{q:"Wat weigert de verdachte?",o:[
-  {i:"🫁",t:"De ademanalyse",s:"Alleen echt weigeren",z:"weigeren-adem"},
-  {i:"🩸",t:"Het bloedonderzoek",s:"Na een BEVEL van brigadier of hoger",z:"weigeren-bloed"}]},
+  {i:"",t:"De ademanalyse",s:"Alleen echt weigeren",z:"weigeren-adem"},
+  {i:"",t:"Het bloedonderzoek",s:"Na een BEVEL van brigadier of hoger",z:"weigeren-bloed"}]},
  rb:{q:"Wat is er mis met het rijbewijs?",o:[
-  {i:"🚫",t:"Ongeldig verklaard door het CBR",z:"cbr-ongeldig"},
-  {i:"🪪",t:"Ongeldig van rechtswege (123b)",z:"rechtswege-123b"},
-  {i:"📛",t:"Ingevorderd (art. 164)",z:"ingevorderd-164"},
-  {i:"⏸️",t:"Geschorst",z:"geschorst"},
-  {i:"⛔",t:"Ontzegging rijbevoegdheid (OBM)",z:"obm"}]}
+  {i:"",t:"Ongeldig verklaard door het CBR",z:"cbr-ongeldig"},
+  {i:"",t:"Ongeldig van rechtswege (123b)",z:"rechtswege-123b"},
+  {i:"",t:"Ingevorderd (art. 164)",z:"ingevorderd-164"},
+  {i:"",t:"Geschorst",z:"geschorst"},
+  {i:"",t:"Ontzegging rijbevoegdheid (OBM)",z:"obm"}]}
 };
 
 /* Contact + eigen links (alleen lokaal op dit apparaat) */
@@ -452,7 +454,7 @@ const app=$("#app");
 const NAV=[["#/","Start"],["#/wizard","Snelkeuze"],["#/zaken","Alle zaken"],["#/tools","Rekenhulp"],["#/codes","Codes"],["#/afspraken","Afspraken"]];
 function renderNav(h){$("#nav").innerHTML=NAV.map(([u,t])=>{const cur=u==="#/"?(h==="#/"||h===""):h.startsWith(u);return `<a href="${u}" ${cur?'aria-current="page"':""}>${t}</a>`}).join("")}
 
-function tile(z){const G=GROEPEN[z.g];return `<a class="tile" style="--g:${G.c}" href="#/zaak/${z.id}"><span class="ic">${z.ic}</span><span><b>${esc(z.kort)}</b><small>${z.klasse} · art. ${esc(z.laste)}</small></span></a>`}
+function tile(z){const G=GROEPEN[z.g];return `<a class="tile" style="--g:${G.c}" href="#/zaak/${z.id}"><span class="kl">${z.klasse}</span><span><b>${esc(z.kort)}</b><small>${z.klasse} · art. ${esc(z.laste)}</small></span></a>`}
 
 function vHome(){
  const rec=store.get("recent",[]).map(zaak).filter(Boolean).slice(0,4);
@@ -460,22 +462,22 @@ function vHome(){
  <h1>Wat moet ik doen met dit rijbewijs?</h1>
  <p class="lead">Kies een situatie of zoek op artikel, code of trefwoord. Alles in één scherm, ook offline.</p>
  <div class="hero">
-  <a class="big" href="#/wizard"><span class="ic">🧭</span><b>Snelkeuze</b><span>Beantwoord 2–3 vragen, krijg het juiste stappenplan</span></a>
-  <a class="big b2" href="#/tools/rijverbod"><span class="ic">⏱️</span><b>Rijverbod berekenen</b><span>µg/l → uren + eindtijd, beginnend of ervaren</span></a>
+  <a class="big" href="#/wizard"><b>Snelkeuze</b><span>Beantwoord 2–3 vragen, krijg het juiste stappenplan</span></a>
+  <a class="big b2" href="#/tools/rijverbod"><b>Rijverbod berekenen</b><span>µg/l → uren + eindtijd, beginnend of ervaren</span></a>
  </div>
  ${rec.length?`<h2>Laatst bekeken</h2><div class="grid">${rec.map(tile).join("")}</div>`:""}
- ${Object.entries(GROEPEN).map(([k,G])=>`<h2>${G.i} ${G.n}</h2><div class="grid">${ZAKEN.filter(z=>z.g===k).map(tile).join("")}</div>`).join("")}
+ ${Object.entries(GROEPEN).map(([k,G])=>`<h2>${G.n}</h2><div class="grid">${ZAKEN.filter(z=>z.g===k).map(tile).join("")}</div>`).join("")}
  <h2>Hulpmiddelen</h2>
  <div class="tools">
-  <a href="#/tools/beginnend"><b>🎓 Beginnend bestuurder?</b><small>5 of 7 jaar, juiste code</small></a>
-  <a href="#/tools/snelheid"><b>🚦 Snelcheck</b><small>Gedragsregel of bord A1</small></a>
-  <a href="#/tools/rijbewijs"><b>🪪 Rijbewijs invoeren</b><small>Zo vul je BVH in</small></a>
-  <a href="#/codes"><b>🔢 Alle codes</b><small>Klasse · artikel · BVH-code</small></a>
+  <a href="#/tools/beginnend"><b>Beginnend bestuurder?</b><small>5 of 7 jaar, juiste code</small></a>
+  <a href="#/tools/snelheid"><b>Snelcheck</b><small>Gedragsregel of bord A1</small></a>
+  <a href="#/tools/rijbewijs"><b>Rijbewijs invoeren</b><small>Zo vul je BVH in</small></a>
+  <a href="#/codes"><b>Alle codes</b><small>Klasse · artikel · BVH-code</small></a>
  </div>`;
 }
 
 function vZaken(){
- app.innerHTML=`<h1>Alle zaken</h1><p class="lead">${ZAKEN.length} afhandelkaarten uit het stappenplan.</p>`+Object.entries(GROEPEN).map(([k,G])=>`<h2>${G.i} ${G.n}</h2><div class="grid">${ZAKEN.filter(z=>z.g===k).map(tile).join("")}</div>`).join("");
+ app.innerHTML=`<h1>Alle zaken</h1><p class="lead">${ZAKEN.length} afhandelkaarten uit het stappenplan.</p>`+Object.entries(GROEPEN).map(([k,G])=>`<h2>${G.n}</h2><div class="grid">${ZAKEN.filter(z=>z.g===k).map(tile).join("")}</div>`).join("");
 }
 
 function stepHtml(s,i,done){
@@ -494,8 +496,8 @@ function vZaak(id){
  const G=GROEPEN[z.g];
  const fact=(l,v,c)=>`<div class="fact ${c||""}"><small>${l}</small><b>${esc(v)}</b></div>`;
  app.innerHTML=`
- <div class="crumb"><a href="#/">‹ Start</a><span class="chip" style="background:${G.c};color:#fff">${G.i} ${G.n}</span></div>
- <div class="title"><span class="ic">${z.ic}</span><h1>${esc(z.titel)}</h1></div>
+ <div class="crumb"><a href="#/">‹ Start</a><span class="chip" style="background:${G.c};color:#fff">${G.n}</span></div>
+ <div class="title"><h1>${esc(z.titel)}</h1></div>
  <div class="facts">
   ${fact("Aanhouden?",z.aanhouden.t,z.aanhouden.ok?"ok":"red")}
   ${fact("Rijbewijs / beslag",z.beslag.t,z.beslag.red?"red":"ok")}
@@ -505,12 +507,12 @@ function vZaak(id){
  ${z.alerts.map(a=>`<div class="alert ${a.c||"info"}"><b>${esc(a.t)}</b>${esc(a.x)}</div>`).join("")}
  <h2>Ten laste leggen · ${esc(z.art)}</h2>
  ${z.codes.length?`<div class="codes">${z.codes.map(c=>`<div class="code"><button data-copy="${c.c}" aria-label="Kopieer code ${c.c}">${c.c}</button><span>${esc(c.l)}</span></div>`).join("")}</div>`:`<div class="card">Artikel <b>${esc(z.laste)}</b>. Geen aparte BVH-code in het brondocument.</div>`}
- ${z.tool?`<div class="cta"><a class="btn" href="${z.tool.h}">🧮 ${esc(z.tool.t)}</a></div>`:""}
+ ${z.tool?`<div class="cta"><a class="btn" href="${z.tool.h}">${esc(z.tool.t)}</a></div>`:""}
  <div class="prog" id="prog"><div class="t"><span id="pt"></span><button style="all:unset;color:var(--acc);font-weight:700;cursor:pointer;padding:4px" id="reset">Opnieuw beginnen</button></div><div class="b"><i id="pb"></i></div></div>
  <ol class="steps" id="steps">${z.stappen.map((s,i)=>stepHtml(s,i,done)).join("")}</ol>
  <h2>Wetsartikelen</h2>
  <div class="links">${z.wet.map(l=>`<a href="${l.u}" target="_blank" rel="noopener noreferrer">${esc(l.t)}<span>↗</span></a>`).join("")}<a href="#/afspraken">Afspraken en richtlijnen Amersfoort<span>›</span></a></div>
- <div class="cta" style="margin-top:16px"><button class="btn pri" id="sh">⤴ Deel deze kaart</button><button class="btn" onclick="window.print()">🖨 Print / PDF</button></div>`;
+ <div class="cta" style="margin-top:16px"><button class="btn pri" id="sh">Deel deze kaart</button><button class="btn" onclick="window.print()">Print / PDF</button></div>`;
  const upd=()=>{const n=z.stappen.filter(s=>!s.cond).length,d=done.filter(i=>!z.stappen[i].cond).length;$("#pt").textContent=`${d} van ${n} stappen`;$("#pb").style.width=(n?d/n*100:0)+"%"};
  upd();
  const tog=el=>{const i=+el.dataset.i;done=done.includes(i)?done.filter(x=>x!==i):[...done,i];store.set(key,done);el.classList.toggle("on");el.setAttribute("aria-checked",el.classList.contains("on"));upd()};
@@ -549,7 +551,7 @@ function vAfspraken(){
  </div>
  <h2>Eigen links van het team</h2>
  <div class="card"><p class="lead" style="font-size:14px;margin-top:0">Voeg intranet-links toe (werkinstructies, OM-richtlijnen, teamafspraken). Ze worden alleen op dit apparaat bewaard.</p>
- <div id="xl" class="links">${ex.map((l,i)=>`<a href="${esc(l.u)}" target="_blank" rel="noopener noreferrer">${esc(l.t)}<span data-del="${i}" aria-label="Verwijder" title="Verwijder">🗑</span></a>`).join("")}</div>
+ <div id="xl" class="links">${ex.map((l,i)=>`<a href="${esc(l.u)}" target="_blank" rel="noopener noreferrer">${esc(l.t)}<span style="font-size:13px" data-del="${i}" aria-label="Verwijder" title="Verwijder">Verwijder</span></a>`).join("")}</div>
  <div class="row2" style="margin-top:10px"><input id="lt" type="text" placeholder="Titel"><input id="lu" type="text" inputmode="url" placeholder="https://…"></div>
  <div class="cta"><button class="btn" id="la">+ Link toevoegen</button></div></div>`;
  $("#ct").oninput=e=>store.set("contact",e.target.value.trim());
@@ -563,8 +565,8 @@ function vWizard(node,hist){
  const n=WZ[node];
  app.innerHTML=`<div class="crumb">${hist.length?`<a href="#" id="back">‹ Terug</a>`:`<a href="#/">‹ Start</a>`}<span class="chip">Snelkeuze</span></div>
  <div class="q">${esc(n.q)}</div>${n.note?`<div class="alert info">${esc(n.note)}</div>`:""}
- <div class="opts">${n.o.map((o,i)=>`<button class="opt" data-i="${i}"><span class="ic">${o.i}</span><span>${esc(o.t)}${o.s?`<small>${esc(o.s)}</small>`:""}</span></button>`).join("")}</div>
- ${n.tool?`<div class="cta"><a class="btn" href="${n.tool[0]}">🧮 ${esc(n.tool[1])}</a></div>`:""}`;
+ <div class="opts">${n.o.map((o,i)=>`<button class="opt" data-i="${i}"><span style="flex:1">${esc(o.t)}${o.s?`<small>${esc(o.s)}</small>`:""}</span><span class="chev" aria-hidden="true">›</span></button>`).join("")}</div>
+ ${n.tool?`<div class="cta"><a class="btn" href="${n.tool[0]}">${esc(n.tool[1])}</a></div>`:""}`;
  $$(".opt").forEach(b=>b.onclick=()=>{const o=n.o[+b.dataset.i];if(o.z){location.hash="#/zaak/"+o.z}else vWizard(o.n,[...hist,node])});
  const bk=$("#back");if(bk)bk.onclick=e=>{e.preventDefault();const h=[...hist];const p=h.pop();vWizard(p,h)};
 }
@@ -576,10 +578,10 @@ function vTools(sub){
  if(sub==="snelheid")return tSnelheid();
  if(sub==="rijbewijs"){app.innerHTML=`<div class="crumb"><a href="#/tools">‹ Hulpmiddelen</a></div><h1>Rijbewijs invoeren in BVH</h1>${rbHtml()}`;return}
  app.innerHTML=`<h1>Hulpmiddelen</h1><div class="tools">
- <a href="#/tools/rijverbod"><b>⏱️ Rijverbod berekenen</b><small>µg/l → uren + eindtijd</small></a>
- <a href="#/tools/beginnend"><b>🎓 Beginnend bestuurder?</b><small>5 of 7 jaar + juiste code</small></a>
- <a href="#/tools/snelheid"><b>🚦 Snelcheck</b><small>Gedragsregel of bord A1</small></a>
- <a href="#/tools/rijbewijs"><b>🪪 Rijbewijs invoeren</b><small>Voorbeeld BVH-scherm</small></a></div>`;
+ <a href="#/tools/rijverbod"><b>Rijverbod berekenen</b><small>µg/l → uren + eindtijd</small></a>
+ <a href="#/tools/beginnend"><b>Beginnend bestuurder?</b><small>5 of 7 jaar + juiste code</small></a>
+ <a href="#/tools/snelheid"><b>Snelcheck</b><small>Gedragsregel of bord A1</small></a>
+ <a href="#/tools/rijbewijs"><b>Rijbewijs invoeren</b><small>Voorbeeld BVH-scherm</small></a></div>`;
 }
 const hrs=(x,begin)=>{const r=RV.find(r=>x>=r[1]&&x<=r[2]);if(!r)return x>1780?{over:1}:{none:1};if(begin)return{h:r[0],r:r};const h=r[0]-2;return h>=1?{h,r}:{none:1}};
 function rvTable(sel,begin){return `<div class="tw" style="max-height:340px;overflow:auto"><table><thead><tr><th class="n">Uren</th><th>µg/l ademlucht</th></tr></thead><tbody>${RV.map(r=>{const h=begin?r[0]:r[0]-2;if(h<1)return"";return `<tr class="${sel&&sel[0]===r[0]?"hl":""}"><td class="n">${h} uur</td><td>${r[1]} – ${r[2]}</td></tr>`}).join("")}</tbody></table></div>`}
