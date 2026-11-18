@@ -586,26 +586,43 @@ function vTools(sub){
 const hrs=(x,begin)=>{const r=RV.find(r=>x>=r[1]&&x<=r[2]);if(!r)return x>1780?{over:1}:{none:1};if(begin)return{h:r[0],r:r};const h=r[0]-2;return h>=1?{h,r}:{none:1}};
 function rvTable(sel,begin){return `<div class="tw" style="max-height:340px;overflow:auto"><table><thead><tr><th class="n">Uren</th><th>µg/l ademlucht</th></tr></thead><tbody>${RV.map(r=>{const h=begin?r[0]:r[0]-2;if(h<1)return"";return `<tr class="${sel&&sel[0]===r[0]?"hl":""}"><td class="n">${h} uur</td><td>${r[1]} – ${r[2]}</td></tr>`}).join("")}</tbody></table></div>`}
 function tRijverbod(){
- const now=new Date();const hhmm=String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
- app.innerHTML=`<div class="crumb"><a href="#/tools">‹ Hulpmiddelen</a></div><h1>Rijverbod berekenen</h1><p class="lead">Rijverbodtabel art. 8 WvW 1994 uit het stappenplan. Alleen voor ademanalyse. Bij weigeren of drugs is het 24 uur.</p>
- <div class="card"><label for="v" style="margin-top:0">Ademanalyse-uitslag (µg per liter ademlucht)</label><input id="v" type="number" inputmode="numeric" min="0" max="3000" placeholder="bijv. 640">
- <label>Soort bestuurder</label><div class="seg"><label><input type="radio" name="b" value="e" checked><span>Ervaren (≥ 5 jr)</span></label><label><input type="radio" name="b" value="b"><span>Beginnend (&lt; 5 jr)</span></label></div>
- <label for="tm">Begintijd rijverbod</label><input id="tm" type="time" value="${hhmm}">
- <div id="out"></div></div><h2>Volledige tabel</h2><div id="tb"></div>
- <p class="lead" style="font-size:13px;margin-top:10px">Rekenhulp: controleer de uitkomst op het formulier. In de bron overlappen de tabelranden bij 1130 (16 en 17 uur); hier geldt 1130 = 16 uur.</p>`;
- const go=()=>{const x=parseInt($("#v").value,10),begin=$('input[name=b]:checked').value==="b";const out=$("#out");$("#tb").innerHTML=rvTable(null,begin);
-  if(isNaN(x)){out.innerHTML="";return}
-  const r=hrs(x,begin);
-  if(r.over){out.innerHTML=`<div class="result red"><b>Boven de tabel (1780 µg/l)</b><br>Raadpleeg het formulier.</div>`;return}
-  if(r.none){out.innerHTML=`<div class="result"><b>Onder de tabelwaarde</b><br>${begin?"Beginnend: de tabel start bij 90 µg/l.":"Ervaren: de tabel start bij 220 µg/l (1 uur)."} Geen rijverbod uit deze tabel.</div>`;return}
-  const [H,M]=$("#tm").value.split(":").map(Number);const e=new Date();e.setHours(H||0,M||0,0,0);e.setHours(e.getHours()+r.h);
-  const day=e.toDateString()===new Date().toDateString()?"vandaag":"op "+e.toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"});
-  const inv=begin?x>350:x>570;
-  out.innerHTML=`<div class="result ${inv?"red":"ok"}"><div class="v">${r.h} uur rijverbod</div><div style="margin-top:4px;font-size:18px">Tot <b>${String(e.getHours()).padStart(2,"0")}:${String(e.getMinutes()).padStart(2,"0")}</b> ${day}</div>
-  <div class="chips"><span class="chip ${inv?"red":"ok"}">${inv?"Boven invorderingsgrens → rijbewijs invorderen":"Onder invorderingsgrens"}</span><span class="chip">${begin?">350":">570"} µg/l = invorderen</span></div>
-  <div class="cta"><a class="btn" href="#/zaak/${begin?"alcohol-beginnend":"alcohol-gevorderd"}">Naar stappenplan ›</a></div></div>`;
-  $("#tb").innerHTML=rvTable(r.r,begin)};
- $("#v").oninput=go;$("#tm").oninput=go;$$('input[name=b]').forEach(i=>i.onchange=go);go();
+ const now=new Date(),pad=n=>String(n).padStart(2,"0");
+ const ymd=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()),hm=d=>pad(d.getHours())+":"+pad(d.getMinutes());
+ app.innerHTML=`<div class="crumb"><a href="#/tools">‹ Hulpmiddelen</a></div><h1>Rijverbod berekenen</h1><p class="lead">Rijverbod art. 8 WvW 1994: duur en eindtijd voor het formulier. Tabelwaarden uit het stappenplan.</p>
+ <div class="card"><label style="margin-top:0">Situatie</label>
+ <div class="seg" id="sit"><label><input type="radio" name="s" value="adem" checked><span>Ademanalyse-uitslag</span></label><label><input type="radio" name="s" value="wadem"><span>Weigeren ademanalyse</span></label><label><input type="radio" name="s" value="wbloed"><span>Weigeren bloedonderzoek</span></label><label><input type="radio" name="s" value="drugs"><span>Drugs/geneesmiddelen</span></label></div>
+ <div id="ad"><label for="v">Uitslag (µg per liter ademlucht)</label><input id="v" type="number" inputmode="numeric" min="0" max="3000" placeholder="bijv. 640">
+ <label>Soort bestuurder</label><div class="seg"><label><input type="radio" name="b" value="e" checked><span>Ervaren (≥ 5 jr)</span></label><label><input type="radio" name="b" value="b"><span>Beginnend (&lt; 5 jr)</span></label></div></div>
+ <div class="row2"><div><label for="dd">Datum begin rijverbod</label><input id="dd" type="date" value="${ymd(now)}"></div><div><label for="tm">Begintijd</label><input id="tm" type="time" value="${hm(now)}"></div></div>
+ <div class="cta"><button class="btn" id="nu" type="button">Begintijd = nu</button></div>
+ <div id="out"></div></div>
+ <div id="tbw"><h2>Volledige tabel</h2><div id="tb"></div></div>
+ <p class="lead" style="font-size:13px;margin-top:10px">Rekenhulp: controleer de uitkomst op het formulier. In de bron overlappen de tabelranden bij 1130 (16 en 17 uur); hier geldt 1130 = 16 uur. Weigeren en drugs: vast 24 uur.</p>`;
+ let timer;
+ const fmtD=d=>d.toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"long"})+" "+hm(d);
+ const left=e=>{const ms=e-new Date();if(ms<=0)return`<span class="chip ok">Rijverbod is verstreken</span>`;const m=Math.ceil(ms/60000);return`<span class="chip warn">Nog ${Math.floor(m/60)} u ${m%60} min</span>`};
+ const go=()=>{clearInterval(timer);const sit=$('input[name=s]:checked').value,begin=$('input[name=b]:checked').value==="b",out=$("#out");
+  $("#ad").style.display=sit==="adem"?"block":"none";$("#tbw").style.display=sit==="adem"?"block":"none";
+  let H,inv=true,tag,zk;
+  if(sit==="adem"){$("#tb").innerHTML=rvTable(null,begin);const x=parseInt($("#v").value,10);if(isNaN(x)){out.innerHTML="";return}
+   const r=hrs(x,begin);
+   if(r.over){out.innerHTML=`<div class="result red"><b>Boven de tabel (1780 µg/l)</b><br>Raadpleeg het formulier.</div>`;return}
+   if(r.none){out.innerHTML=`<div class="result"><b>Onder de tabelwaarde</b><br>${begin?"Beginnend: de tabel start bij 90 µg/l.":"Ervaren: de tabel start bij 220 µg/l (1 uur)."} Geen rijverbod uit deze tabel.</div>`;return}
+   H=r.h;inv=begin?x>350:x>570;tag=`${x} µg/l, ${begin?"beginnend":"ervaren"} bestuurder`;zk=begin?"alcohol-beginnend":"alcohol-gevorderd";$("#tb").innerHTML=rvTable(r.r,begin)}
+  else{H=24;tag={wadem:"Weigeren ademanalyse",wbloed:"Weigeren bloedonderzoek",drugs:"Drugs/geneesmiddelen"}[sit];zk={wadem:"weigeren-adem",wbloed:"weigeren-bloed",drugs:"drugs"}[sit]}
+  const dv=$("#dd").value,tv=$("#tm").value;if(!dv||!tv){out.innerHTML="";return}
+  const [Y,M,D]=dv.split("-").map(Number),[h,mi]=tv.split(":").map(Number);
+  const st=new Date(Y,M-1,D,h,mi,0,0),e=new Date(st.getTime()+H*3600000);
+  const txt=`Rijverbod ${H} uur (art. 8 WvW 1994): van ${fmtD(st)} tot ${fmtD(e)} (${tag}).`;
+  out.innerHTML=`<div class="result ${inv?"red":"ok"}"><div class="v">${H} uur rijverbod</div>
+  <div style="margin-top:6px;font-size:16px">Van <b>${fmtD(st)}</b><br>tot <b>${fmtD(e)}</b></div>
+  <div class="chips" id="lf">${left(e)}</div>
+  ${sit==="adem"?`<div class="chips"><span class="chip ${inv?"red":"ok"}">${inv?"Boven invorderingsgrens: rijbewijs invorderen":"Onder invorderingsgrens"}</span><span class="chip">${begin?">350":">570"} µg/l = invorderen</span></div>`:`<div class="chips"><span class="chip red">Vast 24 uur</span></div>`}
+  <div class="cta"><button class="btn pri" id="cp" type="button">Kopieer tekst voor formulier</button><a class="btn" href="#/zaak/${zk}">Naar stappenplan ›</a></div></div>`;
+  $("#cp").onclick=()=>copy(txt,"Tekst gekopieerd");
+  timer=setInterval(()=>{const l=$("#lf");if(!l){clearInterval(timer);return}l.innerHTML=left(e)},30000)};
+ $("#nu").onclick=()=>{const n=new Date();$("#dd").value=ymd(n);$("#tm").value=hm(n);go()};
+ $$("#v,#tm,#dd").forEach(i=>i.oninput=go);$$('input[type=radio]').forEach(i=>i.onchange=go);go();
 }
 
 function tBeginnend(){
